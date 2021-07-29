@@ -68,7 +68,15 @@
           </v-list-item-content>
         </v-list-item>
 
-
+  
+          <v-list-item link style="text-decoration: none " >
+          <v-list-item-icon>
+            <v-icon size="19" class="text-danger">mdi-transcribe</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+               Sub-Category
+          </v-list-item-content>
+        </v-list-item>
 
 
 
