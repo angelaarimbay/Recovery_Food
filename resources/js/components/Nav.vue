@@ -1,20 +1,35 @@
 <template>
 <div>
-    <v-app-bar height="40" app>
+    <v-app-bar height="60" dark color="danger" app>
        <v-app-bar-nav-icon  @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>GIS</v-toolbar-title>
+ 
+       Recovery Food Management System 
 
       <v-spacer></v-spacer>
- 
-
-      <v-btn icon>
-        <v-icon color="blue">mdi-bell</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <v-icon color="danger">mdi-logout</v-icon>
-      </v-btn>
- 
+     <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn 
+          dark
+          text
+          v-bind="attrs"
+          v-on="on"
+        >
+          <v-icon class="round">mdi-account</v-icon> <small>Account</small>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item >
+          <v-list-item-title>Menu 1 </v-list-item-title> 
+        </v-list-item>
+         <v-list-item >
+          <v-list-item-title>Menu 2 </v-list-item-title> 
+        </v-list-item>
+         <v-list-item >
+          <v-list-item-title>Menu 3 </v-list-item-title> 
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
  <v-navigation-drawer 
         app
@@ -22,9 +37,9 @@
        
     >
       <template v-slot:prepend>
-        <v-list-item> 
-          <v-list-item-content>
-            <v-img src="/img/pgasompo.png"></v-img>
+        <v-list-item class="p-0 m-0"> 
+          <v-list-item-content class="test-background">
+            <v-img class="mx-auto" max-height="50" max-width="50" src="/img/logo.jpg"></v-img>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -34,24 +49,29 @@
 
 
     <v-list>
-        <v-list-item to="/dashboard">
+      
+        <v-list-item   style="text-decoration: none "  to="/dashboard">
           <v-list-item-icon>
             <v-icon size="19" class="text-danger">mdi-view-dashboard</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title >Dashboard</v-list-item-title>
+            <span>Dashboard</span>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item to="/accumulation">
+      
+          <v-list-item link style="text-decoration: none " :to='{ name: "home"}'>
           <v-list-item-icon>
             <v-icon size="19" class="text-danger">mdi-transcribe</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title >Accumulation</v-list-item-title>
+                    testing 
           </v-list-item-content>
         </v-list-item>
-        
-        
+
+
+
+
+
         <v-list-group no-action >
           <template v-slot:activator>
             <v-list-item-icon>
@@ -128,12 +148,16 @@
 
 </div>
 </template>
-
+<style>
+  .coloroffont{
+    color: blue;
+  }
+</style>
 <script>
   export default {
     data () {
-      return {
-        drawer: true, 
+      return { 
+        drawer: true,  
       }
     },
   }

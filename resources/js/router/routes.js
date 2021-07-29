@@ -9,6 +9,8 @@ export default{
         // { path:'/',  component: page('login.vue') },  
         { path:'/', name: 'dashboard', component: page('dashboard.vue') },  
         { path:'/dashboard', name: 'dashboard', component: page('dashboard.vue') },  
+
+        { path:'/home', name: 'home', component: page('home.vue') },  
  
         { path:'/survey/infosheet', name: 'survey.infosheet', component: page('survey/infosheet.vue') }, 
         { path:'/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') }, 
