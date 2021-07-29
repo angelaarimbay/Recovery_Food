@@ -64,7 +64,7 @@
             <v-icon size="19" class="text-danger">mdi-transcribe</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-               Test-page
+               Category
           </v-list-item-content>
         </v-list-item>
 
