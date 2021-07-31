@@ -38,11 +38,18 @@
                             </v-row>  
                         </v-col> -->
                         <v-col lg="6">
-                            <v-card class="p-2" height="120">
+                            <v-card class="p-2" >
                                 Current Accumulation data 
                                 <v-divider class="m-1"/>
-                                <v-card-actions>
-                                        <v-menu
+                                <!-- pag nka card-actions ka inline sya meaning pag may button
+                                ung card mo na magkakasama jan mo lalagay in one row sya
+                                since ginamit to tlgang mag mimissplace sya kahit gamitan natin
+                                yang ng row col one line padin sya. 
+                                paltan natin ng card-text
+                                 -->
+                                <v-card-text>
+                                    <!-- ito ung datepicker -->
+                                    <v-menu
                                         ref="menu"
                                         v-model="menu"
                                         :close-on-content-click="false"
@@ -82,8 +89,14 @@
                                         </v-btn>
                                         </v-date-picker>
                                     </v-menu>
-  
+                                    <!-- ito ung button na green -->
+                                    <!-- para mag responsive sya at bumaba -->
+                                    <v-row>
+                                        <v-col>
                                         <v-btn small class="primary">Retrieve</v-btn>  
+                                        </v-col>
+                                        <v-col>
+                                        <!-- ito ung upload -->
                                             <v-btn
                                                 text
                                                 outlined
@@ -99,14 +112,15 @@
                                                 clearable="true"
                                                 @change="uploadimages"
                                             /> 
-                                          
+                                        </v-col>
+                                    </v-row>
                                             <v-text-field
                                                 style="display: none" 
                                                 v-model="form.filename"
                                                 label="Document"
                                             ></v-text-field>
                                      
-                                  </v-card-actions>
+                                  </v-card-text>
                                      
                             </v-card>
                         </v-col>   

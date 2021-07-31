@@ -188,6 +188,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -793,10 +807,7 @@ var render = function() {
                             [
                               _c(
                                 "v-card",
-                                {
-                                  staticClass: "p-2",
-                                  attrs: { height: "120" }
-                                },
+                                { staticClass: "p-2" },
                                 [
                                   _vm._v(
                                     "\r\n                                Current Accumulation data \r\n                                "
@@ -804,7 +815,7 @@ var render = function() {
                                   _c("v-divider", { staticClass: "m-1" }),
                                   _vm._v(" "),
                                   _c(
-                                    "v-card-actions",
+                                    "v-card-text",
                                     [
                                       _c(
                                         "v-menu",
@@ -944,43 +955,63 @@ var render = function() {
                                       ),
                                       _vm._v(" "),
                                       _c(
-                                        "v-btn",
-                                        {
-                                          staticClass: "primary",
-                                          attrs: { small: "" }
-                                        },
-                                        [_vm._v("Retrieve")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          staticClass: "btn ",
-                                          attrs: {
-                                            text: "",
-                                            outlined: "",
-                                            color: "primary"
-                                          },
-                                          on: { click: _vm.clickupload }
-                                        },
+                                        "v-row",
                                         [
-                                          _c("v-icon", [_vm._v("mdi-upload")]),
-                                          _vm._v(
-                                            " Upload File\r\n                                            "
+                                          _c(
+                                            "v-col",
+                                            [
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  staticClass: "primary",
+                                                  attrs: { small: "" }
+                                                },
+                                                [_vm._v("Retrieve")]
+                                              )
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-col",
+                                            [
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  staticClass: "btn ",
+                                                  attrs: {
+                                                    text: "",
+                                                    outlined: "",
+                                                    color: "primary"
+                                                  },
+                                                  on: { click: _vm.clickupload }
+                                                },
+                                                [
+                                                  _c("v-icon", [
+                                                    _vm._v("mdi-upload")
+                                                  ]),
+                                                  _vm._v(
+                                                    " Upload File\r\n                                            "
+                                                  )
+                                                ],
+                                                1
+                                              ),
+                                              _vm._v(" "),
+                                              _c("input", {
+                                                ref: "uploader",
+                                                staticClass: "d-none",
+                                                attrs: {
+                                                  type: "file",
+                                                  clearable: "true"
+                                                },
+                                                on: { change: _vm.uploadimages }
+                                              })
+                                            ],
+                                            1
                                           )
                                         ],
                                         1
                                       ),
-                                      _vm._v(" "),
-                                      _c("input", {
-                                        ref: "uploader",
-                                        staticClass: "d-none",
-                                        attrs: {
-                                          type: "file",
-                                          clearable: "true"
-                                        },
-                                        on: { change: _vm.uploadimages }
-                                      }),
                                       _vm._v(" "),
                                       _c("v-text-field", {
                                         staticStyle: { display: "none" },
