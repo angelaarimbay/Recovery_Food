@@ -20,7 +20,6 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <!-- tulad nito may nka include ung default ng bs4, pag mag include ka.  -->
     <!-- dito mo lalagay sa public/css folder, pag cacall mo same ng nasa taas -->
 
