@@ -280,7 +280,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     "Content-Type": "multipart/form-data"
                   }
                 }).then(function (result) {
-                  console.log(result.data);
                   _this3.form.filename = result.data.filename;
                 });
 
@@ -358,7 +357,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               beginAtZero: true,
               callback: function callback(value, index, values) {
                 if (parseInt(value) >= 1000) {
-                  console.log(index);
                   return '₱' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 } else {
                   return '₱' + value;

@@ -266,9 +266,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this2.survey_add_dialog = false;
 
                   _this2.getList();
-                })["catch"](function (res) {
-                  console.log(res);
-                });
+                })["catch"](function (res) {});
 
               case 3:
               case "end":

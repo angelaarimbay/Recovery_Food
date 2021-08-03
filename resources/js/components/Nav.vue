@@ -1,7 +1,7 @@
 <template>
   <nav>
     <v-app-bar app dense dark class="red darken-3">
-      <v-app-bar-nav-icon @click.stop="mini = !mini"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click.stop="mini = !mini; "></v-app-bar-nav-icon>
 
       <v-list-item-title class="hidden-sm-and-down"
         >Online Inventory and Sales Monitoring System for Recovery

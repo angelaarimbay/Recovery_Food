@@ -210,8 +210,7 @@ import template from '../template.vue';
             .then(result =>{   
                 this.survey_add_dialog = false;
                 this.getList(); 
-            }).catch(res=>{
-                console.log(res)
+            }).catch(res=>{ 
             });
         }, 
  

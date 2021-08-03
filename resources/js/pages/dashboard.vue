@@ -225,8 +225,7 @@ export default {
                 await axios.post('/api/upload/accumulation/excel', dataform, {
                 headers: { "Content-Type": "multipart/form-data" },
                 })
-                .then(result=>{   
-                    console.log(result.data); 
+                .then(result=>{    
                  this.form.filename = result.data.filename
                 });
         },   

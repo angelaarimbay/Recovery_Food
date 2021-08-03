@@ -254,7 +254,6 @@ var map, mapin, mapout;
     initMap: function initMap(zooms, type) {
       var _this = this;
 
-      console.log(zooms);
       scriptjs__WEBPACK_IMPORTED_MODULE_2___default()("https://maps.googleapis.com/maps/api/js?key=AIzaSyDWsOP0trKOpMqg5zDI_3WitmyNRA3JDBs&libraries=places", function () {
         var myLatLng = _this.cresta_gps[0][0];
 
@@ -285,7 +284,6 @@ var map, mapin, mapout;
               position = _ref2[0],
               title = _ref2[1];
 
-          // console.log(title)
           var marker = new google.maps.Marker({
             position: position,
             map: map,
