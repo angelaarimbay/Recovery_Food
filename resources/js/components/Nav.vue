@@ -29,10 +29,11 @@
       </v-menu>
     </v-app-bar>
     <v-navigation-drawer
+      height="100%"
       app
       v-model="drawer"
+      :permanent="$vuetify.breakpoint.smAndUp"
       :mini-variant.sync="mini"
-      permanent
       dark
       class="grey darken-4"
     >
@@ -249,6 +250,16 @@
           </v-list-item>
         </v-list-group>
       </v-list>
+
+      <template v-slot:append>
+        <v-divider class="m-0"></v-divider>
+        <v-list-item style="text-decoration: none" :to="''">
+          <v-list-item-icon>
+            <v-icon size="23">mdi-logout</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Log Out</v-list-item-title>
+        </v-list-item>
+      </template>
     </v-navigation-drawer>
   </nav>
 </template>
@@ -257,13 +268,16 @@
 .v-navigation-drawer__content::-webkit-scrollbar {
   width: 0px;
 }
+.v-list-item {
+  flex: 0;
+}
 </style>
 
 <script>
 export default {
   data() {
     return {
-      drawer: true,
+      drawer: false,
       mini: false,
     };
   },
