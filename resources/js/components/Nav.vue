@@ -1,9 +1,12 @@
 <template>
-  <div>
-    <v-app-bar app dark class="red darken-3">
+  <nav>
+    <v-app-bar app dense dark class="red darken-3">
       <v-app-bar-nav-icon @click.stop="mini = !mini"></v-app-bar-nav-icon>
 
-      Online Inventory and Sales Monitoring System for Recovery Food
+      <v-list-item-title class="hidden-sm-and-down"
+        >Online Inventory and Sales Monitoring System for Recovery
+        Food</v-list-item-title
+      >
 
       <v-spacer></v-spacer>
       <v-menu offset-y>
@@ -34,35 +37,29 @@
       class="grey darken-4"
     >
       <template v-slot:prepend>
-        <v-list-item>
-          <v-list-item-content>
-            <v-img
-              class="mx-auto"
-              max-height="50"
-              max-width="50"
-              src="/img/Logo_No_BG.png"
-            ></v-img>
-          </v-list-item-content>
+        <v-list-item class="px-2">
+          <v-list-item-avatar class="mb-0">
+            <v-img src="/img/Logo_No_BG.png"></v-img>
+          </v-list-item-avatar>
+          <v-list-item-title>RECOVERY FOOD</v-list-item-title>
         </v-list-item>
       </template>
 
       <v-divider class="m-0"></v-divider>
 
-      <v-list>
+      <v-list nav dense>
         <v-list-item style="text-decoration: none" to="/dashboard">
           <v-list-item-icon>
             <v-icon size="23">mdi-view-dashboard</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>
-            <span>Dashboard</span>
-          </v-list-item-content>
+          <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item>
 
         <v-list-item style="text-decoration: none" :to="{ name: 'home' }">
           <v-list-item-icon>
             <v-icon size="23">mdi-storefront</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>Branches</v-list-item-content>
+          <v-list-item-title>Branches</v-list-item-title>
         </v-list-item>
 
         <v-list-group no-action>
@@ -70,28 +67,28 @@
             <v-list-item-icon>
               <v-icon size="23">mdi-tag-multiple</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Categories</v-list-item-content>
+            <v-list-item-title>Categories</v-list-item-title>
           </template>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Supplies Category</v-list-item-content>
+            <v-list-item-title>Supplies Category</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Products Category</v-list-item-content>
+            <v-list-item-title>Products Category</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Products-Sub Category</v-list-item-content>
+            <v-list-item-title>Products-Sub Category</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -100,42 +97,42 @@
             <v-list-item-icon>
               <v-icon size="23">mdi-package</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Inventory</v-list-item-content>
+            <v-list-item-title>Inventory</v-list-item-title>
           </template>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Masterlist Supplies</v-list-item-content>
+            <v-list-item-title>Masterlist Supplies</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Incoming Supplies</v-list-item-content>
+            <v-list-item-title>Incoming Supplies</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Outgoing Supplies</v-list-item-content>
+            <v-list-item-title>Outgoing Supplies</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Main Inventory</v-list-item-content>
+            <v-list-item-title>Main Inventory</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Inventory Summary</v-list-item-content>
+            <v-list-item-title>Inventory Summary</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -144,21 +141,21 @@
             <v-list-item-icon>
               <v-icon size="23">mdi-package-variant-closed</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Products</v-list-item-content>
+            <v-list-item-title>Products</v-list-item-title>
           </template>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Products List</v-list-item-content>
+            <v-list-item-title>Products List</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Outgoing Products</v-list-item-content>
+            <v-list-item-title>Outgoing Products</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -167,21 +164,21 @@
             <v-list-item-icon>
               <v-icon size="23">mdi-truck</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Suppliers</v-list-item-content>
+            <v-list-item-title>Suppliers</v-list-item-title>
           </template>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Suppliers List</v-list-item-content>
+            <v-list-item-title>Suppliers List</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Purchase Orders</v-list-item-content>
+            <v-list-item-title>Purchase Orders</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -190,35 +187,35 @@
             <v-list-item-icon>
               <v-icon size="23">mdi-file-multiple</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Reports</v-list-item-content>
+            <v-list-item-title>Reports</v-list-item-title>
           </template>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Inventory Report</v-list-item-content>
+            <v-list-item-title>Inventory Report</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Sales Report</v-list-item-content>
+            <v-list-item-title>Sales Report</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Transaction Report</v-list-item-content>
+            <v-list-item-title>Transaction Report</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Purchase Orders Report</v-list-item-content>
+            <v-list-item-title>Purchase Orders Report</v-list-item-title>
           </v-list-item>
         </v-list-group>
 
@@ -226,7 +223,7 @@
           <v-list-item-icon>
             <v-icon size="23">mdi-account-multiple</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>User Accounts</v-list-item-content>
+          <v-list-item-title>User Accounts</v-list-item-title>
         </v-list-item>
 
         <v-list-group no-action>
@@ -234,27 +231,33 @@
             <v-list-item-icon>
               <v-icon size="23">mdi-wrench</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Settings</v-list-item-content>
+            <v-list-item-title>Settings</v-list-item-title>
           </template>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Permissions</v-list-item-content>
+            <v-list-item-title>Permissions</v-list-item-title>
           </v-list-item>
 
           <v-list-item style="text-decoration: none" class="pl-8" :to="''">
             <v-list-item-icon class="me-3">
               <v-icon size="16">mdi-circle</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>Company</v-list-item-content>
+            <v-list-item-title>Company</v-list-item-title>
           </v-list-item>
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
-  </div>
+  </nav>
 </template>
+
+<style>
+.v-navigation-drawer__content::-webkit-scrollbar {
+  width: 0px;
+}
+</style>
 
 <script>
 export default {
