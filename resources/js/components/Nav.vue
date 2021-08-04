@@ -1,8 +1,17 @@
 <template>
   <div>
-    <v-app-bar  dense dark class="red darken-3" app>
-      <v-app-bar-nav-icon v-if="$vuetify.breakpoint.mdAndDown" @click.stop="mini = false; drawer = !drawer;"></v-app-bar-nav-icon> 
-      <v-app-bar-nav-icon v-else @click.stop="drawer = true; mini = !mini;"></v-app-bar-nav-icon>
+    <v-app-bar dense dark class="red darken-3" app>
+      <v-app-bar-nav-icon
+        v-if="$vuetify.breakpoint.xsOnly"
+        @click.stop="
+          mini = false;
+          drawer = !drawer;
+        "
+      ></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        v-else
+        @click.stop="mini = !mini"
+      ></v-app-bar-nav-icon>
 
       <v-list-item-title class="hidden-sm-and-down"
         >Online Inventory and Sales Monitoring System for Recovery
@@ -10,6 +19,7 @@
       >
 
       <v-spacer></v-spacer>
+
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn dark text v-bind="attrs" v-on="on">
@@ -30,17 +40,15 @@
       </v-menu>
     </v-app-bar>
 
-
     <v-navigation-drawer
       height="100%"
       app
-      v-model="drawer" 
+      v-model="drawer"
+      :permanent="$vuetify.breakpoint.smAndUp"
       :mini-variant.sync="mini"
       dark
       class="grey darken-4"
     >
-
-    
       <template v-slot:prepend>
         <v-list-item class="px-2">
           <v-list-item-avatar class="mb-0">
