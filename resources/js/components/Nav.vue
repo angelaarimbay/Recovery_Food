@@ -13,7 +13,7 @@
         @click.stop="mini = !mini"
       ></v-app-bar-nav-icon>
 
-      <v-list-item-title class="hidden-sm-and-down"
+      <v-list-item-title class="font-weight-bold hidden-sm-and-down"
         >Online Inventory and Sales Monitoring System</v-list-item-title
       >
 
@@ -81,7 +81,7 @@
             <v-list-item-icon>
               <v-icon size="23">mdi-tag-multiple</v-icon>
             </v-list-item-icon>
-            <v-list-item-title active-class="highlighted">Categories</v-list-item-title>
+            <v-list-item-title>Categories</v-list-item-title>
           </template>
 
           <v-list-item style="text-decoration: none" class="pl-8 mb-1" to="/supp1">
