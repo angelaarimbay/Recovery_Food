@@ -177,31 +177,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -212,26 +187,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      data: '',
-      isSelecting: '',
+      data: "",
+      isSelecting: "",
       date: new Date().toISOString().substr(0, 10),
       menu: false,
       form: {
-        filename: ''
+        filename: ""
       },
       overlay: true,
       btns: [{
-        name: 'Quick Search',
-        icon: 'mdi-account',
-        route: 'myprofile'
+        name: "Quick Search",
+        icon: "mdi-account",
+        route: "myprofile"
       }, {
-        name: 'Google Map',
-        icon: 'mdi-clock',
-        route: 'timelogs/list'
+        name: "Google Map",
+        icon: "mdi-clock",
+        route: "timelogs/list"
       }, {
-        name: 'HazardHunter',
-        icon: 'mdi-account-remove',
-        route: 'leave/index'
+        name: "HazardHunter",
+        icon: "mdi-account-remove",
+        route: "leave/index"
       }]
     };
   },
@@ -271,11 +246,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                // upload multiple images 
+                // upload multiple images
                 dataform = new FormData();
-                dataform.append('file', e.target.files[0]);
+                dataform.append("file", e.target.files[0]);
                 _context.next = 4;
-                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/upload/accumulation/excel', dataform, {
+                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post("/api/upload/accumulation/excel", dataform, {
                   headers: {
                     "Content-Type": "multipart/form-data"
                   }
@@ -759,25 +734,13 @@ var render = function() {
     "div",
     [
       _c(
-        "v-overlay",
-        { attrs: { value: _vm.overlay } },
-        [
-          _c(
-            "v-progress-circular",
-            { attrs: { indeterminate: "", size: "64" } },
-            [_c("v-img", { attrs: { src: "" } })],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
         "p",
-        { staticClass: "text-h6 text--primary" },
+        { staticClass: "text-h6" },
         [
-          _c("v-icon", [_vm._v("mdi-view-dashboard")]),
-          _vm._v(" Dashboard\r\n        ")
+          _c("v-icon", { attrs: { size: "30" } }, [
+            _vm._v("mdi-view-dashboard")
+          ]),
+          _vm._v("Dashboard\n  ")
         ],
         1
       ),
@@ -808,7 +771,7 @@ var render = function() {
                                 { staticClass: "p-2" },
                                 [
                                   _vm._v(
-                                    "\r\n                                Current Accumulation data \r\n                                "
+                                    "\n                Current Accumulation data\n                "
                                   ),
                                   _c("v-divider", { staticClass: "m-1" }),
                                   _vm._v(" "),
@@ -919,7 +882,7 @@ var render = function() {
                                                 },
                                                 [
                                                   _vm._v(
-                                                    "\r\n                                            Cancel\r\n                                        "
+                                                    "\n                        Cancel\n                      "
                                                   )
                                                 ]
                                               ),
@@ -941,7 +904,7 @@ var render = function() {
                                                 },
                                                 [
                                                   _vm._v(
-                                                    "\r\n                                            OK\r\n                                        "
+                                                    "\n                        OK\n                      "
                                                   )
                                                 ]
                                               )
@@ -976,7 +939,7 @@ var render = function() {
                                               _c(
                                                 "v-btn",
                                                 {
-                                                  staticClass: "btn ",
+                                                  staticClass: "btn",
                                                   attrs: {
                                                     text: "",
                                                     outlined: "",
@@ -989,7 +952,7 @@ var render = function() {
                                                     _vm._v("mdi-upload")
                                                   ]),
                                                   _vm._v(
-                                                    " Upload File\r\n                                            "
+                                                    " Upload File\n                      "
                                                   )
                                                 ],
                                                 1
@@ -1044,7 +1007,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\r\n                                 Quck Search\r\n                                 "
+                                    "\n                Quck Search\n                "
                                   ),
                                   _c("v-divider", { staticClass: "m-1" }),
                                   _vm._v(" "),

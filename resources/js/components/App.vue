@@ -1,7 +1,6 @@
 <template> 
 <v-app>
   <nv/>  
-123
   <!-- Sizes your content based upon application components -->
   <v-main>
 
