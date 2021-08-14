@@ -40,7 +40,6 @@
     </v-app-bar>
 
     <v-navigation-drawer
-      height="100%"
       app
       v-model="drawer"
       :permanent="$vuetify.breakpoint.smAndUp"
@@ -382,6 +381,7 @@
         <v-divider class="m-0"></v-divider>
         <v-list-item
           class="pb-1"
+          color="#FFFFFF"
           style="text-decoration: none"
           to="/logout"
           nav
