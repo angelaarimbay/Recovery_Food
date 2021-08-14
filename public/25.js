@@ -15,7 +15,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("v-card", { staticClass: "p-4" })
+  return _c("v-card", { staticClass: "p-4" }, [_vm._v("\n  ito updates ko\n")])
 }
 var staticRenderFns = []
 render._withStripped = true
