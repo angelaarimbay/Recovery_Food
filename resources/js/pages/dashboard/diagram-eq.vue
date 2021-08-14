@@ -37,8 +37,7 @@
                 ticks: {
                   beginAtZero: true,
                   callback: function(value, index, values) {
-                    if(parseInt(value) >= 1000){
-                      console.log(index)
+                    if(parseInt(value) >= 1000){ 
                       return '₱' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     } else {
                       return '₱' + value;
