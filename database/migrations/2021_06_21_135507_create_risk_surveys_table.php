@@ -15,12 +15,12 @@ class CreateRiskSurveysTable extends Migration
     {
         Schema::create('risk_surveys', function (Blueprint $table) {
             $table->id();
-            $table->string('policy_no','max')->nullable(); 
-            $table->string('title','max')->nullable(); 
-            $table->string('description','max')->nullable(); 
-            $table->dateTime('date')->nullable();
-            $table->string('filename','max')->nullable(); 
-            $table->integer('active')->default(1); 
+            // $table->string('policy_no','max')->nullable(); 
+            // $table->string('title','max')->nullable(); 
+            // $table->string('description','max')->nullable(); 
+            // $table->dateTime('date')->nullable();
+            // $table->string('filename','max')->nullable(); 
+            // $table->integer('active')->default(1); 
             $table->timestamps();
         });
     }

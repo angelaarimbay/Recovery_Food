@@ -15,10 +15,10 @@ class CreateGeneralListsTable extends Migration
     {
         Schema::create('general_lists', function (Blueprint $table) {
             $table->id(); 
-            $table->string('title','max')->nullable(); 
-            $table->string('description','max')->nullable();  
-            $table->integer('group'); 
-            $table->integer('active')->default(1); 
+            // $table->string('title','max')->nullable(); 
+            // $table->string('description','max')->nullable();  
+            // $table->integer('group'); 
+            // $table->integer('active')->default(1); 
             $table->timestamps();
         });
     }

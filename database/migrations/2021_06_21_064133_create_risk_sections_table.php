@@ -15,14 +15,14 @@ class CreateRiskSectionsTable extends Migration
     {
         Schema::create('risk_sections', function (Blueprint $table) {
             $table->id();
-            $table->string('insured_code','max')->nullable(); 
-            $table->string('address','max')->nullable(); 
-            $table->string('policy_no','max')->nullable(); 
-            $table->dateTime('inception')->nullable();
-            $table->dateTime('expiry')->nullable();
-            $table->integer('latitude')->nullable(); 
-            $table->integer('longitude')->nullable();  
-            $table->string('proposed_next_servey',"max")->nullable();  
+            // $table->string('insured_code','max')->nullable(); 
+            // $table->string('address','max')->nullable(); 
+            // $table->string('policy_no','max')->nullable(); 
+            // $table->dateTime('inception')->nullable();
+            // $table->dateTime('expiry')->nullable();
+            // $table->integer('latitude')->nullable(); 
+            // $table->integer('longitude')->nullable();  
+            // $table->string('proposed_next_servey',"max")->nullable();  
             $table->timestamps();
         });
     }
