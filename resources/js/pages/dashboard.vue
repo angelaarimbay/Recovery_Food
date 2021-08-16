@@ -8,7 +8,7 @@
         </v-progress-circular>
     </v-overlay> 
         <p class="text-h6 text--primary">
-          <v-icon>mdi-view-dashboard</v-icon> 23222
+          <v-icon>mdi-view-dashboard</v-icon> 2
         </p>  
     <v-card flat   >    
         <v-card-text>

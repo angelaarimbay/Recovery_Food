@@ -33,6 +33,8 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@googlemaps/js-api-loader": "^1.12.1",
+        "vue-browser-geolocation": "^1.8.0",
         "chart.js": "^2.9.4",
         "laravel-mix": "^5.0.1",
         "laravel-mix-versionhash": "^2.0.1",
