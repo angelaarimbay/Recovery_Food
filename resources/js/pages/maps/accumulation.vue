@@ -196,8 +196,7 @@ export default {
             },
 
         
-            initMap(zooms,type){ 
-                console.log(zooms)
+            initMap(zooms,type){  
                 Scriptjs("https://maps.googleapis.com/maps/api/js?key=AIzaSyDWsOP0trKOpMqg5zDI_3WitmyNRA3JDBs&libraries=places", () => {
                  
                 const myLatLng =   this.cresta_gps[0][0] ;
@@ -220,7 +219,7 @@ export default {
                }
                 const infoWindow = new google.maps.InfoWindow(); 
                     this.cresta_gps.forEach(([position, title], i) => {
-                        // console.log(title)
+                        
                         const marker = new google.maps.Marker({
                         position,
                         map,  
