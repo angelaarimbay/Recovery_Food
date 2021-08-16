@@ -55,7 +55,7 @@
             <v-icon size="19" class="text-danger">mdi-view-dashboard</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <span>Dashboard</span>
+            <span>12222322222222222</span>
           </v-list-item-content>
         </v-list-item>
       

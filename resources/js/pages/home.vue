@@ -16,8 +16,8 @@
       height="250"
       src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
     ></v-img>
-
-    <v-card-title>Cafe Badilico</v-card-title>
+123
+    <v-card-title>Cafe 12323123 Badilico</v-card-title>
 
     <v-card-text>
       <v-row
