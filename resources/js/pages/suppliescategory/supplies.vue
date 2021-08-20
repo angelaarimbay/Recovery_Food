@@ -1,6 +1,6 @@
 <template>
 <v-card>
-    <strong>Test title</strong> 
+    <strong>asdasdsadsadas</strong> 
 
     <!-- then need mo dapat ng base 
     ngayon content na. 
