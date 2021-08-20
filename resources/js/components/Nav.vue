@@ -92,7 +92,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/supp1"
+              to="/supplies"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>

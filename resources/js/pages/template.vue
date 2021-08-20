@@ -1,7 +1,17 @@
 <template>
-    <v-card class="p-4 ">  
+<!-- pag new page ka need mo simulan sa <template> then depende sa page nyo kung 
+    card din or card-text magka iba kasi sila. ung card may border pero wlang padding, 
+    ung card-text walang border pero may padding. 
+    
+    kadalasan gamit ko card tas nilalagyan ko lang ng padding (p-4) bootstrap code yan 
+    
+    yaan ung puti na layout -->
+    <v-card class="p-4 ">   
+
         <!----------------------------------------------------------------TITLE MO OR HEADER--> 
             <!-- BALA KA KUNG GSTO MO GAMITIN UNG ROW/COL minsan h4 lang or strong or h5 html lang -->
+            <!-- comment ibigsabihin ng green nato. --> 
+            <!-- sa page meron akong default, ni lalagyan ko ng tile. ndi ko sure kung meron din ung inyo. -->
             <v-row>
                 <v-col class="p-0">
                 <div class="p-4">
@@ -12,14 +22,25 @@
                 </div>
                 </v-col>
             </v-row>
+            <!-- yan na ung title ng page -->
          
         <v-container> 
                 <v-container>
                 <!----------------------------------------------------------------MENU SA IBABAW NG TABLE--> 
                     <v-card-actions>
-                        <!-- <v-spacer></v-spacer>  --> 
+                        <v-spacer></v-spacer>  
                         <!-- enable mo ung spacer kung gsto mo sa right side ung buttons -->
                         <v-btn
+                            color="#00794b"
+                            style="text-transform: none"
+                            depressed
+                            dark
+                            class="mb-2"
+                            small
+                            @click="dialog = true"
+                        >  Add new
+                        </v-btn> 
+                          <v-btn
                             color="#00794b"
                             style="text-transform: none"
                             depressed
