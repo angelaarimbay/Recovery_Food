@@ -1,11 +1,11 @@
 <template> 
-<v-app>
+<v-app >
   <nv/>  
   <!-- Sizes your content based upon application components -->
-  <v-main>
+  <v-main style="background-color: #E0E0E0;">
 
     <!-- Provides the application the proper gutter -->
-    <v-container fluid>  
+    <v-container fluid >  
       <!-- If using vue-router -->
       <router-view></router-view>
     </v-container>

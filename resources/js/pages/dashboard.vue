@@ -1,12 +1,158 @@
 <template>
   <div>
-    <p class="text-h6">
-      <v-icon size="30">mdi-view-dashboard</v-icon>Dashboard 1
-    </p>
+    <v-container>
+      <v-layout row>
+        <h4 class="heading">
+          <v-icon size="30">mdi-view-dashboard</v-icon>Dashboard
+        </h4>
+        <v-spacer></v-spacer>
+        <v-btn small icon>
+          <v-icon size="25" color="black">mdi-settings</v-icon>
+        </v-btn>
+      </v-layout>
+    </v-container>
 
-    
+    <v-container>
+      <v-layout row wrap>
+        <v-flex xs12 sm6 md4 lg3>
+          <v-card
+            elevation="6"
+            style="border-radius: 10px; border-left: 20px solid #827717"
+            class="ma-3"
+          >
+            <v-card-title
+              style="color: #827717"
+              class="pb-0 h6"
+              :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+              >Total Raw Materials</v-card-title
+            >
+            <v-card-text class="pb-0">
+              <div
+                class="mb-0 h3 font-weight-bold black--text"
+                :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >
+                0
+              </div>
+            </v-card-text>
+            <v-card-actions class="pt-0"
+              ><v-btn
+                text
+                small
+                class="ml-auto caption"
+                :class="{ 'mx-auto': $vuetify.breakpoint.xsOnly }"
+                style="text-transform: none"
+                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+              ></v-card-actions
+            >
+          </v-card>
+        </v-flex>
+
+        <v-flex xs12 sm6 md4 lg3>
+          <v-card
+            elevation="6"
+            style="border-radius: 10px; border-left: 20px solid #827717"
+            class="ma-3"
+          >
+            <v-card-title
+              style="color: #827717"
+              class="pb-0 h6"
+              :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+              >Total Products</v-card-title
+            >
+            <v-card-text class="pb-0">
+              <div
+                class="mb-0 h3 font-weight-bold black--text"
+                :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >
+                0
+              </div>
+            </v-card-text>
+            <v-card-actions class="pt-0"
+              ><v-btn
+                text
+                small
+                class="ml-auto caption"
+                :class="{ 'mx-auto': $vuetify.breakpoint.xsOnly }"
+                style="text-transform: none"
+                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+              ></v-card-actions
+            >
+          </v-card>
+        </v-flex>
+
+        <v-flex xs12 sm6 md4 lg3>
+          <v-card
+            elevation="6"
+            style="border-radius: 10px; border-left: 20px solid #827717"
+            class="ma-3"
+          >
+            <v-card-title
+              style="color: #827717"
+              class="pb-0 h6"
+              :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+              >Total Purchase Orders</v-card-title
+            >
+            <v-card-text class="pb-0">
+              <div
+                class="mb-0 h3 font-weight-bold black--text"
+                :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >
+                0
+              </div>
+            </v-card-text>
+            <v-card-actions class="pt-0"
+              ><v-btn
+                text
+                small
+                class="ml-auto caption"
+                :class="{ 'mx-auto': $vuetify.breakpoint.xsOnly }"
+                style="text-transform: none"
+                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+              ></v-card-actions
+            >
+          </v-card>
+        </v-flex>
+
+        <v-flex xs12 sm6 md4 lg3>
+          <v-card
+            elevation="6"
+            style="border-radius: 10px; border-left: 20px solid #827717"
+            class="ma-3"
+          >
+            <v-card-title
+              style="color: #827717"
+              class="pb-0 h6"
+              :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+              >Total Users</v-card-title
+            >
+            <v-card-text class="pb-0">
+              <div
+                class="mb-0 h3 font-weight-bold black--text"
+                :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >
+                0
+              </div>
+            </v-card-text>
+            <v-card-actions class="pt-0"
+              ><v-btn
+                text
+                small
+                class="ml-auto caption"
+                :class="{ 'mx-auto': $vuetify.breakpoint.xsOnly }"
+                style="text-transform: none"
+                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+              ></v-card-actions
+            >
+          </v-card>
+        </v-flex>
+      </v-layout>
+
+      <v-divider
+        style="border: 2px solid #bdbdbd; border-radius: 5px"
+      ></v-divider>
+    </v-container>
   </div>
-</template> 
-<script>
+</template>
 
+<script>
 </script>
