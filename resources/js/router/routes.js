@@ -17,5 +17,7 @@ export default{
         { path:'/maps/googlemap', name: 'maps.googlemap', component: page('maps/googlemap.vue') }, 
         { path:'/auth/index', name: 'auth.index', component: page('auth/index.vue') }, 
 
+        { path:'/template', name: 'template', component: page('template.vue') }, 
+
     ]
 }
