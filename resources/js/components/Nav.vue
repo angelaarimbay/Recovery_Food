@@ -68,12 +68,54 @@
           <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item>
 
-        <v-list-item style="text-decoration: none" to="/branches">
-          <v-list-item-icon>
-            <v-icon size="23">mdi-storefront</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Branches</v-list-item-title>
-        </v-list-item>
+        <v-list-group
+          no-action
+          color="#FFFFFF"
+          active-class="bg-grey"
+          class="mb-1"
+        >
+          <template v-slot:activator>
+            <v-list-item-icon>
+              <v-icon size="23">mdi-storefront</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Branches</v-list-item-title>
+          </template>
+
+          <v-list class="p-0" flat>
+            <v-list-item
+              style="text-decoration: none"
+              class="pl-8 mb-1"
+              to="/manage_branches"
+            >
+              <v-list-item-icon class="me-3">
+                <v-icon size="16">mdi-circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Manage Branches</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              style="text-decoration: none"
+              class="pl-8 mb-1"
+              to="/xx"
+            >
+              <v-list-item-icon class="me-3">
+                <v-icon size="16">mdi-circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Branches Info</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              style="text-decoration: none"
+              class="pl-8 mb-1"
+              to="/xx"
+            >
+              <v-list-item-icon class="me-3">
+                <v-icon size="16">mdi-circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Branches Inventory</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-list-group>
 
         <v-list-group
           no-action
@@ -398,7 +440,7 @@
 </template>
 
 <style>
-.v-navigation-drawer__content::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 0px;
 }
 .bg-grey {

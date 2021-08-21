@@ -1,10 +1,8 @@
 <template>
   <div>
     <v-container>
-      <v-layout row>
-        <h4 class="heading">
-          <v-icon size="30">mdi-view-dashboard</v-icon>Dashboard
-        </h4>
+      <v-layout row wrap>
+        <h5 class="heading my-auto">Dashboard</h5>
         <v-spacer></v-spacer>
         <v-btn small icon>
           <v-icon size="25" color="black">mdi-settings</v-icon>
@@ -17,7 +15,12 @@
         <v-flex xs12 sm6 md4 lg3>
           <v-card
             elevation="6"
-            style="border-radius: 10px; border-left: 20px solid #827717"
+            style="
+              border-radius: 10px;
+              border-left: 20px solid #827717;
+              white-space: nowrap;
+              overflow: hidden;
+            "
             class="ma-3"
           >
             <v-card-title
@@ -50,7 +53,12 @@
         <v-flex xs12 sm6 md4 lg3>
           <v-card
             elevation="6"
-            style="border-radius: 10px; border-left: 20px solid #827717"
+            style="
+              border-radius: 10px;
+              border-left: 20px solid #827717;
+              white-space: nowrap;
+              overflow: hidden;
+            "
             class="ma-3"
           >
             <v-card-title
@@ -83,7 +91,12 @@
         <v-flex xs12 sm6 md4 lg3>
           <v-card
             elevation="6"
-            style="border-radius: 10px; border-left: 20px solid #827717"
+            style="
+              border-radius: 10px;
+              border-left: 20px solid #827717;
+              white-space: nowrap;
+              overflow: hidden;
+            "
             class="ma-3"
           >
             <v-card-title
@@ -116,7 +129,12 @@
         <v-flex xs12 sm6 md4 lg3>
           <v-card
             elevation="6"
-            style="border-radius: 10px; border-left: 20px solid #827717"
+            style="
+              border-radius: 10px;
+              border-left: 20px solid #827717;
+              white-space: nowrap;
+              overflow: hidden;
+            "
             class="ma-3"
           >
             <v-card-title
