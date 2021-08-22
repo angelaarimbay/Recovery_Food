@@ -75,12 +75,53 @@
           <v-list-item-title>Branches</v-list-item-title>
         </v-list-item>
 
+ <v-list class="p-0" flat>
+            <v-list-item
+              style="text-decoration: none"
+              class="pl-8 mb-1"
+              to="/supp1"
+            >
+
+              <v-list-item-icon class="me-3">
+                <v-icon size="16">mdi-circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Manage Branches</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              style="text-decoration: none"
+              class="pl-8 mb-1"
+              to="/supp2"
+            >
+              <v-list-item-icon class="me-3">
+                <v-icon size="16">mdi-circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Branches Info</v-list-item-title>
+            </v-list-item>
+
+        
+
+            <v-list-item
+              style="text-decoration: none"
+              class="pl-8 mb-1"
+              to="/supp3"
+            >
+              <v-list-item-icon class="me-3">
+                <v-icon size="16">mdi-circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Branches Inventory</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-list-group>
+        
         <v-list-group
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
           class="mb-1"
         >
+
+      
           <template v-slot:activator>
             <v-list-item-icon>
               <v-icon size="23">mdi-tag-multiple</v-icon>
@@ -402,7 +443,7 @@
   width: 0px;
 }
 .bg-grey {
-  background-color: #616161;
+  background-color: #f5e6e6;
 }
 </style>
 
@@ -416,3 +457,6 @@ export default {
   },
 };
 </script>
+ 
+
+ 

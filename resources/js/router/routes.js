@@ -5,6 +5,10 @@ function page (path) {
 export default{
     mode: 'history',
     routes:[ 
+
+        { path:'/template', name: 'template', component: page('template.vue') }, 
+
+        
         // { path:'*', component: page('errors/page-not-found.vue') }, 
         // { path:'/',  component: page('login.vue') },  
         { path:'/', name: 'dashboard', component: page('dashboard.vue') },  
@@ -18,6 +22,6 @@ export default{
         { path:'/auth/index', name: 'auth.index', component: page('auth/index.vue') }, 
 
 
-        { path:'/test', name: 'test', component: page('testing/testing.vue') }, 
+       
     ]
 }
