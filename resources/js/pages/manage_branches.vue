@@ -4,11 +4,11 @@
       <v-layout row wrap>
         <h5 class="heading my-auto">Branches</h5>
         <v-spacer></v-spacer>
-        <v-breadcrumbs class="p-0 m-0" :items="items"></v-breadcrumbs>
+        <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
       </v-layout>
     </v-container>
 
-    <v-card class="mt-2">
+    <v-card class="mt-2" style="border-radius: 10px">
       <v-container>
         <v-container>
           <v-card-actions class="pl-0">
@@ -37,15 +37,22 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12" xl="4" lg="4" sm="12" md="5" class="ml-auto my-auto">
+            <v-col
+              cols="12"
+              xl="4"
+              lg="4"
+              sm="12"
+              md="5"
+              class="ml-auto my-auto"
+            >
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Search Store Name"
+                label="Store Name"
                 single-line
                 hide-details
                 dense
-                clearable="true"
+                clearable
               ></v-text-field>
             </v-col>
           </v-row>
@@ -67,7 +74,7 @@
         <!--Dialog Form-->
         <v-form ref="form">
           <v-dialog v-model="dialog" max-width="450px">
-            <v-toolbar dense dark color="primary" class="pl-7">
+            <v-toolbar dense dark class="pl-7 red darken-2">
               Add Branch
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
@@ -112,7 +119,7 @@
                         v-model="form.name"
                         label=""
                         outlined
-                        clearable="true"
+                        clearable
                         dense
                       >
                         <template slot="label">
@@ -134,7 +141,7 @@
                         v-model="form.location"
                         label=""
                         outlined
-                        clearable="true"
+                        clearable
                         dense
                       >
                         <template slot="label">
@@ -156,7 +163,7 @@
                         v-model="form.number"
                         label=""
                         outlined
-                        clearable="true"
+                        clearable
                         dense
                       >
                         <template slot="label">
@@ -178,7 +185,7 @@
                         v-model="form.email"
                         label=""
                         outlined
-                        clearable="true"
+                        clearable
                         dense
                       >
                         <template slot="label">
@@ -227,7 +234,7 @@
                       </v-btn>
                       <input
                         ref="uploader"
-                        clearable="true"
+                        clearable
                         class="d-none"
                         type="file"
                         @change="uploaddocument"

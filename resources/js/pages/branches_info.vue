@@ -1,0 +1,74 @@
+<template>
+  <div>
+    <v-container>
+      <v-layout row wrap>
+        <h5 class="heading my-auto">Branches</h5>
+        <v-spacer></v-spacer>
+        <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
+      </v-layout>
+    </v-container>
+
+    <v-container>
+      <v-layout row wrap>
+        <v-card elevation="6" style="border-radius: 10px" class="mt-2">
+          <v-row no-gutters>
+            <v-col cols="12" xl="7" lg="7" md="12" sm="12" xs="12">
+              <v-card-title
+                class="font-weight-bold py-xl-10 py-lg-10 py-md-6 py-sm-6 py-4"
+                :class="{
+                  'body-2': $vuetify.breakpoint.xsOnly,
+                  h4: $vuetify.breakpoint.smAndUp,
+                }"
+                style="color: #827717"
+              >
+                Recovery Food - Crossroad BGC
+              </v-card-title>
+              <v-card-text
+                class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
+              >
+                Location:
+              </v-card-text>
+              <v-card-text
+                class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
+              >
+                Contact Number:
+              </v-card-text>
+              <v-card-text
+                class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
+              >
+                Email Address:
+              </v-card-text>
+            </v-col>
+
+            <v-col cols="12" xl="5" lg="5" md="12" sm="12" xs="12">
+              <v-img
+                src="/img/branch_1.jpg"
+                max-height="250"
+                class="ma-3 ma-sm-4"
+                style="border-radius: 10px"
+              ></v-img>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-layout>
+    </v-container>
+  </div>
+</template>
+
+<script>
+export default {
+  data: () => ({
+    items: [
+      {
+        text: "Home",
+        disabled: false,
+        to: "/dashboard",
+      },
+      {
+        text: "Branches Info",
+        disabled: true,
+      },
+    ],
+  }),
+};
+</script>

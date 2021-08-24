@@ -21,8 +21,17 @@
 
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn dark text v-bind="attrs" v-on="on" style="text-transform: none">
-            <v-icon class="round">mdi-account</v-icon> <small>Account</small>
+          <v-btn
+            dark
+            text
+            v-bind="attrs"
+            v-on="on"
+            style="text-transform: none"
+          >
+            <v-icon class="round">mdi-account</v-icon
+            ><span :class="{ caption: $vuetify.breakpoint.xsOnly }"
+              >Account</span
+            >
           </v-btn>
         </template>
         <v-list dense>
@@ -96,7 +105,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/xx"
+              to="/branches_info"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>

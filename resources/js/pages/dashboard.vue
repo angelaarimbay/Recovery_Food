@@ -11,8 +11,8 @@
     </v-container>
 
     <v-container>
-      <v-layout row wrap>
-        <v-flex xs12 sm6 md4 lg3>
+      <v-layout row wrap class="pb-1">
+        <v-flex xs12 sm6 md4 lg3 xl3>
           <v-card
             elevation="6"
             style="
@@ -21,7 +21,7 @@
               white-space: nowrap;
               overflow: hidden;
             "
-            class="ma-3"
+            class="ma-1 ma-sm-2 ma-md-3 ma-lg-3 ma-xl-3"
           >
             <v-card-title
               style="color: #827717"
@@ -50,7 +50,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex xs12 sm6 md4 lg3>
+        <v-flex xs12 sm6 md4 lg3 xl3>
           <v-card
             elevation="6"
             style="
@@ -59,7 +59,7 @@
               white-space: nowrap;
               overflow: hidden;
             "
-            class="ma-3"
+            class="ma-1 ma-sm-2 ma-md-3 ma-lg-3 ma-xl-3"
           >
             <v-card-title
               style="color: #827717"
@@ -88,7 +88,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex xs12 sm6 md4 lg3>
+        <v-flex xs12 sm6 md4 lg3 xl3>
           <v-card
             elevation="6"
             style="
@@ -97,7 +97,7 @@
               white-space: nowrap;
               overflow: hidden;
             "
-            class="ma-3"
+            class="ma-1 ma-sm-2 ma-md-3 ma-lg-3 ma-xl-3"
           >
             <v-card-title
               style="color: #827717"
@@ -126,7 +126,7 @@
           </v-card>
         </v-flex>
 
-        <v-flex xs12 sm6 md4 lg3>
+        <v-flex xs12 sm6 md4 lg3 xl3>
           <v-card
             elevation="6"
             style="
@@ -135,7 +135,7 @@
               white-space: nowrap;
               overflow: hidden;
             "
-            class="ma-3"
+            class="ma-1 ma-sm-2 ma-md-3 ma-lg-3 ma-xl-3"
           >
             <v-card-title
               style="color: #827717"
