@@ -20,7 +20,9 @@ export default{
         { path:'/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') }, 
         { path:'/maps/googlemap', name: 'maps.googlemap', component: page('maps/googlemap.vue') }, 
         { path:'/auth/index', name: 'auth.index', component: page('auth/index.vue') }, 
-
+       
+        { path:'/inven1', name: 'inven1', component: page('inven1.vue') }, 
+       
 
        
     ]

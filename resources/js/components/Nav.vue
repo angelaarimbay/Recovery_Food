@@ -112,7 +112,8 @@
               <v-list-item-title>Branches Inventory</v-list-item-title>
             </v-list-item>
           </v-list>
-        </v-list-group>
+       
+        
         
         <v-list-group
           no-action
@@ -448,7 +449,12 @@
 </style>
 
 <script>
+
+
+
+
 export default {
+
   data() {
     return {
       drawer: true,

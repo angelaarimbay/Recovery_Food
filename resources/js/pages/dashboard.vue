@@ -4,7 +4,7 @@
       <v-icon size="30">mdi-view-dashboard</v-icon>Dashboard
     </p>
 
- vuetify<br>
+ Vuetify<br>
 <v-btn color="red">test</v-btn><br>
 vuetify then hex color code<br>
 <!-- iba ung red tlga na hex. sample ko lang yan -->
@@ -17,7 +17,8 @@ via bootstrap coding<br>
   <v-btn class="bg-danger">test</v-btn><br>
 or via class depende sa iyo<br>
 
-<!--  -->
+<!-- di gumagana sa button pag ganto. 
+sa other element lang -->
 <div class="mycustomcolor">test</div><br>
  
 
