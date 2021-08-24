@@ -18,6 +18,7 @@
                 :class="{
                   'body-2': $vuetify.breakpoint.xsOnly,
                   h4: $vuetify.breakpoint.smAndUp,
+                  'justify-center': $vuetify.breakpoint.smAndDown,
                 }"
                 style="color: #827717"
               >
@@ -25,16 +26,19 @@
               </v-card-title>
               <v-card-text
                 class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
+                :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
               >
                 Location:
               </v-card-text>
               <v-card-text
                 class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
+                :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
               >
                 Contact Number:
               </v-card-text>
               <v-card-text
                 class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
+                :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
               >
                 Email Address:
               </v-card-text>

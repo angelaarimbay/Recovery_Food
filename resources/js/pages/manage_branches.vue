@@ -9,17 +9,17 @@
     </v-container>
 
     <v-card class="mt-2" style="border-radius: 10px">
-      <v-container>
-        <v-container>
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+        <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="pl-0">
             <v-btn
               color="#00794b"
               style="text-transform: none"
               depressed
               dark
-              class="mb-2"
+              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
               small
-              @click="dialog = true"
+              @click="openDialog"
             >
               Add Branch
             </v-btn>
@@ -96,6 +96,7 @@
                         label=""
                         outlined
                         dense
+                        clearable
                         :items="status"
                         item-text="name"
                         item-value="id"
@@ -267,7 +268,7 @@
                   depressed
                   :disabled="button"
                   dark
-                  @click="clear"
+                  @click="cancel"
                   style="text-transform: none"
                   small
                 >
@@ -353,7 +354,11 @@ export default {
     uploaddocument() {
       alert("Sample");
     },
-    clear() {
+    openDialog() {
+      this.$refs.form.reset();
+      this.dialog = true;
+    },
+    cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
