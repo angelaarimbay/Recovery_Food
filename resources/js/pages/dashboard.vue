@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
         <h5 class="heading my-auto">Dashboard</h5>

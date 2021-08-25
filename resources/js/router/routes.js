@@ -10,7 +10,8 @@ export default{
         { path:'/', name: 'dashboard', component: page('dashboard.vue') },  
         { path:'/dashboard', name: 'dashboard', component: page('dashboard.vue') },  
         { path:'/manage_branches', name: 'branches', component: page('manage_branches.vue') },
-        { path:'/branches_info', name: 'branches', component: page('branches_info.vue') },  
+        { path:'/branches_info', name: 'branches', component: page('branches_info.vue') },
+        { path:'/branches_inventory', name: 'branches', component: page('branches_inventory.vue') },  
  
         { path:'/survey/infosheet', name: 'survey.infosheet', component: page('survey/infosheet.vue') }, 
         { path:'/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') }, 

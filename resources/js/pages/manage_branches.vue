@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
         <h5 class="heading my-auto">Branches</h5>
@@ -26,7 +26,7 @@
           </v-card-actions>
 
           <v-row no-gutters>
-            <v-col cols="12" xl="2" lg="2" sm="12" md="3" class="mt-1">
+            <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="mt-1">
               <v-text-field
                 :value="itemsPerPage"
                 label="Items per page"
@@ -36,15 +36,8 @@
                 @input="itemsPerPage = parseInt($event, 10)"
               ></v-text-field>
             </v-col>
-
-            <v-col
-              cols="12"
-              xl="4"
-              lg="4"
-              sm="12"
-              md="5"
-              class="ml-auto my-auto"
-            >
+            <v-spacer></v-spacer>
+            <v-col cols="12" xl="4" lg="4" md="5" sm="12" class="my-auto">
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
@@ -74,13 +67,17 @@
         <!--Dialog Form-->
         <v-form ref="form">
           <v-dialog v-model="dialog" max-width="450px">
-            <v-toolbar dense dark class="pl-7 red darken-2">
+            <v-toolbar
+              dense
+              dark
+              class="pl-xl-7 pl-lg-7 pl-md-7 pl-sm-5 pl-3 red darken-2"
+            >
               Add Branch
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text>
                 <br />
-                <v-container class="p-3">
+                <v-container class="p-xl-3 p-lg-3 p-md-2 p-sm-0 p-0">
                   <v-row>
                     <v-col
                       class="py-1"

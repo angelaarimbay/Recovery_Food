@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
         <h5 class="heading my-auto">Branches</h5>
@@ -12,12 +12,21 @@
       <v-layout row wrap>
         <v-card elevation="6" style="border-radius: 10px" class="mt-2">
           <v-row no-gutters>
-            <v-col cols="12" xl="7" lg="7" md="12" sm="12" xs="12">
+            <v-col
+              cols="12"
+              xl="7"
+              lg="7"
+              md="12"
+              sm="12"
+              class="pl-xl-3 pl-lg-2"
+            >
               <v-card-title
                 class="font-weight-bold py-xl-10 py-lg-10 py-md-6 py-sm-6 py-4"
                 :class="{
                   'body-2': $vuetify.breakpoint.xsOnly,
-                  h4: $vuetify.breakpoint.smAndUp,
+                  h4: $vuetify.breakpoint.smOnly,
+                  h4: $vuetify.breakpoint.mdonly,
+                  h3: $vuetify.breakpoint.lgAndUp,
                   'justify-center': $vuetify.breakpoint.smAndDown,
                 }"
                 style="color: #827717"
@@ -44,7 +53,14 @@
               </v-card-text>
             </v-col>
 
-            <v-col cols="12" xl="5" lg="5" md="12" sm="12" xs="12">
+            <v-col
+              cols="12"
+              xl="5"
+              lg="5"
+              md="12"
+              sm="12"
+              class="pr-xl-2 pr-lg-1"
+            >
               <v-img
                 src="/img/branch_1.jpg"
                 max-height="250"
