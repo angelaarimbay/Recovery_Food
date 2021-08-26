@@ -2,7 +2,7 @@
   <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Branches</h5>
+        <h5 class="heading my-auto">Categories</h5>
         <v-spacer></v-spacer>
         <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
       </v-layout>
@@ -21,7 +21,7 @@
               small
               @click="openDialog"
             >
-              Add Branch
+              Add Supply Category
             </v-btn>
           </v-card-actions>
 
@@ -41,7 +41,7 @@
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Store Name"
+                label="Supply Category"
                 single-line
                 hide-details
                 dense
@@ -72,7 +72,7 @@
               dark
               class="pl-xl-7 pl-lg-7 pl-md-7 pl-sm-5 pl-3 red darken-2"
             >
-              Add Branch
+              Add Supply Category
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text>
@@ -121,138 +121,9 @@
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Store Name *</div>
+                          <div style="font-size: 14px">Supply Category *</div>
                         </template>
                       </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-1"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.location"
-                        label=""
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Location *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-1"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.number"
-                        label=""
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Contact Number *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-1"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.email"
-                        label=""
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Email Address *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-1"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <div style="font-size: 14px">Attachment *</div>
-                      <div v-if="form.document">
-                        Uploaded file :
-                        <a
-                          :href="
-                            '/storage/files/employee/document/' + form.document
-                          "
-                          download
-                        >
-                          {{ tempfile }}
-                        </a>
-                        <v-icon v-if="form.document" @click="deletefile"
-                          >mdi-delete</v-icon
-                        ><br /><br />
-                      </div>
-                      <v-progress-linear
-                        v-show="progressBar"
-                        slot="progress"
-                        color="green"
-                        indeterminate
-                      ></v-progress-linear>
-                      <v-btn
-                        text
-                        outlined
-                        color="primary"
-                        class="btn btn-block"
-                        style="text-transform: none"
-                        @click="clickupload"
-                        ><v-icon>mdi-upload</v-icon> Upload File
-                      </v-btn>
-                      <input
-                        ref="uploader"
-                        clearable
-                        class="d-none"
-                        type="file"
-                        @change="uploaddocument"
-                      />
-                    </v-col>
-
-                    <v-col
-                      class="py-1"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        style="display: none"
-                        :rules="formRules"
-                        v-model="form.document"
-                        label="Document"
-                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -314,7 +185,7 @@ export default {
     },
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Store Name", value: "name" },
+      { text: "Supply Category", value: "name" },
       { text: "Status", value: "status", filterable: false },
       { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],
@@ -328,27 +199,13 @@ export default {
         to: "/dashboard",
       },
       {
-        text: "Manage Branches",
+        text: "Supplies Category",
         disabled: true,
       },
     ],
   }),
   methods: {
     test() {
-      alert("Sample");
-    },
-    clickupload() {
-      this.isSelecting = true;
-      window.addEventListener(
-        "focus",
-        () => {
-          this.isSelecting = false;
-        },
-        { once: true }
-      );
-      this.$refs.uploader.click();
-    },
-    uploaddocument() {
       alert("Sample");
     },
     openDialog() {
