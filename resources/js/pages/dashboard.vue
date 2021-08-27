@@ -4,9 +4,25 @@
       <v-layout row wrap>
         <h5 class="heading my-auto">Dashboard</h5>
         <v-spacer></v-spacer>
-        <v-btn small icon>
+        <v-btn small icon @click="sheet = !sheet">
           <v-icon size="25" color="black">mdi-settings</v-icon>
         </v-btn>
+
+        <v-bottom-sheet v-model="sheet" inset>
+          <v-sheet
+            class="text-center"
+            height="150px"
+            style="border-radius: 10px 10px 0px 0px"
+          >
+            <v-btn class="mt-6" text color="red" @click="sheet = !sheet">
+              close
+            </v-btn>
+            <div class="py-3">
+              This is a bottom sheet using the controlled by v-model instead of
+              activator
+            </div>
+          </v-sheet>
+        </v-bottom-sheet>
       </v-layout>
     </v-container>
 
@@ -173,4 +189,9 @@
 </template>
 
 <script>
+export default {
+  data: () => ({
+    sheet: false,
+  }),
+};
 </script>

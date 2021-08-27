@@ -100,14 +100,14 @@
             <v-toolbar
               dense
               dark
-              class="pl-xl-7 pl-lg-7 pl-md-7 pl-sm-5 pl-3 red darken-2"
+              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Add Supply
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
-              <v-card-text>
+              <v-card-text class="py-2">
                 <br />
-                <v-container class="p-xl-3 p-lg-3 p-md-2 p-sm-0 p-0">
+                <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
                     <v-col class="py-1" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-select
@@ -130,7 +130,7 @@
                     <v-col class="py-1" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-select
                         :rules="formRules"
-                        v-model="form.status"
+                        v-model="form.suppCategory"
                         label=""
                         outlined
                         dense
@@ -154,7 +154,7 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.name"
+                        v-model="form.suppName"
                         label=""
                         outlined
                         clearable
@@ -175,7 +175,7 @@
                       md="12"
                     >
                       <v-text-field
-                        v-model="form.name"
+                        v-model="form.suppDescription"
                         label=""
                         outlined
                         clearable
@@ -197,7 +197,7 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.name"
+                        v-model="form.suppUnit"
                         label=""
                         outlined
                         clearable
@@ -212,7 +212,7 @@
                     <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.name"
+                        v-model="form.suppNetPrice"
                         label=""
                         outlined
                         clearable
@@ -227,7 +227,7 @@
                     <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-layout align-center>
                         <v-text-field
-                          v-model="form.name"
+                          v-model="form.suppVAT"
                           label=""
                           outlined
                           clearable
@@ -256,7 +256,7 @@
                     >
                       <v-text-field
                         disabled
-                        v-model="form.name"
+                        v-model="form.suppWOVAT"
                         label=""
                         outlined
                         clearable
@@ -271,7 +271,7 @@
                 </v-container>
               </v-card-text>
               <!-- buttons -->
-              <v-card-actions>
+              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-7 px-6 py-4">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="#FF5252"
@@ -319,11 +319,12 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     form: {
       status: null,
-      name: null,
-      location: null,
-      number: null,
-      email: null,
-      document: null,
+      suppCategory: null,
+      suppName: null,
+      suppDescription: null,
+      suppUnit: null,
+      suppVAT: null,
+      suppWOVAT: null,
     },
     enabled: false,
     headers: [
