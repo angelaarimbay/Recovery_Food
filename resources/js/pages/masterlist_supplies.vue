@@ -242,6 +242,7 @@
                           v-model="enabled"
                           hide-details
                           class="shrink pt-0 mt-0 mb-7 ml-3"
+                          color="red darken-3"
                         ></v-checkbox>
                       </v-layout>
                     </v-col>
