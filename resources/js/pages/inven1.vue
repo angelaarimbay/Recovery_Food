@@ -7,7 +7,8 @@
     <p class="home">Home > </p> 
 
   <p class="masterlist">Masterlist Supplies
-<p class="date">Date:</p>
+<p class="date">Date: </p>    
+  
 <p class="md">Month Date:</p>
 
 <v-row justify="center">
@@ -31,9 +32,9 @@
 
 
  <v-card>
-        <v-card-title class="text-h5 grey lighten-2">
-          Add Masterlist Supply
-        </v-card-title>
+   <v-card-title class="text-h5 grey lighten-2">
+         Add Masterlist Supply
+       </v-card-title>
 
 <v-col> <h5>Supply Category * </h5>
  <v-autocomplete
@@ -76,9 +77,6 @@
             required
           ></v-autocomplete>
         </v-col>
-
-
-
 
         <v-card-text>
           <v-container>
@@ -173,39 +171,56 @@
       </v-card>
     </v-dialog>
   </v-row>
-
-
-     
  <v-card class="p-3">  
-        <!----------------------------------------------------------------TITLE MO OR HEADER--> 
-            <!-- BALA KA KUNG GSTO MO GAMITIN UNG ROW/COL minsan h4 lang or strong or h5 html lang -->
-            
 
-       <v-row>
+ <v-card class="text-h7 grey lighten-2">
 
-         <div class="list">
-          Add Masterlist Supply
-         </div>
-       </v-row>
-        
+ <v-row class="p-3">
+   <v-row no-gutters>
 
+      
+       <v-col>
+          Number of Rows
+           <v-autocomplete
+            solo
+            dense
+             :rules="[() => !!rows || 'This field is required']"
+            :items="rows"
+            placeholder="Select..."
+            required
+           
+
+          ></v-autocomplete>
+      </v-col>
+
+      <v-col>
+         Category Filter
+      </v-col>
+
+      <v-col>
+         Search
+      </v-col>
+   </v-row>
+ </v-row>
+       </v-card>
         <v-container> 
-                <v-container class>
-                <!----------------------------------------------------------------MENU SA IBABAW NG TABLE--> 
-                    <v-card-actions>
-                        <!-- <v-spacer></v-spacer>  --> 
-                        <!-- enable mo ung spacer kung gsto mo sa right side ung buttons -->
-                     
+         <v-card-actions>     
                     </v-card-actions> 
-                <!----------------------------------------------------------------TABLE MO MISMO-->
+
+
+                    <v-data-table>
+                      
+                    </v-data-table>
+
+
+
+               
                    
                 </v-container>
 
-                   <!----------------------------------------------------------------DIALOG / FORM-->
-            <v-form >
-              
-            </v-form> 
-        </v-container>
+               
+            
+       
     </v-card>
 
       
@@ -263,7 +278,7 @@ left:49px;
   bottom: 110px;
 }
 
- 
+
 
 </style>
 
@@ -343,5 +358,23 @@ import template from './template.vue'
       },
     },
   }
+</script>
+
+
+
+
+<script>
+  export default {
+    data: () => ({
+      rows: [' 1', '2', ' 3', '4', '5', '6', '7', '9', '10'],
+      errorMessages: '',
+      name: null,
+      address: null,
+      city: null,
+      state: null,
+      zip: null,
+      country: null,
+      formHasErrors: false,
+    })}
 </script>
 
