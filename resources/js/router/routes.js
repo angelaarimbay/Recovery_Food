@@ -15,6 +15,7 @@ export default {
         { path: '/supplies_category', name: 'categories', component: page('supplies_category.vue') },
         { path: '/products_category', name: 'categories', component: page('products_category.vue') },
         { path: '/products_sub_category', name: 'categories', component: page('products_sub_category.vue') },
+        { path: '/masterlist_supplies', name: 'inventory', component: page('masterlist_supplies.vue') },
 
         { path: '/survey/infosheet', name: 'survey.infosheet', component: page('survey/infosheet.vue') },
         { path: '/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') },

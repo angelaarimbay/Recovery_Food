@@ -13,12 +13,54 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters>
             <v-col
+              cols="12"
+              xl="2"
+              lg="2"
+              md="3"
+              sm="12"
+              class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
+              <v-text-field
+                :value="itemsPerPage"
+                label="Items per page"
+                type="number"
+                min="0"
+                max="15"
+                @input="itemsPerPage = parseInt($event, 10)"
+              ></v-text-field>
+            </v-col>
+
+            <v-spacer></v-spacer>
+
+            <v-col
+              cols="12"
+              xl="4"
+              lg="4"
+              md="5"
+              sm="12"
+              class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Supply Name"
+                single-line
+                hide-details
+                dense
+                clearable
+                class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-0"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters>
+            <v-col
               cols="6"
               xl="2"
               lg="2"
               md="4"
               sm="6"
-              class="py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+              class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
             >
               <v-combobox clearable dense label="Branch"> </v-combobox>
             </v-col>
@@ -29,7 +71,7 @@
               lg="2"
               md="4"
               sm="6"
-              class="py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+              class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
             >
               <v-combobox clearable dense label="Inventory"> </v-combobox>
             </v-col>
@@ -40,7 +82,7 @@
               lg="2"
               md="4"
               sm="12"
-              class="py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+              class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
             >
               <v-combobox clearable dense label="Category"> </v-combobox>
             </v-col>
@@ -53,7 +95,7 @@
               lg="3"
               md="6"
               sm="6"
-              class="py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-0"
+              class="my-auto py-2 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
             >
               <v-menu
                 v-model="date1"
@@ -90,7 +132,7 @@
               lg="3"
               md="6"
               sm="6"
-              class="py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-0"
+              class="my-auto py-2 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
             >
               <v-menu
                 v-model="date2"
@@ -119,45 +161,6 @@
                   scrollable
                 ></v-date-picker>
               </v-menu>
-            </v-col>
-          </v-row>
-
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              xl="2"
-              lg="2"
-              md="3"
-              sm="12"
-              class="mt-1 py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-0"
-            >
-              <v-text-field
-                :value="itemsPerPage"
-                label="Items per page"
-                type="number"
-                min="0"
-                max="15"
-                @input="itemsPerPage = parseInt($event, 10)"
-              ></v-text-field>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col
-              cols="12"
-              xl="4"
-              lg="4"
-              md="5"
-              sm="12"
-              class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-0"
-            >
-              <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Supply Name"
-                single-line
-                hide-details
-                dense
-                clearable
-              ></v-text-field>
             </v-col>
           </v-row>
 

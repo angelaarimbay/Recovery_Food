@@ -26,7 +26,14 @@
           </v-card-actions>
 
           <v-row no-gutters>
-            <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="mt-1">
+            <v-col
+              cols="12"
+              xl="2"
+              lg="2"
+              md="3"
+              sm="12"
+              class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
               <v-text-field
                 :value="itemsPerPage"
                 label="Items per page"
@@ -37,7 +44,14 @@
               ></v-text-field>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col cols="12" xl="4" lg="4" md="5" sm="12" class="my-auto">
+            <v-col
+              cols="12"
+              xl="4"
+              lg="4"
+              md="5"
+              sm="12"
+              class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
@@ -46,6 +60,7 @@
                 hide-details
                 dense
                 clearable
+                class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
               ></v-text-field>
             </v-col>
           </v-row>
