@@ -26,9 +26,10 @@
         >
         Add Masterlist Supply
         </v-btn>
-
-
       </template>
+
+
+
 
 
  <v-card>
@@ -36,25 +37,40 @@
          Add Masterlist Supply
        </v-card-title>
 
-<v-col> <h5>Supply Category * </h5>
- <v-autocomplete
-            label="Dry Goods"
+
+
+
+
+
+<v-col>
+  Supply Category
+  <v-autocomplete
+            label="Supply"
             solo
             dense
-             :rules="[() => !!country || 'This field is required']"
-            :items="countries"
-            placeholder="Select..."
             required
-          ></v-autocomplete>
-        </v-col>
+             :rules="[() => !! supply|| 'This is required']"
+            :items="supplies"
+            placeholder="Select pack..."
+          >
+          </v-autocomplete>
+</v-col>
+
+
+
+
+
+
 
       <v-col> <h5>Supply Name * </h5>
           <v-text-field
             label="Enter supply name"
             placeholder="Enter supply name"
             solo
-             :rules="[() => !!country || 'This field is required']"
-          ></v-text-field>
+            required
+             :rules="[() => !!supply|| 'This is required']"
+          >
+          </v-text-field>
         </v-col>
 
  <v-col> <h5>Supply Description * </h5>
@@ -62,94 +78,35 @@
             label="Enter supply description"
             placeholder="Enter supply description"
             solo
-             :rules="[() => !!country || 'This field is required']"
-          ></v-text-field>
+             :rules="[() => !!description || '']"
+          >
+          </v-text-field>
         </v-col>
 
-<v-col> <h5>Unit * </h5>
+<v-col><h5>Unit * </h5>
  <v-autocomplete
             label="Pack"
             solo
             dense
-             :rules="[() => !!country || 'This field is required']"
-            :items="countries"
-            placeholder="Select..."
             required
-          ></v-autocomplete>
+             :rules="[() => !! pack|| 'This is required']"
+            :items="pack"
+            placeholder="Select pack..."
+          >
+          </v-autocomplete>
         </v-col>
 
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-                sm="6"
-                md="4"
-              >
-                <v-text-field
-                  label="Legal first name*"
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-                md="4"
-              >
-                <v-text-field
-                  label="Legal middle name"
-                  hint="example of helper text only on focus"
-                ></v-text-field>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-                md="4"
-              >
-                <v-text-field
-                  label="Legal last name*"
-                  hint="example of persistent helper text"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Email*"
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Password*"
-                  type="password"
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-select
-                  :items="['0-17', '18-29', '30-54', '54+']"
-                  label="Age*"
-                  required
-                ></v-select>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-autocomplete
-                  :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                  label="Interests"
-                  multiple
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-          </v-container>
-          <small>*indicates required field</small>
-        </v-card-text>
+<v-col> <h5>Net Price * </h5>
+ <v-text-field 
+            label="Enter net price"
+            solo
+            dense
+             :rules="[() => !!net ||'']"
+            :items="net"
+            placeholder="Enter net price"
+          ></v-text-field>
+        </v-col>
+        
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn id="close"
@@ -169,8 +126,11 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+
+
     </v-dialog>
   </v-row>
+  
  <v-card class="p-3">  
 
  <v-card class="text-h7 grey lighten-2">
@@ -179,56 +139,78 @@
    <v-row no-gutters>
 
       
+
+
+      
        <v-col>
           Number of Rows
-           <v-autocomplete
+      </v-col>
+  <v-autocomplete
             solo
             dense
-             :rules="[() => !!rows || 'This field is required']"
+            ref="row"
+             :rules="[() => !!row || 'This field is required']"
             :items="rows"
             placeholder="Select..."
             required
-           
-
           ></v-autocomplete>
-      </v-col>
+
+      
+
+
+
+
 
       <v-col>
          Category Filter
       </v-col>
+       <v-autocomplete
+            solo
+            dense
+             :rules="[() => !!category || '']"
+            :items="category"
+            placeholder="Dry Goods..."
+            
+          >
+          </v-autocomplete>
+
 
       <v-col>
-         Search
+        Search:
       </v-col>
+   <v-text-field
+            solo
+            dense
+             :rules="[() => !!search || 'This field is required']"
+            :items="search"
+            placeholder="Supply Name..."
+            required
+          >
+           
+          
+          </v-text-field>
+
+
+
    </v-row>
  </v-row>
        </v-card>
         <v-container> 
          <v-card-actions>     
                     </v-card-actions> 
-
-
                     <v-data-table>
                       
                     </v-data-table>
-
-
-
-               
-                   
                 </v-container>
-
-               
-            
-       
     </v-card>
-
-      
-
+    
 </div>
 </template>
 
 
+
+
+ 
 
 
 
@@ -277,10 +259,11 @@ left:49px;
 .p-3{
   bottom: 110px;
 }
-
-
-
 </style>
+
+
+
+
 
 
 
@@ -294,71 +277,18 @@ import template from './template.vue'
       return {
         dialog: false,
       }
-    
-  
 </script>
 
-<script>
-  export default {
-    data: () => ({
-      countries: ['Dry goods 1', 'Dry goods 2', 'Dry goods 3', 'Dry goods 4', 'Dry goods 5', 'Dry goods 6', 'Dry goods 7 & 8', 'Argentina', 'Armenia', 'Aruba', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bermuda', 'Bhutan', 'Bolivia', 'Bosnia &amp; Herzegovina', 'Botswana', 'Brazil', 'British Virgin Islands', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Cape Verde', 'Cayman Islands', 'Chad', 'Chile', 'China', 'Colombia', 'Congo', 'Cook Islands', 'Costa Rica', 'Cote D Ivoire', 'Croatia', 'Cruise Ship', 'Cuba', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Estonia', 'Ethiopia', 'Falkland Islands', 'Faroe Islands', 'Fiji', 'Finland', 'France', 'French Polynesia', 'French West Indies', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Gibraltar', 'Greece', 'Greenland', 'Grenada', 'Guam', 'Guatemala', 'Guernsey', 'Guinea', 'Guinea Bissau', 'Guyana', 'Haiti', 'Honduras', 'Hong Kong', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq', 'Ireland', 'Isle of Man', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jersey', 'Jordan', 'Kazakhstan', 'Kenya', 'Kuwait', 'Kyrgyz Republic', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Macau', 'Macedonia', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Mauritania', 'Mauritius', 'Mexico', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Montserrat', 'Morocco', 'Mozambique', 'Namibia', 'Nepal', 'Netherlands', 'Netherlands Antilles', 'New Caledonia', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'Norway', 'Oman', 'Pakistan', 'Palestine', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland', 'Portugal', 'Puerto Rico', 'Qatar', 'Reunion', 'Romania', 'Russia', 'Rwanda', 'Saint Pierre &amp; Miquelon', 'Samoa', 'San Marino', 'Satellite', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'South Africa', 'South Korea', 'Spain', 'Sri Lanka', 'St Kitts &amp; Nevis', 'St Lucia', 'St Vincent', 'St. Lucia', 'Sudan', 'Suriname', 'Swaziland', 'Sweden', 'Switzerland', 'Syria', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', `Timor L'Este`, 'Togo', 'Tonga', 'Trinidad &amp; Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Turks &amp; Caicos', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Venezuela', 'Vietnam', 'Virgin Islands (US)', 'Yemen', 'Zambia', 'Zimbabwe'],
-      errorMessages: '',
-      name: null,
-      address: null,
-      city: null,
-      state: null,
-      zip: null,
-      country: null,
-      formHasErrors: false,
-    }),
 
-    computed: {
-      form () {
-        return {
-          name: this.name,
-          address: this.address,
-          city: this.city,
-          state: this.state,
-          zip: this.zip,
-          country: this.country,
-        }
-      },
-    },
 
-    watch: {
-      name () {
-        this.errorMessages = ''
-      },
-    },
 
-    methods: {
-      addressCheck () {
-        this.errorMessages = this.address && !this.name
-          ? `Hey! I'm required`
-          : ''
 
-        return true
-      },
-      resetForm () {
-        this.errorMessages = []
-        this.formHasErrors = false
 
-        Object.keys(this.form).forEach(f => {
-          this.$refs[f].reset()
-        })
-      },
-      submit () {
-        this.formHasErrors = false
 
-        Object.keys(this.form).forEach(f => {
-          if (!this.form[f]) this.formHasErrors = true
 
-          this.$refs[f].validate(true)
-        })
-      },
-    },
-  }
-</script>
+
+
+
 
 
 
@@ -366,15 +296,18 @@ import template from './template.vue'
 <script>
   export default {
     data: () => ({
-      rows: [' 1', '2', ' 3', '4', '5', '6', '7', '9', '10'],
-      errorMessages: '',
-      name: null,
-      address: null,
-      city: null,
-      state: null,
-      zip: null,
-      country: null,
+      supplies: [' sup 1', ' sup 2', 'sup 3', ' sup 4', ' sup 5', 'sup 6', 'sup 7', ' sup 9', 'sup 10'],
       formHasErrors: false,
     })}
 </script>
 
+
+
+<script>
+  export default {
+    data: () => ({
+      rows: [' row 1', ' row 2', 'row 3', ' row 4', ' row 5', 'row 6', 'row 7', ' row 9', 'row 10'],
+      formHasErrors: false,
+    }),}
+
+</script>
