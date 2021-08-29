@@ -38,29 +38,19 @@
        </v-card-title>
 
 
-
-
-
-
 <v-col>
-  Supply Category
-  <v-autocomplete
-            label="Supply"
-            solo
+  <h5>Supply Category *</h5>
+ <v-autocomplete
+            ref="supply"
+            solo 
             dense
-            required
-             :rules="[() => !! supply|| 'This is required']"
+            :rules="[() => !!supply || 'This field is required']"
             :items="supplies"
-            placeholder="Select pack..."
-          >
-          </v-autocomplete>
+            label="Dry Goods"
+            placeholder="Select..."
+            required
+          ></v-autocomplete>
 </v-col>
-
-
-
-
-
-
 
       <v-col> <h5>Supply Name * </h5>
           <v-text-field
@@ -83,35 +73,78 @@
           </v-text-field>
         </v-col>
 
-<v-col><h5>Unit * </h5>
+<v-col>
+  <h5>Unit *</h5>
  <v-autocomplete
-            label="Pack"
-            solo
+            ref="unit"
+            solo 
             dense
+            :rules="[() => !!unit || 'This field is required']"
+            :items="units"
+            label="Pack"
+            placeholder="Select..."
             required
-             :rules="[() => !! pack|| 'This is required']"
-            :items="pack"
-            placeholder="Select pack..."
-          >
-          </v-autocomplete>
-        </v-col>
+          ></v-autocomplete>
+</v-col>
 
-<v-col> <h5>Net Price * </h5>
- <v-text-field 
+<v-col
+   cols="12"
+          sm="6"
+          md="5"
+        >
+        <h5> Net Price * </h5>
+ <v-text-field
             label="Enter net price"
             solo
             dense
              :rules="[() => !!net ||'']"
             :items="net"
             placeholder="Enter net price"
-          ></v-text-field>
+          >
+          </v-text-field>
         </v-col>
+
+
+
+
+<v-coL>
+     <h5>Price W/O VAT </h5>
+ <v-text-field
+            placeholder="0"
+            outlined
+          ></v-text-field>
+</v-coL>
+
+
+<v-col>
+  <h5>Status *</h5>
+ <v-autocomplete
+            ref="status"
+            solo 
+            dense
+            :rules="[() => !!status || 'This field is required']"
+            :items="status"
+            label="Active"
+            required
+          ></v-autocomplete>
+</v-col>
+
+
+
+
+
+
+
+
+
         
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn id="close"
             color="black"
             text
+           
+           
             @click="dialog = false"
           >
             Close
@@ -120,7 +153,7 @@
           <v-btn id="save"
           color="white" text
            
-            @click="dialog = false"
+            @click="dialaog = false"
           >
             Save Changes
           </v-btn>
@@ -131,66 +164,63 @@
     </v-dialog>
   </v-row>
   
- <v-card class="p-3">  
+  
+ <v-card class="p-3">
 
- <v-card class="text-h7 grey lighten-2">
+ <v-card class="text h7 grey lighten-2">
 
- <v-row class="p-3">
+ <v-row class="p-1">
    <v-row no-gutters>
 
       
 
 
+
+
+
       
-       <v-col>
-          Number of Rows
+       <v-col class="text1">
+        Number of rows:
       </v-col>
-  <v-autocomplete
+  <v-autocomplete class="nrows"
+  flat
             solo
             dense
             ref="row"
-             :rules="[() => !!row || 'This field is required']"
+             :rules="[() => !!row || '']"
             :items="rows"
-            placeholder="Select..."
-            required
-          ></v-autocomplete>
+            placeholder=""
+            
+            
+          >
+          
+          </v-autocomplete>
 
-      
-
-
-
-
-
-      <v-col>
-         Category Filter
+      <v-col class="text2">
+         Category Filter:
       </v-col>
-       <v-autocomplete
+       <v-autocomplete class="filter"
+       flat
             solo
             dense
              :rules="[() => !!category || '']"
-            :items="category"
+            :items="categories"
             placeholder="Dry Goods..."
-            
           >
           </v-autocomplete>
-
-
-      <v-col>
+      <v-col class="text3">
         Search:
       </v-col>
-   <v-text-field
+   <v-autocomplete class="srch"
             solo
+            flat
             dense
              :rules="[() => !!search || 'This field is required']"
             :items="search"
             placeholder="Supply Name..."
             required
           >
-           
-          
-          </v-text-field>
-
-
+   </v-autocomplete>
 
    </v-row>
  </v-row>
@@ -259,12 +289,45 @@ left:49px;
 .p-3{
   bottom: 110px;
 }
+
+
+.nrows{
+  max-width:80px;
+  right: 50px;
+ 
+
+  
+}
+
+.filter{
+  width: 0px;
+  right: 40px;
+  
+}
+
+.srch{
+  width: 10px;
+  right:30px;
+
+}
+.text1{
+  left:30px;
+}
+
+.text2{
+left: 43px;
+}
+
+.text3{
+  left:105px;
+}
+
+
 </style>
 
 
 
-
-
+ 
 
 
 
@@ -282,32 +345,30 @@ import template from './template.vue'
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 <script>
   export default {
     data: () => ({
-      supplies: [' sup 1', ' sup 2', 'sup 3', ' sup 4', ' sup 5', 'sup 6', 'sup 7', ' sup 9', 'sup 10'],
-      formHasErrors: false,
-    })}
+      supplies: ['supply 1', 'supply 2', 'supply 3', 'supply 4', 'supply 5' ],
+      errorMessages: '',
+     units: ['unit 1', 'unit 2', 'unit 3', 'unit 4', 'unit 5' ],
+      errorMessages: '',
+        rows: ['row 1', 'row 2', 'row 3', 'row 4', 'row 5' ],
+      errorMessages: '',
+       status: ['Active', 'Inactive'],
+      errorMessages: '',
+        categories: ['Mamou', 'Utensils','Mamou rf'],
+      errorMessages: '',
+  
+    }
+
+
+     
+
+
+
+    ),
+
+  }
 </script>
 
 
-
-<script>
-  export default {
-    data: () => ({
-      rows: [' row 1', ' row 2', 'row 3', ' row 4', ' row 5', 'row 6', 'row 7', ' row 9', 'row 10'],
-      formHasErrors: false,
-    }),}
-
-</script>
