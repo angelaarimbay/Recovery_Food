@@ -2,7 +2,7 @@
   <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Categories</h5>
+        <h5 class="heading my-auto">Inventory</h5>
         <v-spacer></v-spacer>
         <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
       </v-layout>
@@ -21,7 +21,7 @@
               small
               @click="openDialog"
             >
-              Add Product-Sub Category
+              Add Outgoing Supply
             </v-btn>
           </v-card-actions>
 
@@ -50,20 +50,120 @@
               cols="12"
               xl="4"
               lg="4"
-              md="5"
+              md="6"
               sm="12"
               class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
             >
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Product-Sub Category"
+                label="Invoice No/Supply"
                 single-line
                 hide-details
                 dense
                 clearable
                 class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
               ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters>
+            <v-col
+              cols="12"
+              xl="2"
+              lg="2"
+              md="3"
+              sm="12"
+              class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
+              <v-combobox clearable dense label="Branch"> </v-combobox>
+            </v-col>
+
+            <v-col
+              cols="12"
+              xl="2"
+              lg="2"
+              md="3"
+              sm="12"
+              class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
+              <v-combobox clearable dense label="Category"> </v-combobox>
+            </v-col>
+
+            <v-spacer></v-spacer>
+
+            <v-col
+              cols="6"
+              xl="2"
+              lg="2"
+              md="3"
+              sm="6"
+              class="my-auto py-2 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
+              <v-menu
+                v-model="date1"
+                :close-on-content-click="false"
+                :nudge-right="35"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="dateFrom"
+                    label="Date From"
+                    prepend-icon="mdi-calendar-range"
+                    readonly
+                    v-on="on"
+                    class="py-0"
+                    dense
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="dateFrom"
+                  @input="date1 = false"
+                  scrollable
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+
+            <v-col
+              cols="6"
+              xl="2"
+              lg="2"
+              md="3"
+              sm="6"
+              class="my-auto py-2 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
+              <v-menu
+                v-model="date2"
+                :close-on-content-click="false"
+                :nudge-right="35"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="dateUntil"
+                    label="Date Until"
+                    prepend-icon="mdi-calendar-range"
+                    readonly
+                    v-on="on"
+                    class="py-0"
+                    dense
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="dateUntil"
+                  @input="date2 = false"
+                  scrollable
+                ></v-date-picker>
+              </v-menu>
             </v-col>
           </v-row>
           <!--Table -->
@@ -89,7 +189,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Add Product-Sub Category
+              Add Outgoing Supply
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -106,17 +206,16 @@
                     >
                       <v-select
                         :rules="formRules"
-                        v-model="form.status"
+                        v-model="form.reqBranch"
                         label=""
                         outlined
                         dense
                         clearable
-                        :items="status"
                         item-text="name"
                         item-value="id"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Status *</div>
+                          <div style="font-size: 14px">Requesting Branch *</div>
                         </template>
                       </v-select>
                     </v-col>
@@ -129,18 +228,74 @@
                       sm="12"
                       md="12"
                     >
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.supplyCat"
+                        label=""
+                        outlined
+                        dense
+                        clearable
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Supply Category *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
+                    <v-col
+                      class="py-1"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.supplyName"
+                        label=""
+                        outlined
+                        dense
+                        clearable
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Supply Name *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.supplyUnit"
+                        label=""
+                        outlined
+                        dense
+                        clearable
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Supply Unit *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.prodSubCategory"
+                        v-model="form.supplyQty"
                         label=""
                         outlined
                         clearable
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
-                            Product-Sub Category *
-                          </div>
+                          <div style="font-size: 14px">Supply Quantity *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -195,13 +350,16 @@ export default {
     table: [],
     formRules: [(v) => !!v || "This is required"],
     form: {
-      status: null,
-      prodSubCategory: null,
+      reqBranch: null,
+      supplyCat: null,
+      supplyName: null,
+      supplyUnit: null,
+      supplyQty: null,
     },
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Product-Sub Category", value: "product-sub category" },
-      { text: "Status", value: "status", filterable: false },
+      { text: "Invoice Number", value: "invoice number" },
+      { text: "Supply Name", value: "supply name" },
       { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],
     page: 1,
@@ -214,10 +372,14 @@ export default {
         to: "/dashboard",
       },
       {
-        text: "Products-Sub Category",
+        text: "Outgoing Supplies",
         disabled: true,
       },
     ],
+    dateFrom: new Date().toISOString().substr(0, 10),
+    dateUntil: new Date().toISOString().substr(0, 10),
+    date1: false,
+    date2: false,
   }),
   methods: {
     test() {

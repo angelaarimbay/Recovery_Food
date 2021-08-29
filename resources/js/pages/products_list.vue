@@ -2,7 +2,7 @@
   <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Categories</h5>
+        <h5 class="heading my-auto">Products</h5>
         <v-spacer></v-spacer>
         <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
       </v-layout>
@@ -21,7 +21,7 @@
               small
               @click="openDialog"
             >
-              Add Product-Sub Category
+              Add Product
             </v-btn>
           </v-card-actions>
 
@@ -57,13 +57,26 @@
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Product-Sub Category"
+                label="Product Name"
                 single-line
                 hide-details
                 dense
                 clearable
-                class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
+                class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-0"
               ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters>
+            <v-col
+              cols="12"
+              xl="2"
+              lg="2"
+              md="3"
+              sm="12"
+              class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+            >
+              <v-combobox clearable dense label="Category"> </v-combobox>
             </v-col>
           </v-row>
           <!--Table -->
@@ -89,7 +102,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Add Product-Sub Category
+              Add Product
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -121,6 +134,40 @@
                       </v-select>
                     </v-col>
 
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.prodCat"
+                        label=""
+                        outlined
+                        dense
+                        clearable
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Product Category *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.prodSubCat"
+                        label=""
+                        outlined
+                        dense
+                        clearable
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Sub Category *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
                     <v-col
                       class="py-1"
                       cols="12"
@@ -131,18 +178,69 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.prodSubCategory"
+                        v-model="form.prodName"
                         label=""
                         outlined
                         clearable
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
-                            Product-Sub Category *
-                          </div>
+                          <div style="font-size: 14px">Product Name *</div>
                         </template>
                       </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-1"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        v-model="form.desc"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Description</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.netPrice"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Net Price *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-layout align-center>
+                        <v-text-field
+                          :rules="formRules"
+                          v-model="form.prodQty"
+                          label=""
+                          outlined
+                          clearable
+                          dense
+                        >
+                          <template slot="label">
+                            <div style="font-size: 14px">Quantity *</div>
+                          </template>
+                        </v-text-field>
+                      </v-layout>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -196,12 +294,23 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     form: {
       status: null,
-      prodSubCategory: null,
+      prodCat: null,
+      prodSubCat: null,
+      prodName: null,
+      desc: null,
+      netPrice: null,
+      prodQty: null,
     },
+    enabled: false,
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Product-Sub Category", value: "product-sub category" },
-      { text: "Status", value: "status", filterable: false },
+      { text: "Category", value: "category", filterable: false },
+      { text: "Sub-Category", value: "sub-category", filterable: false },
+      { text: "Product Name", value: "product name" },
+      { text: "Description", value: "description", filterable: false },
+      { text: "Quantity", value: "quantity", filterable: false },
+      { text: "Price", value: "price", filterable: false },
+      { text: "Total Amount", value: "total amount", filterable: false },
       { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],
     page: 1,
@@ -214,7 +323,7 @@ export default {
         to: "/dashboard",
       },
       {
-        text: "Products-Sub Category",
+        text: "Products List",
         disabled: true,
       },
     ],

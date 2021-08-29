@@ -196,7 +196,7 @@ export default {
     },
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Supply Category", value: "name" },
+      { text: "Supply Category", value: "supply category" },
       { text: "Status", value: "status", filterable: false },
       { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],

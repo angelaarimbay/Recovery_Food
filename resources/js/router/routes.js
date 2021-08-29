@@ -8,14 +8,33 @@ export default {
         // { path:'*', component: page('errors/page-not-found.vue') }, 
         // { path:'/',  component: page('login.vue') },  
         { path: '/', name: 'dashboard', component: page('dashboard.vue') },
+
+        //Dashboard
         { path: '/dashboard', name: 'dashboard', component: page('dashboard.vue') },
+
+        //Branches
         { path: '/manage_branches', name: 'branches', component: page('manage_branches.vue') },
         { path: '/branches_info', name: 'branches', component: page('branches_info.vue') },
         { path: '/branches_inventory', name: 'branches', component: page('branches_inventory.vue') },
+
+        //Categories
         { path: '/supplies_category', name: 'categories', component: page('supplies_category.vue') },
         { path: '/products_category', name: 'categories', component: page('products_category.vue') },
         { path: '/products_sub_category', name: 'categories', component: page('products_sub_category.vue') },
+
+        //Inventory
         { path: '/masterlist_supplies', name: 'inventory', component: page('masterlist_supplies.vue') },
+        { path: '/incoming_supplies', name: 'inventory', component: page('incoming_supplies.vue') },
+        { path: '/outgoing_supplies', name: 'inventory', component: page('outgoing_supplies.vue') },
+        { path: '/main_inventory', name: 'inventory', component: page('main_inventory.vue') },
+        { path: '/inventory_summary', name: 'inventory', component: page('inventory_summary.vue') },
+
+        //Products
+        { path: '/products_list', name: 'products', component: page('products_list.vue') },
+        { path: '/outgoing_products', name: 'products', component: page('outgoing_products.vue') },
+
+        //Suppliers
+        { path: '/manage_suppliers', name: 'products', component: page('manage_suppliers.vue') },
 
         { path: '/survey/infosheet', name: 'survey.infosheet', component: page('survey/infosheet.vue') },
         { path: '/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') },

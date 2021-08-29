@@ -1,12 +1,24 @@
 <template>
-  <div style="min-width: 280px; height: 100%">
+  <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
         <h5 class="heading my-auto">Dashboard</h5>
         <v-spacer></v-spacer>
-        <v-btn small icon @click="sheet = !sheet">
-          <v-icon size="25" color="black">mdi-settings</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template #activator="data">
+            <v-btn
+              elevation="2"
+              icon
+              dark
+              class="red darken-2 mx-1"
+              v-on="data.on"
+              @click="sheet = !sheet"
+            >
+              <v-icon size="25" dark>mdi-settings</v-icon>
+            </v-btn>
+          </template>
+          <span>Manage Cards</span>
+        </v-tooltip>
 
         <v-bottom-sheet v-model="sheet" inset>
           <v-sheet class="text-center" style="border-radius: 10px 10px 0px 0px">
@@ -24,7 +36,10 @@
 
             <v-row no-gutters>
               <v-col cols="12" xl="3" lg="6" md="6" sm="6">
-                <v-row align="center" class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0">
+                <v-row
+                  align="center"
+                  class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
+                >
                   <v-checkbox
                     v-model="checkbox1"
                     hide-details
@@ -40,7 +55,10 @@
               </v-col>
 
               <v-col cols="12" xl="3" lg="6" md="6" sm="6">
-                <v-row align="center" class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0">
+                <v-row
+                  align="center"
+                  class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
+                >
                   <v-checkbox
                     v-model="checkbox2"
                     hide-details
@@ -56,7 +74,10 @@
               </v-col>
 
               <v-col cols="12" xl="3" lg="6" md="6" sm="6">
-                <v-row align="center" class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0">
+                <v-row
+                  align="center"
+                  class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
+                >
                   <v-checkbox
                     v-model="checkbox3"
                     hide-details
@@ -72,7 +93,10 @@
               </v-col>
 
               <v-col cols="12" xl="3" lg="6" md="6" sm="6">
-                <v-row align="center" class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0">
+                <v-row
+                  align="center"
+                  class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
+                >
                   <v-checkbox
                     v-model="checkbox4"
                     hide-details

@@ -203,7 +203,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/inven2"
+              to="/incoming_supplies"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -214,7 +214,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/inven3"
+              to="/outgoing_supplies"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -225,7 +225,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/inven4"
+              to="/main_inventory"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -236,7 +236,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/inven5"
+              to="/inventory_summary"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -263,7 +263,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/prod1"
+              to="/products_list"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -274,7 +274,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/prod2"
+              to="/outgoing_products"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -301,7 +301,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/supplr1"
+              to="/manage_suppliers"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>

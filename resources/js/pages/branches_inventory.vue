@@ -188,10 +188,10 @@ export default {
     table: [],
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Category", value: "name", filterable: false },
-      { text: "Supply Name", value: "name" },
-      { text: "Quantity", value: "status", filterable: false },
-      { text: "Date Acquired", value: "status", filterable: false },
+      { text: "Category", value: "category", filterable: false },
+      { text: "Supply Name", value: "supply name" },
+      { text: "Quantity", value: "quantity", filterable: false },
+      { text: "Date Acquired", value: "date acquired", filterable: false },
     ],
     items: [
       {
@@ -212,17 +212,6 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 10,
-    items: [
-      {
-        text: "Home",
-        disabled: false,
-        to: "/dashboard",
-      },
-      {
-        text: "Manage Branches",
-        disabled: true,
-      },
-    ],
   }),
 };
 </script>

@@ -11,7 +11,7 @@
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="pl-0">
+          <v-card-actions class="px-0 py-0">
             <v-btn
               color="#00794b"
               style="text-transform: none"
@@ -23,6 +23,81 @@
             >
               Add Supply
             </v-btn>
+
+            <v-spacer></v-spacer>
+
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  elevation="2"
+                  icon
+                  dark
+                  @click="sheet = !sheet"
+                  class="red darken-2 mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                  v-on="data.on"
+                >
+                  <v-icon size="25" dark>mdi-calendar</v-icon>
+                </v-btn>
+              </template>
+              <span>Manage Dates</span>
+            </v-tooltip>
+
+            <v-bottom-sheet v-model="sheet" inset width="400px">
+              <v-sheet
+                class="text-center"
+                style="border-radius: 10px 10px 0px 0px"
+              >
+                <v-btn
+                  color="#FF5252"
+                  depressed
+                  dark
+                  style="text-transform: none"
+                  small
+                  class="mt-5"
+                  @click="sheet = !sheet"
+                >
+                  Close
+                </v-btn>
+
+                <v-row no-gutters>
+                  <v-col
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    md="12"
+                    sm="12"
+                    class="pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3 pa-3"
+                  >
+                    <v-text-field
+                      outlined
+                      label="Date"
+                      hide-details
+                      dense
+                      clearable
+                    >
+                    </v-text-field>
+                  </v-col>
+
+                  <v-col
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    md="12"
+                    sm="12"
+                    class="pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3 pa-3"
+                  >
+                    <v-text-field
+                      outlined
+                      label="Month Days"
+                      hide-details
+                      dense
+                      clearable
+                    >
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-sheet>
+            </v-bottom-sheet>
           </v-card-actions>
 
           <v-row no-gutters>
@@ -312,6 +387,7 @@ export default {
     editedIndex: -1,
     button: false,
     dialog: false,
+    sheet: false,
     status: ["Active", "Inactive"],
     deleteid: "",
     progressBar: false,
@@ -330,7 +406,7 @@ export default {
     enabled: false,
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Supply Name", value: "name" },
+      { text: "Supply Name", value: "suplly name" },
       { text: "Status", value: "status", filterable: false },
       { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],
