@@ -301,7 +301,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/manage_suppliers"
+              to="/suppliers_list"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -312,7 +312,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/supplr2"
+              to="/purchase_orders"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -382,7 +382,7 @@
           </v-list>
         </v-list-group>
 
-        <v-list-item style="text-decoration: none" to="/useracc">
+        <v-list-item style="text-decoration: none" to="/user_accounts">
           <v-list-item-icon>
             <v-icon size="23">mdi-account-multiple</v-icon>
           </v-list-item-icon>

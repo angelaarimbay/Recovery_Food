@@ -34,7 +34,11 @@ export default {
         { path: '/outgoing_products', name: 'products', component: page('outgoing_products.vue') },
 
         //Suppliers
-        { path: '/manage_suppliers', name: 'products', component: page('manage_suppliers.vue') },
+        { path: '/suppliers_list', name: 'products', component: page('suppliers_list.vue') },
+        { path: '/purchase_orders', name: 'products', component: page('purchase_orders.vue') },
+
+        //User Accounts
+        { path: '/user_accounts', name: 'products', component: page('user_accounts.vue') },
 
         { path: '/survey/infosheet', name: 'survey.infosheet', component: page('survey/infosheet.vue') },
         { path: '/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') },

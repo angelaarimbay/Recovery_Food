@@ -4,7 +4,21 @@
       <v-layout row wrap>
         <h5 class="heading my-auto">Branches</h5>
         <v-spacer></v-spacer>
-        <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
+        <!-- <v-breadcrumbs  class="p-1"  :items="items" >  </v-breadcrumbs> -->
+        <v-card-actions>
+          <v-btn
+            class="mx-2"
+            style="text-decoration: none"
+            plain
+            text
+            x-small
+            to="/dashboard"
+            flat
+            >Home</v-btn
+          >
+          /
+          <v-btn class="mx-2" text x-small disabled>123</v-btn>
+        </v-card-actions>
       </v-layout>
     </v-container>
 
@@ -279,7 +293,7 @@
               <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-7 px-6 py-4">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="#FF5252"
+                  class="error"
                   depressed
                   :disabled="button"
                   dark
@@ -290,7 +304,7 @@
                   Cancel
                 </v-btn>
                 <v-btn
-                  color="#00794b"
+                  color="primary"
                   depressed
                   :disabled="button"
                   dark
@@ -310,7 +324,9 @@
 </template>
 
 <script>
+import template from "./template.vue";
 export default {
+  components: { template },
   data: () => ({
     search: "",
     editedIndex: -1,
@@ -339,17 +355,6 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 10,
-    items: [
-      {
-        text: "Home",
-        disabled: false,
-        to: "/dashboard",
-      },
-      {
-        text: "Manage Branches",
-        disabled: true,
-      },
-    ],
   }),
   methods: {
     test() {

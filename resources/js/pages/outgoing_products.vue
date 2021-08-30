@@ -308,7 +308,7 @@
               <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-7 px-6 py-4">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="#FF5252"
+                  color="error"
                   depressed
                   :disabled="button"
                   dark
@@ -319,7 +319,7 @@
                   Cancel
                 </v-btn>
                 <v-btn
-                  color="#00794b"
+                  color="primary"
                   depressed
                   :disabled="button"
                   dark

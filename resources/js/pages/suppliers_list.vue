@@ -2,7 +2,7 @@
   <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Categories</h5>
+        <h5 class="heading my-auto">Suppliers</h5>
         <v-spacer></v-spacer>
         <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
       </v-layout>
@@ -21,7 +21,7 @@
               small
               @click="openDialog"
             >
-              Add Supply Category
+              Add Supplier
             </v-btn>
           </v-card-actions>
 
@@ -55,7 +55,7 @@
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Supply Category"
+                label="Supplier Name"
                 single-line
                 hide-details
                 dense
@@ -87,7 +87,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Add Supply Category
+              Add Supplier
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -102,21 +102,18 @@
                       sm="12"
                       md="12"
                     >
-                      <v-select
+                      <v-text-field
                         :rules="formRules"
-                        v-model="form.status"
+                        v-model="form.suppCategory"
                         label=""
                         outlined
-                        dense
                         clearable
-                        :items="status"
-                        item-text="name"
-                        item-value="id"
+                        dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Status *</div>
+                          <div style="font-size: 14px">Supplier Name *</div>
                         </template>
-                      </v-select>
+                      </v-text-field>
                     </v-col>
 
                     <v-col
@@ -136,7 +133,73 @@
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Supply Category *</div>
+                          <div style="font-size: 14px">Description *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-1"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.suppCategory"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Contact Number *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-1"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.suppCategory"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Contact Person *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-1"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.suppCategory"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Address *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -184,20 +247,25 @@ export default {
     editedIndex: -1,
     button: false,
     dialog: false,
-    status: ["Active", "Inactive"],
     deleteid: "",
     progressBar: false,
     tempfile: "",
     table: [],
     formRules: [(v) => !!v || "This is required"],
     form: {
-      status: null,
-      suppCategory: null,
+      suppName: null,
+      desc: null,
+      contactNo: null,
+      contactPerson: null,
+      address: null,
     },
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Supply Category", value: "supply category" },
-      { text: "Status", value: "status", filterable: false },
+      { text: "Supplier Name", value: "supplier name" },
+      { text: "Description", value: "description", filterable: false },
+      { text: "Contact Number", value: "contact number", filterable: false },
+      { text: "Contact Person", value: "contact person", filterable: false },
+      { text: "Address", value: "address", filterable: false },
       { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],
     page: 1,
@@ -210,7 +278,7 @@ export default {
         to: "/dashboard",
       },
       {
-        text: "Supplies Category",
+        text: "Suppliers List",
         disabled: true,
       },
     ],

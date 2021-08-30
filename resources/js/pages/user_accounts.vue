@@ -2,7 +2,7 @@
   <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Categories</h5>
+        <h5 class="heading my-auto">User Accounts</h5>
         <v-spacer></v-spacer>
         <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
       </v-layout>
@@ -21,7 +21,7 @@
               small
               @click="openDialog"
             >
-              Add Supply Category
+              Add User
             </v-btn>
           </v-card-actions>
 
@@ -55,7 +55,7 @@
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Supply Category"
+                label="Name"
                 single-line
                 hide-details
                 dense
@@ -87,36 +87,41 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Add Supply Category
+              Add User
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
-                    <v-col
-                      class="py-1"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-select
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
                         :rules="formRules"
-                        v-model="form.status"
+                        v-model="form.firstName"
                         label=""
                         outlined
-                        dense
                         clearable
-                        :items="status"
-                        item-text="name"
-                        item-value="id"
+                        dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Status *</div>
+                          <div style="font-size: 14px">First Name *</div>
                         </template>
-                      </v-select>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.lastName"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Last Name *</div>
+                        </template>
+                      </v-text-field>
                     </v-col>
 
                     <v-col
@@ -129,16 +134,121 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.suppCategory"
+                        v-model="form.email"
                         label=""
                         outlined
                         clearable
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Supply Category *</div>
+                          <div style="font-size: 14px">Email *</div>
                         </template>
                       </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-1"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.phoneNumber"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Phone Number *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-1"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.userName"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Username *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="password"
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                        :type="show1 ? 'text' : 'password'"
+                        @click:append="show1 = !show1"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Password *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="confirmPass"
+                        :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                        :type="show2 ? 'text' : 'password'"
+                        @click:append="show2 = !show2"
+                        label=""
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Confirm Pass *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-1"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.userType"
+                        label=""
+                        outlined
+                        dense
+                        clearable
+                        :items="status"
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">User Type *</div>
+                        </template>
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -184,20 +294,28 @@ export default {
     editedIndex: -1,
     button: false,
     dialog: false,
-    status: ["Active", "Inactive"],
+    status: ["Cashier", "Production Assistant", "Stockman", "Supervisor"],
     deleteid: "",
     progressBar: false,
     tempfile: "",
     table: [],
     formRules: [(v) => !!v || "This is required"],
     form: {
-      status: null,
-      suppCategory: null,
+      firstName: null,
+      lastName: null,
+      email: null,
+      phoneNumber: null,
+      userName: null,
+      password: null,
+      confirmPass: null,
+      userType: null,
     },
+    show1: false,
+    show2: false,
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Supply Category", value: "supply category" },
-      { text: "Status", value: "status", filterable: false },
+      { text: "Name", value: "name" },
+      { text: "User Type", value: "user type", filterable: false },
       { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],
     page: 1,
@@ -210,7 +328,7 @@ export default {
         to: "/dashboard",
       },
       {
-        text: "Supplies Category",
+        text: "User Accounts",
         disabled: true,
       },
     ],

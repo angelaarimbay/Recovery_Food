@@ -8,6 +8,49 @@
       </v-layout>
     </v-container>
 
+<!-- kaw na mag lipat -->
+
+  <v-list>
+        <v-list-group
+          no-action
+          color="#FFFFFF"
+          active-class="bg-grey"
+          class="mb-1"
+        >
+          <template v-slot:activator>
+            <v-list-item-icon>
+              <v-icon size="23">mdi-wrench</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Settings</v-list-item-title>
+          </template>
+
+          <v-list class="p-0" flat>
+            <v-list-item
+              style="text-decoration: none"
+              class="pl-8 mb-1"
+              to="/sett1"
+            >
+              <v-list-item-icon class="me-3">
+                <v-icon size="16">mdi-circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Permissions</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item
+              style="text-decoration: none"
+              class="pl-8 mb-1"
+              to="/sett2"
+            >
+              <v-list-item-icon class="me-3">
+                <v-icon size="16">mdi-circle</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Company</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-list-group>
+      </v-list>
+
+
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
