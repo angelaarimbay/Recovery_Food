@@ -4,20 +4,25 @@
       <v-layout row wrap>
         <h5 class="heading my-auto">Branches</h5>
         <v-spacer></v-spacer>
-        <!-- <v-breadcrumbs  class="p-1"  :items="items" >  </v-breadcrumbs> -->
-        <v-card-actions>
+        <v-card-actions class="px-0">
           <v-btn
-            class="mx-2"
-            style="text-decoration: none"
             plain
-            text
-            x-small
+            small
+            v-ripple="false"
             to="/dashboard"
-            flat
+            class="px-0"
+            style="text-decoration: none; text-transform: none; font-size: 11px"
             >Home</v-btn
           >
           /
-          <v-btn class="mx-2" text x-small disabled>123</v-btn>
+          <v-btn
+            small
+            text
+            disabled
+            class="px-0"
+            style="text-transform: none; font-size: 11px"
+            >Manage Branches</v-btn
+          >
         </v-card-actions>
       </v-layout>
     </v-container>
@@ -39,47 +44,64 @@
             </v-btn>
           </v-card-actions>
 
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              xl="2"
-              lg="2"
-              md="3"
-              sm="12"
-              class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-            >
-              <v-text-field
-                :value="itemsPerPage"
-                label="Items per page"
-                type="number"
-                min="0"
-                max="15"
-                @input="itemsPerPage = parseInt($event, 10)"
-              ></v-text-field>
-            </v-col>
+          <v-list dense nav class="px-0 py-1">
+            <v-list-group no-action color="#757575">
+              <template v-slot:activator>
+                <v-list-item-icon class="mx-0">
+                  <v-icon size="20">mdi-filter</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title
+                  style="color: #757575; font-weight: bold"
+                  class="px-3"
+                  >Search Filter</v-list-item-title
+                >
+              </template>
 
-            <v-spacer></v-spacer>
+              <v-list class="p-0">
+                <v-row no-gutters>
+                  <v-col
+                    cols="12"
+                    xl="2"
+                    lg="2"
+                    md="3"
+                    sm="12"
+                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                  >
+                    <v-text-field
+                      :value="itemsPerPage"
+                      label="Items per page"
+                      type="number"
+                      min="0"
+                      max="15"
+                      @input="itemsPerPage = parseInt($event, 10)"
+                    ></v-text-field>
+                  </v-col>
 
-            <v-col
-              cols="12"
-              xl="4"
-              lg="4"
-              md="5"
-              sm="12"
-              class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-            >
-              <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Store Name"
-                single-line
-                hide-details
-                dense
-                clearable
-                class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+                  <v-spacer></v-spacer>
+
+                  <v-col
+                    cols="12"
+                    xl="4"
+                    lg="4"
+                    md="5"
+                    sm="12"
+                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                  >
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Store Name"
+                      single-line
+                      hide-details
+                      dense
+                      clearable
+                      class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-list>
+            </v-list-group>
+          </v-list>
           <!--Table -->
           <v-data-table
             :headers="headers"
@@ -88,7 +110,6 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            class="pt-2"
           >
           </v-data-table>
           <div class="text-center pt-2">

@@ -2,7 +2,7 @@
   <v-app>
     <nv />
     <!-- Sizes your content based upon application components -->
-    <v-main style="background-color: #f5f5f5">
+    <v-main style="background-color: #fafafa">
       <!-- Provides the application the proper gutter -->
       <v-container fluid>
         <!-- If using vue-router -->

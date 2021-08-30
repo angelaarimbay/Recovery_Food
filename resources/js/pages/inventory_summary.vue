@@ -4,7 +4,26 @@
       <v-layout row wrap>
         <h5 class="heading my-auto">Inventory</h5>
         <v-spacer></v-spacer>
-        <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
+        <v-card-actions class="px-0">
+          <v-btn
+            plain
+            small
+            v-ripple="false"
+            to="/dashboard"
+            class="px-0"
+            style="text-decoration: none; text-transform: none; font-size: 11px"
+            >Home</v-btn
+          >
+          /
+          <v-btn
+            small
+            text
+            disabled
+            class="px-0"
+            style="text-transform: none; font-size: 11px"
+            >Inventory Summary</v-btn
+          >
+        </v-card-actions>
       </v-layout>
     </v-container>
 
@@ -36,24 +55,34 @@ export default {
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
       { text: "Category", value: "supply category", filterable: false },
-      { text: "Beginning Inventory", value: "beginning inventory", filterable: false },
+      {
+        text: "Beginning Inventory",
+        value: "beginning inventory",
+        filterable: false,
+      },
       { text: "Purchases", value: "purchases", filterable: false },
       { text: "Total Inventory", value: "total inventory", filterable: false },
-      { text: "Outgoing Supplies", value: "outgoing supplies", filterable: false },
-      { text: "Stocks On Hand", value: "stocks on hand", filterable: false },
-      { text: "Ending Inventory", value: "ending inventory", filterable: false },
-      { text: "Variance", value: "variance", sortable: false, filterable: false },
-      { text: "Fluctuation Impact", value: "fluctuation impact", filterable: false },
-    ],
-    items: [
       {
-        text: "Home",
-        disabled: false,
-        to: "/dashboard",
+        text: "Outgoing Supplies",
+        value: "outgoing supplies",
+        filterable: false,
+      },
+      { text: "Stocks On Hand", value: "stocks on hand", filterable: false },
+      {
+        text: "Ending Inventory",
+        value: "ending inventory",
+        filterable: false,
       },
       {
-        text: "Inventory Summary",
-        disabled: true,
+        text: "Variance",
+        value: "variance",
+        sortable: false,
+        filterable: false,
+      },
+      {
+        text: "Fluctuation Impact",
+        value: "fluctuation impact",
+        filterable: false,
       },
     ],
     search: "",

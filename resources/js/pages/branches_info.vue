@@ -4,7 +4,26 @@
       <v-layout row wrap>
         <h5 class="heading my-auto">Branches</h5>
         <v-spacer></v-spacer>
-        <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
+        <v-card-actions class="px-0">
+          <v-btn
+            plain
+            small
+            v-ripple="false"
+            to="/dashboard"
+            class="px-0"
+            style="text-decoration: none; text-transform: none; font-size: 11px"
+            >Home</v-btn
+          >
+          /
+          <v-btn
+            small
+            text
+            disabled
+            class="px-0"
+            style="text-transform: none; font-size: 11px"
+            >Branches Info</v-btn
+          >
+        </v-card-actions>
       </v-layout>
     </v-container>
 
@@ -74,21 +93,3 @@
     </v-container>
   </div>
 </template>
-
-<script>
-export default {
-  data: () => ({
-    items: [
-      {
-        text: "Home",
-        disabled: false,
-        to: "/dashboard",
-      },
-      {
-        text: "Branches Info",
-        disabled: true,
-      },
-    ],
-  }),
-};
-</script>

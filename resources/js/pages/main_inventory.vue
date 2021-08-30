@@ -4,68 +4,103 @@
       <v-layout row wrap>
         <h5 class="heading my-auto">Inventory</h5>
         <v-spacer></v-spacer>
-        <v-breadcrumbs class="p-1" :items="items"></v-breadcrumbs>
+        <v-card-actions class="px-0">
+          <v-btn
+            plain
+            small
+            v-ripple="false"
+            to="/dashboard"
+            class="px-0"
+            style="text-decoration: none; text-transform: none; font-size: 11px"
+            >Home</v-btn
+          >
+          /
+          <v-btn
+            small
+            text
+            disabled
+            class="px-0"
+            style="text-transform: none; font-size: 11px"
+            >Main Inventory</v-btn
+          >
+        </v-card-actions>
       </v-layout>
     </v-container>
 
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              xl="2"
-              lg="2"
-              md="3"
-              sm="12"
-              class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-            >
-              <v-text-field
-                :value="itemsPerPage"
-                label="Items per page"
-                type="number"
-                min="0"
-                max="15"
-                @input="itemsPerPage = parseInt($event, 10)"
-              ></v-text-field>
-            </v-col>
+          <v-list dense nav class="px-0 py-1">
+            <v-list-group no-action color="#757575">
+              <template v-slot:activator>
+                <v-list-item-icon class="mx-0">
+                  <v-icon size="20">mdi-filter</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title
+                  style="color: #757575; font-weight: bold"
+                  class="px-3"
+                  >Search Filter</v-list-item-title
+                >
+              </template>
 
-            <v-spacer></v-spacer>
+              <v-list class="p-0">
+                <v-row no-gutters>
+                  <v-col
+                    cols="12"
+                    xl="2"
+                    lg="2"
+                    md="3"
+                    sm="12"
+                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                  >
+                    <v-text-field
+                      :value="itemsPerPage"
+                      label="Items per page"
+                      type="number"
+                      min="0"
+                      max="15"
+                      @input="itemsPerPage = parseInt($event, 10)"
+                    ></v-text-field>
+                  </v-col>
 
-            <v-col
-              cols="12"
-              xl="4"
-              lg="4"
-              md="5"
-              sm="12"
-              class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-            >
-              <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Supply Name"
-                single-line
-                hide-details
-                dense
-                clearable
-                class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-0"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+                  <v-spacer></v-spacer>
 
-          <v-row no-gutters>
-            <v-col
-              cols="12"
-              xl="2"
-              lg="2"
-              md="3"
-              sm="12"
-              class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-            >
-              <v-combobox clearable dense label="Category"> </v-combobox>
-            </v-col>
-          </v-row>
+                  <v-col
+                    cols="12"
+                    xl="4"
+                    lg="4"
+                    md="5"
+                    sm="12"
+                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                  >
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Supply Name"
+                      single-line
+                      hide-details
+                      dense
+                      clearable
+                      class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-0"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
 
+                <v-row no-gutters>
+                  <v-col
+                    cols="12"
+                    xl="2"
+                    lg="2"
+                    md="3"
+                    sm="12"
+                    class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                  >
+                    <v-combobox clearable dense label="Category"> </v-combobox>
+                  </v-col>
+                </v-row>
+              </v-list>
+            </v-list-group>
+          </v-list>
           <v-data-table
             :headers="headers"
             :data="table"
@@ -96,18 +131,7 @@ export default {
       { text: "Unit", value: "unit", filterable: false },
       { text: "Net Price", value: "net price", filterable: false },
       { text: "Stocks On Hand", value: "stocks on hand", filterable: false },
-      { text: "Actions", value: "actions", sortable: false, filterable: false},
-    ],
-    items: [
-      {
-        text: "Home",
-        disabled: false,
-        to: "/dashboard",
-      },
-      {
-        text: "Main Inventory",
-        disabled: true,
-      },
+      { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],
     search: "",
     page: 1,
