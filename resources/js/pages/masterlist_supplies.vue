@@ -444,7 +444,7 @@ export default {
       { text: "#", value: "#", align: "start", filterable: false },
       { text: "Supply Name", value: "suplly name" },
       { text: "Status", value: "status", filterable: false },
-      { text: "Actions", value: "actions", sortable: false, filterable: false },
+      { text: "Action(s)", value: "action", sortable: false, filterable: false },
     ],
     page: 1,
     pageCount: 0,

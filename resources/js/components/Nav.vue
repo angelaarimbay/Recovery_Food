@@ -14,7 +14,7 @@
       ></v-app-bar-nav-icon>
 
       <v-list-item-title class="font-weight-bold hidden-sm-and-down"
-        >Online Inventory and Sales Monitoring System</v-list-item-title
+        >Inventory and Sales Monitoring System</v-list-item-title
       >
 
       <v-spacer></v-spacer>
@@ -49,6 +49,7 @@
     </v-app-bar>
 
     <v-navigation-drawer
+      height="100%"
       app
       v-model="drawer"
       :permanent="$vuetify.breakpoint.smAndUp"

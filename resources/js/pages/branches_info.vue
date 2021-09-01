@@ -50,7 +50,7 @@
                 }"
                 style="color: #827717"
               >
-                Recovery Food - Crossroad BGC
+                Branch Name
               </v-card-title>
               <v-card-text
                 class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"

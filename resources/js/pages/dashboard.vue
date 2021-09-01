@@ -20,7 +20,7 @@
           <span>Manage Cards</span>
         </v-tooltip>
 
-        <v-bottom-sheet v-model="sheet" inset>
+        <v-bottom-sheet v-model="sheet" inset width="500px">
           <v-sheet class="text-center" style="border-radius: 10px 10px 0px 0px">
             <v-btn
               color="#FF5252"
@@ -35,7 +35,7 @@
             </v-btn>
 
             <v-row no-gutters>
-              <v-col cols="12" xl="3" lg="6" md="6" sm="6">
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                 <v-row
                   align="center"
                   class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
@@ -54,7 +54,7 @@
                 </v-row>
               </v-col>
 
-              <v-col cols="12" xl="3" lg="6" md="6" sm="6">
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                 <v-row
                   align="center"
                   class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
@@ -73,7 +73,7 @@
                 </v-row>
               </v-col>
 
-              <v-col cols="12" xl="3" lg="6" md="6" sm="6">
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                 <v-row
                   align="center"
                   class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
@@ -92,7 +92,7 @@
                 </v-row>
               </v-col>
 
-              <v-col cols="12" xl="3" lg="6" md="6" sm="6">
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                 <v-row
                   align="center"
                   class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"

@@ -36,7 +36,9 @@
                 <v-list-item-icon class="mx-0">
                   <v-icon size="20">mdi-filter</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title style="color: #757575; font-weight: bold" class="px-3"
+                <v-list-item-title
+                  style="color: #757575; font-weight: bold"
+                  class="px-3"
                   >Search Filter</v-list-item-title
                 >
               </template>
@@ -222,10 +224,9 @@ export default {
     table: [],
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Category", value: "category", filterable: false },
       { text: "Supply Name", value: "supply name" },
       { text: "Quantity", value: "quantity", filterable: false },
-      { text: "Date Acquired", value: "date acquired", filterable: false },
+      { text: "Action(s)", value: "action", sortable: false, filterable: false },
     ],
     dateFrom: new Date().toISOString().substr(0, 10),
     dateUntil: new Date().toISOString().substr(0, 10),
