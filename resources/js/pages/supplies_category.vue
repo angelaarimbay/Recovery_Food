@@ -67,16 +67,20 @@
                     sm="12"
                     class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
                   >
-                    <v-text-field
-                      :value="itemsPerPage"
+                    <v-select
+                      v-model="itemsPerPage"
                       label="Items per page"
-                      type="number"
-                      min="0"
-                      max="15"
-                      @input="itemsPerPage = parseInt($event, 10)"
-                    ></v-text-field>
+                      class="pb-xl-0 pb-lg-0 pb-md-0 pb-sm-2 pb-0"
+                      @change="get"
+                      :items="[
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                      ]"
+                    >
+                    </v-select>
                   </v-col>
+
                   <v-spacer></v-spacer>
+
                   <v-col
                     cols="12"
                     xl="4"
@@ -101,17 +105,29 @@
             </v-list-group>
           </v-list>
           <!--Table -->
+
           <v-data-table
             :headers="headers"
-            :data="table"
+            :items="table.data"
             :page.sync="page"
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
           >
+            <template v-slot:[`item.count`]="{ item }"> {{ item.id }}</template>
+            <template v-slot:[`item.id`]="{ item }">
+              <v-btn x-small color="info" text @click="edit(item)">
+                edit ?</v-btn
+              >
+            </template>
           </v-data-table>
+
           <div class="text-center pt-2">
-            <v-pagination v-model="page" :length="pageCount"></v-pagination>
+            <v-pagination
+              v-model="page"
+              :total-visible="5"
+              :length="table.last_page"
+            ></v-pagination>
           </div>
         </v-container>
 
@@ -138,6 +154,12 @@
                       sm="12"
                       md="12"
                     >
+                      <v-text-field v-model="form.id" class="d-none" dense>
+                        <template slot="label">
+                          <div style="font-size: 14px">ID</div>
+                        </template>
+                      </v-text-field>
+
                       <v-select
                         :rules="formRules"
                         v-model="form.status"
@@ -165,11 +187,12 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.suppCategory"
+                        v-model="form.supply_cat_name"
                         label=""
                         outlined
                         clearable
                         dense
+                        hide-details
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Category *</div>
@@ -179,6 +202,7 @@
                   </v-row>
                 </v-container>
               </v-card-text>
+
               <!-- buttons -->
               <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-7 px-6 py-4">
                 <v-spacer></v-spacer>
@@ -198,11 +222,22 @@
                   depressed
                   :disabled="button"
                   dark
-                  @click="test()"
+                  @click="save"
                   style="text-transform: none"
                   small
                 >
                   Save
+                </v-btn>
+                <v-btn
+                  color="primary"
+                  depressed
+                  :disabled="button"
+                  dark
+                  @click="get"
+                  style="text-transform: none"
+                  small
+                >
+                  get sample
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -214,7 +249,11 @@
 </template>
 
 <script>
+import axios from "axios"; //library to for sendting request ng api
+import template from "./template.vue";
+import Swal from "sweetalert2";
 export default {
+  components: { template },
   data: () => ({
     search: "",
     editedIndex: -1,
@@ -227,23 +266,110 @@ export default {
     table: [],
     formRules: [(v) => !!v || "This is required"],
     form: {
+      id: null,
       status: null,
-      suppCategory: null,
+      supply_cat_name: null,
     },
+    currentdata: {},
     headers: [
-      { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Supply Category", value: "supply category" },
+      { text: "#", value: "count", align: "start" },
+      { text: "Supply Category", value: "supply_cat_name" },
       { text: "Status", value: "status", filterable: false },
-      { text: "Actions", value: "actions", sortable: false, filterable: false },
+      { text: "Actions", value: "id", sortable: false },
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 10,
+    itemsPerPage: 5,
   }),
+
+  created() {
+    //onload
+    this.get();
+  },
+
   methods: {
-    test() {
-      alert("Sample");
+    //everytime na mag call ka sa database ganto lang lagi format
+    //dont forget add async and await
+    compare() {
+      //compare exsiting data vs edited data, if nothing change then no request
+      if (!this.currentdata) {
+        return true;
+      } //check if not existed
+      //check each value if the same or not
+      var found = 0;
+      for (var key in this.form) {
+        if (this.currentdata[key] != this.form[key]) {
+          found += 1;
+        }
+      }
+      //if have changes
+      if (found > 0) {
+        return true;
+      } else {
+        Swal.fire({
+          type: "info",
+          title: "No changes found.",
+        });
+      }
     },
+    async save() {
+      if (this.compare()) {
+        //save/update data in the table
+        await axios
+          .post("api/supplies/save", this.form)
+          .then((result) => {
+            //pag true daw ung value
+
+            switch (result.data) {
+              case 0:
+                Swal.fire({
+                  type: "success",
+                  title: "The supplies group name has been saved.",
+                  html: "test lang",
+                });
+                this.get();
+                this.cancel();
+                break;
+              case 1:
+                Swal.fire({
+                  type: "info",
+                  title: "The name already exsisted.",
+                  html: "araling mo tong sweetalert2 google mo lang",
+                });
+                break;
+
+              default:
+                break;
+            }
+          })
+          .catch((result) => {
+            //pag false or error ung pag save mo
+          });
+      }
+    },
+    async get() {
+      //get data from tables
+      this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+      await axios
+        .get("api/supplies/get", {
+          params: { page: this.page, itemsPerPage: this.itemsPerPage },
+        })
+        .then((result) => {
+          //pag true daw ung value
+          this.table = result.data;
+        })
+        .catch((result) => {
+          //pag false or error ung pag save mo
+        });
+    },
+    edit(row) {
+      this.currentdata = JSON.parse(JSON.stringify(row));
+      this.form.id = row.id;
+      this.form.status = row.status;
+      this.form.supply_cat_name = row.supply_cat_name;
+      this.dialog = true;
+    },
+
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
@@ -255,7 +381,11 @@ export default {
   },
   watch: {
     dialog(val) {
-      //   alert("yes") // uncomment mo to then try mo press ung button,  ito ung nag tritriger pag ni open mo ung dialog
+      val || this.cancel();
+    },
+    page(val) {
+      this.page = val;
+      this.get();
     },
     id: {
       handler: function (v) {},

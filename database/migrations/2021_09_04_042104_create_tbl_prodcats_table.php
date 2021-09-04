@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGeneralListsTable extends Migration
+class CreateTblProdcatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateGeneralListsTable extends Migration
      */
     public function up()
     {
-        Schema::create('general_lists', function (Blueprint $table) {
-            $table->id(); 
-            $table->string('title','max')->nullable(); 
-            $table->string('description','max')->nullable();  
-            $table->integer('group'); 
-            $table->integer('active')->default(1); 
+        Schema::create('tbl_prodcats', function (Blueprint $table) {
+            $table->id();
+            $table->string('prod_cat_name');
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateGeneralListsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('general_lists');
+        Schema::dropIfExists('tbl_prodcats');
     }
 }

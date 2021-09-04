@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RiskSurvey extends Model
+class tbl_invsumm extends Model
 {
-
-    protected $guarded = ['id'];
+    //
 }
