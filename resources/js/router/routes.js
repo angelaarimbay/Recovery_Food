@@ -46,6 +46,11 @@ export default {
         { path: '/auth/index', name: 'auth.index', component: page('auth/index.vue') },
 
         { path: '/template', name: 'template', component: page('template.vue') },
+       
+     
+        //Login page
 
+        
+        { path: '/login', name: 'login', component: page('login.vue') },
     ]
 }
