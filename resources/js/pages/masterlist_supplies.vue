@@ -39,6 +39,7 @@
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
               small
               @click="openDialog"
+             
             >
               Add Supply
             </v-btn>
@@ -246,12 +247,14 @@
                         outlined
                         dense
                         clearable
+                         :items="suppCategory"
                         item-text="name"
                         item-value="id"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Category *</div>
                         </template>
+                        
                       </v-select>
                     </v-col>
 
@@ -306,18 +309,20 @@
                       sm="12"
                       md="12"
                     >
-                      <v-text-field
+                      <v-select
                         :rules="formRules"
                         v-model="form.suppUnit"
                         label=""
                         outlined
                         clearable
                         dense
+                        :items="unit"
+                      
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Unit *</div>
                         </template>
-                      </v-text-field>
+                      </v-select>
                     </v-col>
 
                     <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
@@ -425,6 +430,8 @@ export default {
     dialog: false,
     sheet: false,
     status: ["Active", "Inactive"],
+suppCategory: ["Dry goods","Non-Food"],
+unit: ["Pack", "Kg", "Bottel", "Can"],
     deleteid: "",
     progressBar: false,
     tempfile: "",
@@ -452,12 +459,16 @@ export default {
   }),
   methods: {
     test() {
-      alert("Sample");
+      alert("Sample")
+      ;
     },
-    openDialog() {
+    openDialog:function() {
       this.$refs.form.reset();
       this.dialog = true;
+
     },
+
+
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
