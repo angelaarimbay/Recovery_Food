@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GeneralList extends Model
+class tbl_masterlistsupp extends Model
 {
     //
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUnderwritingSectionsTable extends Migration
+class CreateTblSuppcatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateUnderwritingSectionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('underwriting_sections', function (Blueprint $table) {
-            $table->id();
+        Schema::create('tbl_suppcats', function (Blueprint $table) {
+            $table->id(); 
+            $table->string('supply_cat_name');
+            $table->string('status'); 
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateUnderwritingSectionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('underwriting_sections');
+        Schema::dropIfExists('tbl_suppcats');
     }
 }

@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.5.95/css/materialdesignicons.css">  
  
     <!-- Styles -->
-    <link href="{{ mix('dist/css/app.css') }}" rel="stylesheet"> 
-
+    <link href="{{ mix('dist/css/app.css') }}" rel="stylesheet">
+ 
 </head>
 <body>
-    <div id="app"> 
+    <div id="app" > 
             @yield('content') 
     </div> 
 </body>

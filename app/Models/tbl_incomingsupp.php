@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RiskSection extends Model
+class tbl_incomingsupp extends Model
 {
     //
 }

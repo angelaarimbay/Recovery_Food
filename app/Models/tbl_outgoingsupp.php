@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RiskNatcat extends Model
+class tbl_outgoingsupp extends Model
 {
     //
 }

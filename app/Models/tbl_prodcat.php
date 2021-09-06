@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Downloadlogs extends Model
+class tbl_prodcat extends Model
 {
     //
 }

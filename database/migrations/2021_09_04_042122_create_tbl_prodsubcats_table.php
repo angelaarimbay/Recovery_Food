@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDownloadlogsTable extends Migration
+class CreateTblProdsubcatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateDownloadlogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('downloadlogs', function (Blueprint $table) {
+        Schema::create('tbl_prodsubcats', function (Blueprint $table) {
             $table->id();
+            $table->string('prod_sub_cat_name');
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateDownloadlogsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('downloadlogs');
+        Schema::dropIfExists('tbl_prodsubcats');
     }
 }
