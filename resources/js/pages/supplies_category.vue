@@ -1,5 +1,11 @@
 <template>
   <div style="min-width: 280px">
+    <v-snackbar :color="snackbar.color" dark v-model="snackbar.active">
+      <h4>{{ snackbar.title }}</h4>
+      <span>{{ snackbar.message }}</span>
+      <v-btn @click="snackbar.active = false">Close</v-btn>
+    </v-snackbar>
+
     <v-container>
       <v-layout row wrap>
         <h5 class="heading my-auto">Categories</h5>
@@ -89,23 +95,34 @@
                     sm="12"
                     class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
                   >
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="Supply Category"
-                      single-line
-                      hide-details
-                      dense
-                      clearable
-                      class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
-                    ></v-text-field>
+                    <v-card-actions>
+                      <v-text-field
+                        v-model="search"
+                        label="Supply Category"
+                        single-line
+                        hide-details
+                        dense
+                        clearable
+                        class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
+                      ></v-text-field>
+                      <v-btn
+                        small
+                        outlined
+                        class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
+                        color="green"
+                        dark
+                        @click="get"
+                      >
+                        <v-icon>mdi-magnify</v-icon> Search</v-btn
+                      >
+                    </v-card-actions>
                   </v-col>
                 </v-row>
               </v-list>
             </v-list-group>
           </v-list>
-          <!--Table -->
 
+          <!--Table -->
           <v-data-table
             :headers="headers"
             :items="table.data"
@@ -115,10 +132,26 @@
             @page-count="pageCount = $event"
           >
             <template v-slot:[`item.count`]="{ item }"> {{ item.id }}</template>
-            <template v-slot:[`item.id`]="{ item }">
-              <v-btn x-small color="info" text @click="edit(item)">
-                edit ?</v-btn
+            <template v-slot:[`item.status`]="{ item }">
+              <v-chip
+                style="width: 65px; justify-content: center"
+                small
+                :color="
+                  item.status === 'Active'
+                    ? 'green'
+                    : item.status === 'Inactive'
+                    ? 'orange'
+                    : ''
+                "
+                dark
               >
+                {{ item.status }}
+              </v-chip>
+            </template>
+            <template v-slot:[`item.id`]="{ item }">
+              <v-btn icon color="info" @click="edit(item)" x-small>
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
             </template>
           </v-data-table>
 
@@ -163,7 +196,6 @@
                       <v-select
                         :rules="formRules"
                         v-model="form.status"
-                        label=""
                         outlined
                         dense
                         clearable
@@ -192,7 +224,6 @@
                         outlined
                         clearable
                         dense
-                        hide-details
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Category *</div>
@@ -228,17 +259,6 @@
                 >
                   Save
                 </v-btn>
-                <v-btn
-                  color="primary"
-                  depressed
-                  :disabled="button"
-                  dark
-                  @click="get"
-                  style="text-transform: none"
-                  small
-                >
-                  get sample
-                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -249,12 +269,18 @@
 </template>
 
 <script>
-import axios from "axios"; //library to for sendting request ng api
+import axios from "axios"; //library for sending api request
 import template from "./template.vue";
 import Swal from "sweetalert2";
 export default {
   components: { template },
   data: () => ({
+    snackbar: {
+      title: "",
+      color: "",
+      active: false,
+      message: "",
+    },
     search: "",
     editedIndex: -1,
     button: false,
@@ -265,6 +291,14 @@ export default {
     tempfile: "",
     table: [],
     formRules: [(v) => !!v || "This is required"],
+    formRulesNumberRange: (v) => {
+      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
+      return "Number has to be between 1% and 100%";
+    },
+    formRulesNumber: [
+      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    ],
+
     form: {
       id: null,
       status: null,
@@ -272,21 +306,31 @@ export default {
     },
     currentdata: {},
     headers: [
-      { text: "#", value: "count", align: "start" },
+      { text: "#", value: "count", align: "start", filterable: false },
       { text: "Supply Category", value: "supply_cat_name" },
-      { text: "Status", value: "status", filterable: false },
-      { text: "Actions", value: "id", sortable: false },
+      {
+        text: "Status",
+        value: "status",
+        align: "center",
+        sortable: false,
+        filterable: false,
+      },
+      {
+        text: "Actions",
+        value: "id",
+        align: "center",
+        sortable: false,
+        filterable: false,
+      },
     ],
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
   }),
-
   created() {
     //onload
     this.get();
   },
-
   methods: {
     //everytime na mag call ka sa database ganto lang lagi format
     //dont forget add async and await
@@ -313,38 +357,48 @@ export default {
       }
     },
     async save() {
-      if (this.compare()) {
-        //save/update data in the table
-        await axios
-          .post("api/supplies/save", this.form)
-          .then((result) => {
-            //pag true daw ung value
+      if (this.$refs.form.validate()) {
+        //validate muna bago compare
+        if (this.compare()) {
+          //save/update data in the table
+          await axios
+            .post("api/supplies/save", this.form)
+            .then((result) => {
+              //pag true daw ung value
 
-            switch (result.data) {
-              case 0:
-                Swal.fire({
-                  type: "success",
-                  title: "The supplies group name has been saved.",
-                  html: "test lang",
-                });
-                this.get();
-                this.cancel();
-                break;
-              case 1:
-                Swal.fire({
-                  type: "info",
-                  title: "The name already exsisted.",
-                  html: "araling mo tong sweetalert2 google mo lang",
-                });
-                break;
+              switch (result.data) {
+                case 0:
+                  // Swal.fire({
+                  //   type: "success",
+                  //   title: "The supplies group name has been saved.",
+                  //   html: "test lang",
+                  // });
 
-              default:
-                break;
-            }
-          })
-          .catch((result) => {
-            //pag false or error ung pag save mo
-          });
+                  this.snackbar = {
+                    active: true,
+                    title: "Title ko",
+                    message: "The supplies group name has been saved.",
+                  };
+
+                  this.get();
+                  this.cancel();
+                  break;
+                case 1:
+                  Swal.fire({
+                    type: "info",
+                    title: "The name already exsisted.",
+                    html: "araling mo tong sweetalert2 google mo lang",
+                  });
+                  break;
+
+                default:
+                  break;
+              }
+            })
+            .catch((result) => {
+              //pag false or error ung pag save mo
+            });
+        }
       }
     },
     async get() {
@@ -352,7 +406,11 @@ export default {
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("api/supplies/get", {
-          params: { page: this.page, itemsPerPage: this.itemsPerPage },
+          params: {
+            page: this.page,
+            itemsPerPage: this.itemsPerPage,
+            search: this.search,
+          },
         })
         .then((result) => {
           //pag true daw ung value
@@ -369,7 +427,6 @@ export default {
       this.form.supply_cat_name = row.supply_cat_name;
       this.dialog = true;
     },
-
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
