@@ -1,38 +1,61 @@
 <template>
   <div style="min-width: 280px">
-    <v-snackbar :color="snackbar.color" dark v-model="snackbar.active">
-      <h4>{{ snackbar.title }}</h4>
-      <span>{{ snackbar.message }}</span>
-      <v-btn @click="snackbar.active = false">Close</v-btn>
+    <!-- Snackbar -->
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar.active"
+      timeout="2500"
+    >
+      <span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
+      >
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
+        >
+      </template>
     </v-snackbar>
 
     <v-container>
       <v-layout row wrap>
         <h5 class="heading my-auto">Categories</h5>
         <v-spacer></v-spacer>
+
+        <!-- Breadcrumbs -->
         <v-card-actions class="px-0">
           <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
             plain
-            small
+            color="primary"
             v-ripple="false"
             to="/dashboard"
             class="px-0"
-            style="text-decoration: none; text-transform: none; font-size: 11px"
+            style="text-decoration: none; text-transform: none"
             >Home</v-btn
           >
           /
           <v-btn
-            small
+            :small="$vuetify.breakpoint.smAndDown"
             text
             disabled
             class="px-0"
-            style="text-transform: none; font-size: 11px"
+            style="text-transform: none"
             >Supplies Category</v-btn
           >
         </v-card-actions>
       </v-layout>
     </v-container>
 
+    <!-- Main Card -->
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
@@ -42,14 +65,15 @@
               style="text-transform: none"
               depressed
               dark
+              :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              small
               @click="openDialog"
             >
               Add Supply Category
             </v-btn>
           </v-card-actions>
 
+          <!-- Search Filters -->
           <v-list dense nav class="px-0 py-1">
             <v-list-group no-action color="#757575">
               <template v-slot:activator>
@@ -65,13 +89,14 @@
 
               <v-list class="p-0">
                 <v-row no-gutters>
+                  <!-- Items Per Page -->
                   <v-col
                     cols="12"
                     xl="2"
                     lg="2"
                     md="3"
                     sm="12"
-                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-2"
                   >
                     <v-select
                       v-model="itemsPerPage"
@@ -87,13 +112,14 @@
 
                   <v-spacer></v-spacer>
 
+                  <!-- Search Field -->
                   <v-col
                     cols="12"
                     xl="4"
                     lg="4"
                     md="5"
                     sm="12"
-                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-0"
                   >
                     <v-card-actions>
                       <v-text-field
@@ -107,13 +133,13 @@
                       ></v-text-field>
                       <v-btn
                         small
-                        outlined
                         class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
-                        color="green"
+                        color="error"
                         dark
+                        rounded
                         @click="get"
                       >
-                        <v-icon>mdi-magnify</v-icon> Search</v-btn
+                        <v-icon>mdi-magnify</v-icon></v-btn
                       >
                     </v-card-actions>
                   </v-col>
@@ -122,7 +148,7 @@
             </v-list-group>
           </v-list>
 
-          <!--Table -->
+          <!-- Table -->
           <v-data-table
             :headers="headers"
             :items="table.data"
@@ -130,17 +156,19 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            :dense="$vuetify.breakpoint.smAndDown"
           >
             <template v-slot:[`item.count`]="{ item }"> {{ item.id }}</template>
             <template v-slot:[`item.status`]="{ item }">
               <v-chip
-                style="width: 65px; justify-content: center"
-                small
+                style="justify-content: center"
+                :style="widthSize"
+                :small="$vuetify.breakpoint.smAndDown"
                 :color="
                   item.status === 'Active'
-                    ? 'green'
+                    ? '#43A047'
                     : item.status === 'Inactive'
-                    ? 'orange'
+                    ? '#FF6F00'
                     : ''
                 "
                 dark
@@ -149,7 +177,12 @@
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn icon color="info" @click="edit(item)" x-small>
+              <v-btn
+                icon
+                color="info"
+                @click="edit(item)"
+                :x-small="$vuetify.breakpoint.smAndDown"
+              >
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
             </template>
@@ -172,7 +205,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Add Supply Category
+              Supply Category
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -220,7 +253,6 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.supply_cat_name"
-                        label=""
                         outlined
                         clearable
                         dense
@@ -234,8 +266,8 @@
                 </v-container>
               </v-card-text>
 
-              <!-- buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-7 px-6 py-4">
+              <!-- Dialog Form Buttons -->
+              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -244,7 +276,7 @@
                   dark
                   @click="cancel"
                   style="text-transform: none"
-                  small
+                  :small="$vuetify.breakpoint.smAndDown"
                 >
                   Cancel
                 </v-btn>
@@ -255,7 +287,7 @@
                   dark
                   @click="save"
                   style="text-transform: none"
-                  small
+                  :small="$vuetify.breakpoint.smAndDown"
                 >
                   Save
                 </v-btn>
@@ -269,15 +301,10 @@
 </template>
 
 <script>
-import axios from "axios"; //library for sending api request
-import template from "./template.vue";
-import Swal from "sweetalert2";
+import axios from "axios"; // Library for sending api request
 export default {
-  components: { template },
   data: () => ({
     snackbar: {
-      title: "",
-      color: "",
       active: false,
       message: "",
     },
@@ -290,6 +317,8 @@ export default {
     progressBar: false,
     tempfile: "",
     table: [],
+
+    // Form Rules
     formRules: [(v) => !!v || "This is required"],
     formRulesNumberRange: (v) => {
       if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
@@ -299,12 +328,17 @@ export default {
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
 
+    // Form Data
     form: {
       id: null,
       status: null,
       supply_cat_name: null,
     },
+
+    // For comparing data
     currentdata: {},
+
+    // Table Headers
     headers: [
       { text: "#", value: "count", align: "start", filterable: false },
       { text: "Supply Category", value: "supply_cat_name" },
@@ -312,7 +346,6 @@ export default {
         text: "Status",
         value: "status",
         align: "center",
-        sortable: false,
         filterable: false,
       },
       {
@@ -327,82 +360,98 @@ export default {
     pageCount: 0,
     itemsPerPage: 5,
   }),
+
+  // Dynamic Width
+  computed: {
+    widthSize() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return { width: "65px" };
+        case "sm":
+          return { width: "65px" };
+        default:
+          return { width: "72px" };
+      }
+    },
+  },
+
+  // Onload
   created() {
-    //onload
     this.get();
   },
+
   methods: {
-    //everytime na mag call ka sa database ganto lang lagi format
-    //dont forget add async and await
+    // Format for everytime we call on database
+    // Always add await and async
     compare() {
-      //compare exsiting data vs edited data, if nothing change then no request
+      // Compare exsiting data vs edited data
+      // If nothing change then no request
       if (!this.currentdata) {
         return true;
-      } //check if not existed
-      //check each value if the same or not
+      }
+      // Check if not existed
+      // Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
           found += 1;
         }
       }
-      //if have changes
+      //if has changes
       if (found > 0) {
         return true;
       } else {
-        Swal.fire({
-          type: "info",
-          title: "No changes found.",
-        });
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "warning",
+          message: "No changes made.",
+        };
+        this.cancel();
       }
     },
+
+    // Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        //validate muna bago compare
+        // Validate first before compare
         if (this.compare()) {
-          //save/update data in the table
+          // Save or update data in the table
           await axios
             .post("api/supplies/save", this.form)
             .then((result) => {
-              //pag true daw ung value
-
+              //if the value is true then save to database
               switch (result.data) {
                 case 0:
-                  // Swal.fire({
-                  //   type: "success",
-                  //   title: "The supplies group name has been saved.",
-                  //   html: "test lang",
-                  // });
-
                   this.snackbar = {
                     active: true,
-                    title: "Title ko",
-                    message: "The supplies group name has been saved.",
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully saved.",
                   };
-
                   this.get();
                   this.cancel();
                   break;
                 case 1:
-                  Swal.fire({
-                    type: "info",
-                    title: "The name already exsisted.",
-                    html: "araling mo tong sweetalert2 google mo lang",
-                  });
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert",
+                    iconColor: "error",
+                    message: "The supply category already exists.",
+                  };
                   break;
-
                 default:
                   break;
               }
             })
             .catch((result) => {
-              //pag false or error ung pag save mo
+              // If false or error when saving
             });
         }
       }
     },
     async get() {
-      //get data from tables
+      // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("api/supplies/get", {
@@ -413,13 +462,15 @@ export default {
           },
         })
         .then((result) => {
-          //pag true daw ung value
+          //if the value is true then get the data
           this.table = result.data;
         })
         .catch((result) => {
-          //pag false or error ung pag save mo
+          // If false or error when saving
         });
     },
+
+    // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -427,15 +478,20 @@ export default {
       this.form.supply_cat_name = row.supply_cat_name;
       this.dialog = true;
     },
+
+    // Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
+
+    // Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
+
   watch: {
     dialog(val) {
       val || this.cancel();

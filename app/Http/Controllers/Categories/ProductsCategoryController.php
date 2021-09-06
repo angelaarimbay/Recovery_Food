@@ -4,19 +4,19 @@ namespace App\Http\Controllers\Categories;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\tbl_suppcat;
+use App\Models\tbl_prodcat;
 
-class SuppliesCategoryController extends Controller
+class ProductsCategoryController extends Controller
 {
     public function save(Request $data)
     {
-        $table = tbl_suppcat::where("status", '!=', null);
+        $table = tbl_prodcat::where("status", '!=', null);
      
  
-        // Check if supply category name exists
-        $table_clone = clone $table;   // Get all items from suppcat
+        // Check if product category name exists
+        $table_clone = clone $table;   // Get all items from prodcat
         if ($table_clone
-        ->where("supply_cat_name", $data->supply_cat_name) // Filter using name
+        ->where("product_cat_name", $data->product_cat_name) // Filter using name
         ->where("id", '!=', $data->id)  // Filter if id is not selected
         ->count()>0) {
             return 1;
@@ -29,22 +29,22 @@ class SuppliesCategoryController extends Controller
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
                 ['status'=>$data->status,
-                 'supply_cat_name'=>$data->supply_cat_name
+                 'product_cat_name'=>$data->product_cat_name
                 ]
             );
         } else {
-            tbl_suppcat::create($data->all());
+            tbl_prodcat::create($data->all());
         }
         return 0;
     }
     public function get(Request $t)
     {
         if ($t->search) { // If has value
-            $table = tbl_suppcat::where("status", '!=', null);
-            $table_clone = clone $table;   // Get all items from suppcat
-            return $table_clone->where("supply_cat_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
+            $table = tbl_prodcat::where("status", '!=', null);
+            $table_clone = clone $table;   // Get all items from prodcat
+            return $table_clone->where("product_cat_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
         // Else
-        return  tbl_suppcat::paginate($t->itemsPerPage, '*', 'page', $t->page);
+        return  tbl_prodcat::paginate($t->itemsPerPage, '*', 'page', $t->page);
     }
 }
