@@ -13,8 +13,8 @@ class ProductsCategoryController extends Controller
         $table = tbl_prodcat::where("status", '!=', null);
      
  
-        // Check if product category name exists
-        $table_clone = clone $table;   // Get all items from prodcat
+        // Check if supply category name exists
+        $table_clone = clone $table;   // Get all items from suppcat
         if ($table_clone
         ->where("product_cat_name", $data->product_cat_name) // Filter using name
         ->where("id", '!=', $data->id)  // Filter if id is not selected
@@ -41,7 +41,8 @@ class ProductsCategoryController extends Controller
     {
         if ($t->search) { // If has value
             $table = tbl_prodcat::where("status", '!=', null);
-            $table_clone = clone $table;   // Get all items from prodcat
+            $table_clone = clone $table;   // Get all items from prodcat 
+ 
             return $table_clone->where("product_cat_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
         // Else

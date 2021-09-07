@@ -56,6 +56,7 @@
     </v-container>
 
     <!-- Main Card -->
+
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
@@ -102,7 +103,7 @@
                       v-model="itemsPerPage"
                       label="Items per page"
                       class="pb-xl-0 pb-lg-0 pb-md-0 pb-sm-2 pb-0"
-                      @change="get"
+                      @change="itemperpage"
                       :items="[
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                       ]"
@@ -134,7 +135,7 @@
                       <v-btn
                         small
                         class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
-                        color="error"
+                        color="red darken-2"
                         dark
                         rounded
                         @click="get"
@@ -152,13 +153,25 @@
           <v-data-table
             :headers="headers"
             :items="table.data"
+            :loading="progressbar"
             :page.sync="page"
+            ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            :dense="$vuetify.breakpoint.smAndDown"
           >
-            <template v-slot:[`item.count`]="{ item }"> {{ item.id }}</template>
+            <!-- Progress Bar -->
+            <v-progress-linear
+              color="red"
+              class="px-0 mx-0"
+              slot="progress"
+              indeterminate
+              rounded
+            ></v-progress-linear>
+
+            <template v-slot:[`item.count`]="{ item }">
+              {{ item.row }}</template
+            >
             <template v-slot:[`item.status`]="{ item }">
               <v-chip
                 style="justify-content: center"
@@ -179,7 +192,7 @@
             <template v-slot:[`item.id`]="{ item }">
               <v-btn
                 icon
-                color="info"
+                color="red darken-2"
                 @click="edit(item)"
                 :x-small="$vuetify.breakpoint.smAndDown"
               >
@@ -188,11 +201,13 @@
             </template>
           </v-data-table>
 
+          <!-- Paginate -->
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
               :total-visible="5"
               :length="table.last_page"
+              color="red darken-2"
             ></v-pagination>
           </div>
         </v-container>
@@ -300,10 +315,24 @@
   </div>
 </template>
 
+<style>
+.v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.v-pagination__navigation .v-pagination__navigation--disabled {
+  background-color: #212121 !important;
+}
+</style>
+
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
+    progressbar: false,
     snackbar: {
       active: false,
       message: "",
@@ -314,7 +343,6 @@ export default {
     dialog: false,
     status: ["Active", "Inactive"],
     deleteid: "",
-    progressBar: false,
     tempfile: "",
     table: [],
 
@@ -381,6 +409,11 @@ export default {
   },
 
   methods: {
+    itemperpage() {
+      this.page = 1;
+      this.get();
+    },
+
     // Format for everytime we call on database
     // Always add await and async
     compare() {
@@ -451,6 +484,7 @@ export default {
       }
     },
     async get() {
+      this.progressbar = true; // Show the progress bar
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
@@ -462,8 +496,9 @@ export default {
           },
         })
         .then((result) => {
-          //if the value is true then get the data
+          // If the value is true then get the data
           this.table = result.data;
+          this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
           // If false or error when saving
