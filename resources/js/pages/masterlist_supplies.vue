@@ -207,7 +207,13 @@
         </v-container>
 
         <!--Dialog Form-->
+
+        
         <v-form ref="form">
+          
+          <div id="error"></div>
+
+
           <v-dialog v-model="dialog" max-width="450px">
             <v-toolbar
               dense
@@ -266,7 +272,7 @@
                       sm="12"
                       md="12"
                     >
-                      <v-text-field
+                      <v-text-field 
                         :rules="formRules"
                         v-model="form.suppName"
                         label=""
@@ -421,6 +427,7 @@
   </div>
 </template>
 
+
 <script>
 export default {
   data: () => ({
@@ -468,7 +475,6 @@ unit: ["Pack", "Kg", "Bottel", "Can"],
 
     },
 
-
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
@@ -484,3 +490,6 @@ unit: ["Pack", "Kg", "Bottel", "Can"],
   },
 };
 </script>
+
+
+

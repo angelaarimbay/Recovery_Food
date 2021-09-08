@@ -9,6 +9,11 @@ import VueRouter from 'vue-router';
 import routes from './router/routes';  
 import App from '../js/components/App' 
 import vuetify from '../js/plugins/vuetify'  
+
+
+
+
+
 window.moment = require('moment');
 window.numeral = require('numeral'); 
  
