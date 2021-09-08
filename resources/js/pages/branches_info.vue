@@ -27,18 +27,25 @@
       </v-layout>
     </v-container>
 
+    <!-- return form controller -->
     <v-container>
-      <v-layout row wrap>
-        <v-card elevation="6" style="border-radius: 10px" class="mt-2">
-          <v-row no-gutters>
+      
+        <v-card  v-for="(val, key) in data_test"
+          :key="key"
+          elevation="6"
+          style="border-radius: 10px"
+          class="ma-5"
+        > 
+          <v-row  >
             <v-col
               cols="12"
               xl="7"
               lg="7"
               md="12"
               sm="12"
-              class="pl-xl-3 pl-lg-2"
+              class="pl-xl-3 pl-lg-2 "
             >
+            <v-card-text>
               <v-card-title
                 class="font-weight-bold py-xl-10 py-lg-10 py-md-6 py-sm-6 py-4"
                 :class="{
@@ -50,25 +57,26 @@
                 }"
                 style="color: #827717"
               >
-                Branch Name
+                {{ val.branch_name }}
               </v-card-title>
               <v-card-text
                 class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
                 :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
               >
-                Location:
+                Location: {{ val.location }}
               </v-card-text>
               <v-card-text
                 class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
                 :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
               >
-                Contact Number:
+                Contact Number: {{ val.phone_number }}
               </v-card-text>
               <v-card-text
                 class="font-weight-bold py-lg-3 py-md-2 py-sm-1 py-1"
                 :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
               >
-                Email Address:
+                Email Address: {{ val.email_add }}
+              </v-card-text>
               </v-card-text>
             </v-col>
 
@@ -81,15 +89,49 @@
               class="pr-xl-2 pr-lg-1"
             >
               <v-img
-                src="/img/branch_1.jpg"
+                :src="'/storage/branches/'+val.branch_image"
                 max-height="250"
-                class="ma-3 ma-sm-4"
+                class="ma-5 ma-sm-4"
                 style="border-radius: 10px"
               ></v-img>
             </v-col>
           </v-row>
-        </v-card>
-      </v-layout>
+        </v-card> 
     </v-container>
   </div>
 </template>
+
+<script>
+import axios from "axios"; // Library for sending api request
+import template from './template.vue';
+export default {
+  components: { template },
+  data: () => ({
+    data: [], //declare object
+    data_test: [],
+    id: null,
+  }),
+
+  created() {
+    this.get(); //call onload
+    this.get1();
+  },
+  methods: {
+    async get() {
+      //function call api
+      await axios.get("api/branches/list").then((result) => {
+        //return data from controller
+        this.data = result.data; //pass return to the object
+      });
+    },
+    async get1() {
+      await axios
+        .get("api/branches/test") //from page to
+        .then((result) => {
+          console.log(result.data);
+          this.data_test = result.data;
+        });
+    },
+  },
+};
+</script>

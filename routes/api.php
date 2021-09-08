@@ -1,6 +1,12 @@
 <?php
  
 use Illuminate\Support\Facades\Route;
+   // Branches
+   Route::post('branches/attachment', 'Branches\BranchesController@attachment'); //post nga lang e
+   Route::post('branches/save', 'Branches\BranchesController@save');
+   Route::get('branches/get', 'Branches\BranchesController@get');
+   Route::get('branches/list', 'Branches\BranchesController@branchlist');
+   Route::get('branches/test', 'Branches\BranchesController@test');
 
    // Supplies Category
    Route::post('supplies/save', 'Categories\SuppliesCategoryController@save');
@@ -9,6 +15,10 @@ use Illuminate\Support\Facades\Route;
    // Products Category
    Route::post('products/save', 'Categories\ProductsCategoryController@save');
    Route::get('products/get', 'Categories\ProductsCategoryController@get');
+
+   // Products Category
+   Route::post('productssub/save', 'Categories\ProductsSubCategoryController@save');
+   Route::get('productssub/get', 'Categories\ProductsSubCategoryController@get');
 
    
  

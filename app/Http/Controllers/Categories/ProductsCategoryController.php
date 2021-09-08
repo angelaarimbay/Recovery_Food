@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Categories;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\tbl_prodcat;
+use Illuminate\Support\Facades\DB;
 
 class ProductsCategoryController extends Controller
 {
@@ -13,8 +14,8 @@ class ProductsCategoryController extends Controller
         $table = tbl_prodcat::where("status", '!=', null);
      
  
-        // Check if supply category name exists
-        $table_clone = clone $table;   // Get all items from suppcat
+        // Check if product category name exists
+        $table_clone = clone $table;   // Get all items from prodcat
         if ($table_clone
         ->where("product_cat_name", $data->product_cat_name) // Filter using name
         ->where("id", '!=', $data->id)  // Filter if id is not selected
@@ -39,13 +40,14 @@ class ProductsCategoryController extends Controller
     }
     public function get(Request $t)
     {
+        DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_prodcat::where("status", '!=', null);
             $table_clone = clone $table;   // Get all items from prodcat 
  
-            return $table_clone->where("product_cat_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
+            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("product_cat_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
         // Else
-        return  tbl_prodcat::paginate($t->itemsPerPage, '*', 'page', $t->page);
+        return  tbl_prodcat::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
     }
 }

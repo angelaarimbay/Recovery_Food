@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      app
+      bottom
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -24,7 +26,7 @@
         >
       </template>
     </v-snackbar>
-
+    
     <v-container>
       <v-layout row wrap>
         <h5 class="heading my-auto">Categories</h5>
@@ -56,7 +58,6 @@
     </v-container>
 
     <!-- Main Card -->
-
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
@@ -75,7 +76,7 @@
           </v-card-actions>
 
           <!-- Search Filters -->
-          <v-list dense nav class="px-0 py-1">
+          <v-list dense nav class="px-0 py-0">
             <v-list-group no-action color="#757575">
               <template v-slot:activator>
                 <v-list-item-icon class="mx-0">
@@ -91,53 +92,46 @@
               <v-list class="p-0">
                 <v-row no-gutters>
                   <!-- Items Per Page -->
-                  <v-col
-                    cols="12"
-                    xl="2"
-                    lg="2"
-                    md="3"
-                    sm="12"
-                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-2"
-                  >
-                    <v-select
-                      v-model="itemsPerPage"
-                      label="Items per page"
-                      class="pb-xl-0 pb-lg-0 pb-md-0 pb-sm-2 pb-0"
-                      @change="itemperpage"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
-                    >
-                    </v-select>
+                  <v-col cols="4" xl="2" lg="2" md="3" sm="4">
+                    <v-card-actions>
+                      <v-select
+                        style="max-width: 82px"
+                        dense
+                        v-model="itemsPerPage"
+                        label="Items per page"
+                        @change="itemperpage"
+                        :items="[
+                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                        ]"
+                      >
+                      </v-select>
+                    </v-card-actions>
                   </v-col>
 
                   <v-spacer></v-spacer>
 
                   <!-- Search Field -->
                   <v-col
-                    cols="12"
+                    cols="8"
                     xl="4"
                     lg="4"
-                    md="5"
-                    sm="12"
-                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-0"
+                    md="6"
+                    sm="8"
+                    style="max-width: 230px"
                   >
                     <v-card-actions>
                       <v-text-field
                         v-model="search"
                         label="Supply Category"
                         single-line
-                        hide-details
                         dense
                         clearable
-                        class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
                       ></v-text-field>
                       <v-btn
-                        small
-                        class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
+                        :small="$vuetify.breakpoint.smAndDown"
+                        :large="$vuetify.breakpoint.mdAndUp"
                         color="red darken-2"
-                        dark
-                        rounded
+                        icon
                         @click="get"
                       >
                         <v-icon>mdi-magnify</v-icon></v-btn
@@ -323,8 +317,8 @@
 .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation .v-pagination__navigation--disabled {
-  background-color: #212121 !important;
+.v-pagination__navigation:disabled {
+  background-color: #000000 !important;
 }
 </style>
 
@@ -438,7 +432,7 @@ export default {
           active: true,
           iconText: "alert-box",
           iconColor: "warning",
-          message: "No changes made.",
+          message: "No changes has been made.",
         };
         this.cancel();
       }
