@@ -52,31 +52,25 @@ class BranchesController extends Controller
         }
         // Else
         return  tbl_branches::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
-
-
     }
     public function attachment(Request $u)
     {
-        $img = $u->file('file'); //ito ung file mo depende sa parameter name naginamit mo
+        $img = $u->file('file'); // This is the file (depending on the parameter)
 
-        //ito nmn binabago ko ung file name para unique sya. pag kasi ndi mo binago
-        //mag eeror kasi exsiting na ung same name na file, mag proceed man ma rereplace ung old file
-        //from new
+        // Unique file name
         $newfilename  = $img->getClientOriginalName() . "-" . time() . '.' . $img->getClientOriginalExtension();
-        // rekta mo na, ako kasi mahilig ako mag lagay sa variable ule hehe
         
-        //ito nmn ung path mo ng file
-        // storage/folder/document mo, kung gsto mo ng may sub fulder. kya ung akin may sub.
-        // kasi iba iba ung modules ko na may upload.
+        // Path of file for saving or storing
         $img->storeAs('public/branches', $newfilename);
-
         return ['fakename' => $img->getClientOriginalName(), 'filename' => $newfilename];
     }
-    public function branchlist(){ //kung wla ka parameter pwede ganyan lang
-            return tbl_branches::all();
+    public function branchlist()
+    {
+        return tbl_branches::all();
     }
 
-    public function test(Request $param) { //conroller
-        return tbl_branches::all(); 
+    public function test(Request $param)
+    { //conroller
+        return tbl_branches::all();
     }
 }

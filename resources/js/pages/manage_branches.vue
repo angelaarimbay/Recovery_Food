@@ -63,7 +63,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="pl-0">
             <v-btn
-              color="#00794b"
+              color="primary"
               style="text-transform: none"
               depressed
               dark
@@ -127,15 +127,21 @@
                         dense
                         clearable
                       ></v-text-field>
-                      <v-btn
-                        :small="$vuetify.breakpoint.smAndDown"
-                        :large="$vuetify.breakpoint.mdAndUp"
-                        color="red darken-2"
-                        icon
-                        @click="get"
-                      >
-                        <v-icon>mdi-magnify</v-icon></v-btn
-                      >
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            :small="$vuetify.breakpoint.smAndDown"
+                            :large="$vuetify.breakpoint.mdAndUp"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            @click="get"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
                     </v-card-actions>
                   </v-col>
                 </v-row>
@@ -187,11 +193,24 @@
               <v-btn
                 icon
                 color="red darken-2"
-                @click="edit(item)"
                 :x-small="$vuetify.breakpoint.smAndDown"
               >
-                <v-icon>mdi-pencil</v-icon>
+                <v-icon>mdi-eye</v-icon>
               </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -343,38 +362,46 @@
                       sm="12"
                       md="12"
                     >
-                      <div style="font-size: 14px">Attachment *</div>
+                      <div style="font-size: 14px">Attachment</div>
 
                       <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
-                      <!-- pag merong file. didisplay ung file. -->
-                      <div v-if="form.branch_image">  
-                        Uploaded file :
-                        <a :href=" '/storage/branches/' + form.branch_image " download >
+                      <!-- Check if has image, then display the image -->
+                      <div v-if="form.branch_image">
+                        Uploaded Image :
+                        <a
+                          :href="'/storage/branches/' + form.branch_image"
+                          download
+                        >
                           {{ tempfile }}
                         </a>
-                        
-                        <v-icon v-if="form.branch_image" @click="deletefile"
+
+                        <v-icon
+                          color="red darken-2"
+                          v-if="form.branch_image"
+                          @click="deletefile"
                           >mdi-delete</v-icon
                         ><br /><br />
                       </div>
-                      <!-- ito ung loading pag aupload. nasasayo kung 
-                      gagamit ka. pag ndi delete mo -->
+
+                      <!-- Progressbar for uploading -->
                       <v-progress-linear
                         v-show="progressbar"
                         slot="progress"
                         color="green"
                         indeterminate
                       ></v-progress-linear>
-                            <!-- ito ung button ni vue. nasasayo ung design-->
-                      <v-btn 
-                        dark 
-                        color="primary"
-                        class="btn btn-block"
+
+                      <!-- Upload button -->
+                      <v-btn
+                        outlined
+                        color="grey darken-1"
+                        class="btn-block"
                         style="text-transform: none"
                         @click="clickupload"
                         ><v-icon>mdi-upload</v-icon> Upload File
                       </v-btn>
-                      <!-- need ito for upload  -->
+
+                      <!-- For uploading  -->
                       <input
                         ref="uploader"
                         clearable
@@ -382,8 +409,8 @@
                         class="d-none"
                         type="file"
                         @change="attachment"
-                      /> 
-                    </v-col> 
+                      />
+                    </v-col>
                     <v-col
                       class="py-1"
                       cols="12"
@@ -394,7 +421,6 @@
                     >
                       <v-text-field
                         style="display: none"
-                       
                         v-model="form.branch_image"
                         label="Document"
                       ></v-text-field>
@@ -486,7 +512,7 @@ export default {
       location: null,
       phone_number: null,
       email_add: null,
-      branch_image: null, 
+      branch_image: null,
     },
 
     // For comparing data
@@ -575,7 +601,7 @@ export default {
       if (this.$refs.form.validate()) {
         // Validate first before compare
         if (this.compare()) {
-          console.log(this.form)
+          console.log(this.form);
           // Save or update data in the table
           await axios
             .post("api/branches/save", this.form)
@@ -605,7 +631,7 @@ export default {
               }
             })
             .catch((result) => {
-              // If false or error when saving 
+              // If false or error when saving
             });
         }
       }
@@ -632,8 +658,7 @@ export default {
         });
     },
 
-
-    //----------------------------------upload
+    // For uploading
     clickupload() {
       this.isSelecting = true;
       window.addEventListener(
@@ -644,26 +669,27 @@ export default {
         { once: true }
       );
       this.$refs.uploader.click();
-    },    
+    },
     deletefile() {
       this.$refs.uploader.value = null;
-     
-            this.tempfile = ''
-            this.form.branch_image = ''
-    },  
-    async attachment(e){
-    var dataform = new FormData(); //u can use typical jquery formdata
+
+      this.tempfile = "";
+      this.form.branch_image = "";
+    },
+    async attachment(e) {
+      var dataform = new FormData(); // Can use typical jquery form data
       dataform.append("file", e.target.files[0]);
 
-      await axios.post('api/branches/attachment', dataform, {
-          headers: { "Content-Type": "multipart/form-data" }
-          }).then(result=>{
-            this.tempfile = result.data.fakename
-            this.form.branch_image = result.data.filename
-          
-      });
-    },  
-    //----------------------------------upload
+      await axios
+        .post("api/branches/attachment", dataform, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((result) => {
+          this.tempfile = result.data.fakename;
+          this.form.branch_image = result.data.filename;
+        });
+    },
+    // For uploading
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
@@ -674,7 +700,7 @@ export default {
       this.form.phone_number = row.phone_number;
       this.form.email_add = row.email_add;
       this.form.branch_image = row.branch_image;
-      this.tempfile = (row.branch_image? row.branch_image.split("-")[0]:null);
+      this.tempfile = row.branch_image ? row.branch_image.split("-")[0] : null;
       this.dialog = true;
     },
 
