@@ -272,19 +272,27 @@
                       sm="12"
                       md="12"
                     >
-                      <v-text-field 
+                      <v-text-field
                         :rules="formRules"
                         v-model="form.suppName"
                         label=""
                         outlined
                         clearable
                         dense
+                        
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Supply Name *</div>
+                          <div  style="font-size: 14px">Supply Name *</div>
                         </template>
                       </v-text-field>
                     </v-col>
+
+
+
+
+
+
+
 
                     <v-col
                       class="py-1"
@@ -443,8 +451,9 @@ unit: ["Pack", "Kg", "Bottel", "Can"],
     progressBar: false,
     tempfile: "",
     table: [],
-    formRules: [(v) => !!v || "This is required"],
+ formRules: [(v) => !!v || "This is required"],
     form: {
+      
       status: null,
       suppCategory: null,
       suppName: null,
@@ -468,7 +477,13 @@ unit: ["Pack", "Kg", "Bottel", "Can"],
     test() {
       alert("Sample")
       ;
-    },
+    }
+    ,
+    
+   
+    
+  
+
     openDialog:function() {
       this.$refs.form.reset();
       this.dialog = true;
@@ -490,6 +505,7 @@ unit: ["Pack", "Kg", "Bottel", "Can"],
   },
 };
 </script>
+
 
 
 

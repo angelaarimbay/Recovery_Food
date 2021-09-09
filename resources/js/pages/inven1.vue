@@ -48,7 +48,7 @@
             :items="supplies"
             label="Dry Goods"
             placeholder="Select..."
-            required
+            required="[(a,b,c,d)]"
           ></v-autocomplete>
 </v-col>
 
@@ -360,12 +360,6 @@ import template from './template.vue'
       errorMessages: '',
   
     }
-
-
-     
-
-
-
     ),
 
   }
