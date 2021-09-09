@@ -23,7 +23,7 @@ class CreateTblMasterlistsuppsTable extends Migration
             $table->float('with_vat');
             $table->float('vat');
             $table->float('without_vat');
-            $table->date('exp_date');
+            $table->date('exp_date')->nullable();
             $table->integer('status')->default(1); //0 = inactive, else active
             $table->timestamps();
         });

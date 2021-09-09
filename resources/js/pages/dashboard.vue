@@ -1,6 +1,6 @@
 <template>
   <div style="min-width: 280px">
-    <v-container>
+    <v-container class="py-2">
       <v-layout row wrap>
         <h4
           class="font-weight-bold heading my-auto"
@@ -14,15 +14,16 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              elevation="2"
               :small="$vuetify.breakpoint.xsOnly"
+              large
               icon
               dark
-              class="red darken-2 mx-1"
+              color="red darken-2"
+              class="mx-1"
               v-on="data.on"
               @click="sheet = !sheet"
             >
-              <v-icon dark>mdi-settings</v-icon>
+              <v-icon>mdi-settings</v-icon>
             </v-btn>
           </template>
           <span>Manage Cards</span>

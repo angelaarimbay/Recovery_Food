@@ -488,17 +488,21 @@ export default {
         }
       }
     },
+
+
+    async gettest(test=''){
+        await axios.get('api/test/url',{params:{id:1,title:'test lang na title' }})
+        .then(abc=>{
+          console.log(abs.data)
+        })
+    },
+ 
     async get() {
       this.progressbar = true; // Show the progress bar
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/supplies/get", {
-          params: {
-            page: this.page,
-            itemsPerPage: this.itemsPerPage,
-            search: this.search,
-          },
+        .get("api/supplies/get", { params: { page: this.page, itemsPerPage: this.itemsPerPage, search: this.search,},
         })
         .then((result) => {
           // If the value is true then get the data

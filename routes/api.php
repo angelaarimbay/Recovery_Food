@@ -18,6 +18,12 @@ use Illuminate\Support\Facades\Route;
    Route::post('productssub/save', 'Categories\ProductsSubCategoryController@save');
    Route::get('productssub/get', 'Categories\ProductsSubCategoryController@get');
 
+   // Inventory
+   Route::post('msupp/save', 'Inventory\MasterlistSuppliesController@save');
+   Route::get('msupp/get', 'Inventory\MasterlistSuppliesController@get');
+   Route::get('msupp/suppCat', 'Inventory\MasterlistSuppliesController@suppCat');
+   Route::get('msupp/validateItem', 'Inventory\MasterlistSuppliesController@validateItem');
+   Route::get('msupp/sum', 'Inventory\MasterlistSuppliesController@sum');
    
  
     // // dashboard
