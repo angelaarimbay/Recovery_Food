@@ -14,7 +14,6 @@ export default {
 
         //Branches
         { path: '/manage_branches', name: 'branches', component: page('manage_branches.vue') },
-        { path: '/branches_info', name: 'branches', component: page('branches_info.vue') },
         { path: '/branches_inventory', name: 'branches', component: page('branches_inventory.vue') },
 
         //Categories

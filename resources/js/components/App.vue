@@ -9,7 +9,6 @@
         <router-view></router-view>
       </v-container>
     </v-main>
-
     <ft />
   </v-app>
 </template>

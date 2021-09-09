@@ -106,17 +106,6 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/branches_info"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Branches Info</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
               to="/branches_inventory"
             >
               <v-list-item-icon class="me-3">

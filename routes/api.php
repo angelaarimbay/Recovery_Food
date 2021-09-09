@@ -5,8 +5,6 @@ use Illuminate\Support\Facades\Route;
    Route::post('branches/attachment', 'Branches\BranchesController@attachment'); //post nga lang e
    Route::post('branches/save', 'Branches\BranchesController@save');
    Route::get('branches/get', 'Branches\BranchesController@get');
-   Route::get('branches/list', 'Branches\BranchesController@branchlist');
-   Route::get('branches/test', 'Branches\BranchesController@test');
 
    // Supplies Category
    Route::post('supplies/save', 'Categories\SuppliesCategoryController@save');

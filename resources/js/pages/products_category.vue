@@ -6,8 +6,6 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
-      app
-      bottom
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -29,11 +27,16 @@
 
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Categories</h5>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Categories
+        </h4>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
-        <v-card-actions class="px-0">
+        <v-card-actions class="px-0 py-0">
           <v-btn
             :small="$vuetify.breakpoint.smAndDown"
             plain
@@ -63,7 +66,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="pl-0">
             <v-btn
-              color="#00794b"
+              color="primary"
               style="text-transform: none"
               depressed
               dark
@@ -92,7 +95,7 @@
               <v-list class="p-0">
                 <v-row no-gutters>
                   <!-- Items Per Page -->
-                  <v-col cols="4" xl="2" lg="2" md="3" sm="4">
+                  <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
                     <v-card-actions>
                       <v-select
                         style="max-width: 82px"
@@ -118,6 +121,7 @@
                     md="6"
                     sm="8"
                     style="max-width: 230px"
+                    class="my-auto"
                   >
                     <v-card-actions>
                       <v-text-field
@@ -127,15 +131,22 @@
                         dense
                         clearable
                       ></v-text-field>
-                      <v-btn
-                        :small="$vuetify.breakpoint.smAndDown"
-                        :large="$vuetify.breakpoint.mdAndUp"
-                        color="red darken-2"
-                        icon
-                        @click="get"
-                      >
-                        <v-icon>mdi-magnify</v-icon></v-btn
-                      >
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            :small="$vuetify.breakpoint.smAndDown"
+                            :large="$vuetify.breakpoint.mdAndUp"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            @click="get"
+                            class="mb-3"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
                     </v-card-actions>
                   </v-col>
                 </v-row>
@@ -156,7 +167,7 @@
           >
             <!-- Progress Bar -->
             <v-progress-linear
-              color="red"
+              color="red darken-2"
               class="px-0 mx-0"
               slot="progress"
               indeterminate

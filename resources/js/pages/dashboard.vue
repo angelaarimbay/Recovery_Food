@@ -2,19 +2,27 @@
   <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Dashboard</h5>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Dashboard
+        </h4>
         <v-spacer></v-spacer>
+
+        <!-- Cards Settings -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
               elevation="2"
+              :small="$vuetify.breakpoint.xsOnly"
               icon
               dark
               class="red darken-2 mx-1"
               v-on="data.on"
               @click="sheet = !sheet"
             >
-              <v-icon size="25" dark>mdi-settings</v-icon>
+              <v-icon dark>mdi-settings</v-icon>
             </v-btn>
           </template>
           <span>Manage Cards</span>
@@ -34,6 +42,7 @@
               Close
             </v-btn>
 
+            <!-- Cards -->
             <v-row no-gutters>
               <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                 <v-row

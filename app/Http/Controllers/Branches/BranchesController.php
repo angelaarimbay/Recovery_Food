@@ -64,13 +64,4 @@ class BranchesController extends Controller
         $img->storeAs('public/branches', $newfilename);
         return ['fakename' => $img->getClientOriginalName(), 'filename' => $newfilename];
     }
-    public function branchlist()
-    {
-        return tbl_branches::all();
-    }
-
-    public function test(Request $param)
-    { //conroller
-        return tbl_branches::all();
-    }
 }

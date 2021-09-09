@@ -6,8 +6,6 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
-      app
-      bottom
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -29,11 +27,16 @@
 
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Branches</h5>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Branches
+        </h4>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
-        <v-card-actions class="px-0">
+        <v-card-actions class="px-0 py-0">
           <v-btn
             :small="$vuetify.breakpoint.smAndDown"
             plain
@@ -92,7 +95,7 @@
               <v-list class="p-0">
                 <v-row no-gutters>
                   <!-- Items Per Page -->
-                  <v-col cols="4" xl="2" lg="2" md="3" sm="4">
+                  <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
                     <v-card-actions>
                       <v-select
                         style="max-width: 82px"
@@ -118,6 +121,7 @@
                     md="6"
                     sm="8"
                     style="max-width: 230px"
+                    class="my-auto"
                   >
                     <v-card-actions>
                       <v-text-field
@@ -136,6 +140,7 @@
                             icon
                             v-on="data.on"
                             @click="get"
+                            class="mb-3"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -162,7 +167,7 @@
           >
             <!-- Progress Bar -->
             <v-progress-linear
-              color="red"
+              color="red darken-2"
               class="px-0 mx-0"
               slot="progress"
               indeterminate
@@ -175,7 +180,7 @@
             <template v-slot:[`item.status`]="{ item }">
               <v-chip
                 style="justify-content: center"
-                :style="widthSize"
+                :style="chipWidth"
                 :small="$vuetify.breakpoint.smAndDown"
                 :color="
                   item.status === 'Active'
@@ -190,13 +195,21 @@
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-eye</v-icon>
-              </v-btn>
+              <!-- Actions Button -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                    @click="openViewDialog(item)"
+                  >
+                    <v-icon>mdi-eye</v-icon>
+                  </v-btn>
+                </template>
+                <span>View</span>
+              </v-tooltip>
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -225,7 +238,117 @@
           </div>
         </v-container>
 
-        <!--Dialog Form-->
+        <!-- View Dialog Form -->
+        <v-form ref="form">
+          <v-dialog v-model="viewdialog" max-width="500px">
+            <v-toolbar
+              dense
+              dark
+              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+            >
+              View Branch
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="closeViewDialog"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
+            </v-toolbar>
+            <v-card tile style="background-color: #f5f5f5">
+              <v-container class="px-xl-9 px-lg-9 px-md-9 px-sm-8 px-5">
+                <v-card-title
+                  class="
+                    font-weight-bold
+                    justify-center
+                    py-xl-3 py-lg-3 py-md-2 py-sm-2 py-1
+                    my-0
+                  "
+                  :class="{
+                    'body-2': $vuetify.breakpoint.xsOnly,
+                    h6: $vuetify.breakpoint.smOnly,
+                    h5: $vuetify.breakpoint.mdAndUp,
+                  }"
+                  style="color: #827717"
+                >
+                  {{ form.branch_name }}
+                </v-card-title>
+                <v-img
+                  style="border-radius: 10px"
+                  :src="'/storage/branches/' + form.branch_image"
+                  class="mx-auto mb-4"
+                  max-width="480px"
+                  max-height="300px"
+                ></v-img>
+                <v-card-text
+                  class="px-0 py-1 my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1"
+                  :class="{
+                    'body-2': $vuetify.breakpoint.xsOnly,
+                    h6: $vuetify.breakpoint.smAndUp,
+                  }"
+                >
+                  <v-row no-gutters>
+                    <v-col cols="1">
+                      <v-icon
+                        color="red darken-2"
+                        :small="$vuetify.breakpoint.xsOnly"
+                        >mdi-map-marker</v-icon
+                      ></v-col
+                    ><v-col cols="11" class="my-auto">{{
+                      form.location
+                    }}</v-col></v-row
+                  >
+                </v-card-text>
+                <v-card-text
+                  class="px-0 py-1 my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1"
+                  :class="{
+                    'body-2': $vuetify.breakpoint.xsOnly,
+                    h6: $vuetify.breakpoint.smAndUp,
+                  }"
+                >
+                  <v-row no-gutters>
+                    <v-col cols="1">
+                      <v-icon
+                        color="red darken-2"
+                        :small="$vuetify.breakpoint.xsOnly"
+                        >mdi-email</v-icon
+                      ></v-col
+                    ><v-col cols="11" class="my-auto">{{
+                      form.email_add
+                    }}</v-col></v-row
+                  >
+                </v-card-text>
+                <v-card-text
+                  class="px-0 py-1 my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1"
+                  :class="{
+                    'body-2': $vuetify.breakpoint.xsOnly,
+                    h6: $vuetify.breakpoint.smAndUp,
+                  }"
+                >
+                  <v-row no-gutters>
+                    <v-col cols="1">
+                      <v-icon
+                        color="red darken-2"
+                        :small="$vuetify.breakpoint.xsOnly"
+                        >mdi-phone</v-icon
+                      ></v-col
+                    ><v-col cols="11" class="my-auto">{{
+                      form.phone_number
+                    }}</v-col></v-row
+                  >
+                </v-card-text>
+              </v-container>
+            </v-card>
+          </v-dialog>
+        </v-form>
+
+        <!-- Dialog Form-->
         <v-form ref="form">
           <v-dialog v-model="dialog" max-width="450px">
             <v-toolbar
@@ -367,9 +490,10 @@
                       <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
                       <!-- Check if has image, then display the image -->
                       <div v-if="form.branch_image">
-                        Uploaded Image :
+                        Image:
                         <a
                           :href="'/storage/branches/' + form.branch_image"
+                          style="text-decoration: none"
                           download
                         >
                           {{ tempfile }}
@@ -385,9 +509,9 @@
 
                       <!-- Progressbar for uploading -->
                       <v-progress-linear
-                        v-show="progressbar"
+                        v-show="loading"
                         slot="progress"
-                        color="green"
+                        color="red darken-2"
                         indeterminate
                       ></v-progress-linear>
 
@@ -398,7 +522,7 @@
                         class="btn-block"
                         style="text-transform: none"
                         @click="clickupload"
-                        ><v-icon>mdi-upload</v-icon> Upload File
+                        ><v-icon>mdi-upload</v-icon> Upload Image
                       </v-btn>
 
                       <!-- For uploading  -->
@@ -481,6 +605,7 @@ import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
     progressbar: false,
+    loading: false,
     snackbar: {
       active: false,
       message: "",
@@ -489,6 +614,7 @@ export default {
     editedIndex: -1,
     button: false,
     dialog: false,
+    viewdialog: false,
     status: ["Active", "Inactive"],
     deleteid: "",
     tempfile: "", //----------------------------------upload
@@ -541,9 +667,9 @@ export default {
     itemsPerPage: 5,
   }),
 
-  // Dynamic Width
+  // Dynamic Chip Width
   computed: {
-    widthSize() {
+    chipWidth() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
           return { width: "65px" };
@@ -601,7 +727,6 @@ export default {
       if (this.$refs.form.validate()) {
         // Validate first before compare
         if (this.compare()) {
-          console.log(this.form);
           // Save or update data in the table
           await axios
             .post("api/branches/save", this.form)
@@ -636,6 +761,7 @@ export default {
         }
       }
     },
+
     async get() {
       this.progressbar = true; // Show the progress bar
       // Get data from tables
@@ -676,7 +802,10 @@ export default {
       this.tempfile = "";
       this.form.branch_image = "";
     },
+
+    // For attachment
     async attachment(e) {
+      this.loading = true;
       var dataform = new FormData(); // Can use typical jquery form data
       dataform.append("file", e.target.files[0]);
 
@@ -687,6 +816,7 @@ export default {
         .then((result) => {
           this.tempfile = result.data.fakename;
           this.form.branch_image = result.data.filename;
+          this.loading = false;
         });
     },
     // For uploading
@@ -710,16 +840,38 @@ export default {
       this.dialog = true;
     },
 
+    // View Branch Info
+    openViewDialog(row) {
+      this.currentdata = JSON.parse(JSON.stringify(row));
+      this.form.id = row.id;
+      this.form.status = row.status;
+      this.form.branch_name = row.branch_name;
+      this.form.location = row.location;
+      this.form.phone_number = row.phone_number;
+      this.form.email_add = row.email_add;
+      this.form.branch_image = row.branch_image;
+      this.tempfile = row.branch_image ? row.branch_image.split("-")[0] : null;
+      this.viewdialog = true;
+    },
+
     // Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
+    },
+
+    // Close View Dialog
+    closeViewDialog() {
+      this.viewdialog = false;
     },
   },
 
   watch: {
     dialog(val) {
       val || this.cancel();
+    },
+    viewdialog(val) {
+      val || this.closeViewDialog();
     },
     page(val) {
       this.page = val;
