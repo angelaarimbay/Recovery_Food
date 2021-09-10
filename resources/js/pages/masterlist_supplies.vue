@@ -327,11 +327,10 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumberRange"
                         v-model="form.status"
                         outlined
-                        dense
-                        clearable
+                        dense 
                         :items="status"
                         item-text="name"
                         item-value="id"
@@ -601,7 +600,7 @@ export default {
       { name: "Active", id: 1 },
       { name: "Inactive", id: 0 },
     ],
-    supply_id: '',
+    supply_id: "",
     deleteid: "",
     tempfile: "",
     table: [],
@@ -630,7 +629,6 @@ export default {
       description: null,
       unit: null,
       net_price: null,
-      with_vat: null,
       vat: 1.12,
       without_vat: null,
       exp_date: null,
@@ -713,7 +711,13 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          found += 1;
+          if(key == 'category'){ 
+              if(this.currentdata.category.id == this.form.category){
+                found += 1; 
+              }
+          }else{ 
+            found += 1;
+          }
         }
       }
       //if has changes
@@ -795,29 +799,26 @@ export default {
       await axios
         .get("api/msupp/sum", {
           params: {
-            id: this.supply_id
-
+            id: this.supply_id,
           },
         })
         .then((result) => {
           // If the value is true then get the data
-          console.log(result.data);
-        
         })
         .catch((result) => {
           // If false or error when saving
         });
     },
 
-     async validateItem() {
+    async validateItem() {
       await axios
         .get("api/msupp/validateItem", {
           params: {
-            name: this.form.supply_name
+            name: this.form.supply_name,
           },
         })
         .then((result) => {
-            this.supply_id = result.data
+          this.supply_id = result.data;
         })
         .catch((result) => {
           // If false or error when saving
@@ -833,12 +834,12 @@ export default {
     compute() {
       if (this.vat == true) {
         this.form.without_vat = (this.form.net_price / this.form.vat).toFixed(
-          6
+          2
         );
       } else {
         this.form.without_vat = this.form.net_price;
       }
-      this.sum()
+      this.sum();
     },
 
     // Editing/updating of row
@@ -851,7 +852,6 @@ export default {
       this.form.description = row.description;
       this.form.unit = row.unit;
       this.form.net_price = row.net_price;
-      this.form.with_vat = row.with_vat;
       this.form.vat = row.vat;
       this.form.without_vat = row.without_vat;
       this.form.exp_date = row.exp_date;

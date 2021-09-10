@@ -34,7 +34,6 @@ class MasterlistSuppliesController extends Controller
                  'supply_name'=>$data->supply_name,
                  'description'=>$data->description,
                  'unit'=>$data->unit,
-                 'with_vat'=>$data->with_vat,
                  'vat'=>$data->vat,
                  'without_vat'=>$data->without_vat,
                  'exp_date'=>$data->exp_date,
@@ -50,7 +49,7 @@ class MasterlistSuppliesController extends Controller
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_masterlistsupp::with('category')->where("status", '!=', null);
-            $table_clone = clone $table;   // Get all items from suppcat
+            $table_clone = clone $table;   // Get all items from masterlistsupplies
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
@@ -60,6 +59,8 @@ class MasterlistSuppliesController extends Controller
 
     public function suppCat()
     {
+        // return tbl_masterlistsupp::with('category')->select("category")->get();
+        // return tbl_masterlistsupp::select("category")->get();
         return tbl_suppcat::select(['supply_cat_name','id'])->get();
     }
 

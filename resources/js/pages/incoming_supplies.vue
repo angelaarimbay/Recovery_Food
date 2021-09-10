@@ -567,23 +567,153 @@ export default {
     date2: false,
   }),
 
-  
+  // Onload
+  created() {
+    this.get();
+    this.suppCat();
+  },
+
   methods: {
-    test() {
-      alert("Sample");
+    itemperpage() {
+      this.page = 1;
+      this.get();
     },
+
+    // Format for everytime we call on database
+    // Always add await and async
+    compare() {
+      // Compare exsiting data vs edited data
+      // If nothing change then no request
+      if (!this.currentdata) {
+        return true;
+      }
+      // Check if not existed
+      // Check each value if the same or not
+      var found = 0;
+      for (var key in this.form) {
+        if (this.currentdata[key] != this.form[key]) {
+          found += 1;
+        }
+      }
+      //if has changes
+      if (found > 0) {
+        return true;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "warning",
+          message: "No changes has been made.",
+        };
+        this.cancel();
+      }
+    },
+
+    // Saving data to database
+    async save() {
+      if (this.$refs.form.validate()) {
+        // Validate first before compare
+        if (this.compare()) {
+          // Save or update data in the table
+          await axios
+            .post("api/isupp/save", this.form)
+            .then((result) => {
+              //if the value is true then save to database
+              switch (result.data) {
+                case 0:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully saved.",
+                  };
+                  this.get();
+                  this.cancel();
+                  break;
+                case 1:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert",
+                    iconColor: "error",
+                    message: "The supply name already exists.",
+                  };
+                  break;
+                default:
+                  break;
+              }
+            })
+            .catch((result) => {
+              // If false or error when saving
+            });
+        }
+      }
+    },
+    async get() {
+      this.progressbar = true; // Show the progress bar
+      // Get data from tables
+      this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+      await axios
+        .get("api/isupp/get", {
+          params: {
+            page: this.page,
+            itemsPerPage: this.itemsPerPage,
+            search: this.search,
+          },
+        })
+        .then((result) => {
+          // If the value is true then get the data
+          this.table = result.data;
+          this.progressbar = false; // Hide the progress bar
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async suppCat() {
+      await axios.get("api/isupp/suppCat").then((supp_cat) => {
+        this.suppcatlist = supp_cat.data;
+      });
+    },
+
+    // Editing/updating of row
+    edit(row) {
+      this.currentdata = JSON.parse(JSON.stringify(row));
+      this.form.id = row.id;
+      this.form.invoice_number = row.invoice_number;
+      this.form.supplier_name = row.supplier_name;
+      this.form.supplier_description = row.supplier_description;
+      this.form.category = row.category;
+      this.form.supply_name = row.supply_name;
+      this.form.supply_description = supply_description.unit;
+      this.form.unit = row.unit;
+      this.form.quantity = row.quantity;
+      this.form.vat = row.vat;
+      this.form.amount = row.amount;
+
+      this.dialog = true;
+    },
+
+    // Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
+
+    // Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
+
   watch: {
     dialog(val) {
-      //   alert("yes") // uncomment mo to then try mo press ung button,  ito ung nag tritriger pag ni open mo ung dialog
+      val || this.cancel();
+    },
+    page(val) {
+      this.page = val;
+      this.get();
     },
     id: {
       handler: function (v) {},
