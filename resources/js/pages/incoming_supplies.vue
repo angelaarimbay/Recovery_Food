@@ -155,7 +155,15 @@
                 <v-row no-gutters>
                   <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
                     <v-card-actions class="py-0">
-                      <v-select class="my-0" clearable dense label="Category">
+                      <v-select
+                        :items="suppcatlist"
+                        item-text="supply_cat_name"
+                        item-value="id"
+                        class="my-0"
+                        clearable
+                        dense
+                        label="Category"
+                      >
                       </v-select>
                     </v-card-actions>
                   </v-col>
@@ -299,65 +307,14 @@
                       sm="12"
                       md="12"
                     >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.invNumber"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Invoice Number *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
                         :rules="formRules"
-                        v-model="form.supplierName"
+                        v-model="form.category"
                         outlined
                         dense
+                        :items="suppcatlist"
                         clearable
-                        item-text="name"
-                        item-value="id"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Supplier Name *</div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
-                      <v-text-field
-                        v-model="form.supplierDesc"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">
-                            Supplier Description
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-select
-                        :rules="formRules"
-                        v-model="form.supplyCat"
-                        outlined
-                        dense
-                        clearable
-                        item-text="name"
+                        item-text="supply_cat_name"
                         item-value="id"
                       >
                         <template slot="label">
@@ -366,10 +323,6 @@
                       </v-select>
                     </v-col>
 
-                    <v-col class="pt-0">
-                      <hr class="mt-0" />
-                    </v-col>
-
                     <v-col
                       class="py-0"
                       cols="12"
@@ -380,11 +333,12 @@
                     >
                       <v-select
                         :rules="formRules"
-                        v-model="form.supplyName"
+                        v-model="form.supply_name"
                         outlined
                         dense
+                        :items="suppnamelist"
                         clearable
-                        item-text="name"
+                        item-text="supply_name"
                         item-value="id"
                       >
                         <template slot="label">
@@ -393,71 +347,27 @@
                       </v-select>
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
+                    <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-text-field
-                        v-model="form.supplyDesc"
+                        :rules="formRules"
+                        v-model="form.quantity"
                         outlined
                         clearable
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Supply Description</div>
+                          <div style="font-size: 14px">Quantity *</div>
                         </template>
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
-                      <v-select
-                        :rules="formRules"
-                        v-model="form.supplyUnit"
-                        outlined
-                        dense
-                        clearable
-                        item-text="name"
-                        item-value="id"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Supply Unit *</div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.invNumber"
+                        v-model="form.amount"
                         outlined
                         clearable
                         dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Supply Quantity *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.totalAmt"
-                        outlined
-                        clearable
-                        dense
-                        hide-details
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Amount *</div>
@@ -518,6 +428,8 @@ export default {
     deleteid: "",
     tempfile: "",
     table: [],
+    suppcatlist: [],
+    suppnamelist: [],
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
@@ -531,15 +443,8 @@ export default {
 
     // Form Data
     form: {
-      invoice_number: null,
-      supplier_name: null,
-      supplier_description: null,
       category: null,
       supply_name: null,
-      supply_description: null,
-      unit: null,
-      net_price: null,
-      with_vat: null,
       quantity: null,
       amount: null,
     },
@@ -550,12 +455,11 @@ export default {
     // Table Headers
     headers: [
       { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Invoice Number", align: "right", value: "invoice_number" },
-      { text: "Category", value: "category" },
-      { text: "Supply Name", value: "supply_name" },
-      { text: "Quantity", value: "quantity", filterable: false },
-      { text: "Amount", value: "amount", filterable: false },
-      { text: "Date", value: "timestamp", filterable: false },
+      { text: "Category", value: "category.category" },
+      { text: "Supply Name", value: "suppname.supply_name" },
+      { text: "Quantity", value: "quantity", align: "right", filterable: false },
+      { text: "Amount", value: "amount", align: "right", filterable: false },
+      { text: "Date", value: "timestamp", align: "right", filterable: false },
       { text: "Actions", value: "actions", sortable: false, filterable: false },
     ],
     page: 1,
@@ -571,6 +475,7 @@ export default {
   created() {
     this.get();
     this.suppCat();
+    this.suppName();
   },
 
   methods: {
@@ -676,19 +581,19 @@ export default {
       });
     },
 
+    async suppName() {
+      await axios.get("api/isupp/suppName").then((supp_name) => {
+        this.suppnamelist = supp_name.data;
+      });
+    },
+
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
-      this.form.invoice_number = row.invoice_number;
-      this.form.supplier_name = row.supplier_name;
-      this.form.supplier_description = row.supplier_description;
       this.form.category = row.category;
       this.form.supply_name = row.supply_name;
-      this.form.supply_description = supply_description.unit;
-      this.form.unit = row.unit;
       this.form.quantity = row.quantity;
-      this.form.vat = row.vat;
       this.form.amount = row.amount;
 
       this.dialog = true;

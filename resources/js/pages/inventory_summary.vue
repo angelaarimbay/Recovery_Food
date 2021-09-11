@@ -2,25 +2,33 @@
   <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Inventory</h5>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Inventory
+        </h4>
         <v-spacer></v-spacer>
-        <v-card-actions class="px-0">
+
+        <!-- Breadcrumbs -->
+        <v-card-actions class="px-0 py-0">
           <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
             plain
-            small
+            color="primary"
             v-ripple="false"
             to="/dashboard"
             class="px-0"
-            style="text-decoration: none; text-transform: none; font-size: 11px"
+            style="text-decoration: none; text-transform: none"
             >Home</v-btn
           >
           /
           <v-btn
-            small
+            :small="$vuetify.breakpoint.smAndDown"
             text
             disabled
             class="px-0"
-            style="text-transform: none; font-size: 11px"
+            style="text-transform: none"
             >Inventory Summary</v-btn
           >
         </v-card-actions>
@@ -33,15 +41,9 @@
           <v-data-table
             :headers="headers"
             :data="table"
-            :page.sync="page"
-            :items-per-page="itemsPerPage"
             hide-default-footer
-            @page-count="pageCount = $event"
           >
           </v-data-table>
-          <div class="text-center pt-2">
-            <v-pagination v-model="page" :length="pageCount"></v-pagination>
-          </div>
         </v-container>
       </v-container>
     </v-card>
@@ -86,9 +88,6 @@ export default {
       },
     ],
     search: "",
-    page: 1,
-    pageCount: 0,
-    itemsPerPage: 10,
   }),
 };
 </script>

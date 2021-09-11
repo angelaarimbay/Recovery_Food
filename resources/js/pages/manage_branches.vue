@@ -394,7 +394,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -415,7 +415,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -436,7 +436,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -457,7 +457,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -478,7 +478,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"

@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\tbl_incomingsupp;
+use App\Models\tbl_outgoingsupp;
 use App\Models\tbl_suppcat;
 use App\Models\tbl_masterlistsupp;
+use App\Models\tbl_branches;
 use Illuminate\Support\Facades\DB;
 
-class IncomingSuppliesController extends Controller
+class OutgoingSuppliesController extends Controller
 {
     public function save(Request $data)
     {
-        $table = tbl_incomingsupp::all();
+        $table = tbl_outgoingsupp::all();
 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
@@ -23,11 +24,11 @@ class IncomingSuppliesController extends Controller
                 ['category'=>$data->category,
                  'supply_name'=>$data->supply_name,
                  'quantity'=>$data->quantity,
-                 'amount'=>$data->amount,
+                 'requesting_branch'=>$data->requesting_branch,
                 ]
             );
         } else {
-            tbl_incomingsupp::create($data->all());
+            tbl_outgoingsupp::create($data->all());
         }
         return 0;
     }
@@ -36,13 +37,13 @@ class IncomingSuppliesController extends Controller
     {
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
-            $table = tbl_incomingsupp::with(['category','supply_name']);
-            $table_clone = clone $table;   // Get all items from incomingsupplies
+            $table = tbl_outgoingsupp::with(['category','supply_name','branch_name']);
+            $table_clone = clone $table;   // Get all items from outgoingsupplies
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
         // Else
-        return  tbl_incomingsupp::with(['category','supply_name'])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
+        return  tbl_outgoingsupp::with(['category','supply_name','branch_name'])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
     }
 
     public function suppCat()
@@ -53,5 +54,10 @@ class IncomingSuppliesController extends Controller
     public function suppName()
     {
         return tbl_masterlistsupp::select(['supply_name','id'])->get();
+    }
+
+    public function branchName()
+    {
+        return tbl_branches::select(['branch_name','id'])->get();
     }
 }

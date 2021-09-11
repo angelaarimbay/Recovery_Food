@@ -232,7 +232,15 @@
                 <v-row no-gutters>
                   <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
                     <v-card-actions class="py-0">
-                      <v-select class="my-0" clearable dense label="Category">
+                      <v-select
+                        :items="suppcatlist"
+                        item-text="supply_cat_name"
+                        item-value="id"
+                        class="my-0"
+                        clearable
+                        dense
+                        label="Category"
+                      >
                       </v-select>
                     </v-card-actions>
                   </v-col>
@@ -327,10 +335,11 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRulesNumberRange"
+                        :rules="formRulesNumber"
                         v-model="form.status"
                         outlined
-                        dense 
+                        dense
+                        clearable
                         :items="status"
                         item-text="name"
                         item-value="id"
@@ -711,11 +720,11 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          if(key == 'category'){ 
-              if(this.currentdata.category.id == this.form.category){
-                found += 1; 
-              }
-          }else{ 
+          if (key == "category") {
+            if (this.currentdata.category.id == this.form.category) {
+              found += 1;
+            }
+          } else {
             found += 1;
           }
         }
