@@ -14,5 +14,4 @@ class tbl_masterlistsupp extends Model
     {
         return $this->hasOne(tbl_suppcat::class, 'id', 'category');
     }
-    //
 }

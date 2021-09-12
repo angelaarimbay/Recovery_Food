@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTblSuppcatsTable extends Migration
+class CreateTblOutgoingprodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreateTblSuppcatsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_suppcats', function (Blueprint $table) {
-            $table->id(); 
-            $table->string('supply_cat_name');
-            $table->integer('status')->default(1); //0 = inactive, else active
+        Schema::create('tbl_outgoingprods', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ class CreateTblSuppcatsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_suppcats');
+        Schema::dropIfExists('tbl_outgoingprods');
     }
 }

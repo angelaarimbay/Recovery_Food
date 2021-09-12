@@ -34,13 +34,14 @@ class MasterlistSuppliesController extends Controller
                  'supply_name'=>$data->supply_name,
                  'description'=>$data->description,
                  'unit'=>$data->unit,
+                 'with_vat'=>$data->net_price,
                  'vat'=>$data->vat,
                  'without_vat'=>$data->without_vat,
                  'exp_date'=>$data->exp_date,
                 ]
             );
         } else {
-            tbl_masterlistsupp::create($data->all());
+            tbl_masterlistsupp::create($data->all() + ['with_vat'=>$data->net_price]);
         }
         return 0;
     }
@@ -53,6 +54,7 @@ class MasterlistSuppliesController extends Controller
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
+        
         // Else
         return  tbl_masterlistsupp::with('category')->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
     }
@@ -61,13 +63,13 @@ class MasterlistSuppliesController extends Controller
     {
         // return tbl_masterlistsupp::with('category')->select("category")->get();
         // return tbl_masterlistsupp::select("category")->get();
-        return tbl_suppcat::select(['supply_cat_name','id'])->get();
+        return tbl_suppcat::select(['supply_cat_name','id'])->where('status',1)->get();
     }
 
 
     public function validateItem(Request $t) {
         try {
-            return tbl_masterlistsupp::where('supply_name',$t->name)->first()->id;
+           return tbl_masterlistsupp::where('supply_name',$t->name)->get();
         } catch (Throwable $th) { 
             return false;
         }

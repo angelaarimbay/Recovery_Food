@@ -183,15 +183,15 @@
                 :style="widthSize"
                 :small="$vuetify.breakpoint.smAndDown"
                 :color="
-                  item.status === 'Active'
+                  item.status == '1'
                     ? '#43A047'
-                    : item.status === 'Inactive'
+                    : item.status == '0'
                     ? '#FF6F00'
                     : ''
                 "
                 dark
               >
-                {{ item.status }}
+                {{ item.status == 1 ? "Active" : "Inactive" }}
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
@@ -247,11 +247,10 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.status"
                         outlined
                         dense
-                        clearable
                         :items="status"
                         item-text="name"
                         item-value="id"
@@ -346,7 +345,10 @@ export default {
     editedIndex: -1,
     button: false,
     dialog: false,
-    status: ["Active", "Inactive"],
+    status: [
+      { name: "Active", id: 1 },
+      { name: "Inactive", id: 0 },
+    ],
     deleteid: "",
     tempfile: "",
     table: [],
@@ -489,20 +491,17 @@ export default {
       }
     },
 
-
-    async gettest(test=''){
-        await axios.get('api/test/url',{params:{id:1,title:'test lang na title' }})
-        .then(abc=>{
-          console.log(abs.data)
-        })
-    },
- 
     async get() {
       this.progressbar = true; // Show the progress bar
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/supplies/get", { params: { page: this.page, itemsPerPage: this.itemsPerPage, search: this.search,},
+        .get("api/supplies/get", {
+          params: {
+            page: this.page,
+            itemsPerPage: this.itemsPerPage,
+            search: this.search,
+          },
         })
         .then((result) => {
           // If the value is true then get the data

@@ -183,15 +183,15 @@
                 :style="widthSize"
                 :small="$vuetify.breakpoint.smAndDown"
                 :color="
-                  item.status === 'Active'
+                  item.status == '1'
                     ? '#43A047'
-                    : item.status === 'Inactive'
+                    : item.status == '0'
                     ? '#FF6F00'
                     : ''
                 "
                 dark
               >
-                {{ item.status }}
+                {{ item.status == 1 ? "Active" : "Inactive" }}
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
@@ -247,7 +247,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.status"
                         outlined
                         dense
@@ -348,7 +348,10 @@ export default {
     editedIndex: -1,
     button: false,
     dialog: false,
-    status: ["Active", "Inactive"],
+    status: [
+      { name: "Active", id: 1 },
+      { name: "Inactive", id: 0 },
+    ],
     deleteid: "",
     tempfile: "",
     table: [],

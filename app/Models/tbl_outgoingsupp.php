@@ -17,13 +17,14 @@ class tbl_outgoingsupp extends Model
         return $this->hasOne(tbl_suppcat::class, 'id', 'category');
     }
 
-    public function suppname()
+    public function supply_name()
     {
         return $this->hasOne(tbl_masterlistsupp::class, 'id', 'supply_name');
     }
 
-    public function branchname()
+    
+    public function requesting_branch()
     {
-        return $this->hasOne(tbl_branches::class, 'id', 'branch_name');
+        return $this->hasOne(tbl_branches::class, 'id', 'requesting_branch');
     }
 }

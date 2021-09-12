@@ -16,7 +16,7 @@ class tbl_incomingsupp extends Model
         return $this->hasOne(tbl_suppcat::class, 'id', 'category');
     }
 
-    public function suppname()
+    public function supply_name()
     {
         return $this->hasOne(tbl_masterlistsupp::class, 'id', 'supply_name');
     }

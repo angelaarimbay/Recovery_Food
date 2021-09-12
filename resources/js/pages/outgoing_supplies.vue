@@ -273,7 +273,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
-
+            <template v-slot:[`item.created_at`]="{ item }">
+              {{ getFormatDate(item.created_at, "MM/DD/YYYY") }}</template
+            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -445,6 +447,19 @@
   </div>
 </template>
 
+<style>
+.v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
+</style>
+
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
@@ -488,14 +503,27 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Category", value: "category.category" },
-      { text: "Supply Name", value: "suppname.supply_name" },
-      { text: "Quantity", value: "quantity", filterable: false },
-      { text: "Amount", value: "amount", filterable: false },
-      { text: "Branch", value: "branchname.requesting_branch", filterable: false },
-      { text: "Date", value: "timestamp", filterable: false },
-      { text: "Actions", value: "actions", sortable: false, filterable: false },
+      { text: "#", value: "count", align: "start", filterable: false },
+      {
+        text: "Category",
+        value: "category.supply_cat_name",
+        filterable: false,
+      },
+      { text: "Supply Name", value: "supply_name.supply_name" },
+      {
+        text: "Quantity",
+        value: "quantity",
+        align: "right",
+        filterable: false,
+      },
+      { text: "Amount", value: "amount", align: "right", filterable: false },
+      {
+        text: "Branch",
+        value: "requesting_branch.branch_name",
+        filterable: false,
+      },
+      { text: "Date", value: "created_at", align: "right", filterable: false },
+      { text: "Actions", value: "id", sortable: false, filterable: false },
     ],
     page: 1,
     pageCount: 0,
@@ -520,6 +548,11 @@ export default {
       this.get();
     },
 
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+
     // Format for everytime we call on database
     // Always add await and async
     compare() {
@@ -533,7 +566,27 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          found += 1;
+          if (key == "category") {
+            if (this.currentdata.category) {
+              if (this.currentdata.category.id != this.form.category) {
+                found += 1;
+              }
+            }
+          } else if (key == "supply_name") {
+            if (this.currentdata.supply_name) {
+              if (this.currentdata.supply_name.id != this.form.supply_name) {
+                found += 1;
+              }
+            }
+          } else if (key == "requesting_branch") {
+            if (this.currentdata.requesting_branch) {
+              if (this.currentdata.requesting_branch.id != this.form.requesting_branch) {
+                found += 1;
+              }
+            }
+          } else {
+            found += 1;
+          }
         }
       }
       //if has changes
@@ -559,6 +612,7 @@ export default {
           await axios
             .post("api/osupp/save", this.form)
             .then((result) => {
+              console.log(result.data);
               //if the value is true then save to database
               switch (result.data) {
                 case 0:
@@ -626,17 +680,18 @@ export default {
     async branchName() {
       await axios.get("api/osupp/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
-      })
+      });
     },
 
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
+      console.log(this.currentdata);
       this.form.id = row.id;
-      this.form.category = row.category;
-      this.form.supply_name = row.supply_name;
+      this.form.category = row.category.id;
+      this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
-      this.form.requesting_branch = row.requesting_branch;
+      this.form.requesting_branch = row.requesting_branch.id;
 
       this.dialog = true;
     },

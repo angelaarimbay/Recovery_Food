@@ -14,7 +14,7 @@ class OutgoingSuppliesController extends Controller
 {
     public function save(Request $data)
     {
-        $table = tbl_outgoingsupp::all();
+        $table = tbl_outgoingsupp::where('supply_name','!=',0);
 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
@@ -27,6 +27,7 @@ class OutgoingSuppliesController extends Controller
                  'requesting_branch'=>$data->requesting_branch,
                 ]
             );
+            
         } else {
             tbl_outgoingsupp::create($data->all());
         }
@@ -37,27 +38,27 @@ class OutgoingSuppliesController extends Controller
     {
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
-            $table = tbl_outgoingsupp::with(['category','supply_name','branch_name']);
+            $table = tbl_outgoingsupp::with(['category','supply_name','requesting_branch']);
             $table_clone = clone $table;   // Get all items from outgoingsupplies
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
         // Else
-        return  tbl_outgoingsupp::with(['category','supply_name','branch_name'])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
+        return  tbl_outgoingsupp::with(['category','supply_name','requesting_branch'])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
     }
 
     public function suppCat()
     {
-        return tbl_suppcat::select(['supply_cat_name','id'])->get();
+        return tbl_suppcat::select(['supply_cat_name','id'])->where('status',1)->get();
     }
 
     public function suppName()
     {
-        return tbl_masterlistsupp::select(['supply_name','id'])->get();
+        return tbl_masterlistsupp::select(['supply_name','id'])->where('status',1)->get();
     }
 
     public function branchName()
     {
-        return tbl_branches::select(['branch_name','id'])->get();
+        return tbl_branches::select(['branch_name','id'])->where('status',1)->get();
     }
 }

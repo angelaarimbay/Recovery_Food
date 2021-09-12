@@ -13,8 +13,7 @@ class IncomingSuppliesController extends Controller
 {
     public function save(Request $data)
     {
-        $table = tbl_incomingsupp::all();
-
+        $table = tbl_incomingsupp::where('supply_name','!=',0); 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
             // Update
@@ -47,11 +46,12 @@ class IncomingSuppliesController extends Controller
 
     public function suppCat()
     {
-        return tbl_suppcat::select(['supply_cat_name','id'])->get();
+        return tbl_suppcat::select(['supply_cat_name','id'])->where('status',1)->get();
+
     }
 
     public function suppName()
     {
-        return tbl_masterlistsupp::select(['supply_name','id'])->get();
+        return tbl_masterlistsupp::select(['supply_name','id'])->where('status',1)->get();
     }
 }

@@ -5,6 +5,9 @@ function page(path) {
 export default {
     mode: 'history',
     routes: [
+        // Login
+        { path: '/login', name: 'login', component: page('login.vue') },
+
         // { path:'*', component: page('errors/page-not-found.vue') }, 
         // { path:'/',  component: page('login.vue') },  
         { path: '/', name: 'dashboard', component: page('dashboard.vue') },

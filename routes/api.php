@@ -40,6 +40,12 @@ use Illuminate\Support\Facades\Route;
    Route::get('misupp/get', 'Inventory\MainInventoryController@get');
    Route::get('misupp/suppCat', 'Inventory\MainInventoryController@suppCat');
 
+   // Products
+   Route::post('prodlist/save', 'Products\ProductsListController@save');
+   Route::get('prodlist/get', 'Products\ProductsListController@get');
+   Route::get('prodlist/prodCat', 'Products\ProductsListController@prodCat');
+   Route::get('prodlist/prodSubCat', 'Products\ProductsListController@prodSubCat');
+
    
  
     // // dashboard

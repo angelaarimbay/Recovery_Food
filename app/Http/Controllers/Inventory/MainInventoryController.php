@@ -12,7 +12,7 @@ class MainInventoryController extends Controller
 {
     public function save(Request $data)
     {
-        $table = tbl_maininv::all();
+        $table = tbl_maininv::where('supply_name','!=',0);
         
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {

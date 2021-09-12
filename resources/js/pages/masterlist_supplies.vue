@@ -141,14 +141,15 @@
                     sm="12"
                     class="pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3 pa-3"
                   >
-                    <v-text-field
+                    <v-select
                       outlined
                       label="Month Days"
                       hide-details
                       dense
+                      :items="dayslist"
                       clearable
                     >
-                    </v-text-field>
+                    </v-select>
                   </v-col>
                 </v-row>
               </v-sheet>
@@ -339,7 +340,6 @@
                         v-model="form.status"
                         outlined
                         dense
-                        clearable
                         :items="status"
                         item-text="name"
                         item-value="id"
@@ -510,7 +510,6 @@
                             outlined
                             dense
                             v-model="form.exp_date"
-                            hide-details
                             readonly
                             v-bind="attrs"
                             v-on="on"
@@ -614,6 +613,7 @@ export default {
     tempfile: "",
     table: [],
     suppcatlist: [],
+    dayslist: [],
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
@@ -699,9 +699,27 @@ export default {
   created() {
     this.get();
     this.suppCat();
+    this.getDays();
   },
 
   methods: {
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+
+    getDays() {
+      var days = new Date(
+        this.getFormatDate(Date.now(), "Y"),
+        this.getFormatDate(Date.now(), "M"),
+        0
+      ).getDate();
+
+      for (let i = 1; i < days + 1; i++) {
+        this.dayslist.push(i);
+      }
+    },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -721,8 +739,10 @@ export default {
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
           if (key == "category") {
-            if (this.currentdata.category.id == this.form.category) {
-              found += 1;
+            if (this.currentdata.category) {
+              if (this.currentdata.category.id == this.form.category) {
+                found += 1;
+              }
             }
           } else {
             found += 1;
@@ -827,7 +847,9 @@ export default {
           },
         })
         .then((result) => {
-          this.supply_id = result.data;
+          try {
+            this.supply_id = result.data.id;
+          } catch (error) {}
         })
         .catch((result) => {
           // If false or error when saving

@@ -226,7 +226,7 @@ export default {
       { text: "#", value: "#", align: "start", filterable: false },
       { text: "Supply Name", value: "supply name" },
       { text: "Quantity", value: "quantity", filterable: false },
-      { text: "Action(s)", value: "action", sortable: false, filterable: false },
+      { text: "Actions", value: "action", sortable: false, filterable: false },
     ],
     dateFrom: new Date().toISOString().substr(0, 10),
     dateUntil: new Date().toISOString().substr(0, 10),
