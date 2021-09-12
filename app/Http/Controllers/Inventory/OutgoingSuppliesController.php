@@ -52,9 +52,9 @@ class OutgoingSuppliesController extends Controller
         return tbl_suppcat::select(['supply_cat_name','id'])->where('status',1)->get();
     }
 
-    public function suppName()
+    public function suppName(Request $t)
     {
-        return tbl_masterlistsupp::select(['supply_name','id'])->where('status',1)->get();
+        return tbl_masterlistsupp::select(['supply_name','id'])->where('category', $t->category)->where('status',1)->get();
     }
 
     public function branchName()

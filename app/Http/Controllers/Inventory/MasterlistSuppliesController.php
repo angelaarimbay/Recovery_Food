@@ -34,6 +34,7 @@ class MasterlistSuppliesController extends Controller
                  'supply_name'=>$data->supply_name,
                  'description'=>$data->description,
                  'unit'=>$data->unit,
+                 'net_price'=>$data->net_price,
                  'with_vat'=>$data->net_price,
                  'vat'=>$data->vat,
                  'without_vat'=>$data->without_vat,

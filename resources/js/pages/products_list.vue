@@ -265,7 +265,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRules"
                         v-model="form.status"
                         outlined
                         dense

@@ -20,6 +20,20 @@ class branchesSeeder extends Seeder
                 'phone_number' => '123456789',
                 'email_add' => '123@gmail.com'
             ],
+            [
+                'status' => 1,
+                'branch_name' => 'EFGH',
+                'location' => 'Test',
+                'phone_number' => '123456789',
+                'email_add' => '123@gmail.com'
+            ],
+            [
+                'status' => 0,
+                'branch_name' => 'IJKL',
+                'location' => 'Test',
+                'phone_number' => '123456789',
+                'email_add' => '123@gmail.com'
+            ],
         ]);
     }
 }

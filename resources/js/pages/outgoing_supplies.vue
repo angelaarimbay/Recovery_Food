@@ -358,6 +358,7 @@
                         clearable
                         item-text="supply_cat_name"
                         item-value="id"
+                        @change="suppName"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Category *</div>
@@ -516,7 +517,7 @@ export default {
         align: "right",
         filterable: false,
       },
-      { text: "Amount", value: "amount", align: "right", filterable: false },
+      { text: "Amount", value: "outgoing_amount", align: "right", filterable: false },
       {
         text: "Branch",
         value: "requesting_branch.branch_name",
@@ -538,7 +539,6 @@ export default {
   created() {
     this.get();
     this.suppCat();
-    this.suppName();
     this.branchName();
   },
 
@@ -580,7 +580,10 @@ export default {
             }
           } else if (key == "requesting_branch") {
             if (this.currentdata.requesting_branch) {
-              if (this.currentdata.requesting_branch.id != this.form.requesting_branch) {
+              if (
+                this.currentdata.requesting_branch.id !=
+                this.form.requesting_branch
+              ) {
                 found += 1;
               }
             }
@@ -672,9 +675,11 @@ export default {
     },
 
     async suppName() {
-      await axios.get("api/osupp/suppName").then((supp_name) => {
-        this.suppnamelist = supp_name.data;
-      });
+      await axios
+        .get("api/osupp/suppName", { params: { category: this.form.category } })
+        .then((supp_name) => {
+          this.suppnamelist = supp_name.data;
+        });
     },
 
     async branchName() {
@@ -689,6 +694,7 @@ export default {
       console.log(this.currentdata);
       this.form.id = row.id;
       this.form.category = row.category.id;
+      this.suppName();
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
       this.form.requesting_branch = row.requesting_branch.id;

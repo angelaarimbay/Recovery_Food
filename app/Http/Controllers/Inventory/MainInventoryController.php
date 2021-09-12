@@ -4,48 +4,32 @@ namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\tbl_maininv;
-use App\Models\tbl_suppcat;
+use App\Models\tbl_incomingsupp;
 use Illuminate\Support\Facades\DB;
 
 class MainInventoryController extends Controller
 {
-    public function save(Request $data)
-    {
-        $table = tbl_maininv::where('supply_name','!=',0);
-        
-        $table_clone = clone $table;
-        if ($table_clone->where("id", $data->id)->count()>0) {
-            // Update
-            $table_clone = clone $table;
-            $table_clone->where("id", $data->id)->update(
-                ['beginning_inv_qty'=>$data->beginning_inv_qty,
-                 'lead_time'=>$data->lead_time,
-                 'min_order_qty'=>$data->min_order_qty,
-                 'order_frequency'=>$data->order_frequency,
-                 'ending_inv_qty'=>$data->ending_inv_qty,
-                ]
-            );
-        } else {
-            tbl_maininv::create($data->all());
-        }
-        return 0;
-    }
     public function get(Request $t)
     {
+
+
+        // { text: "#", value: "count", align: "start", filterable: false },
+        // { text: "Category", value: "category.category", filterable: false },
+        // { text: "Supply Name", value: "supply_name.supply_name" },
+        // { text: "Stocks On Hand", value: "quantity_difference", align: "right" },
+        // { text: "Total Amount", value: "quantity_amount", align: "right", filterable: false},
+
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
-            $table = tbl_maininv::with('category');
-            $table_clone = clone $table;   // Get all items from maininv
+            $table = tbl_incomingsupp::with(['category','supply_name'])->groupby(['category','supply_name']);
+            $table_clone = clone $table;   // Get all items from masterlistsupplies
            
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
+            return $table_clone->selectRaw("category,supply_name, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->groupby(['category','supply_name'])->paginate($t->itemsPerPage, '*', 'page', 1);
         }
+        
         // Else
-        return  tbl_maininv::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
-    }
-
-    public function suppCat()
-    {
-        return tbl_suppcat::select(['supply_cat_name','id'])->get();
+        return  tbl_incomingsupp::with(['category','supply_name'])->selectRaw("category,supply_name, @row:=@row+1 as row ")->groupby(['category','supply_name'])->paginate($t->itemsPerPage, '*', 'page', $t->page);
+ 
+      
     }
 }

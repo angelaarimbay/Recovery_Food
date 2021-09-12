@@ -257,8 +257,8 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.created_at`]="{ item }">
-              {{ getFormatDate(item.created_at, "MM/DD/YYYY") }}</template
+            <template v-slot:[`item.incoming_date`]="{ item }">
+              {{ getFormatDate(item.incoming_date, "MM/DD/YYYY") }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
@@ -309,6 +309,58 @@
                       sm="12"
                       md="12"
                     >
+                      <v-menu
+                        ref="menu"
+                        v-model="menu"
+                        :close-on-content-click="false"
+                        :return-value.sync="date"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            outlined
+                            dense
+                            v-model="form.incoming_date"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            clearable
+                          >
+                            <template slot="label">
+                              <div style="font-size: 14px">Incoming Date *</div>
+                            </template></v-text-field
+                          >
+                        </template>
+                        <v-date-picker
+                          v-model="form.incoming_date"
+                          no-title
+                          scrollable
+                        >
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="menu = false">
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.menu.save(date)"
+                          >
+                            Ok
+                          </v-btn>
+                        </v-date-picker>
+                      </v-menu>
+                    </v-col>
+
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-select
                         :rules="formRules"
                         v-model="form.category"
@@ -318,6 +370,7 @@
                         clearable
                         item-text="supply_cat_name"
                         item-value="id"
+                        @change="suppName"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Category *</div>
@@ -462,6 +515,7 @@ export default {
       supply_name: null,
       quantity: null,
       amount: null,
+      incoming_date: null,
     },
 
     // For comparing data
@@ -483,7 +537,12 @@ export default {
         filterable: false,
       },
       { text: "Amount", value: "amount", align: "right", filterable: false },
-      { text: "Date", value: "created_at", align: "right", filterable: false },
+      {
+        text: "Date",
+        value: "incoming_date",
+        align: "right",
+        filterable: false,
+      },
       { text: "Actions", value: "id", sortable: false, filterable: false },
     ],
     page: 1,
@@ -491,6 +550,10 @@ export default {
     itemsPerPage: 5,
     dateFrom: new Date().toISOString().substr(0, 10),
     dateUntil: new Date().toISOString().substr(0, 10),
+    menu: false,
+    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
     date1: false,
     date2: false,
   }),
@@ -499,7 +562,6 @@ export default {
   created() {
     this.get();
     this.suppCat();
-    this.suppName();
   },
 
   methods: {
@@ -625,9 +687,11 @@ export default {
     },
 
     async suppName() {
-      await axios.get("api/isupp/suppName").then((supp_name) => {
-        this.suppnamelist = supp_name.data;
-      });
+      await axios
+        .get("api/isupp/suppName", { params: { category: this.form.category } })
+        .then((supp_name) => {
+          this.suppnamelist = supp_name.data;
+        });
     },
 
     // Editing/updating of row
@@ -635,9 +699,11 @@ export default {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.category = row.category.id;
+      this.suppName();
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
       this.form.amount = row.amount;
+      this.form.incoming_date = row.incoming_date;
 
       this.dialog = true;
     },

@@ -112,7 +112,7 @@
                     <v-card-actions>
                       <v-text-field
                         v-model="search"
-                        label="Products Category"
+                        label="Supply Name"
                         single-line
                         dense
                         clearable
@@ -203,206 +203,6 @@
             ></v-pagination>
           </div>
         </v-container>
-
-        <!-- Edit Dialog Form -->
-        <v-form ref="form">
-          <v-dialog v-model="dialog" max-width="450px">
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Supply Main Inventory
-            </v-toolbar>
-            <v-card tile style="background-color: #f5f5f5">
-              <v-card-text class="py-2">
-                <br />
-                <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                  <v-row>
-                    <v-col
-                      class="py-1"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 14px">ID</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form"
-                        outlined
-                        clearable
-                        dense
-                        disabled
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Supply Name</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col class="pt-0">
-                      <hr class="mt-0" />
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">
-                            Beginning Inventory Quantity *
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Lead Time *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">
-                            Minimum Order Quantity *
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Order Frequency *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">
-                            Ending Inventory Quantity *
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
-              <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="error"
-                  depressed
-                  :disabled="button"
-                  dark
-                  @click="cancel"
-                  style="text-transform: none"
-                  :small="$vuetify.breakpoint.smAndDown"
-                >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  depressed
-                  :disabled="button"
-                  dark
-                  @click="save"
-                  style="text-transform: none"
-                  :small="$vuetify.breakpoint.smAndDown"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-form>
       </v-container>
     </v-card>
   </div>
@@ -467,16 +267,10 @@ export default {
     // Table Headers
     headers: [
       { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Category", value: "category.category", filterable: false },
-      { text: "Supply Name", value: "supply_name" },
-      { text: "Stocks On Hand", value: "stocks_on_hand", align: "right" },
-      {
-        text: "Actions",
-        value: "id",
-        align: "center",
-        sortable: false,
-        filterable: false,
-      },
+      { text: "Category", value: "category.supply_cat_name", filterable: false },
+      { text: "Supply Name", value: "supply_name.supply_name" },
+      { text: "Stocks On Hand", value: "quantity_difference", align: "right" },
+      { text: "Total Amount", value: "quantity_amount", align: "right", filterable: false},
     ],
     page: 1,
     pageCount: 0,
@@ -486,7 +280,6 @@ export default {
   // Onload
   created() {
     this.get();
-    this.suppCat();
   },
 
   methods: {
@@ -495,40 +288,13 @@ export default {
       this.get();
     },
 
-    // Saving data to database
-    async save() {
-      if (this.$refs.form.validate()) {
-        // Save or update data in the table
-        await axios
-          .post("api/misupp/save", this.form)
-          .then((result) => {
-            //if the value is true then save to database
-            switch (result.data) {
-              case 0:
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully saved.",
-                };
-                this.get();
-                this.cancel();
-                break;
-              default:
-                break;
-            }
-          })
-          .catch((result) => {
-            // If false or error when saving
-          });
-      }
-    },
+
     async get() {
       this.progressbar = true; // Show the progress bar
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/misupp/save", {
+        .get("api/misupp/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
@@ -536,6 +302,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           //if the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -543,12 +310,6 @@ export default {
         .catch((result) => {
           // If false or error when saving
         });
-    },
-
-    async suppCat() {
-      await axios.get("api/misupp/suppCat").then((supp_cat) => {
-        this.suppcatlist = supp_cat.data;
-      });
     },
 
     // Editing/updating of row

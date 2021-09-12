@@ -19,6 +19,7 @@ class CreateTblIncomingsuppsTable extends Migration
             $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
             $table->float('quantity');
             $table->float('amount');
+            $table->datetime('incoming_date');
 
             // $table->string('col'); //required string
             // $table->string('col')->nullable(); //optional string

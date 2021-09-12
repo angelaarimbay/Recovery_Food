@@ -13,7 +13,7 @@ class IncomingSuppliesController extends Controller
 {
     public function save(Request $data)
     {
-        $table = tbl_incomingsupp::where('supply_name','!=',0); 
+        $table = tbl_incomingsupp::where('supply_name', '!=', 0);
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
             // Update
@@ -23,6 +23,7 @@ class IncomingSuppliesController extends Controller
                  'supply_name'=>$data->supply_name,
                  'quantity'=>$data->quantity,
                  'amount'=>$data->amount,
+                 'incoming_date'=>$date->incoming_date,
                 ]
             );
         } else {
@@ -44,14 +45,15 @@ class IncomingSuppliesController extends Controller
         return  tbl_incomingsupp::with(['category','supply_name'])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
     }
 
+   
+
     public function suppCat()
     {
-        return tbl_suppcat::select(['supply_cat_name','id'])->where('status',1)->get();
-
+        return tbl_suppcat::select(['supply_cat_name','id'])->where('status', 1)->get();
     }
 
-    public function suppName()
+    public function suppName(Request $t)
     {
-        return tbl_masterlistsupp::select(['supply_name','id'])->where('status',1)->get();
+        return tbl_masterlistsupp::select(['supply_name','id'])->where('category', $t->category)->where('status', 1)->get();
     }
 }

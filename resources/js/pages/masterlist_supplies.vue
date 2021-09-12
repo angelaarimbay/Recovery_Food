@@ -64,7 +64,8 @@
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="px-0 py-0">
+          <v-card-actions class="pl-0">
+
             <v-btn
               color="primary"
               style="text-transform: none"
@@ -72,14 +73,15 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="openDialog"
+              @click="dialog = true"
             >
               Add Supply
             </v-btn>
 
             <v-spacer></v-spacer>
 
-            <v-tooltip bottom>
+            
+            <!-- <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
                   :large="$vuetify.breakpoint.mdAndDown"
@@ -95,9 +97,9 @@
                 </v-btn>
               </template>
               <span>Manage Dates</span>
-            </v-tooltip>
+            </v-tooltip> -->
 
-            <v-bottom-sheet v-model="sheet" inset width="400px">
+            <!-- <v-bottom-sheet v-model="sheet" inset width="400px">
               <v-sheet
                 class="text-center"
                 style="border-radius: 10px 10px 0px 0px"
@@ -153,7 +155,7 @@
                   </v-col>
                 </v-row>
               </v-sheet>
-            </v-bottom-sheet>
+            </v-bottom-sheet> -->
           </v-card-actions>
 
           <!-- Search Filters -->
@@ -336,7 +338,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRules"
                         v-model="form.status"
                         outlined
                         dense
@@ -447,7 +449,8 @@
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-layout align-center>
                         <v-text-field
-                          v-model="form.vat"
+                          :disabled="disable"
+                          v-model="temp_vat"
                           outlined
                           clearable
                           dense
@@ -609,8 +612,7 @@ export default {
       { name: "Inactive", id: 0 },
     ],
     supply_id: "",
-    deleteid: "",
-    tempfile: "",
+    disable: "",
     table: [],
     suppcatlist: [],
     dayslist: [],
@@ -642,6 +644,7 @@ export default {
       without_vat: null,
       exp_date: null,
     },
+    temp_vat: 1.12, //form.vat = this.
     vat: false,
 
     // For comparing data
@@ -699,7 +702,7 @@ export default {
   created() {
     this.get();
     this.suppCat();
-    this.getDays();
+    // this.getDays();
   },
 
   methods: {
@@ -708,17 +711,17 @@ export default {
       return date.format(format);
     },
 
-    getDays() {
-      var days = new Date(
-        this.getFormatDate(Date.now(), "Y"),
-        this.getFormatDate(Date.now(), "M"),
-        0
-      ).getDate();
+    // getDays() {
+    //   var days = new Date(
+    //     this.getFormatDate(Date.now(), "Y"),
+    //     this.getFormatDate(Date.now(), "M"),
+    //     0
+    //   ).getDate();
 
-      for (let i = 1; i < days + 1; i++) {
-        this.dayslist.push(i);
-      }
-    },
+    //   for (let i = 1; i < days + 1; i++) {
+    //     this.dayslist.push(i);
+    //   }
+    // },
 
     itemperpage() {
       this.page = 1;
@@ -863,13 +866,23 @@ export default {
     },
 
     compute() {
-      if (this.vat == true) {
-        this.form.without_vat = (this.form.net_price / this.form.vat).toFixed(
-          2
-        );
+      if (this.vat) {
+        this.disable = false;
+        if (this.temp_vat) {
+          this.form.without_vat = (this.form.net_price / this.temp_vat).toFixed(
+            2
+          );
+        } else {
+          this.form.without_vat = (this.form.net_price / this.temp_vat).toFixed(
+            2
+          );
+        }
       } else {
-        this.form.without_vat = this.form.net_price;
+        this.temp_vat = 1.12;
+        this.disable = true;
+        this.form.without_vat = null;
       }
+      this.form.vat = this.temp_vat;
       this.sum();
     },
 
@@ -884,21 +897,25 @@ export default {
       this.form.unit = row.unit;
       this.form.net_price = row.net_price;
       this.form.vat = row.vat;
+      this.temp_vat = row.vat; 
       this.form.without_vat = row.without_vat;
       this.form.exp_date = row.exp_date;
 
       this.dialog = true;
     },
 
-    // Open Dialog Form
-    openDialog() {
-      this.$refs.form.reset();
-      this.dialog = true;
-    },
-
     // Reset Forms
     cancel() {
-      this.$refs.form.reset();
+      for (var key in this.form) {
+        if (key == "vat") {
+          this.temp_vat = 1.12;
+          this.form[key] =  1.12;
+        }else{
+          this.form[key] = ''
+          this.vat = false
+          this.disable = true
+        }
+      } 
       this.dialog = false;
     },
   },
@@ -906,6 +923,9 @@ export default {
   watch: {
     dialog(val) {
       val || this.cancel();
+    },
+    temp_vat() {
+      this.compute();
     },
     page(val) {
       this.page = val;
