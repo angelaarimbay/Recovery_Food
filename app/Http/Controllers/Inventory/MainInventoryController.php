@@ -11,14 +11,6 @@ class MainInventoryController extends Controller
 {
     public function get(Request $t)
     {
-
-
-        // { text: "#", value: "count", align: "start", filterable: false },
-        // { text: "Category", value: "category.category", filterable: false },
-        // { text: "Supply Name", value: "supply_name.supply_name" },
-        // { text: "Stocks On Hand", value: "quantity_difference", align: "right" },
-        // { text: "Total Amount", value: "quantity_amount", align: "right", filterable: false},
-
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_incomingsupp::with(['category','supply_name'])->groupby(['category','supply_name']);

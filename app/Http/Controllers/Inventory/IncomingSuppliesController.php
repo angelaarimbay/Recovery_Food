@@ -56,4 +56,5 @@ class IncomingSuppliesController extends Controller
     {
         return tbl_masterlistsupp::select(['supply_name','id'])->where('category', $t->category)->where('status', 1)->get();
     }
+    
 }
