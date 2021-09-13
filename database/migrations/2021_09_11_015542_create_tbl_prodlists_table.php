@@ -15,13 +15,13 @@ class CreateTblProdlistsTable extends Migration
     {
         Schema::create('tbl_prodlists', function (Blueprint $table) {
             $table->id();
-            $table->string('category')->references('id')->on('tbl_prodcat');
-            $table->string('sub_category')->references('id')->on('tbl_prodsubcat');
+            $table->integer('category')->references('id')->on('tbl_prodcat');
+            $table->integer('sub_category')->references('id')->on('tbl_prodsubcat');
             $table->string('product_name');
             $table->string('description')->nullable();
             $table->float('price');
             $table->integer('quantity');
-            $table->date('exp_date')->nullable();
+            $table->datetime('exp_date');
             $table->integer('status')->default(1);
             $table->timestamps();
         });

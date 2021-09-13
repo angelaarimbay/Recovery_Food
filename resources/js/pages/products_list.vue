@@ -72,7 +72,7 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="openDialog"
+              @click="dialog = true"
             >
               Add Product
             </v-btn>
@@ -622,7 +622,6 @@ export default {
       if (!this.currentdata) {
         return true;
       }
-
       // Check if not existed
       // Check each value if the same or not
       var found = 0;
@@ -635,10 +634,17 @@ export default {
               }
             }
           } else if (key == "sub_category") {
-            if (this.currentdata.sub_category) { 
+            if (this.currentdata.sub_category) {
               if (this.currentdata.sub_category.id != this.form.sub_category) {
                 found += 1;
               }
+            }
+          } else if (key == "exp_date") {
+            if (
+              this.getFormatDate(this.currentdata.exp_date, "YYYY-MM-DD") !=
+              this.getFormatDate(this.form.exp_date, "YYYY-MM-DD")
+            ) {
+              found += 1;
             }
           } else {
             found += 1;
@@ -731,26 +737,23 @@ export default {
         this.prodsubcatlist = prodsub_cat.data;
       });
     },
-
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.status = row.status;
-      this.form.category.id = row.category.id;
-      this.form.sub_category.id = row.sub_category.id;
+      this.form.category = row.category.id;
+      this.form.sub_category = row.sub_category.id;
       this.form.product_name = row.product_name;
       this.form.description = row.description;
       this.form.price = row.price;
       this.form.quantity = row.quantity;
-      this.form.exp_date = row.exp_date;
+      this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
-      this.dialog = true;
-    },
-
-    // Open Dialog Form
-    openDialog() {
-      this.$refs.form.reset();
       this.dialog = true;
     },
 

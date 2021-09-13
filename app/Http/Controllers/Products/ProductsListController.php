@@ -13,7 +13,7 @@ class ProductsListController extends Controller
 {
     public function save(Request $data)
     {
-     
+    //  return $data->all();
 
         $table = tbl_prodlist::where("status", '!=', null);
      
@@ -50,6 +50,7 @@ class ProductsListController extends Controller
     }
     public function get(Request $t)
     {
+        
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_prodlist::with(['category','sub_category'])->where("status", '!=', null);
@@ -57,6 +58,7 @@ class ProductsListController extends Controller
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("product_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
+        
         // Else
        
         return  tbl_prodlist::with(['category','sub_category'])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
@@ -69,8 +71,10 @@ class ProductsListController extends Controller
         return tbl_prodcat::select(['product_cat_name','id'])->where('status',1)->get();
     }
 
+
     public function prodSubCat()
     {
         return tbl_prodsubcat::select(['prod_sub_cat_name','id'])->where('status',1)->get();
     }
+    
 }

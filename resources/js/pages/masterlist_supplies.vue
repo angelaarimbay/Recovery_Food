@@ -727,6 +727,7 @@ export default {
       this.page = 1;
       this.get();
     },
+    
 
     // Format for everytime we call on database
     // Always add await and async

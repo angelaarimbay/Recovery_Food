@@ -15,6 +15,11 @@ class CreateTblOutgoingprodsTable extends Migration
     {
         Schema::create('tbl_outgoingprods', function (Blueprint $table) {
             $table->id();
+            $table->integer('category')->references('id')->on('tbl_prodcat');
+            $table->integer('sub_category')->references('id')->on('tbl_prodsubcat');
+            $table->integer('product_name')->references('id')->on('tbl_prodlist');
+            $table->float('quantity');
+            $table->string('requesting_branch')->references('id')->on('tbl_branches');
             $table->timestamps();
         });
     }

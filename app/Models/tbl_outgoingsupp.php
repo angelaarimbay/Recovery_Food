@@ -33,4 +33,5 @@ class tbl_outgoingsupp extends Model
     {
         return tbl_masterlistsupp::where("id",$this->supply_name)->first()->net_price * $this->quantity;
     }
+    
 }

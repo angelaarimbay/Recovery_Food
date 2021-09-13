@@ -1,50 +1,85 @@
 <template>
   <div style="min-width: 280px">
+    <!-- Snackbar -->
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar.active"
+      timeout="2500"
+    >
+      <span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
+      >
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
+        >
+      </template>
+    </v-snackbar>
+
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Products</h5>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Products
+        </h4>
         <v-spacer></v-spacer>
-        <v-card-actions class="px-0">
+
+        <!-- Breadcrumbs -->
+        <v-card-actions class="px-0 py-0">
           <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
             plain
-            small
+            color="primary"
             v-ripple="false"
             to="/dashboard"
             class="px-0"
-            style="text-decoration: none; text-transform: none; font-size: 11px"
+            style="text-decoration: none; text-transform: none"
             >Home</v-btn
           >
           /
           <v-btn
-            small
+            :small="$vuetify.breakpoint.smAndDown"
             text
             disabled
             class="px-0"
-            style="text-transform: none; font-size: 11px"
+            style="text-transform: none"
             >Outgoing Products</v-btn
           >
         </v-card-actions>
       </v-layout>
     </v-container>
 
+    <!-- Main Card -->
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="pl-0">
             <v-btn
-              color="#00794b"
+              color="primary"
               style="text-transform: none"
               depressed
               dark
+              :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              small
               @click="openDialog"
             >
               Add Outgoing Product
             </v-btn>
           </v-card-actions>
 
-          <v-list dense nav class="px-0 py-1">
+          <!-- Search Filters -->
+          <v-list dense nav class="px-0 py-0">
             <v-list-group no-action color="#757575">
               <template v-slot:activator>
                 <v-list-item-icon class="mx-0">
@@ -59,161 +94,211 @@
 
               <v-list class="p-0">
                 <v-row no-gutters>
-                  <v-col
-                    cols="12"
-                    xl="2"
-                    lg="2"
-                    md="3"
-                    sm="12"
-                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-                  >
-                    <v-text-field
-                      :value="itemsPerPage"
-                      label="Items per page"
-                      type="number"
-                      min="0"
-                      max="15"
-                      @input="itemsPerPage = parseInt($event, 10)"
-                    ></v-text-field>
+                  <!-- Items Per Page -->
+                  <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
+                    <v-card-actions>
+                      <v-select
+                        style="max-width: 82px"
+                        dense
+                        v-model="itemsPerPage"
+                        label="Items per page"
+                        @change="itemperpage"
+                        :items="[
+                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                        ]"
+                      >
+                      </v-select>
+                    </v-card-actions>
                   </v-col>
 
                   <v-spacer></v-spacer>
 
+                  <!-- Search Field -->
                   <v-col
-                    cols="12"
+                    cols="8"
                     xl="4"
                     lg="4"
                     md="6"
-                    sm="12"
-                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                    sm="8"
+                    style="max-width: 230px"
+                    class="my-auto"
                   >
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="Product Name"
-                      single-line
-                      hide-details
-                      dense
-                      clearable
-                      class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
-                    ></v-text-field>
+                    <v-card-actions>
+                      <v-text-field
+                        v-model="search"
+                        label="Product Name"
+                        single-line
+                        dense
+                        clearable
+                      ></v-text-field>
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            :small="$vuetify.breakpoint.smAndDown"
+                            :large="$vuetify.breakpoint.mdAndUp"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            @click="get"
+                            class="mb-3"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
+                    </v-card-actions>
                   </v-col>
                 </v-row>
 
                 <v-row no-gutters>
-                  <v-col
-                    cols="12"
-                    xl="2"
-                    lg="2"
-                    md="3"
-                    sm="12"
-                    class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-                  >
-                    <v-combobox clearable dense label="Branch"> </v-combobox>
+                  <!-- Branch Field -->
+                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-select
+                        :items="branchlist"
+                        item-text="branch_name"
+                        item-value="id"
+                        class="my-0"
+                        clearable
+                        dense
+                        label="Branch"
+                      >
+                      </v-select>
+                    </v-card-actions>
                   </v-col>
 
-                  <v-col
-                    cols="12"
-                    xl="2"
-                    lg="2"
-                    md="3"
-                    sm="12"
-                    class="my-auto py-1 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-                  >
-                    <v-combobox clearable dense label="Category"> </v-combobox>
+                  <!-- Category Field -->
+                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-select
+                        :items="prodcatlist"
+                        item-text="product_cat_name"
+                        item-value="id"
+                        class="my-0"
+                        clearable
+                        dense
+                        label="Category"
+                      >
+                      </v-select>
+                    </v-card-actions>
                   </v-col>
 
                   <v-spacer></v-spacer>
 
-                  <v-col
-                    cols="6"
-                    xl="2"
-                    lg="2"
-                    md="3"
-                    sm="6"
-                    class="my-auto py-2 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-                  >
-                    <v-menu
-                      v-model="date1"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
+                  <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-menu
+                        v-model="date1"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="dateFrom"
+                            label="Date From"
+                            prepend-icon="mdi-calendar-range"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
                           v-model="dateFrom"
-                          label="Date From"
-                          prepend-icon="mdi-calendar-range"
-                          readonly
-                          v-on="on"
-                          class="py-0"
-                          dense
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="dateFrom"
-                        @input="date1 = false"
-                        scrollable
-                      ></v-date-picker>
-                    </v-menu>
+                          @input="date1 = false"
+                          scrollable
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-card-actions>
                   </v-col>
 
-                  <v-col
-                    cols="6"
-                    xl="2"
-                    lg="2"
-                    md="3"
-                    sm="6"
-                    class="my-auto py-2 px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-                  >
-                    <v-menu
-                      v-model="date2"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
+                  <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-menu
+                        v-model="date2"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="dateUntil"
+                            label="Date Until"
+                            prepend-icon="mdi-calendar-range"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
                           v-model="dateUntil"
-                          label="Date Until"
-                          prepend-icon="mdi-calendar-range"
-                          readonly
-                          v-on="on"
-                          class="py-0"
-                          dense
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="dateUntil"
-                        @input="date2 = false"
-                        scrollable
-                      ></v-date-picker>
-                    </v-menu>
+                          @input="date2 = false"
+                          scrollable
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-card-actions>
                   </v-col>
                 </v-row>
               </v-list>
             </v-list-group>
           </v-list>
-          <!--Table -->
+
+          <!-- Table -->
           <v-data-table
             :headers="headers"
-            :data="table"
+            :items="table.data"
+            :loading="progressbar"
             :page.sync="page"
+            ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
           >
+            <!-- Progress Bar -->
+            <v-progress-linear
+              color="red darken-2"
+              class="px-0 mx-0"
+              slot="progress"
+              indeterminate
+              rounded
+            ></v-progress-linear>
+            <template v-slot:[`item.created_at`]="{ item }">
+              {{ getFormatDate(item.created_at, "MM/DD/YYYY") }}</template
+            >
+            <template v-slot:[`item.count`]="{ item }">
+              {{ item.row }}</template
+            >
+            <template v-slot:[`item.id`]="{ item }">
+              <v-btn
+                icon
+                color="red darken-2"
+                @click="edit(item)"
+                :x-small="$vuetify.breakpoint.smAndDown"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
           </v-data-table>
+
+          <!-- Paginate -->
           <div class="text-center pt-2">
-            <v-pagination v-model="page" :length="pageCount"></v-pagination>
+            <v-pagination
+              v-model="page"
+              :total-visible="5"
+              :length="table.last_page"
+              color="red darken-2"
+            ></v-pagination>
           </div>
         </v-container>
 
@@ -225,7 +310,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Add Outgoing Product
+              Outgoing Supply
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -233,7 +318,7 @@
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -242,12 +327,12 @@
                     >
                       <v-select
                         :rules="formRules"
-                        v-model="form.reqBranch"
-                        label=""
+                        v-model="form.requesting_branch"
+                        :items="branchlist"
                         outlined
                         dense
                         clearable
-                        item-text="name"
+                        item-text="branch_name"
                         item-value="id"
                       >
                         <template slot="label">
@@ -256,16 +341,17 @@
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
                         :rules="formRules"
-                        v-model="form.supplyCat"
-                        label=""
+                        v-model="form.category"
+                        :items="prodcatlist"
                         outlined
                         dense
                         clearable
-                        item-text="name"
+                        item-text="product_cat_name"
                         item-value="id"
+                        @change="prodName"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Category *</div>
@@ -273,16 +359,17 @@
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-1" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
                         :rules="formRules"
-                        v-model="form.supplyCat"
-                        label=""
+                        v-model="form.sub_category"
+                        :items="prodsubcatlist"
                         outlined
                         dense
                         clearable
-                        item-text="name"
+                        item-text="prod_sub_cat_name"
                         item-value="id"
+                        @change="prodName"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Sub-Category *</div>
@@ -291,7 +378,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -300,12 +387,12 @@
                     >
                       <v-select
                         :rules="formRules"
-                        v-model="form.supplyName"
-                        label=""
+                        v-model="form.product_name"
+                        :items="prodnamelist"
                         outlined
                         dense
                         clearable
-                        item-text="name"
+                        item-text="product_name"
                         item-value="id"
                       >
                         <template slot="label">
@@ -315,33 +402,33 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
                       sm="12"
                       md="12"
                     >
-                      <v-select
+                      <v-text-field
                         :rules="formRules"
-                        v-model="form.supplyUnit"
-                        label=""
+                        v-model="form.quantity"
                         outlined
                         dense
                         clearable
-                        item-text="name"
+                        item-text=""
                         item-value="id"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Quantity *</div>
                         </template>
-                      </v-select>
+                      </v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
-              <!-- buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-7 px-6 py-4">
+
+              <!-- Dialog Form Buttons -->
+              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -350,7 +437,7 @@
                   dark
                   @click="cancel"
                   style="text-transform: none"
-                  small
+                  :small="$vuetify.breakpoint.smAndDown"
                 >
                   Cancel
                 </v-btn>
@@ -359,9 +446,9 @@
                   depressed
                   :disabled="button"
                   dark
-                  @click="test()"
+                  @click="save"
                   style="text-transform: none"
-                  small
+                  :small="$vuetify.breakpoint.smAndDown"
                 >
                   Save
                 </v-btn>
@@ -374,61 +461,304 @@
   </div>
 </template>
 
+<style>
+.v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
+</style>
+
 <script>
+import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
+    progressbar: false,
+    snackbar: {
+      active: false,
+      message: "",
+    },
     search: "",
     editedIndex: -1,
     button: false,
     dialog: false,
-    status: ["Active", "Inactive"],
     deleteid: "",
-    progressBar: false,
     tempfile: "",
     table: [],
+    prodcatlist: [],
+    prodsubcatlist: [],
+    prodnamelist: [],
+    branchlist: [],
+
+    // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    form: {
-      reqBranch: null,
-      prodCat: null,
-      prodSubCat: null,
-      prodName: null,
-      prodQty: null,
+    formRulesNumberRange: (v) => {
+      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
+      return "Number has to be between 1% and 100%";
     },
+    formRulesNumber: [
+      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    ],
+
+    // Form Data
+    form: {
+      category: null,
+      sub_category: null,
+      product_name: null,
+      quantity: null,
+      requesting_branch: null,
+    },
+
+    // For comparing data
+    currentdata: {},
+
+    // Table Headers
     headers: [
-      { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Category", value: "category", filterable: false },
-      { text: "Product Name", value: "product name" },
-      { text: "Quantity", value: "quantity" },
-      { text: "Price", value: "price" },
-      { text: "Total Amount", value: "total amount" },
-      { text: "Branch", value: "branch" },
-      { text: "Date", value: "date" },
-      { text: "Actions", value: "actions", sortable: false, filterable: false },
+      { text: "#", value: "count", align: "start", filterable: false },
+      {
+        text: "Category",
+        value: "category.product_cat_name",
+        filterable: false,
+      },
+      { text: "Supply Name", value: "sub_category.prod_sub_cat_name" },
+      {
+        text: "Quantity",
+        value: "quantity",
+        align: "right",
+        filterable: false,
+      },
+      {
+        text: "Amount",
+        value: "outgoing_amount",
+        align: "right",
+        filterable: false,
+      },
+      {
+        text: "Branch",
+        value: "requesting_branch.branch_name",
+        filterable: false,
+      },
+      { text: "Date", value: "created_at", align: "right", filterable: false },
+      { text: "Actions", value: "id", align: "center", sortable: false, filterable: false },
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 10,
+    itemsPerPage: 5,
     dateFrom: new Date().toISOString().substr(0, 10),
     dateUntil: new Date().toISOString().substr(0, 10),
     date1: false,
     date2: false,
   }),
+
+  // Onload
+  created() {
+    this.get();
+    this.prodCat();
+    this.prodSubCat();
+    this.branchName();
+  },
+
   methods: {
-    test() {
-      alert("Sample");
+    itemperpage() {
+      this.page = 1;
+      this.get();
     },
+
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+
+    // Format for everytime we call on database
+    // Always add await and async
+    compare() {
+      // Compare exsiting data vs edited data
+      // If nothing change then no request
+      if (!this.currentdata) {
+        return true;
+      }
+      // Check if not existed
+      // Check each value if the same or not
+      var found = 0;
+      for (var key in this.form) {
+        if (this.currentdata[key] != this.form[key]) {
+          if (key == "category") {
+            if (this.currentdata.category) {
+              if (this.currentdata.category.id != this.form.category) {
+                found += 1;
+              }
+            }
+          } else if (key == "sub_category") {
+            if (this.currentdata.sub_category) {
+              if (this.currentdata.sub_category.id != this.form.sub_category) {
+                found += 1;
+              }
+            }
+          } else if (key == "product_name") {
+            if (this.currentdata.product_name) {
+              if (this.currentdata.product_name.id != this.form.product_name) {
+                found += 1;
+              }
+            }
+          } else if (key == "requesting_branch") {
+            if (this.currentdata.requesting_branch) {
+              if (
+                this.currentdata.requesting_branch.id !=
+                this.form.requesting_branch
+              ) {
+                found += 1;
+              }
+            }
+          } else {
+            found += 1;
+          }
+        }
+      }
+      //if has changes
+      if (found > 0) {
+        return true;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "warning",
+          message: "No changes has been made.",
+        };
+        this.cancel();
+      }
+    },
+
+    // Saving data to database
+    async save() {
+      if (this.$refs.form.validate()) {
+        // Validate first before compare
+        if (this.compare()) {
+          // Save or update data in the table
+          await axios
+            .post("api/outprod/save", this.form)
+            .then((result) => {
+              //if the value is true then save to database
+              switch (result.data) {
+                case 0:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully saved.",
+                  };
+                  this.get();
+                  this.cancel();
+                  break;
+                case 1:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert",
+                    iconColor: "error",
+                    message: "The supply name already exists.",
+                  };
+                  break;
+                default:
+                  break;
+              }
+            })
+            .catch((result) => {
+              // If false or error when saving
+            });
+        }
+      }
+    },
+    async get() {
+      this.progressbar = true; // Show the progress bar
+      // Get data from tables
+      this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+      await axios
+        .get("api/outprod/get", {
+          params: {
+            page: this.page,
+            itemsPerPage: this.itemsPerPage,
+            search: this.search,
+          },
+        })
+        .then((result) => {
+          // If the value is true then get the data
+          this.table = result.data;
+          this.progressbar = false; // Hide the progress bar
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async prodCat() {
+      await axios.get("api/outprod/prodCat").then((prod_cat) => {
+        this.prodcatlist = prod_cat.data;
+      });
+    },
+
+    async prodSubCat() {
+      await axios.get("api/outprod/prodSubCat").then((supp_name) => {
+        this.prodsubcatlist = supp_name.data;
+      });
+    },
+
+    async prodName() {
+      await axios
+        .get("api/outprod/prodName", {
+          params: {
+            category: this.form.category,
+            sub_category: this.form.sub_category,
+          },
+        })
+        .then((prod_name) => {
+          this.prodnamelist = prod_name.data;
+        });
+    },
+
+    async branchName() {
+      await axios.get("api/outprod/branchName").then((bran_name) => {
+        this.branchlist = bran_name.data;
+      });
+    },
+
+    // Editing/updating of row
+    edit(row) {
+      this.currentdata = JSON.parse(JSON.stringify(row));
+      this.form.id = row.id;
+      this.form.category = row.category.id;
+      this.form.sub_category = row.sub_category.id;
+      this.prodName();
+      this.form.product_name = row.product_name.id;
+      this.form.quantity = row.quantity;
+      this.form.requesting_branch = row.requesting_branch.id;
+
+      this.dialog = true;
+    },
+
+    // Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
+
+    // Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
+
   watch: {
     dialog(val) {
-      //   alert("yes") // uncomment mo to then try mo press ung button,  ito ung nag tritriger pag ni open mo ung dialog
+      val || this.cancel();
+    },
+    page(val) {
+      this.page = val;
+      this.get();
     },
     id: {
       handler: function (v) {},

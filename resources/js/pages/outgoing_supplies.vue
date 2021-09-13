@@ -151,23 +151,7 @@
                   </v-col>
                 </v-row>
 
-                <!-- Category Field -->
                 <v-row no-gutters>
-                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
-                    <v-card-actions class="py-0">
-                      <v-select
-                        :items="suppcatlist"
-                        item-text="supply_cat_name"
-                        item-value="id"
-                        class="my-0"
-                        clearable
-                        dense
-                        label="Category"
-                      >
-                      </v-select>
-                    </v-card-actions>
-                  </v-col>
-
                   <!-- Branch Field -->
                   <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
                     <v-card-actions class="py-0">
@@ -179,6 +163,23 @@
                         clearable
                         dense
                         label="Branch"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
+
+                  <!-- Category Field -->
+                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-select
+                        :items="suppcatlist"
+
+                        item-text="supply_cat_name"
+                        item-value="id"
+                        class="my-0"
+                        clearable
+                        dense
+                        label="Category"
                       >
                       </v-select>
                     </v-card-actions>
@@ -517,7 +518,12 @@ export default {
         align: "right",
         filterable: false,
       },
-      { text: "Amount", value: "outgoing_amount", align: "right", filterable: false },
+      {
+        text: "Amount",
+        value: "outgoing_amount",
+        align: "right",
+        filterable: false,
+      },
       {
         text: "Branch",
         value: "requesting_branch.branch_name",
@@ -691,7 +697,6 @@ export default {
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
-      console.log(this.currentdata);
       this.form.id = row.id;
       this.form.category = row.category.id;
       this.suppName();

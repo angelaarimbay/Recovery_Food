@@ -38,11 +38,7 @@
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-data-table
-            :headers="headers"
-            :data="table"
-            hide-default-footer
-          >
+          <v-data-table :headers="headers" :data="table" hide-default-footer>
           </v-data-table>
         </v-container>
       </v-container>
@@ -55,39 +51,31 @@ export default {
   data: () => ({
     table: [],
     headers: [
-      { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Category", value: "supply category", filterable: false },
       {
-        text: "Beginning Inventory",
-        value: "beginning inventory",
+        text: "Supplies Category",
+        value: "",
+        align: "start",
         filterable: false,
       },
-      { text: "Purchases", value: "purchases", filterable: false },
-      { text: "Total Inventory", value: "total inventory", filterable: false },
+      {
+        text: "Incoming Supplies",
+        value: "",
+        align: "right",
+        filterable: false,
+      },
       {
         text: "Outgoing Supplies",
-        value: "outgoing supplies",
-        filterable: false,
-      },
-      { text: "Stocks On Hand", value: "stocks on hand", filterable: false },
-      {
-        text: "Ending Inventory",
-        value: "ending inventory",
+        value: "",
+        align: "right",
         filterable: false,
       },
       {
-        text: "Variance",
-        value: "variance",
-        sortable: false,
-        filterable: false,
-      },
-      {
-        text: "Fluctuation Impact",
-        value: "fluctuation impact",
+        text: "Stocks On Hand",
+        value: "",
+        align: "right",
         filterable: false,
       },
     ],
-    search: "",
   }),
 };
 </script>

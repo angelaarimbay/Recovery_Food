@@ -46,6 +46,14 @@ use Illuminate\Support\Facades\Route;
    Route::get('prodlist/prodCat', 'Products\ProductsListController@prodCat');
    Route::get('prodlist/prodSubCat', 'Products\ProductsListController@prodSubCat');
 
+   Route::post('outprod/save', 'Products\OutgoingProductsController@save');
+   Route::get('outprod/get', 'Products\OutgoingProductsController@get');
+   Route::get('outprod/prodCat', 'Products\OutgoingProductsController@prodCat');
+   Route::get('outprod/prodSubCat', 'Products\OutgoingProductsController@prodSubCat');
+   Route::get('outprod/prodName', 'Products\OutgoingProductsController@prodName');
+   Route::get('outprod/branchName', 'Products\OutgoingProductsController@branchName');
+
+
    
  
     // // dashboard

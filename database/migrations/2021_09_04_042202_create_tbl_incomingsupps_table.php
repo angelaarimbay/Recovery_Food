@@ -15,7 +15,7 @@ class CreateTblIncomingsuppsTable extends Migration
     {
         Schema::create('tbl_incomingsupps', function (Blueprint $table) {
             $table->id();
-            $table->string('category')->references('id')->on('tbl_suppcat');
+            $table->integer('category')->references('id')->on('tbl_suppcat');
             $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
             $table->float('quantity');
             $table->float('amount');
