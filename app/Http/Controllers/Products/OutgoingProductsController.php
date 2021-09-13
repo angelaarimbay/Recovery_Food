@@ -40,7 +40,7 @@ class OutgoingProductsController extends Controller
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_outgoingprod::with(['category','sub_category','product_name','requesting_branch']);
-            $table_clone = clone $table;   // Get all items from outgoingproducts
+            $table_clone = clone $table;   // Get all items from outgoingprod
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("product_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }

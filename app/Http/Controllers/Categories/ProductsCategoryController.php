@@ -13,7 +13,7 @@ class ProductsCategoryController extends Controller
     {
         $table = tbl_prodcat::where("status", '!=', null);
      
- 
+
         // Check if product category name exists
         $table_clone = clone $table;   // Get all items from prodcat
         if ($table_clone

@@ -14,7 +14,7 @@ class MainInventoryController extends Controller
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_incomingsupp::with(['category','supply_name'])->groupby(['category','supply_name']);
-            $table_clone = clone $table;   // Get all items from masterlistsupplies
+            $table_clone = clone $table;   // Get all items from incomingsupp
            
             return $table_clone->selectRaw("category,supply_name, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->groupby(['category','supply_name'])->paginate($t->itemsPerPage, '*', 'page', 1);
         }

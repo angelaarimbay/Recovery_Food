@@ -39,7 +39,7 @@ class OutgoingSuppliesController extends Controller
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_outgoingsupp::with(['category','supply_name','requesting_branch']);
-            $table_clone = clone $table;   // Get all items from outgoingsupplies
+            $table_clone = clone $table;   // Get all items from outgoingsupp
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }

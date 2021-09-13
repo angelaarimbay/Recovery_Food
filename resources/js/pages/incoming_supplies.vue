@@ -326,7 +326,6 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
-                            clearable
                           >
                             <template slot="label">
                               <div style="font-size: 14px">Incoming Date *</div>
@@ -362,12 +361,11 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.category"
                         outlined
                         dense
                         :items="suppcatlist"
-                        clearable
                         item-text="supply_cat_name"
                         item-value="id"
                         @change="suppName"
@@ -387,12 +385,11 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.supply_name"
                         outlined
                         dense
                         :items="suppnamelist"
-                        clearable
                         item-text="supply_name"
                         item-value="id"
                       >
@@ -543,7 +540,13 @@ export default {
         align: "right",
         filterable: false,
       },
-      { text: "Actions", value: "id", sortable: false, filterable: false },
+      {
+        text: "Actions",
+        value: "id",
+        align: "center",
+        sortable: false,
+        filterable: false,
+      },
     ],
     page: 1,
     pageCount: 0,
@@ -712,7 +715,10 @@ export default {
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
       this.form.amount = row.amount;
-      this.form.incoming_date = this.getFormatDate(row.incoming_date, "YYYY-MM-DD");
+      this.form.incoming_date = this.getFormatDate(
+        row.incoming_date,
+        "YYYY-MM-DD"
+      );
 
       this.dialog = true;
     },

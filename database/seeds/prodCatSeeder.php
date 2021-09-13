@@ -15,15 +15,15 @@ class prodCatSeeder extends Seeder
         tbl_prodcat::insert([
             [
                 'status' => 1,
-                'product_cat_name'=> 'P1',
+                'product_cat_name'=> 'PCat 1',
             ],
             [
                 'status' => 1,
-                'product_cat_name'=> 'P2',
+                'product_cat_name'=> 'PCat 2',
             ],
             [
                 'status' => 0,
-                'product_cat_name'=> 'P3',
+                'product_cat_name'=> 'PCat 3',
             ]
         ]);
     }

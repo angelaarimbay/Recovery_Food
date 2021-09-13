@@ -342,16 +342,13 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
     status: [
       { name: "Active", id: 1 },
       { name: "Inactive", id: 0 },
     ],
-    deleteid: "",
     progressBar: false,
-    tempfile: "",
     table: [],
 
     // Form Rules

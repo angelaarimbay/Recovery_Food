@@ -326,12 +326,11 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.requesting_branch"
                         :items="branchlist"
                         outlined
                         dense
-                        clearable
                         item-text="branch_name"
                         item-value="id"
                       >
@@ -343,12 +342,11 @@
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.category"
                         :items="prodcatlist"
                         outlined
                         dense
-                        clearable
                         item-text="product_cat_name"
                         item-value="id"
                         @change="prodName"
@@ -361,12 +359,11 @@
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.sub_category"
                         :items="prodsubcatlist"
                         outlined
                         dense
-                        clearable
                         item-text="prod_sub_cat_name"
                         item-value="id"
                         @change="prodName"
@@ -386,12 +383,11 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.product_name"
                         :items="prodnamelist"
                         outlined
                         dense
-                        clearable
                         item-text="product_name"
                         item-value="id"
                       >
@@ -484,11 +480,8 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
-    deleteid: "",
-    tempfile: "",
     table: [],
     prodcatlist: [],
     prodsubcatlist: [],

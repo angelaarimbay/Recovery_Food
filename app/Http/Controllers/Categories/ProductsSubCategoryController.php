@@ -13,7 +13,6 @@ class ProductsSubCategoryController extends Controller
     {
         $table = tbl_prodsubcat::where("status", '!=', null);
      
- 
         // Check if product-sub category name exists
         $table_clone = clone $table;   // Get all items from prodsubcat
         if ($table_clone

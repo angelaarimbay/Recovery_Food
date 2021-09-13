@@ -55,7 +55,7 @@ class BranchesController extends Controller
     }
     public function attachment(Request $u)
     {
-        $img = $u->file('file'); // This is the file (depending on the parameter)
+        $img = $u->file('file'); // File (depending on the parameter)
 
         // Unique file name
         $newfilename  = $img->getClientOriginalName() . "-" . time() . '.' . $img->getClientOriginalExtension();

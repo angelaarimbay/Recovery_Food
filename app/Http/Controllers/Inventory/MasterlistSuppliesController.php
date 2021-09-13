@@ -13,10 +13,9 @@ class MasterlistSuppliesController extends Controller
     public function save(Request $data)
     {
         $table = tbl_masterlistsupp::where("status", '!=', null);
-     
- 
+        
         // Check if supply name exists
-        $table_clone = clone $table;   // Get all items from suppcat
+        $table_clone = clone $table;   // Get all items from masterlistsupp
         if ($table_clone
         ->where("supply_name", $data->supply_name) // Filter using name
         ->where("id", '!=', $data->id)  // Filter if id is not selected
@@ -51,7 +50,7 @@ class MasterlistSuppliesController extends Controller
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_masterlistsupp::with('category')->where("status", '!=', null);
-            $table_clone = clone $table;   // Get all items from masterlistsupplies
+            $table_clone = clone $table;   // Get all items from masterlistsupp
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }

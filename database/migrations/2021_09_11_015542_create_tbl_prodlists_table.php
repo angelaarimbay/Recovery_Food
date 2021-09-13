@@ -20,7 +20,7 @@ class CreateTblProdlistsTable extends Migration
             $table->string('product_name');
             $table->string('description')->nullable();
             $table->float('price');
-            $table->integer('quantity');
+            $table->float('quantity');
             $table->datetime('exp_date');
             $table->integer('status')->default(1);
             $table->timestamps();

@@ -71,10 +71,8 @@ class ProductsListController extends Controller
         return tbl_prodcat::select(['product_cat_name','id'])->where('status',1)->get();
     }
 
-
     public function prodSubCat()
     {
         return tbl_prodsubcat::select(['prod_sub_cat_name','id'])->where('status',1)->get();
     }
-    
 }

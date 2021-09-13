@@ -340,17 +340,15 @@ export default {
     snackbar: {
       active: false,
       message: "",
+
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
     status: [
       { name: "Active", id: 1 },
       { name: "Inactive", id: 0 },
     ],
-    deleteid: "",
-    tempfile: "",
     table: [],
 
     // Form Rules

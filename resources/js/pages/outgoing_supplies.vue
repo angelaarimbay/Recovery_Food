@@ -327,12 +327,11 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.requesting_branch"
                         :items="branchlist"
                         outlined
                         dense
-                        clearable
                         item-text="branch_name"
                         item-value="id"
                       >
@@ -351,12 +350,11 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.category"
                         :items="suppcatlist"
                         outlined
                         dense
-                        clearable
                         item-text="supply_cat_name"
                         item-value="id"
                         @change="suppName"
@@ -376,12 +374,11 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.supply_name"
                         :items="suppnamelist"
                         outlined
                         dense
-                        clearable
                         item-text="supply_name"
                         item-value="id"
                       >
@@ -472,11 +469,8 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
-    deleteid: "",
-    tempfile: "",
     table: [],
     suppcatlist: [],
     suppnamelist: [],
@@ -530,7 +524,7 @@ export default {
         filterable: false,
       },
       { text: "Date", value: "created_at", align: "right", filterable: false },
-      { text: "Actions", value: "id", sortable: false, filterable: false },
+      { text: "Actions", value: "id", align: "center", sortable: false, filterable: false },
     ],
     page: 1,
     pageCount: 0,
@@ -621,7 +615,6 @@ export default {
           await axios
             .post("api/osupp/save", this.form)
             .then((result) => {
-              console.log(result.data);
               //if the value is true then save to database
               switch (result.data) {
                 case 0:

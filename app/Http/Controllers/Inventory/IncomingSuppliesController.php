@@ -37,15 +37,13 @@ class IncomingSuppliesController extends Controller
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
             $table = tbl_incomingsupp::with(['category','supply_name']);
-            $table_clone = clone $table;   // Get all items from incomingsupplies
+            $table_clone = clone $table;   // Get all items from incomingsupp
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
         }
         // Else
         return  tbl_incomingsupp::with(['category','supply_name'])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
     }
-
-   
 
     public function suppCat()
     {

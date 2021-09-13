@@ -382,7 +382,6 @@
                         v-model="form.status"
                         outlined
                         dense
-                        clearable
                         :items="status"
                         item-text="name"
                         item-value="id"
@@ -409,7 +408,7 @@
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Store Name *</div>
+                          <div style="font-size: 14px">Branch Name *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -475,6 +474,10 @@
                           <div style="font-size: 14px">Email Address *</div>
                         </template>
                       </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-0">
+                      <hr class="mt-0"/>
                     </v-col>
 
                     <v-col
@@ -611,7 +614,6 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
     viewdialog: false,
@@ -619,8 +621,7 @@ export default {
       { name: "Active", id: 1 },
       { name: "Inactive", id: 0 },
     ],
-    deleteid: "",
-    tempfile: "", //----------------------------------upload
+    tempfile: "", // for uploading
     table: [],
 
     // Form Rules

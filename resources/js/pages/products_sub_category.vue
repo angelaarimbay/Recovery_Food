@@ -251,7 +251,6 @@
                         v-model="form.status"
                         outlined
                         dense
-                        clearable
                         :items="status"
                         item-text="name"
                         item-value="id"
@@ -345,15 +344,12 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
     status: [
       { name: "Active", id: 1 },
       { name: "Inactive", id: 0 },
     ],
-    deleteid: "",
-    tempfile: "",
     table: [],
 
     // Form Rules

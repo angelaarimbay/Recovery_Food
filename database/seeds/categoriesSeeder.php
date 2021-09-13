@@ -16,15 +16,15 @@ class categoriesSeeder extends Seeder
         tbl_suppcat::insert([ 
             [
                 'status' => 1,
-                'supply_cat_name'=> 'S1',
+                'supply_cat_name'=> 'SCat 1',
             ],
             [
                 'status' => 1,
-                'supply_cat_name'=> 'S2',
+                'supply_cat_name'=> 'SCat 2',
             ],
             [
                 'status' => 0,
-                'supply_cat_name'=> 'S3',
+                'supply_cat_name'=> 'SCat 3',
             ]
         ]);
     }

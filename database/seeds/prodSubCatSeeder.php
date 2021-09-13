@@ -15,15 +15,15 @@ class prodSubCatSeeder extends Seeder
         tbl_prodsubcat::insert([ 
             [
                 'status' => 1,
-                'prod_sub_cat_name'=> 'PS1',
+                'prod_sub_cat_name'=> 'PSCat 1',
             ],
             [
                 'status' => 1,
-                'prod_sub_cat_name'=> 'PS2',
+                'prod_sub_cat_name'=> 'PSCat 2',
             ],
             [
                 'status' => 0,
-                'prod_sub_cat_name'=> 'PS3',
+                'prod_sub_cat_name'=> 'PSCat 3',
             ]
         ]);
     }

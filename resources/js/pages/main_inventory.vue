@@ -231,13 +231,9 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
-    status: ["Active", "Inactive"],
-    deleteid: "",
     progressBar: false,
-    tempfile: "",
     table: [],
     suppcatlist: [],
 

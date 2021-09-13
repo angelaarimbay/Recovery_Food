@@ -338,7 +338,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.status"
                         outlined
                         dense
@@ -354,12 +354,11 @@
 
                     <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumber"
                         v-model="form.category"
                         outlined
                         :items="suppcatlist"
                         dense
-                        clearable
                         item-text="supply_cat_name"
                         item-value="id"
                       >
@@ -881,7 +880,7 @@ export default {
       } else {
         this.temp_vat = 1.12;
         this.disable = true;
-        this.form.without_vat = null;
+        this.form.without_vat = this.form.with_vat;
       }
       this.form.vat = this.temp_vat;
       this.sum();
@@ -892,7 +891,7 @@ export default {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.status = row.status;
-      this.form.category = row.category;
+      this.form.category = row.category.id;
       this.form.supply_name = row.supply_name;
       this.form.description = row.description;
       this.form.unit = row.unit;

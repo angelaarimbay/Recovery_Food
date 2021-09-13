@@ -19,7 +19,7 @@ class CreateTblOutgoingprodsTable extends Migration
             $table->integer('sub_category')->references('id')->on('tbl_prodsubcat');
             $table->integer('product_name')->references('id')->on('tbl_prodlist');
             $table->float('quantity');
-            $table->string('requesting_branch')->references('id')->on('tbl_branches');
+            $table->integer('requesting_branch')->references('id')->on('tbl_branches');
             $table->timestamps();
         });
     }

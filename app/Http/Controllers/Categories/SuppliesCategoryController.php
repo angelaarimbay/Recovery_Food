@@ -13,7 +13,6 @@ class SuppliesCategoryController extends Controller
     {
         $table = tbl_suppcat::where("status", '!=', null);
      
- 
         // Check if supply category name exists
         $table_clone = clone $table;   // Get all items from suppcat
         if ($table_clone
@@ -50,5 +49,4 @@ class SuppliesCategoryController extends Controller
         // Else
         return  tbl_suppcat::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
     }
-    
 }

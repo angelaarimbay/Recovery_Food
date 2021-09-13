@@ -1,50 +1,85 @@
 <template>
   <div style="min-width: 280px">
+    <!-- Snackbar -->
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar.active"
+      timeout="2500"
+    >
+      <span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
+      >
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
+        >
+      </template>
+    </v-snackbar>
+
     <v-container>
       <v-layout row wrap>
-        <h5 class="heading my-auto">Suppliers</h5>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Suppliers
+        </h4>
         <v-spacer></v-spacer>
-        <v-card-actions class="px-0">
+
+        <!-- Breadcrumbs -->
+        <v-card-actions class="px-0 py-0">
           <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
             plain
-            small
+            color="primary"
             v-ripple="false"
             to="/dashboard"
             class="px-0"
-            style="text-decoration: none; text-transform: none; font-size: 11px"
+            style="text-decoration: none; text-transform: none"
             >Home</v-btn
           >
           /
           <v-btn
-            small
+            :small="$vuetify.breakpoint.smAndDown"
             text
             disabled
             class="px-0"
-            style="text-transform: none; font-size: 11px"
+            style="text-transform: none"
             >Suppliers List</v-btn
           >
         </v-card-actions>
       </v-layout>
     </v-container>
 
+    <!-- Main Card -->
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="pl-0">
             <v-btn
-              color="#00794b"
+              color="primary"
               style="text-transform: none"
               depressed
               dark
+              :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              small
               @click="openDialog"
             >
               Add Supplier
             </v-btn>
           </v-card-actions>
 
-          <v-list dense nav class="px-0 py-1">
+          <!-- Search Filters -->
+          <v-list dense nav class="px-0 py-0">
             <v-list-group no-action color="#757575">
               <template v-slot:activator>
                 <v-list-item-icon class="mx-0">
@@ -59,59 +94,126 @@
 
               <v-list class="p-0">
                 <v-row no-gutters>
-                  <v-col
-                    cols="12"
-                    xl="2"
-                    lg="2"
-                    md="3"
-                    sm="12"
-                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
-                  >
-                    <v-text-field
-                      :value="itemsPerPage"
-                      label="Items per page"
-                      type="number"
-                      min="0"
-                      max="15"
-                      @input="itemsPerPage = parseInt($event, 10)"
-                    ></v-text-field>
+                  <!-- Items Per Page -->
+                  <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
+                    <v-card-actions>
+                      <v-select
+                        style="max-width: 82px"
+                        dense
+                        v-model="itemsPerPage"
+                        label="Items per page"
+                        @change="itemperpage"
+                        :items="[
+                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                        ]"
+                      >
+                      </v-select>
+                    </v-card-actions>
                   </v-col>
+
                   <v-spacer></v-spacer>
+
+                  <!-- Search Field -->
                   <v-col
-                    cols="12"
+                    cols="8"
                     xl="4"
                     lg="4"
-                    md="5"
-                    sm="12"
-                    class="my-auto px-xl-2 px-lg-2 px-md-1 px-sm-1 px-1"
+                    md="6"
+                    sm="8"
+                    style="max-width: 230px"
+                    class="my-auto"
                   >
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="Supplier Name"
-                      single-line
-                      hide-details
-                      dense
-                      clearable
-                      class="my-0 mb-4 mb-xl-0 mb-lg-0 mb-md-0 mb-sm-2"
-                    ></v-text-field>
+                    <v-card-actions>
+                      <v-text-field
+                        v-model="search"
+                        label="Supplier Name"
+                        single-line
+                        dense
+                        clearable
+                      ></v-text-field>
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            :small="$vuetify.breakpoint.smAndDown"
+                            :large="$vuetify.breakpoint.mdAndUp"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            @click="get"
+                            class="mb-3"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
+                    </v-card-actions>
                   </v-col>
                 </v-row>
               </v-list>
             </v-list-group>
           </v-list>
-          <!--Table -->
+
+          <!-- Table -->
           <v-data-table
             :headers="headers"
-            :data="table"
+            :items="table.data"
+            :loading="progressbar"
             :page.sync="page"
+            ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
           >
+            <!-- Progress Bar -->
+            <v-progress-linear
+              color="red darken-2"
+              class="px-0 mx-0"
+              slot="progress"
+              indeterminate
+              rounded
+            ></v-progress-linear>
+
+            <template v-slot:[`item.count`]="{ item }">
+              {{ item.row }}</template
+            >
+            <template v-slot:[`item.status`]="{ item }">
+              <v-chip
+                style="justify-content: center"
+                :style="widthSize"
+                :small="$vuetify.breakpoint.smAndDown"
+                :color="
+                  item.status == '1'
+                    ? '#43A047'
+                    : item.status == '0'
+                    ? '#FF6F00'
+                    : ''
+                "
+                dark
+              >
+                {{ item.status == 1 ? "Active" : "Inactive" }}
+              </v-chip>
+            </template>
+            <template v-slot:[`item.id`]="{ item }">
+              <v-btn
+                icon
+                color="red darken-2"
+                @click="edit(item)"
+                :x-small="$vuetify.breakpoint.smAndDown"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
           </v-data-table>
+
+          <!-- Paginate -->
           <div class="text-center pt-2">
-            <v-pagination v-model="page" :length="pageCount"></v-pagination>
+            <v-pagination
+              v-model="page"
+              :total-visible="5"
+              :length="table.last_page"
+              color="red darken-2"
+            ></v-pagination>
           </div>
         </v-container>
 
@@ -123,7 +225,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Add Supplier
+              Supplier
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -131,7 +233,36 @@
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
                     <v-col
-                      class="py-1"
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field v-model="form.id" class="d-none" dense>
+                        <template slot="label">
+                          <div style="font-size: 14px">ID</div>
+                        </template>
+                      </v-text-field>
+
+                      <v-select
+                        :rules="formRulesNumber"
+                        v-model="form.status"
+                        outlined
+                        dense
+                        :items="status"
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Status *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
+                    <v-col
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -140,7 +271,7 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.suppCategory"
+                        v-model="form.supplier_name"
                         label=""
                         outlined
                         clearable
@@ -153,7 +284,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -162,7 +293,7 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.suppCategory"
+                        v-model="form.description"
                         label=""
                         outlined
                         clearable
@@ -175,7 +306,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -184,7 +315,7 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.suppCategory"
+                        v-model="form.phone_number"
                         label=""
                         outlined
                         clearable
@@ -197,7 +328,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -206,7 +337,7 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.suppCategory"
+                        v-model="form.contact_person"
                         label=""
                         outlined
                         clearable
@@ -219,7 +350,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -228,7 +359,7 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.suppCategory"
+                        v-model="form.address"
                         label=""
                         outlined
                         clearable
@@ -242,8 +373,9 @@
                   </v-row>
                 </v-container>
               </v-card-text>
-              <!-- buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-7 px-6 py-4">
+
+              <!-- Dialog Form Buttons -->
+              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -252,7 +384,7 @@
                   dark
                   @click="cancel"
                   style="text-transform: none"
-                  small
+                  :small="$vuetify.breakpoint.smAndDown"
                 >
                   Cancel
                 </v-btn>
@@ -261,9 +393,9 @@
                   depressed
                   :disabled="button"
                   dark
-                  @click="test()"
+                  @click="save"
                   style="text-transform: none"
-                  small
+                  :small="$vuetify.breakpoint.smAndDown"
                 >
                   Save
                 </v-btn>
@@ -276,54 +408,237 @@
   </div>
 </template>
 
+<style>
+.v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
+</style>
+
 <script>
+import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
+    progressbar: false,
+    snackbar: {
+      active: false,
+      message: "",
+    },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
-    deleteid: "",
-    progressBar: false,
-    tempfile: "",
+    status: [
+      { name: "Active", id: 1 },
+      { name: "Inactive", id: 0 },
+    ],
     table: [],
+
+    // Form Rules
     formRules: [(v) => !!v || "This is required"],
+    formRulesNumberRange: (v) => {
+      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
+      return "Number has to be between 1% and 100%";
+    },
+    formRulesNumber: [
+      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    ],
+
+    // Form Data
     form: {
-      suppName: null,
-      desc: null,
-      contactNo: null,
-      contactPerson: null,
+      id: null,
+      status: null,
+      supplier_name: null,
+      description: null,
+      phone_number: null,
+      contact_person: null,
       address: null,
     },
+
+    // For comparing data
+    currentdata: {},
+
+    // Table Headers
     headers: [
-      { text: "#", value: "#", align: "start", filterable: false },
-      { text: "Supplier Name", value: "supplier name" },
+      { text: "#", value: "count", align: "start", filterable: false },
+      { text: "Supplier Name", value: "supplier_name" },
       { text: "Description", value: "description", filterable: false },
-      { text: "Contact Number", value: "contact number", filterable: false },
-      { text: "Contact Person", value: "contact person", filterable: false },
+      { text: "Contact Person", value: "contact_person", filterable: false },
       { text: "Address", value: "address", filterable: false },
-      { text: "Actions", value: "actions", sortable: false, filterable: false },
+      {
+        text: "Status",
+        value: "status",
+        align: "center",
+        filterable: false,
+      },
+      {
+        text: "Actions",
+        value: "id",
+        align: "center",
+        sortable: false,
+        filterable: false,
+      },
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 10,
+    itemsPerPage: 5,
   }),
-  methods: {
-    test() {
-      alert("Sample");
+
+  // Dynamic Width
+  computed: {
+    widthSize() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return { width: "65px" };
+        case "sm":
+          return { width: "65px" };
+        default:
+          return { width: "72px" };
+      }
     },
+  },
+
+  // Onload
+  created() {
+    this.get();
+  },
+
+  methods: {
+    itemperpage() {
+      this.page = 1;
+      this.get();
+    },
+
+    // Format for everytime we call on database
+    // Always add await and async
+    compare() {
+      // Compare exsiting data vs edited data
+      // If nothing change then no request
+      if (!this.currentdata) {
+        return true;
+      }
+      // Check if not existed
+      // Check each value if the same or not
+      var found = 0;
+      for (var key in this.form) {
+        if (this.currentdata[key] != this.form[key]) {
+          found += 1;
+        }
+      }
+      //if has changes
+      if (found > 0) {
+        return true;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "warning",
+          message: "No changes has been made.",
+        };
+        this.cancel();
+      }
+    },
+
+    // Saving data to database
+    async save() {
+      if (this.$refs.form.validate()) {
+        // Validate first before compare
+        if (this.compare()) {
+          // Save or update data in the table
+          await axios
+            .post("api/supplist/save", this.form)
+            .then((result) => {
+              //if the value is true then save to database
+              switch (result.data) {
+                case 0:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully saved.",
+                  };
+                  this.get();
+                  this.cancel();
+                  break;
+                case 1:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert",
+                    iconColor: "error",
+                    message: "The supply category already exists.",
+                  };
+                  break;
+                default:
+                  break;
+              }
+            })
+            .catch((result) => {
+              // If false or error when saving
+            });
+        }
+      }
+    },
+
+    async get() {
+      this.progressbar = true; // Show the progress bar
+      // Get data from tables
+      this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+      await axios
+        .get("api/supplist/get", {
+          params: {
+            page: this.page,
+            itemsPerPage: this.itemsPerPage,
+            search: this.search,
+          },
+        })
+        .then((result) => {
+          // If the value is true then get the data
+          this.table = result.data;
+          this.progressbar = false; // Hide the progress bar
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    // Editing/updating of row
+    edit(row) {
+      this.currentdata = JSON.parse(JSON.stringify(row));
+      this.form.id = row.id;
+      this.form.status = row.status;
+      this.form.supplier_name = row.supplier_name;
+      this.form.description = row.description;
+      this.form.phone_number = row.phone_number;
+      this.form.contact_person = row.contact_person;
+      this.form.address = row.address;
+      this.dialog = true;
+    },
+
+    // Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
+
+    // Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
+
   watch: {
     dialog(val) {
-      //   alert("yes") // uncomment mo to then try mo press ung button,  ito ung nag tritriger pag ni open mo ung dialog
+      val || this.cancel();
+    },
+    page(val) {
+      this.page = val;
+      this.get();
     },
     id: {
       handler: function (v) {},
