@@ -600,6 +600,15 @@ export default {
                 found += 1;
               }
             }
+          } else if (key == "incoming_date") {
+            if (
+              this.getFormatDate(
+                this.currentdata.incoming_date,
+                "YYYY-MM-DD"
+              ) != this.getFormatDate(this.form.incoming_date, "YYYY-MM-DD")
+            ) {
+              found += 1;
+            }
           } else {
             found += 1;
           }
@@ -703,7 +712,7 @@ export default {
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
       this.form.amount = row.amount;
-      this.form.incoming_date = row.incoming_date;
+      this.form.incoming_date = this.getFormatDate(row.incoming_date, "YYYY-MM-DD");
 
       this.dialog = true;
     },

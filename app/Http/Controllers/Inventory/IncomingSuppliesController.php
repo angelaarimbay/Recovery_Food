@@ -23,7 +23,7 @@ class IncomingSuppliesController extends Controller
                  'supply_name'=>$data->supply_name,
                  'quantity'=>$data->quantity,
                  'amount'=>$data->amount,
-                 'incoming_date'=>$date->incoming_date,
+                 'incoming_date'=>$data->incoming_date,
                 ]
             );
         } else {
