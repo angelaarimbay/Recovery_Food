@@ -468,6 +468,7 @@ export default {
       { text: "#", value: "count", align: "start", filterable: false },
       { text: "Supplier Name", value: "supplier_name" },
       { text: "Description", value: "description", filterable: false },
+      { text: "Phone Number", value: "phone_number", filterable: false },
       { text: "Contact Person", value: "contact_person", filterable: false },
       { text: "Address", value: "address", filterable: false },
       {

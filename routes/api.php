@@ -61,6 +61,11 @@ use Illuminate\Support\Facades\Route;
    // Suppliers List
    Route::post('supplist/save', 'Suppliers\SuppliersListController@save');
    Route::get('supplist/get', 'Suppliers\SuppliersListController@get');
+
+   // Purchase Orders
+   Route::post('porder/save', 'Suppliers\PurchaseOrdersController@save');
+   Route::get('porder/get', 'Suppliers\PurchaseOrdersController@get');
+   Route::get('porder/suppName', 'Suppliers\PurchaseOrdersController@suppName');
    
  
     // // dashboard
