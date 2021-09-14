@@ -362,10 +362,8 @@ export default {
     form: {
       id: null,
       supplier_name: null,
-      description: null,
-      phone_number: null,
-      contact_person: null,
-      address: null,
+      invoice_number: null,
+      amount: null,
     },
 
     // For comparing data
@@ -374,8 +372,19 @@ export default {
     // Table Headers
     headers: [
       { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Invoice Number", value: "invoice_number", align: "right", filterable: false  },
-      { text: "Supplier Name", value: "supplier_name.supplier_name"},
+      { text: "Supplier Name", value: "supplier_name.supplier_name" },
+      {
+        text: "Invoice Number",
+        value: "invoice_number",
+        align: "right",
+        filterable: false,
+      },
+      {
+        text: "Amount",
+        value: "amount",
+        align: "right",
+        filterable: false,
+      },
       { text: "Date", value: "created_at", align: "right", filterable: false },
       {
         text: "Actions",

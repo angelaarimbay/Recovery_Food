@@ -66,7 +66,10 @@ use Illuminate\Support\Facades\Route;
    Route::post('porder/save', 'Suppliers\PurchaseOrdersController@save');
    Route::get('porder/get', 'Suppliers\PurchaseOrdersController@get');
    Route::get('porder/suppName', 'Suppliers\PurchaseOrdersController@suppName');
-   
+
+   // User Accounts
+   Route::post('useracc/save', 'UserAccounts\UserAccountsController@save');
+   Route::get('useracc/get', 'UserAccounts\UserAccountsController@get');
  
     // // dashboard
     // Route::get('get/accumulation/top',             'Accumulation\AccumulationController@AccumulationToplist');

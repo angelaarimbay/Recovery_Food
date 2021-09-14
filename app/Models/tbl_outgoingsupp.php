@@ -12,6 +12,7 @@ class tbl_outgoingsupp extends Model
     // Always include this code for every model/table created
     protected $guarded = ['id'];
     public $appends = ['outgoing_amount'];
+    
 
     public function category()
     {

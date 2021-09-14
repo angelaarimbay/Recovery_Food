@@ -12,7 +12,7 @@ class PurchaseOrdersController extends Controller
 {
     public function save(Request $data)
     {
-        $table = tbl_purchaseord::where('supplier_name', '!=', 0);
+        $table = tbl_purchaseord::where('supplier_name', '!=', null);
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
             // Update

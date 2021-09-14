@@ -37,6 +37,7 @@ class tbl_outgoingprod extends Model
 
     public function getOutgoingAmountAttribute()
     {
-        return tbl_prodlist::where("id", $this->product_name)->first()->net_price * $this->quantity;
+        return tbl_prodlist::where("id", $this->product_name)->first()->price * $this->quantity;
     }
+
 }

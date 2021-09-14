@@ -310,7 +310,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Outgoing Supply
+              Outgoing Product
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -518,7 +518,12 @@ export default {
         value: "category.product_cat_name",
         filterable: false,
       },
-      { text: "Supply Name", value: "sub_category.prod_sub_cat_name" },
+      { text: "Sub-Category", value: "sub_category.prod_sub_cat_name" },
+      {
+        text: "Product Name",
+        value: "product_name.product_name",
+        filterable: false,
+      },
       {
         text: "Quantity",
         value: "quantity",
@@ -537,7 +542,13 @@ export default {
         filterable: false,
       },
       { text: "Date", value: "created_at", align: "right", filterable: false },
-      { text: "Actions", value: "id", align: "center", sortable: false, filterable: false },
+      {
+        text: "Actions",
+        value: "id",
+        align: "center",
+        sortable: false,
+        filterable: false,
+      },
     ],
     page: 1,
     pageCount: 0,
@@ -553,6 +564,7 @@ export default {
     this.get();
     this.prodCat();
     this.prodSubCat();
+    this.prodName();
     this.branchName();
   },
 

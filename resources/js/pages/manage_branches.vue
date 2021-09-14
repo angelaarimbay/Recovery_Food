@@ -123,6 +123,7 @@
                     style="max-width: 230px"
                     class="my-auto"
                   >
+                  
                     <v-card-actions>
                       <v-text-field
                         v-model="search"
@@ -245,6 +246,7 @@
               dense
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+              
             >
               View Branch
               <v-spacer></v-spacer>

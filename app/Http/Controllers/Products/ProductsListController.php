@@ -15,9 +15,8 @@ class ProductsListController extends Controller
     {
     //  return $data->all();
 
-        $table = tbl_prodlist::where("status", '!=', null);
+        $table = tbl_prodlist::where("status", '!=', 0);
      
- 
         // Check if product name exists
         $table_clone = clone $table;   // Get all items from prodlist
         if ($table_clone
@@ -53,7 +52,7 @@ class ProductsListController extends Controller
         
         DB::statement(DB::raw('set @row:=0'));
         if ($t->search) { // If has value
-            $table = tbl_prodlist::with(['category','sub_category'])->where("status", '!=', null);
+            $table = tbl_prodlist::with(['category','sub_category'])->where("status", '!=', 0);
             $table_clone = clone $table;   // Get all items from prodlist
            
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("product_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
