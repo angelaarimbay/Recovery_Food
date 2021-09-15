@@ -65,7 +65,6 @@
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="pl-0">
-
             <v-btn
               color="primary"
               style="text-transform: none"
@@ -80,7 +79,6 @@
 
             <v-spacer></v-spacer>
 
-            
             <!-- <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -271,7 +269,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
-
+            <template v-slot:[`item.exp_date`]="{ item }">
+              {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
+            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -499,46 +499,35 @@
                       md="12"
                     >
                       <v-menu
-                        ref="menu"
                         v-model="menu"
                         :close-on-content-click="false"
-                        :return-value.sync="date"
+                        :nudge-right="35"
+                        lazy
                         transition="scale-transition"
                         offset-y
-                        min-width="auto"
+                        full-width
+                        min-width="290px"
                       >
-                        <template v-slot:activator="{ on, attrs }">
+                        <template v-slot:activator="{ on }">
                           <v-text-field
-                            outlined
-                            dense
                             v-model="form.exp_date"
+                            label="Expiration Date"
                             readonly
-                            v-bind="attrs"
                             v-on="on"
+                            class="py-0"
+                            dense
                             clearable
-                          >
-                            <template slot="label">
-                              <div style="font-size: 14px">Expiration Date</div>
-                            </template></v-text-field
-                          >
+                            outlined
+                          ></v-text-field>
                         </template>
                         <v-date-picker
                           v-model="form.exp_date"
-                          no-title
+                          @input="menu = false"
                           scrollable
-                        >
-                          <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="menu = false">
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="$refs.menu.save(date)"
-                          >
-                            Ok
-                          </v-btn>
-                        </v-date-picker>
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
                       </v-menu>
                     </v-col>
                   </v-row>
@@ -726,7 +715,6 @@ export default {
       this.page = 1;
       this.get();
     },
-    
 
     // Format for everytime we call on database
     // Always add await and async
@@ -746,6 +734,13 @@ export default {
               if (this.currentdata.category.id == this.form.category) {
                 found += 1;
               }
+            }
+          } else if (key == "exp_date") {
+            if (
+              this.getFormatDate(this.currentdata.exp_date, "YYYY-MM-DD") !=
+              this.getFormatDate(this.form.exp_date, "YYYY-MM-DD")
+            ) {
+              found += 1;
             }
           } else {
             found += 1;
@@ -897,9 +892,9 @@ export default {
       this.form.unit = row.unit;
       this.form.net_price = row.net_price;
       this.form.vat = row.vat;
-      this.temp_vat = row.vat; 
+      this.temp_vat = row.vat;
       this.form.without_vat = row.without_vat;
-      this.form.exp_date = row.exp_date;
+      this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;
     },
@@ -909,13 +904,13 @@ export default {
       for (var key in this.form) {
         if (key == "vat") {
           this.temp_vat = 1.12;
-          this.form[key] =  1.12;
-        }else{
-          this.form[key] = ''
-          this.vat = false
-          this.disable = true
+          this.form[key] = 1.12;
+        } else {
+          this.form[key] = "";
+          this.vat = false;
+          this.disable = true;
         }
-      } 
+      }
       this.dialog = false;
     },
   },

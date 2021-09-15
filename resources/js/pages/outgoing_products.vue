@@ -186,6 +186,7 @@
 
                   <v-spacer></v-spacer>
 
+                  <!-- Date Picker -->
                   <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-menu
@@ -207,12 +208,16 @@
                             v-on="on"
                             class="py-0"
                             dense
+                            clearable
                           ></v-text-field>
                         </template>
                         <v-date-picker
                           v-model="dateFrom"
                           @input="date1 = false"
                           scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -239,12 +244,16 @@
                             v-on="on"
                             class="py-0"
                             dense
+                            clearable
                           ></v-text-field>
                         </template>
                         <v-date-picker
                           v-model="dateUntil"
                           @input="date2 = false"
                           scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -274,7 +283,7 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.created_at`]="{ item }">
-              {{ getFormatDate(item.created_at, "MM/DD/YYYY") }}</template
+              {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
@@ -553,8 +562,8 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
-    dateFrom: new Date().toISOString().substr(0, 10),
-    dateUntil: new Date().toISOString().substr(0, 10),
+    dateFrom: null,
+    dateUntil: null,
     date1: false,
     date2: false,
   }),

@@ -150,6 +150,83 @@
                     </v-card-actions>
                   </v-col>
                 </v-row>
+
+                <v-row no-gutters>
+                  <v-spacer></v-spacer>
+
+                  <!-- Date Picker -->
+                  <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-menu
+                        v-model="date1"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="dateFrom"
+                            label="Date From"
+                            prepend-icon="mdi-calendar-range"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                            clearable
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="dateFrom"
+                          @input="date1 = false"
+                          scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-card-actions>
+                  </v-col>
+
+                  <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-menu
+                        v-model="date2"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="dateUntil"
+                            label="Date Until"
+                            prepend-icon="mdi-calendar-range"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                            clearable
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="dateUntil"
+                          @input="date2 = false"
+                          scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-card-actions>
+                  </v-col>
+                </v-row>
               </v-list>
             </v-list-group>
           </v-list>
@@ -175,7 +252,7 @@
             ></v-progress-linear>
 
             <template v-slot:[`item.created_at`]="{ item }">
-              {{ getFormatDate(item.created_at, "MM/DD/YYYY") }}</template
+              {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
@@ -397,6 +474,10 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
+    dateFrom: null,
+    dateUntil: null,
+    date1: false,
+    date2: false,
   }),
 
   // Dynamic Width

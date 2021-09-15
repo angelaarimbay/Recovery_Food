@@ -6,6 +6,7 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -170,6 +171,7 @@
 
                   <v-spacer></v-spacer>
 
+                  <!-- Date Picker -->
                   <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-menu
@@ -191,12 +193,16 @@
                             v-on="on"
                             class="py-0"
                             dense
+                            clearable
                           ></v-text-field>
                         </template>
                         <v-date-picker
                           v-model="dateFrom"
                           @input="date1 = false"
                           scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -223,12 +229,16 @@
                             v-on="on"
                             class="py-0"
                             dense
+                            clearable
                           ></v-text-field>
                         </template>
                         <v-date-picker
                           v-model="dateUntil"
                           @input="date2 = false"
                           scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -258,7 +268,7 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.incoming_date`]="{ item }">
-              {{ getFormatDate(item.incoming_date, "MM/DD/YYYY") }}</template
+              {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
@@ -310,45 +320,35 @@
                       md="12"
                     >
                       <v-menu
-                        ref="menu"
-                        v-model="menu"
+                        v-model="date3"
                         :close-on-content-click="false"
-                        :return-value.sync="date"
+                        :nudge-right="35"
+                        lazy
                         transition="scale-transition"
                         offset-y
-                        min-width="auto"
+                        full-width
+                        min-width="290px"
                       >
-                        <template v-slot:activator="{ on, attrs }">
+                        <template v-slot:activator="{ on }">
                           <v-text-field
-                            outlined
-                            dense
                             v-model="form.incoming_date"
+                            label="Incoming Date"
                             readonly
-                            v-bind="attrs"
                             v-on="on"
-                          >
-                            <template slot="label">
-                              <div style="font-size: 14px">Incoming Date *</div>
-                            </template></v-text-field
-                          >
+                            class="py-0"
+                            dense
+                            clearable
+                            outlined
+                          ></v-text-field>
                         </template>
                         <v-date-picker
                           v-model="form.incoming_date"
-                          no-title
+                          @input="date3 = false"
                           scrollable
-                        >
-                          <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="menu = false">
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="$refs.menu.save(date)"
-                          >
-                            Ok
-                          </v-btn>
-                        </v-date-picker>
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
                       </v-menu>
                     </v-col>
 
@@ -551,14 +551,12 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
-    dateFrom: new Date().toISOString().substr(0, 10),
-    dateUntil: new Date().toISOString().substr(0, 10),
-    menu: false,
-    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
+    dateFrom: null,
+    dateUntil: null,
+    incomingDate: null,
     date1: false,
     date2: false,
+    date3: false,
   }),
 
   // Onload

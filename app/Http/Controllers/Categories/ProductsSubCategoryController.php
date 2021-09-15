@@ -11,13 +11,13 @@ class ProductsSubCategoryController extends Controller
 {
     public function save(Request $data)
     {
-        $table = tbl_prodsubcat::where("status", '!=', null);
+        $table = tbl_prodsubcat::where("status", "!=", null);
      
         // Check if product-sub category name exists
         $table_clone = clone $table;   // Get all items from prodsubcat
         if ($table_clone
         ->where("prod_sub_cat_name", $data->prod_sub_cat_name) // Filter using name
-        ->where("id", '!=', $data->id)  // Filter if id is not selected
+        ->where("id", "!=", $data->id)  // Filter if id is not selected
         ->count()>0) {
             return 1;
         }
@@ -28,8 +28,8 @@ class ProductsSubCategoryController extends Controller
             // Update
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
-                ['status'=>$data->status,
-                 'prod_sub_cat_name'=>$data->prod_sub_cat_name
+                ["status"=>$data->status,
+                 "prod_sub_cat_name"=>$data->prod_sub_cat_name
                 ]
             );
         } else {
@@ -39,14 +39,14 @@ class ProductsSubCategoryController extends Controller
     }
     public function get(Request $t)
     {
-        DB::statement(DB::raw('set @row:=0'));
+        DB::statement(DB::raw("set @row:=0"));
         if ($t->search) { // If has value
-            $table = tbl_prodsubcat::where("status", '!=', null);
+            $table = tbl_prodsubcat::where("status", "!=", null);
             $table_clone = clone $table;   // Get all items from prodsubcat
            
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("prod_sub_cat_name", 'like', '%'.$t->search.'%')->paginate($t->itemsPerPage, '*', 'page', 1);
+            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("prod_sub_cat_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
         }
         // Else
-        return  tbl_prodsubcat::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, '*', 'page', $t->page);
+        return  tbl_prodsubcat::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
     }
 }
