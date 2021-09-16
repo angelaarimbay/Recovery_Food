@@ -36,11 +36,15 @@ export default {
         { path: '/outgoing_products', name: 'products', component: page('outgoing_products.vue') },
 
         //Suppliers
-        { path: '/suppliers_list', name: 'products', component: page('suppliers_list.vue') },
-        { path: '/purchase_orders', name: 'products', component: page('purchase_orders.vue') },
+        { path: '/suppliers_list', name: 'suppliers', component: page('suppliers_list.vue') },
+        { path: '/purchase_orders', name: 'suppliers', component: page('purchase_orders.vue') },
 
         //User Accounts
-        { path: '/user_accounts', name: 'products', component: page('user_accounts.vue') },
+        { path: '/user_accounts', name: 'users', component: page('user_accounts.vue') },
+        { path: '/user_roles', name: 'users.roles', component: page('user_roles.vue') },
+
+        //User Roles
+        { path: '/user_roles', name: 'users', component: page('user_roles.vue') },
 
         { path: '/survey/infosheet', name: 'survey.infosheet', component: page('survey/infosheet.vue') },
         { path: '/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') },
@@ -48,6 +52,5 @@ export default {
         { path: '/auth/index', name: 'auth.index', component: page('auth/index.vue') },
 
         { path: '/template', name: 'template', component: page('template.vue') },
-
     ]
 }

@@ -268,7 +268,7 @@
                     >
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.email_add"
+                        v-model="form.email"
                         outlined
                         clearable
                         dense
@@ -462,7 +462,7 @@ export default {
     form: {
       first_name: null,
       last_name: null,
-      email_add: null,
+      email: null,
       phone_number: null,
       user_name: null,
       password: null,
@@ -567,6 +567,7 @@ export default {
           await axios
             .post("api/useracc/save", this.form)
             .then((result) => {
+              console.log(result.data)
               //if the value is true then save to database
               switch (result.data) {
                 case 0:
@@ -610,6 +611,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -625,7 +627,7 @@ export default {
       this.form.id = row.id;
       this.form.first_name = row.first_name;
       this.form.last_name = row.last_name;
-      this.form.email_add = row.email_add;
+      this.form.email = row.email;
       this.form.phone_number = row.phone_number;
       this.form.user_name = row.user_name;
       this.form.password = row.password;
