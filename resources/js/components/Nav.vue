@@ -396,12 +396,12 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              to="/sett1"
+              to="/roles_permissions"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>Permissions</v-list-item-title>
+              <v-list-item-title>Roles/Permissions</v-list-item-title>
             </v-list-item>
 
             <v-list-item

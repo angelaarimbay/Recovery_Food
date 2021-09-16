@@ -1,120 +1,157 @@
 <template>
-  <div>
+  <div style="min-width: 280px">
     <v-form ref="mainForm" id="mainForm">
-      <!---------------------------------------------------------------------- dialog ng role  -->
-      <v-dialog v-model="dialogRoles" max-width="500px">
-        <v-card id="dialog" class="bgcolor">
-          <v-card-text class="p-2">
-            <v-card-actions>
-              <h4 class="text-danger">Add New Role</h4>
-              <v-spacer></v-spacer>
+      <!-- Role Dialog Form  -->
+      <v-dialog v-model="dialogRoles" max-width="450px">
+        <v-toolbar
+          dense
+          dark
+          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+        >
+          Add New Role
+          <v-spacer></v-spacer>
+          <v-tooltip bottom>
+            <template #activator="data">
               <v-icon
-                class="float-right border bg-danger text-white"
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                v-on="data.on"
                 text
                 @click="dialogRoles = false"
                 >mdi-close
               </v-icon>
-            </v-card-actions>
+            </template>
+            <span>Close</span>
+          </v-tooltip>
+        </v-toolbar>
+        <v-card tile id="dialog" style="background-color: #f5f5f5">
+          <v-card-text class="py-2">
+            <br />
+            <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+              <v-row>
+                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-text-field v-model="role.id" class="d-none">
+                  </v-text-field>
+                  <v-text-field
+                    :rules="formRules"
+                    v-model="role.name"
+                    outlined
+                    clearable
+                    dense
+                  >
+                    <template slot="label">
+                      <div style="font-size: 14px">Role Name *</div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-text-field
+                    v-model="role.description"
+                    outlined
+                    clearable
+                    dense
+                  >
+                    <template slot="label">
+                      <div style="font-size: 14px">Role Description</div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card-text>
-          <v-card-text class="bgcolor">
-            <v-card>
-              <v-container style="background-color: #f2f3f0">
-                <v-row>
-                  <v-col class="py-1" cols="12" xl="12" lg="12" sm="12" md="4">
-                    <v-text-field v-model="role.id" label="" class="d-none">
-                    </v-text-field>
-                    <v-text-field v-model="role.name" label="">
-                      <template slot="label">
-                        <div style="font-size: 14px; color: red">
-                          Role Name *
-                        </div>
-                      </template>
-                    </v-text-field>
-                    <v-text-field v-model="role.description" label="">
-                      <template slot="label">
-                        <div style="font-size: 14px">Role Description</div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-                <v-divider class="m-0" />
-              </v-container>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="#00794b"
-                  style="text-transform: none"
-                  depressed
-                  dark
-                  @click="storeRolesConfirmation"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-card-text>
+
+          <!-- Role Dialog Form Button  -->
+          <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              depressed
+              dark
+              @click="storeRolesConfirmation"
+              style="text-transform: none"
+              :small="$vuetify.breakpoint.smAndDown"
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
-      <!---------------------------------------------------------------------- dialog ng permission  -->
-      <v-dialog v-model="dialogPermissions" max-width="500px">
-        <v-card id="dialog" class="bgcolor">
-          <v-card-text class="p-2">
-            <v-card-actions>
-              <h4 class="text-danger">Add New Permission</h4>
-              <v-spacer></v-spacer>
+
+      <!-- Permission Dialog Form -->
+      <v-dialog v-model="dialogPermissions" max-width="450px">
+        <v-toolbar
+          dense
+          dark
+          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+        >
+          Add New Permission
+          <v-spacer></v-spacer>
+          <v-tooltip bottom>
+            <template #activator="data">
               <v-icon
-                class="float-right border bg-danger text-white"
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                v-on="data.on"
                 text
                 @click="dialogPermissions = false"
                 >mdi-close
               </v-icon>
-            </v-card-actions>
+            </template>
+            <span>Close</span>
+          </v-tooltip>
+        </v-toolbar>
+        <v-card tile style="background-color: #f5f5f5">
+          <v-card-text class="py-2">
+            <br />
+            <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+              <v-row>
+                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-text-field v-model="permission.id" class="d-none">
+                  </v-text-field>
+                  <v-text-field
+                    :rules="formRules"
+                    v-model="permission.name"
+                    outlined
+                    clearable
+                    dense
+                  >
+                    <template slot="label">
+                      <div style="font-size: 14px">Permission Name *</div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-text-field
+                    :rules="formRules"
+                    v-model="permission.description"
+                    outlined
+                    clearable
+                    dense
+                  >
+                    <template slot="label">
+                      <div style="font-size: 14px">Permission Description</div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-card-text>
-          <v-card-text class="bgcolor">
-            <v-card>
-              <v-container style="background-color: #f2f3f0">
-                <v-row>
-                  <v-col class="py-1" cols="12" xl="12" lg="12" sm="12" md="4">
-                    <v-text-field
-                      v-model="permission.id"
-                      label=""
-                      class="d-none"
-                    >
-                    </v-text-field>
-                    <v-text-field v-model="permission.name" label="">
-                      <template slot="label">
-                        <div style="font-size: 14px; color: red">
-                          Permission Name *
-                        </div>
-                      </template>
-                    </v-text-field>
-                    <v-text-field v-model="permission.description" label="">
-                      <template slot="label">
-                        <div style="font-size: 14px">
-                          Permission Description
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-                <v-divider class="m-0" />
-              </v-container>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="#00794b"
-                  style="text-transform: none"
-                  depressed
-                  dark
-                  @click="storePermissionsConfirmation"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-card-text>
+
+          <!-- Permission Dialog Form Button -->
+          <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              depressed
+              dark
+              @click="storePermissionsConfirmation"
+              style="text-transform: none"
+              :small="$vuetify.breakpoint.smAndDown"
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
+
       <!---------------------------------------------------------------------- add permission to role -->
       <v-dialog v-model="dialogAddPermissions" max-width="900px">
         <v-card id="dialog" class="bgcolor">
@@ -145,7 +182,7 @@
                 <v-progress-linear
                   v-show="progressBar"
                   slot="progress"
-                  color="green"
+                  color="red darken-2"
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
@@ -166,6 +203,7 @@
           </v-card-text>
         </v-card>
       </v-dialog>
+
       <!---------------------------------------------------------------------- add user to role -->
       <v-dialog v-model="dialogAddRoles" max-width="900px">
         <v-card id="dialog" class="bgcolor">
@@ -201,7 +239,7 @@
                 <v-progress-linear
                   v-show="progressBar"
                   slot="progress"
-                  color="green"
+                  color="red darken-2"
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
@@ -223,104 +261,154 @@
         </v-card>
       </v-dialog>
 
-      <!---------------------------------------------------------------------- tables tig isa.
-      pinag hiwalay ko pati dialog para hindi kayo malito.  -->
+      <v-container>
+        <v-layout row wrap>
+          <h4
+            class="font-weight-bold heading my-auto"
+            :class="{ h5: $vuetify.breakpoint.smAndDown }"
+          >
+            Roles/Permissions
+          </h4>
+          <v-spacer></v-spacer>
 
-      <div class="py-4">
-        <v-expansion-panels popout>
-          <!-------------------------------role -->
-          <v-expansion-panel>
-            <v-expansion-panel-header
-              class="border-bottom text-success"
-              @click="getRoles"
-              >Roles list</v-expansion-panel-header
+          <!-- Breadcrumbs -->
+          <v-card-actions class="px-0 py-0">
+            <v-btn
+              :small="$vuetify.breakpoint.smAndDown"
+              plain
+              color="primary"
+              v-ripple="false"
+              to="/dashboard"
+              class="px-0"
+              style="text-decoration: none; text-transform: none"
+              >Home</v-btn
             >
-            <v-expansion-panel-content>
-              <v-card-actions class="bgcolor">
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="#00794b"
-                  depressed
-                  style="text-transform: none"
-                  dark
-                  small
-                  @click="dialogRoles = true"
-                >
-                  Add New
-                </v-btn>
-                <v-btn
-                  color="#00794b"
-                  style="text-transform: none"
-                  depressed
-                  small
-                  dark
-                  @click="getRoles"
-                  >Refresh</v-btn
-                >
-              </v-card-actions>
-
-              <v-data-table
-                id="table"
-                dense
-                class="px-4"
-                :items-per-page="5"
-                :loading="progressBar"
-                :headers="headersRoles"
-                :items="tableRoles"
-              >
-                <v-progress-linear
-                  v-show="progressBar"
-                  slot="progress"
-                  color="green"
-                  indeterminate
-                ></v-progress-linear>
-
-                <template v-slot:[`item.id`]="{ item }">
-                  <v-hover v-slot="{ hover }">
-                    <v-btn
-                      class="px-1"
-                      :class="
-                        hover
-                          ? 'btn btn-primary text-white'
-                          : 'btn btn-link text-primary'
-                      "
-                      text
-                      small
-                      @click="editItemRoles(item)"
-                    >
-                      <v-icon> mdi-pencil </v-icon>
-                      <small> - Edit </small>
-                    </v-btn>
-                  </v-hover>
-
-                  <v-hover v-slot="{ hover }">
-                    <v-btn
-                      class="px-1"
-                      :class="
-                        hover
-                          ? 'btn btn-info text-white'
-                          : 'btn btn-link text-info'
-                      "
-                      text
-                      small
-                      @click="addPermission(item)"
-                    >
-                      <v-icon> mdi-plus </v-icon>
-                      <small> - add / edit Permission </small>
-                    </v-btn>
-                  </v-hover>
-                </template>
-              </v-data-table>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <!-------------------------------permission -->
-          <v-expansion-panel  >
-            <v-expansion-panel-header
-              class="border-bottom text-success"
-              @click="getPermissions"
-              >Permission list</v-expansion-panel-header
+            /
+            <v-btn
+              :small="$vuetify.breakpoint.smAndDown"
+              text
+              disabled
+              class="px-0"
+              style="text-transform: none"
+              >Roles/Permissions</v-btn
             >
-            <v-expansion-panel-content>
+          </v-card-actions>
+        </v-layout>
+      </v-container>
+
+      <!-- Main Card -->
+      <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+        <v-tabs
+          style="overflow: hidden"
+          slider-size="4"
+          v-model="tab"
+          color="red darken-2"
+          height="42px"
+          show-arrows
+          center-active
+          centered
+        >
+          <v-tabs-slider style="border-radius: 5px 5px 0 0"></v-tabs-slider>
+          <v-tab style="text-transform: none" @click="getRoles">
+            Roles List
+          </v-tab>
+          <v-tab style="text-transform: none" @click="getPermissions">
+            Permissions List
+          </v-tab>
+          <v-tab style="text-transform: none" @click="getUserRoles">
+            User Roles
+          </v-tab>
+        </v-tabs>
+
+        <v-tabs-items v-model="tab">
+          <v-tab-item>
+            <!-- Roles List -->
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+              <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+                <v-card-actions class="px-0">
+                  <!-- Buttons -->
+                  <v-btn
+                    color="primary"
+                    style="text-transform: none"
+                    depressed
+                    dark
+                    :small="$vuetify.breakpoint.smAndDown"
+                    @click="dialogRoles = true"
+                  >
+                    Add New
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="primary"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="getRoles"
+                    >Refresh</v-btn
+                  >
+                </v-card-actions>
+
+                <!-- Roles List Table -->
+                <v-data-table
+                  id="table"
+                  :items-per-page="5"
+                  :loading="progressBar"
+                  :headers="headersRoles"
+                  :items="tableRoles"
+                >
+                  <v-progress-linear
+                    v-show="progressBar"
+                    slot="progress"
+                    color="red darken-2"
+                    class="px-0 mx-0"
+                    indeterminate
+                    rounded
+                  ></v-progress-linear>
+
+                  <template v-slot:[`item.id`]="{ item }">
+                    <v-hover v-slot="{ hover }">
+                      <v-btn
+                        class="px-1"
+                        :class="
+                          hover
+                            ? 'btn btn-primary text-white'
+                            : 'btn btn-link text-primary'
+                        "
+                        text
+                        small
+                        @click="editItemRoles(item)"
+                      >
+                        <v-icon> mdi-pencil </v-icon>
+                        <small> - Edit </small>
+                      </v-btn>
+                    </v-hover>
+
+                    <v-hover v-slot="{ hover }">
+                      <v-btn
+                        class="px-1"
+                        :class="
+                          hover
+                            ? 'btn btn-info text-white'
+                            : 'btn btn-link text-info'
+                        "
+                        text
+                        small
+                        @click="addPermission(item)"
+                      >
+                        <v-icon> mdi-plus </v-icon>
+                        <small> - add / edit Permission </small>
+                      </v-btn>
+                    </v-hover>
+                  </template>
+                </v-data-table>
+              </v-container>
+            </v-container>
+          </v-tab-item>
+
+          <v-tab-item>
+            <v-card flat>
+              <!-- Permissions List Table -->
               <v-card-actions class="bgcolor">
                 <v-spacer></v-spacer>
                 <v-btn
@@ -379,16 +467,12 @@
                   </v-hover>
                 </template>
               </v-data-table>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <!-------------------------------set user role -->
-          <v-expansion-panel>
-            <v-expansion-panel-header
-              class="border-bottom text-success"
-              @click="getUserRoles"
-              >User role
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
+            </v-card>
+          </v-tab-item>
+
+          <v-tab-item>
+            <v-card flat>
+              <!-- User Roles Table -->
               <v-card-actions class="bgcolor">
                 <v-spacer></v-spacer>
                 <v-btn
@@ -448,45 +532,20 @@
                   </v-hover>
                 </template>
               </v-data-table>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </div>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-card>
     </v-form>
   </div>
 </template>
-
-<style scoped>
-.bgcolor {
-  background-color: #dadcdc;
-}
-#mainForm .v-expansion-panel-header {
-  min-height: 38px !important;
-  height: 5px;
-}
-#mainForm .v-text-field__details {
-  display: none;
-}
-
-#mainForm .v-expansion-panel--active > .v-expansion-panel-header {
-  min-height: 64px !important;
-  height: 5px;
-}
-@media only screen and (max-width: 600px) {
-  #mainForm .v-expansion-panels--popout,
-  .v-form {
-    padding: 0px !important;
-  }
-}
-@media only screen and (max-width: 800px) {
-}
-</style> 
   
-<script> 
-import axios from "axios";  
+<script>
+import axios from "axios";
 export default {
   // declarations
   data: () => ({
+    tab: null,
     formRules: [(v) => !!v || "This is required"],
     progressBar: true,
     editedIndex: -1,
@@ -494,9 +553,9 @@ export default {
     dialogRoles: false,
     tableRoles: [],
     headersRoles: [
-      { class: "border", text: "Role name", align: "start", value: "name" },
-      { class: "border", text: "Role description", value: "description" },
-      { class: "border", text: "Action", value: "id" },
+      { text: "Role name", align: "start", value: "name" },
+      { text: "Role description", value: "description" },
+      { text: "Action", value: "id", sortable: false },
     ],
     role: { name: "", id: "" },
 
@@ -551,7 +610,11 @@ export default {
   }),
 
   // load
-  created() {},
+  created() {
+    this.getRoles();
+    this.getPermissions();
+    this.getUserRoles();
+  },
 
   // functions
   methods: {
@@ -782,7 +845,7 @@ export default {
     // set user role
     // get roles
     async getAddUserRoles(item) {
-      console.log(item)
+      console.log(item);
       let self = this;
       self.progressBar = true;
       self.tableAddRoles = [];
@@ -803,7 +866,7 @@ export default {
         });
     },
     addUserRole(item) {
-      console.log(item)
+      console.log(item);
       this.dialogAddRoles = true;
       this.userid = item.employee.id;
       this.username = item.employee.fullname;

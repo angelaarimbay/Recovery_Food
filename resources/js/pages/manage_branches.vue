@@ -366,7 +366,7 @@
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
                     <v-col
-                      class="py-1"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"

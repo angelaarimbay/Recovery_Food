@@ -43,8 +43,8 @@ export default {
         { path: '/user_accounts', name: 'users', component: page('user_accounts.vue') },
         { path: '/user_roles', name: 'users.roles', component: page('user_roles.vue') },
 
-        //User Roles
-        { path: '/user_roles', name: 'users', component: page('user_roles.vue') },
+        //Roles/Permissions
+        { path: '/roles_permissions', name: 'users', component: page('roles_permissions.vue') },
 
         { path: '/survey/infosheet', name: 'survey.infosheet', component: page('survey/infosheet.vue') },
         { path: '/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') },
