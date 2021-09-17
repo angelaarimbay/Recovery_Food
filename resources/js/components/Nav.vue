@@ -27,9 +27,10 @@
             v-bind="attrs"
             v-on="on"
             style="text-transform: none"
+            :small="$vuetify.breakpoint.smAndDown"
           >
             <v-icon class="round">mdi-account</v-icon
-            ><span :class="{ caption: $vuetify.breakpoint.xsOnly }"
+            ><span
               >Account</span
             >
           </v-btn>
@@ -312,65 +313,12 @@
           </v-list>
         </v-list-group>
 
-        <v-list-group
-          no-action
-          color="#FFFFFF"
-          active-class="bg-grey"
-          class="mb-1"
-        >
-          <template v-slot:activator>
-            <v-list-item-icon>
-              <v-icon size="23">mdi-file-multiple</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Reports</v-list-item-title>
-          </template>
-
-          <v-list class="p-0" flat>
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/rep1"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Inventory Report</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/rep2"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Sales Report</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/rep3"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Transaction Report</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/rep4"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Purchase Orders Report</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-list-group>
+        <v-list-item style="text-decoration: none" to="/reports">
+          <v-list-item-icon>
+            <v-icon size="23">mdi-account-multiple</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Reports</v-list-item-title>
+        </v-list-item>
 
         <v-list-item style="text-decoration: none" to="/user_accounts">
           <v-list-item-icon>

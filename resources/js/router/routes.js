@@ -39,6 +39,9 @@ export default {
         { path: '/suppliers_list', name: 'suppliers', component: page('suppliers_list.vue') },
         { path: '/purchase_orders', name: 'suppliers', component: page('purchase_orders.vue') },
 
+        //Reports
+        { path: '/reports', name: 'reports', component: page('reports.vue') },
+
         //User Accounts
         { path: '/user_accounts', name: 'users', component: page('user_accounts.vue') },
         { path: '/user_roles', name: 'users.roles', component: page('user_roles.vue') },

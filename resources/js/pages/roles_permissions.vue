@@ -1,5 +1,30 @@
 <template>
   <div style="min-width: 280px">
+    <!-- Snackbar -->
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar.active"
+      timeout="2500"
+    >
+      <span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
+      >
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
+        >
+      </template>
+    </v-snackbar>
+
     <v-form ref="mainForm" id="mainForm">
       <!-- Role Dialog Form  -->
       <v-dialog v-model="dialogRoles" max-width="450px">
@@ -299,23 +324,34 @@
       <!-- Main Card -->
       <v-card elevation="6" class="mt-2" style="border-radius: 10px">
         <v-tabs
-          style="overflow: hidden"
           slider-size="4"
           v-model="tab"
           color="red darken-2"
-          height="42px"
+          :height="height"
           show-arrows
           center-active
           centered
         >
           <v-tabs-slider style="border-radius: 5px 5px 0 0"></v-tabs-slider>
-          <v-tab style="text-transform: none" @click="getRoles">
+          <v-tab
+            :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+            style="text-transform: none"
+            @click="getRoles"
+          >
             Roles List
           </v-tab>
-          <v-tab style="text-transform: none" @click="getPermissions">
+          <v-tab
+            :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+            style="text-transform: none"
+            @click="getPermissions"
+          >
             Permissions List
           </v-tab>
-          <v-tab style="text-transform: none" @click="getUserRoles">
+          <v-tab
+            :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+            style="text-transform: none"
+            @click="getUserRoles"
+          >
             User Roles
           </v-tab>
         </v-tabs>
@@ -407,132 +443,138 @@
           </v-tab-item>
 
           <v-tab-item>
-            <v-card flat>
-              <!-- Permissions List Table -->
-              <v-card-actions class="bgcolor">
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="#00794b"
-                  depressed
-                  style="text-transform: none"
-                  dark
-                  small
-                  @click="dialogPermissions = true"
-                >
-                  Add New
-                </v-btn>
-                <v-btn
-                  color="#00794b"
-                  style="text-transform: none"
-                  depressed
-                  small
-                  dark
-                  @click="getPermissions"
-                  >Refresh</v-btn
-                >
-              </v-card-actions>
+            <!-- Permissions List -->
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+              <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+                <v-card-actions class="px-0">
+                  <v-btn
+                    color="primary"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="dialogPermissions = true"
+                  >
+                    Add New
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="primary"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="getPermissions"
+                    >Refresh</v-btn
+                  >
+                </v-card-actions>
 
-              <v-data-table
-                id="table"
-                dense
-                class="px-4"
-                :items-per-page="5"
-                :loading="progressBar"
-                :headers="headersPermissions"
-                :items="tablePermissions"
-              >
-                <v-progress-linear
-                  v-show="progressBar"
-                  slot="progress"
-                  color="green"
-                  indeterminate
-                ></v-progress-linear>
+                <!-- Permissions List Table -->
+                <v-data-table
+                  id="table"
+                  :items-per-page="5"
+                  :loading="progressBar"
+                  :headers="headersPermissions"
+                  :items="tablePermissions"
+                >
+                  <v-progress-linear
+                    v-show="progressBar"
+                    slot="progress"
+                    color="red darken-2"
+                    class="px-0 mx-0"
+                    indeterminate
+                    rounded
+                  ></v-progress-linear>
 
-                <template v-slot:[`item.id`]="{ item }">
-                  <v-hover v-slot="{ hover }">
-                    <v-btn
-                      class="px-1"
-                      :class="
-                        hover
-                          ? 'btn btn-primary text-white'
-                          : 'btn btn-link text-primary'
-                      "
-                      text
-                      small
-                      @click="editItemPermissions(item)"
-                    >
-                      <v-icon> mdi-pencil </v-icon>
-                      <small> - Edit </small>
-                    </v-btn>
-                  </v-hover>
-                </template>
-              </v-data-table>
-            </v-card>
+                  <template v-slot:[`item.id`]="{ item }">
+                    <v-hover v-slot="{ hover }">
+                      <v-btn
+                        class="px-1"
+                        :class="
+                          hover
+                            ? 'btn btn-primary text-white'
+                            : 'btn btn-link text-primary'
+                        "
+                        text
+                        small
+                        @click="editItemPermissions(item)"
+                      >
+                        <v-icon> mdi-pencil </v-icon>
+                        <small> - Edit </small>
+                      </v-btn>
+                    </v-hover>
+                  </template>
+                </v-data-table>
+              </v-container>
+            </v-container>
           </v-tab-item>
 
           <v-tab-item>
-            <v-card flat>
-              <!-- User Roles Table -->
-              <v-card-actions class="bgcolor">
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="#00794b"
-                  style="text-transform: none"
-                  depressed
-                  small
-                  dark
-                  @click="getUserRoles"
-                  >Refresh</v-btn
+            <!-- User Roles -->
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+              <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+                <v-card-actions class="px-0">
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="primary"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="getUserRoles"
+                    >Refresh</v-btn
+                  >
+                </v-card-actions>
+
+                <!-- User Roles Table -->
+                <v-data-table
+                  id="table"
+                  :items-per-page="5"
+                  :loading="progressBar"
+                  :headers="headersUserrole"
+                  :items="tableUserrole"
                 >
-              </v-card-actions>
+                  <v-progress-linear
+                    v-show="progressBar"
+                    slot="progress"
+                    color="red darken-2"
+                    class="px-0 mx-0"
+                    indeterminate
+                    rounded
+                  ></v-progress-linear>
 
-              <v-data-table
-                id="table"
-                dense
-                class="px-4"
-                :items-per-page="5"
-                :loading="progressBar"
-                :headers="headersUserrole"
-                :items="tableUserrole"
-              >
-                <v-progress-linear
-                  v-show="progressBar"
-                  slot="progress"
-                  color="green"
-                  indeterminate
-                ></v-progress-linear>
-
-                <template v-slot:[`item.roles.name`]="{ item }">
-                  <v-chip
-                    small
-                    class="ma-2"
-                    v-for="(val, key) in item.roles"
-                    :key="key"
-                  >
-                    {{ val.name }}</v-chip
-                  >
-                </template>
-
-                <template v-slot:[`item.id`]="{ item }">
-                  <v-hover v-slot="{ hover }">
-                    <v-btn
-                      class="px-1"
-                      :class="
-                        hover
-                          ? 'btn btn-info text-white'
-                          : 'btn btn-link text-info'
-                      "
-                      text
+                  <template v-slot:[`item.roles.name`]="{ item }">
+                    <v-chip
                       small
-                      @click="addUserRole(item)"
+                      class="ma-2"
+                      v-for="(val, key) in item.roles"
+                      :key="key"
                     >
-                      <v-icon> mdi-plus </v-icon>
-                      <small> - Add role </small>
-                    </v-btn>
-                  </v-hover>
-                </template>
-              </v-data-table>
-            </v-card>
+                      {{ val.name }}</v-chip
+                    >
+                  </template>
+
+                  <template v-slot:[`item.id`]="{ item }">
+                    <v-hover v-slot="{ hover }">
+                      <v-btn
+                        class="px-1"
+                        :class="
+                          hover
+                            ? 'btn btn-info text-white'
+                            : 'btn btn-link text-info'
+                        "
+                        text
+                        small
+                        @click="addUserRole(item)"
+                      >
+                        <v-icon> mdi-plus </v-icon>
+                        <small> - Add role </small>
+                      </v-btn>
+                    </v-hover>
+                  </template>
+                </v-data-table>
+              </v-container>
+            </v-container>
           </v-tab-item>
         </v-tabs-items>
       </v-card>
@@ -545,6 +587,10 @@ import axios from "axios";
 export default {
   // declarations
   data: () => ({
+    snackbar: {
+      active: false,
+      message: "",
+    },
     tab: null,
     formRules: [(v) => !!v || "This is required"],
     progressBar: true,
@@ -565,13 +611,12 @@ export default {
     tablePermissions: [],
     headersPermissions: [
       {
-        class: "border",
         text: "Permission name",
         align: "start",
         value: "name",
       },
-      { class: "border", text: "Description", value: "description" },
-      { class: "border", text: "Action", value: "id" },
+      { text: "Description", value: "description" },
+      { text: "Action", value: "id" },
     ],
     permission: { name: "", description: "", id: "" },
     // --------------------------------------------------user role
@@ -579,21 +624,20 @@ export default {
     tableUserrole: [],
     headersUserrole: [
       {
-        class: "border",
         text: "Employee",
         align: "start",
         value: "employee.fullname",
       },
-      { class: "border", text: "Current Role/s", value: "roles.name" },
-      { class: "border", text: "Action", value: "id" },
+      { text: "Current Role/s", value: "roles.name" },
+      { text: "Action", value: "id" },
     ],
 
     // --------------------------------------------------set role permission
     dialogAddPermissions: false,
     selectedAddPermission: [],
     headersAddPermissions: [
-      { class: "border", text: "Permission", align: "start", value: "name" },
-      { class: "border", text: "Description", value: "description" },
+      { text: "Permission", align: "start", value: "name" },
+      { text: "Description", value: "description" },
     ],
     rolename: "",
 
@@ -604,8 +648,8 @@ export default {
     username: "",
     userid: "",
     headersAddRoles: [
-      { class: "border", text: "Role", align: "start", value: "name" },
-      { class: "border", text: "Description", value: "description" },
+      { text: "Role", align: "start", value: "name" },
+      { text: "Description", value: "description" },
     ],
   }),
 
@@ -631,11 +675,12 @@ export default {
           self.progressBar = false;
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-0",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
     },
     // store validation
@@ -663,18 +708,20 @@ export default {
           } else {
             this.tableRoles.push(result.data);
           }
-          Swal.fire({
-            type: "success",
-            title: "Successfully Saved!",
-            html: "",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully saved.",
+          };
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-1",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
       this.close();
     },
@@ -699,11 +746,12 @@ export default {
           self.progressBar = false;
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-3",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
     },
     // store validation
@@ -731,18 +779,20 @@ export default {
           } else {
             this.tablePermissions.push(result.data);
           }
-          Swal.fire({
-            type: "success",
-            title: "Successfully Saved!",
-            html: "",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully saved.",
+          };
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-4",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
       this.close();
     },
@@ -766,11 +816,12 @@ export default {
           self.progressBar = false;
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-0",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
     },
 
@@ -788,11 +839,12 @@ export default {
           self.progressBar = false;
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-3",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
     },
     addPermission(item) {
@@ -824,20 +876,21 @@ export default {
           role: this.rolename,
         })
         .then((result) => {
-          console.log(result.data);
-          Swal.fire({
-            type: "success",
-            title: "Successfully!",
-            html: "",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully saved.",
+          };
           this.getRoles();
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-4",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
       this.close();
     },
@@ -858,11 +911,12 @@ export default {
           self.progressBar = false;
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-3-1",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
     },
     addUserRole(item) {
@@ -896,19 +950,21 @@ export default {
         })
         .then((result) => {
           console.log(result.data);
-          Swal.fire({
-            type: "success",
-            title: "Successfully Saved!",
-            html: "",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully saved.",
+          };
           this.getRoles();
         })
         .catch((result) => {
-          Swal.fire({
-            type: "warning",
-            title: "Error handle,Please contact Digitech in this issue!",
-            html: "Error Code: GRL-4",
-          });
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "warning",
+            message: "Error!",
+          };
         });
       this.close();
     },
@@ -926,11 +982,12 @@ export default {
     async remove() {
       await axios.post("/api/settings/roles/remove").then((result) => {
         console.log(result.data);
-        Swal.fire({
-          type: "success",
-          title: " Successfully Removed!",
-          html: "",
-        });
+        this.snackbar = {
+          active: true,
+          iconText: "check",
+          iconColor: "success",
+          message: "Successfully saved.",
+        };
       });
     },
   },
@@ -938,6 +995,15 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "ADD NEW " : "UPDATE ";
+    },
+
+    height() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return 35;
+        default:
+          return 42;
+      }
     },
   },
   // on changes

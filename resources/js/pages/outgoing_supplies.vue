@@ -472,6 +472,7 @@ import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
     progressbar: false,
+    
     snackbar: {
       active: false,
       message: "",
