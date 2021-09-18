@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Models\tbl_suppcat;
 
 
-class categoriesSeeder extends Seeder
+class CategoriesSeeder extends Seeder
 {
     /**
      * Run the database seeds.

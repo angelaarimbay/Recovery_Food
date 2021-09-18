@@ -6,9 +6,10 @@
           class="font-weight-bold heading my-auto"
           :class="{ h5: $vuetify.breakpoint.smAndDown }"
         >
-          Dashboard
+          Dashboard {{ user }}
         </h4>
         <v-spacer></v-spacer>
+
 
         <!-- Cards Settings -->
         <v-tooltip bottom>
@@ -289,7 +290,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex' 
 export default {
+  middleware: 'auth', 
+  
+  computed: {
+        ...mapGetters({
+            user: 'auth/user',
+            permissions: 'auth/user_permissions',
+            roles: 'auth/user_roles',
+        }),
+
+    },
   data: () => ({
     sheet: false,
     checkbox1: true,

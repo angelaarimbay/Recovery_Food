@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Models\tbl_branches;
 
-class branchesSeeder extends Seeder
+class BranchesSeeder extends Seeder
 {
     /**
      * Run the database seeds.

@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Models\tbl_prodsubcat;
 
-class prodSubCatSeeder extends Seeder
+class ProdSubCatSeeder extends Seeder
 {
     /**
      * Run the database seeds.
