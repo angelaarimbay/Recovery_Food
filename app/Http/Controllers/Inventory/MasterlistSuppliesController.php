@@ -34,14 +34,13 @@ class MasterlistSuppliesController extends Controller
                  "description"=>$data->description,
                  "unit"=>$data->unit,
                  "net_price"=>$data->net_price,
-                 "with_vat"=>$data->net_price,
                  "vat"=>$data->vat,
-                 "without_vat"=>$data->without_vat,
+                 "vatable"=>$data->vatable,
                  "exp_date"=>$data->exp_date,
                 ]
             );
         } else {
-            tbl_masterlistsupp::create($data->all() + ["with_vat"=>$data->net_price]);
+            tbl_masterlistsupp::create($data->all());
         }
         return 0;
     }
@@ -63,8 +62,6 @@ class MasterlistSuppliesController extends Controller
         // return tbl_masterlistsupp::select("category")->get();
         return tbl_suppcat::select(["supply_cat_name","id"])->where("status", 1)->get();
     }
-
-
     public function validateItem(Request $t)
     {
         try {
@@ -76,6 +73,7 @@ class MasterlistSuppliesController extends Controller
 
     public function sum(Request $t)
     {
+ 
         //  ->where("date", date("Y-m-d", strtotime($t->date) ) )
         return tbl_masterlistsupp::where("id", $t->id)->sum("net_price");
     }

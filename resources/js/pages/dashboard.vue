@@ -6,7 +6,7 @@
           class="font-weight-bold heading my-auto"
           :class="{ h5: $vuetify.breakpoint.smAndDown }"
         >
-          Dashboard {{ user }}
+          Dashboard 
         </h4>
         <v-spacer></v-spacer>
 

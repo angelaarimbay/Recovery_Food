@@ -11,7 +11,7 @@ class tbl_incomingsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['quantity_difference','quantity_amount'];
+    public $appends = ['quantity_difference','quantity_amount','category_details','supply_name_details'];
 
     public function category()
     {
@@ -31,11 +31,21 @@ class tbl_incomingsupp extends Model
         return  ceil($incoming - $outgoing);
     }
 
+    public function getCategoryDetailsAttribute()
+    { 
+        return   tbl_suppcat::where("id",$this->category)->first();
+    }
+    public function getSupplyNameDetailsAttribute()
+    { 
+        return   tbl_masterlistsupp::where("id",$this->supply_name)->first();
+    }
+
     public function getQuantityAmountAttribute()
     {
         $incoming =  DB::table("tbl_incomingsupps")->where("supply_name", $this->supply_name)->sum("amount");
         $outgoing =   DB::table("tbl_masterlistsupps")->where("id", $this->supply_name)->first()->net_price * DB::table("tbl_outgoingsupps")->where("supply_name", $this->supply_name)->sum("quantity") ;
 
-        return  ceil($incoming - $outgoing);
+        return ceil($incoming - $outgoing);
     }
+
 }

@@ -13,10 +13,14 @@ class AccountSeeder extends Seeder
     public function run()
     { 
         User::create([ 
-            'name'=> 'cy',
+            'name'=> 'admin',
             'password'=> bcrypt('123456'),
-            'email'=>'admin@admin.com' 
-        ], 
+            'email'=>'admin' 
+        ], [ 
+            'name'=> 'User',
+            'password'=> bcrypt('123456'),
+            'email'=>'user' 
+        ]
     );
         
     }

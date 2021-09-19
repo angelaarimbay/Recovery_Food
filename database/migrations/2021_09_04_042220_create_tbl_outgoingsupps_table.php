@@ -19,6 +19,7 @@ class CreateTblOutgoingsuppsTable extends Migration
             $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
             $table->float('quantity');
             $table->integer('requesting_branch')->references('id')->on('tbl_branches');
+            $table->datetime('outgoing_date');
             $table->timestamps();
         });
     }

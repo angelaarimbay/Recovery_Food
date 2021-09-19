@@ -275,6 +275,18 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
+            <template v-slot:[`item.without_vat`]="{ item }">
+              <div class="text-warning" v-if="item.vatable == 1">
+                {{ Math.round(item.without_vat * 100) / 100 }}
+              </div>
+              <div v-else>{{ Math.round(item.without_vat * 100) / 100 }}</div>
+            </template>
+             <template v-slot:[`item.with_vat`]="{ item }">
+              <div class="text-warning" v-if="item.vatable == 1">
+                {{ Math.round(item.with_vat * 100) / 100 }}
+              </div>
+              <div v-else>{{ Math.round(item.with_vat * 100) / 100 }}</div>
+            </template>
             <template v-slot:[`item.status`]="{ item }">
               <v-chip
                 style="justify-content: center"
@@ -584,6 +596,7 @@
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -631,6 +644,7 @@ export default {
       vat: 1.12,
       without_vat: null,
       exp_date: null,
+      vatable: null,
     },
     temp_vat: 1.12, //form.vat = this.
     vat: false,
@@ -651,6 +665,16 @@ export default {
         text: "Net Price",
         value: "net_price",
         align: "right",
+        filterable: false,
+      },
+      {
+        text: "With Vat",
+        value: "with_vat",
+        filterable: false,
+      },
+      {
+        text: "Without Vat",
+        value: "without_vat",
         filterable: false,
       },
       {
@@ -698,7 +722,7 @@ export default {
       const date = moment(e);
       return date.format(format);
     },
-
+   
     // getDays() {
     //   var days = new Date(
     //     this.getFormatDate(Date.now(), "Y"),
@@ -764,6 +788,7 @@ export default {
     // Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
+        this.compute();
         // Validate first before compare
         if (this.compare()) {
           // Save or update data in the table
@@ -860,22 +885,27 @@ export default {
       });
     },
 
-    compute() {
+    // 1. get specific item info ,eg total amount, total quantity
+    // 2. check if true then total / tem_vat 1.12
+    // 3. else wo/vat = total (total amt / quantity)
+    async compute() {
+      //check if vatable or not
       if (this.vat) {
         this.disable = false;
         if (this.temp_vat) {
+          this.form.vatable = 1;
           this.form.without_vat = (this.form.net_price / this.temp_vat).toFixed(
             2
           );
         } else {
-          this.form.without_vat = (this.form.net_price / this.temp_vat).toFixed(
-            2
-          );
+          this.form.vatable = 0;
+          this.form.without_vat = this.form.net_price;
         }
       } else {
         this.temp_vat = 1.12;
         this.disable = true;
-        this.form.without_vat = this.form.with_vat;
+        this.form.vatable = 0;
+        this.form.without_vat = this.form.net_price;
       }
       this.form.vat = this.temp_vat;
       this.sum();
@@ -892,6 +922,7 @@ export default {
       this.form.unit = row.unit;
       this.form.net_price = row.net_price;
       this.form.vat = row.vat;
+      this.vat = (row.vatable == 0? false: true);
       this.temp_vat = row.vat;
       this.form.without_vat = row.without_vat;
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");

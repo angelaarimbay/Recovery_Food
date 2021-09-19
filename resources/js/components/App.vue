@@ -1,80 +1,63 @@
 <template>
-  <v-app class="bg-light">  <loading ref="loading" />
-   
+  <v-app class="bg-light">
+    <loading ref="loading" />
+    <div v-if="!user">
+      <!-- If no user, apply this header. Else, apply nav -->
+      <v-card flat tile height="48px" color="red darken-2"> </v-card>
+    </div>
+
     <v-main>
-        <transition name="page" mode="out-in">
-        <component :is="layout" v-if="layout" />
-      </transition>
+      
+        <component :is="layout" v-if="layout" /> 
     </v-main>
-    <!-- <v-btn v-if="user" fab dark color="#cc0033" fixed right bottom>
-        <v-badge top color="green" content="0">
-          <v-icon>mdi-bell</v-icon>
-        </v-badge>
-    </v-btn> --> 
-    <br>
-    <br>
-    <br>
-    <v-footer
-      absolute
-      class="font-weight-light"
-    >
-      <v-col
-        class="text-center text-subtitle"
-        cols="12"
-      >
-        <strong>Powered by: Digitech</strong>
-      </v-col>
+
+    <ft v-if="user" />
+    <v-footer v-else padless class="red darken-2">
+      <v-card flat tile height="48px"></v-card>
     </v-footer>
   </v-app>
 </template>
-<style lang="scss"> /** don't remove, used in all tabpages, for responsive tab item */
-  .v-slide-group__prev {
-    display: none !important;
-  }
-  .v-slide-group__wrapper{
-    width: 400px;
-    overflow-x: auto;
-  }
-</style>
-<script> 
-import Loading from './Loading'
-import { mapGetters } from 'vuex'
-// Load layout components dynamically.
-const requireContext = require.context('~/layouts', false, /.*\.vue$/)
 
-const layouts = requireContext.keys()
-  .map(file =>
-    [file.replace(/(^.\/)|(\.vue$)/g, ''), requireContext(file)]
-  )
+<script>
+import ft from "./Footer";
+import Loading from "./Loading";
+import { mapGetters } from "vuex";
+// Load layout components dynamically.
+const requireContext = require.context("~/layouts", false, /.*\.vue$/);
+
+const layouts = requireContext
+  .keys()
+  .map((file) => [file.replace(/(^.\/)|(\.vue$)/g, ""), requireContext(file)])
   .reduce((components, [name, component]) => {
-    components[name] = component.default || component
-    return components
-  }, {})
+    components[name] = component.default || component;
+    return components;
+  }, {});
 
 export default {
-  el: '#app',
+  el: "#app",
   components: {
-    Loading
+    Loading,
+    ft,
   },
 
   data: () => ({
     layout: null,
-    defaultLayout: 'default'
+    defaultLayout: "default",
   }),
   computed: mapGetters({
-    user: 'auth/user'
+    user: "auth/user",
   }),
-  metaInfo () {
-    const { appName } = window.config
+  metaInfo() {
+    const { appName } = window.config;
 
     return {
       title: appName,
-      titleTemplate: `%s · ${appName}`
-    }
+      titleTemplate: `%s · ${appName}`,
+    };
   },
 
-  mounted () {
-    this.$loading = this.$refs.loading
+  mounted() {
+    this.$loading = this.$refs.loading;
   },
 
   methods: {
@@ -83,14 +66,13 @@ export default {
      *
      * @param {String} layout
      */
-    setLayout (layout) {
+    setLayout(layout) {
       if (!layout || !layouts[layout]) {
-        layout = this.defaultLayout
+        layout = this.defaultLayout;
       }
 
-      this.layout = layouts[layout]
-      
-    }
-  }
-}
+      this.layout = layouts[layout];
+    },
+  },
+};
 </script>

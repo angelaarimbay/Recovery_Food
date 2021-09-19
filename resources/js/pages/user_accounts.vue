@@ -431,6 +431,7 @@
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  middleware: 'auth', 
   data: () => ({
     progressbar: false,
     snackbar: {

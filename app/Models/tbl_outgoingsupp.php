@@ -32,7 +32,7 @@ class tbl_outgoingsupp extends Model
 
     public function getOutgoingAmountAttribute()
     {
-        return tbl_masterlistsupp::where("id",$this->supply_name)->first()->net_price * $this->quantity;
+        return number_format(tbl_masterlistsupp::where("id",$this->supply_name)->first()->with_vat * $this->quantity, 2, ".", ",");
     }
     
 }

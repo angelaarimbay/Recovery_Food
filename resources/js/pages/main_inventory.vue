@@ -224,6 +224,7 @@
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -263,10 +264,19 @@ export default {
     // Table Headers
     headers: [
       { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Category", value: "category.supply_cat_name", filterable: false },
+      {
+        text: "Category",
+        value: "category.supply_cat_name",
+        filterable: false,
+      },
       { text: "Supply Name", value: "supply_name.supply_name" },
       { text: "Stocks On Hand", value: "quantity_difference", align: "right" },
-      { text: "Total Amount", value: "quantity_amount", align: "right", filterable: false},
+      {
+        text: "Total Amount",
+        value: "quantity_amount",
+        align: "right",
+        filterable: false,
+      },
     ],
     page: 1,
     pageCount: 0,
@@ -276,6 +286,7 @@ export default {
   // Onload
   created() {
     this.get();
+    this.suppCat();
   },
 
   methods: {
@@ -283,7 +294,6 @@ export default {
       this.page = 1;
       this.get();
     },
-
 
     async get() {
       this.progressbar = true; // Show the progress bar
@@ -306,6 +316,12 @@ export default {
         .catch((result) => {
           // If false or error when saving
         });
+    },
+
+    async suppCat() {
+      await axios.get("api/misupp/suppCat").then((supp_cat) => {
+        this.suppcatlist = supp_cat.data;
+      });
     },
 
     // Editing/updating of row

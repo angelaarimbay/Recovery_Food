@@ -13,6 +13,7 @@ class IncomingSuppliesController extends Controller
 {
     public function save(Request $data)
     {
+       
         $table = tbl_incomingsupp::where("supply_name", "!=", null);
 
         $table_clone = clone $table;
@@ -54,5 +55,20 @@ class IncomingSuppliesController extends Controller
     public function suppName(Request $t)
     {
         return tbl_masterlistsupp::select(["supply_name","id"])->where("category", $t->category)->where("status", 1)->get();
+    }
+
+    public function getTotalCurrentMonth(Request $t){ 
+        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
+        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+        $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
+        
+        try {
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name",$t->item)->whereBetween("incoming_date",[$date1,$date2])->sum('amount');
+            $get_specific_item_quantity =tbl_incomingsupp::where("supply_name",$t->item)->whereBetween("incoming_date",[$date1,$date2])->sum('quantity');
+           return  $get_specific_item_amount . ' '. $get_specific_item_quantity;
+        } catch (\Throwable $th) {
+            return false;
+        }
+       
     }
 }

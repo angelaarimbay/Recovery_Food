@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar   dense dark class="red darken-2" app>
+    <v-app-bar  v-if="user" dense dark class="red darken-2" app>
     <template v-if="user">
       <v-app-bar-nav-icon 
         v-if="$vuetify.breakpoint.xsOnly"
@@ -51,7 +51,7 @@
     </v-app-bar>
 
     <v-navigation-drawer 
-      height="100%"
+      height="100%"  v-if="user"
       app
       v-model="drawer"
       :permanent="$vuetify.breakpoint.smAndUp"

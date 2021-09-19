@@ -1,10 +1,10 @@
 <template>
-  <div :style="{
+  <div  :style="{
     width: `${percent}%`,
     height: height,
     opacity: show ? 1 : 0,
     'background-color': canSuccess ? color : failedColor
-  }" class="progress"
+  }" class="progress d-none"
   />
 </template>
 

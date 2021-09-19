@@ -35,10 +35,102 @@
       </v-layout>
     </v-container>
 
+    <!-- Main Card -->
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-data-table :headers="headers" :data="table" hide-default-footer>
+          <!-- Date Picker -->
+          <v-row no-gutters>
+            <v-col cols="5" xl="3" lg="3" md="4" sm="6" class="my-auto">
+              <v-card-actions class="py-0">
+                <v-menu
+                  v-model="date1"
+                  :close-on-content-click="false"
+                  :nudge-right="35"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="dateFrom"
+                      label="Date From"
+                      prepend-icon="mdi-calendar-range"
+                      readonly
+                      v-on="on"
+                      hide-details=""
+                      dense
+                      clearable
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="dateFrom"
+                    @input="date1 = false"
+                    scrollable
+                    no-title
+                    color="red darken-2"
+                    dark
+                  ></v-date-picker>
+                </v-menu>
+              </v-card-actions>
+            </v-col>
+
+            <!-- Date Picker -->
+            <v-col cols="6" xl="4" lg="4" md="5" sm="7" class="my-auto">
+              <v-card-actions class="py-0">
+                <v-menu
+                  v-model="date2"
+                  :close-on-content-click="false"
+                  :nudge-right="35"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="dateUntil"
+                      label="Date Until"
+                      prepend-icon="mdi-calendar-range"
+                      readonly
+                      v-on="on"
+                      hide-details=""
+                      dense
+                      clearable
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="dateUntil"
+                    @input="date2 = false"
+                    scrollable
+                    no-title
+                    color="red darken-2"
+                    dark
+                  ></v-date-picker>
+                </v-menu>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="red darken-2"
+                      icon
+                      v-on="data.on"
+                      @click="get"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      :large="$vuetify.breakpoint.mdAndUp"
+                      ><v-icon>mdi-magnify</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Search</span>
+                </v-tooltip>
+              </v-card-actions>
+            </v-col>
+          </v-row>
+
+          <!-- Table -->
+          <v-data-table :headers="headers" :items="table" hide-default-footer>
           </v-data-table>
         </v-container>
       </v-container>
@@ -47,35 +139,53 @@
 </template>
 
 <script>
+import axios from "axios"; // Library for sending api request
 export default {
+  middleware: "auth",
   data: () => ({
     table: [],
     headers: [
       {
         text: "Supplies Category",
-        value: "",
+        value: "category",
         align: "start",
         filterable: false,
       },
       {
         text: "Incoming Supplies",
-        value: "",
+        value: "incoming",
         align: "right",
         filterable: false,
       },
       {
         text: "Outgoing Supplies",
-        value: "",
+        value: "outgoing",
         align: "right",
         filterable: false,
       },
       {
         text: "Stocks On Hand",
-        value: "",
+        value: "stocks",
         align: "right",
         filterable: false,
       },
     ],
+    dateFrom: null,
+    dateUntil: null,
+    incomingDate: null,
+    date1: false,
+    date2: false,
   }),
+  methods: {
+    async get() {
+      await axios
+        .get("api/invsumm/get", {
+          params: { from: this.dateFrom, to: this.dateUntil },
+        })
+        .then((result) => {
+          this.table = result.data;
+        });
+    },
+  },
 };
 </script>

@@ -6,7 +6,6 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
-      
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -480,6 +479,7 @@
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -637,6 +637,7 @@ export default {
           // Save or update data in the table
           await axios
             .post("api/isupp/save", this.form)
+
             .then((result) => {
               //if the value is true then save to database
               switch (result.data) {

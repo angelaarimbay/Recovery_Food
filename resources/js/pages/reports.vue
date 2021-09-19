@@ -681,6 +681,7 @@
 
 <script>
 export default {
+  middleware: 'auth', 
   data: () => ({
     tab: null,
     suppcatlist: [],

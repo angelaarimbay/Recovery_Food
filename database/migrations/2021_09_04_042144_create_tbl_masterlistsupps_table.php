@@ -19,10 +19,9 @@ class CreateTblMasterlistsuppsTable extends Migration
             $table->string('supply_name');
             $table->string('description')->nullable();
             $table->string('unit');
-            $table->float('net_price');
-            $table->float('with_vat');
+            $table->float('net_price'); 
             $table->float('vat');
-            $table->float('without_vat');
+            $table->integer('vatable');
             $table->datetime('exp_date')->nullable();
             $table->integer('status')->default(1); //0 = inactive, else active
             $table->timestamps();
