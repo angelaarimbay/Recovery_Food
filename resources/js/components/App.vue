@@ -1,5 +1,5 @@
 <template>
-  <v-app class="bg-light">
+  <v-app style="background-color: #f1ffff">
     <loading ref="loading" />
     <div v-if="!user">
       <!-- If no user, apply this header. Else, apply nav -->
@@ -7,14 +7,10 @@
     </div>
 
     <v-main>
-      
-        <component :is="layout" v-if="layout" /> 
+      <component :is="layout" v-if="layout" />
     </v-main>
 
-    <ft v-if="user" />
-    <v-footer v-else padless class="red darken-2">
-      <v-card flat tile height="48px"></v-card>
-    </v-footer>
+    <ft />
   </v-app>
 </template>
 

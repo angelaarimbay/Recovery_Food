@@ -108,6 +108,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="get('pdf')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-pdf</v-icon></v-btn
@@ -120,6 +121,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                         @click="get('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -132,6 +134,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                         @click="get('print')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-printer</v-icon></v-btn
@@ -148,6 +151,7 @@
                       :items="suppcatlist"
                       item-text="supply_cat_name"
                       item-value="id"
+                      v-model="category"
                       class="my-0"
                       clearable
                       dense
@@ -680,10 +684,12 @@
 </template>
 
 <script>
+import axios from "axios"; // Library for sending api request
 export default {
-  middleware: 'auth', 
+  middleware: "auth",
   data: () => ({
     tab: null,
+    category: '',
     suppcatlist: [],
     branchlist: [],
     dateFromIncoming: null,
@@ -700,16 +706,68 @@ export default {
     date10: false,
   }),
 
-  async suppCat() {
-    await axios.get("api/msupp/suppCat").then((supp_cat) => {
-      this.suppcatlist = supp_cat.data;
-    });
+  created() {
+    this.suppCat();
   },
 
-  async branchName() {
-    await axios.get("api/osupp/branchName").then((bran_name) => {
-      this.branchlist = bran_name.data;
-    });
+  methods: {
+    async get(type) {
+    
+          console.log(type)
+          switch (type) {
+            case 'pdf':
+                await axios(
+                  {
+                    url: "/api/walanjo",
+                    method: "GET",
+                    responseType: "blob",
+                    params: { category: this.category, type: type  } 
+                  }, 
+                )
+                .then((response) => {
+                let blob = new Blob([response.data], { type: "application/pdf" });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "data.pdf";
+                link.click(); 
+                });
+              break;
+                case 'excel':
+                 await axios
+                    .get("/api/walanjo", {
+                      method: "GET",
+                      responseType: "arraybuffer",
+                      params: {
+                        category: this.category, type: type
+                      },
+                    })
+                    .then((response) => {
+                let blob = new Blob([response.data], { type: "application/excel" });
+                           let link = document.createElement("a");
+                          link.href = window.URL.createObjectURL(blob);
+                          link.download = "masterlist.xlsx";
+                          link.click();  
+                    });
+                 
+
+              break;
+            default:
+              break;
+          }
+          
+    },
+
+    async suppCat() {
+      await axios.get("api/msupp/suppCat").then((supp_cat) => {
+        this.suppcatlist = supp_cat.data;
+      });
+    },
+
+    async branchName() {
+      await axios.get("api/osupp/branchName").then((bran_name) => {
+        this.branchlist = bran_name.data;
+      });
+    },
   },
 
   computed: {

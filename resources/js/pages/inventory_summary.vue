@@ -130,7 +130,21 @@
           </v-row>
 
           <!-- Table -->
-          <v-data-table :headers="headers" :items="table" hide-default-footer>
+          <v-data-table
+            :headers="headers"
+            :items="table"
+            :loading="progressbar"
+            hide-default-footer
+            ref="progress"
+          >
+            <!-- Progress Bar -->
+            <v-progress-linear
+              color="red darken-2"
+              class="px-0 mx-0"
+              slot="progress"
+              indeterminate
+              rounded
+            ></v-progress-linear>
           </v-data-table>
         </v-container>
       </v-container>
@@ -143,6 +157,7 @@ import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
   data: () => ({
+    progressbar: false,
     table: [],
     headers: [
       {
@@ -178,12 +193,14 @@ export default {
   }),
   methods: {
     async get() {
+      this.progressbar = true;
       await axios
         .get("api/invsumm/get", {
           params: { from: this.dateFrom, to: this.dateUntil },
         })
         .then((result) => {
           this.table = result.data;
+          this.progressbar = false;
         });
     },
   },

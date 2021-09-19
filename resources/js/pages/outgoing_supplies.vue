@@ -334,6 +334,12 @@
                       sm="12"
                       md="12"
                     >
+                      <v-text-field v-model="form.id" class="d-none" dense>
+                        <template slot="label">
+                          <div style="font-size: 14px">ID</div>
+                        </template>
+                      </v-text-field>
+                      
                       <v-menu
                         v-model="date3"
                         :close-on-content-click="false"

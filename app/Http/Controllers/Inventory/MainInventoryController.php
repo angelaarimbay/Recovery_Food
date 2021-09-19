@@ -12,6 +12,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class MainInventoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function get(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));

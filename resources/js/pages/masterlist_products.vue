@@ -31,7 +31,7 @@
           class="font-weight-bold heading my-auto"
           :class="{ h5: $vuetify.breakpoint.smAndDown }"
         >
-          Inventory
+          Products
         </h4>
         <v-spacer></v-spacer>
 
@@ -54,7 +54,7 @@
             disabled
             class="px-0"
             style="text-transform: none"
-            >Incoming Supplies</v-btn
+            >Masterlist Products</v-btn
           >
         </v-card-actions>
       </v-layout>
@@ -62,7 +62,7 @@
 
     <!-- Main Card -->
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
-      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="pl-0">
             <v-btn
@@ -72,9 +72,9 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="openDialog"
+              @click="dialog = true"
             >
-              Add Incoming Supply
+              Add Product
             </v-btn>
           </v-card-actions>
 
@@ -126,7 +126,7 @@
                     <v-card-actions>
                       <v-text-field
                         v-model="search"
-                        label="Supply Name"
+                        label="Product Name"
                         single-line
                         dense
                         clearable
@@ -156,8 +156,8 @@
                   <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-select
-                        :items="suppcatlist"
-                        item-text="supply_cat_name"
+                        :items="prodcatlist"
+                        item-text="product_cat_name"
                         item-value="id"
                         class="my-0"
                         clearable
@@ -165,81 +165,6 @@
                         label="Category"
                       >
                       </v-select>
-                    </v-card-actions>
-                  </v-col>
-
-                  <v-spacer></v-spacer>
-
-                  <!-- Date Picker -->
-                  <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-                    <v-card-actions class="py-0">
-                      <v-menu
-                        v-model="date1"
-                        :close-on-content-click="false"
-                        :nudge-right="35"
-                        lazy
-                        transition="scale-transition"
-                        offset-y
-                        full-width
-                        min-width="290px"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <v-text-field
-                            v-model="dateFrom"
-                            label="Date From"
-                            prepend-icon="mdi-calendar-range"
-                            readonly
-                            v-on="on"
-                            class="py-0"
-                            dense
-                            clearable
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker
-                          v-model="dateFrom"
-                          @input="date1 = false"
-                          scrollable
-                          no-title
-                          color="red darken-2"
-                          dark
-                        ></v-date-picker>
-                      </v-menu>
-                    </v-card-actions>
-                  </v-col>
-
-                  <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-                    <v-card-actions class="py-0">
-                      <v-menu
-                        v-model="date2"
-                        :close-on-content-click="false"
-                        :nudge-right="35"
-                        lazy
-                        transition="scale-transition"
-                        offset-y
-                        full-width
-                        min-width="290px"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <v-text-field
-                            v-model="dateUntil"
-                            label="Date Until"
-                            prepend-icon="mdi-calendar-range"
-                            readonly
-                            v-on="on"
-                            class="py-0"
-                            dense
-                            clearable
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker
-                          v-model="dateUntil"
-                          @input="date2 = false"
-                          scrollable
-                          no-title
-                          color="red darken-2"
-                          dark
-                        ></v-date-picker>
-                      </v-menu>
                     </v-card-actions>
                   </v-col>
                 </v-row>
@@ -266,13 +191,29 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.incoming_date`]="{ item }">
-              {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
+            <template v-slot:[`item.exp_date`]="{ item }">
+              {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
-
+            <template v-slot:[`item.status`]="{ item }">
+              <v-chip
+                style="justify-content: center"
+                :style="widthSize"
+                :small="$vuetify.breakpoint.smAndDown"
+                :color="
+                  item.status == '1'
+                    ? '#43A047'
+                    : item.status == '0'
+                    ? '#FF6F00'
+                    : ''
+                "
+                dark
+              >
+                {{ item.status == 1 ? "Active" : "Inactive" }}
+              </v-chip>
+            </template>
             <template v-slot:[`item.id`]="{ item }">
               <v-btn
                 icon
@@ -296,7 +237,7 @@
           </div>
         </v-container>
 
-        <!--Dialog Form-->
+        <!-- Dialog Form -->
         <v-form ref="form">
           <v-dialog v-model="dialog" max-width="450px">
             <v-toolbar
@@ -304,7 +245,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Incoming Supply
+              Product
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -324,9 +265,126 @@
                           <div style="font-size: 14px">ID</div>
                         </template>
                       </v-text-field>
-                      
+
+                      <v-select
+                        :rules="formRulesNumber"
+                        v-model="form.status"
+                        outlined
+                        dense
+                        :items="status"
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Status *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-select
+                        :rules="formRulesNumber"
+                        v-model="form.category"
+                        :items="prodcatlist"
+                        outlined
+                        dense
+                        item-text="product_cat_name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Product Category *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-select
+                        :rules="formRulesNumber"
+                        v-model="form.sub_category"
+                        :items="prodsubcatlist"
+                        outlined
+                        dense
+                        item-text="prod_sub_cat_name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Sub Category *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.product_name"
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Product Name *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        v-model="form.description"
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Description</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field
+                        :rules="formRules"
+                        v-model="form.price"
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Price *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-menu
-                        v-model="date3"
+                        v-model="menu"
                         :close-on-content-click="false"
                         :nudge-right="35"
                         lazy
@@ -337,8 +395,8 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
-                            v-model="form.incoming_date"
-                            label="Incoming Date"
+                            v-model="form.exp_date"
+                            label="Expiration Date"
                             readonly
                             v-on="on"
                             class="py-0"
@@ -348,89 +406,14 @@
                           ></v-text-field>
                         </template>
                         <v-date-picker
-                          v-model="form.incoming_date"
-                          @input="date3 = false"
+                          v-model="form.exp_date"
+                          @input="menu = false"
                           scrollable
                           no-title
                           color="red darken-2"
                           dark
                         ></v-date-picker>
                       </v-menu>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-select
-                        :rules="formRulesNumber"
-                        v-model="form.category"
-                        outlined
-                        dense
-                        :items="suppcatlist"
-                        item-text="supply_cat_name"
-                        item-value="id"
-                        @change="suppName"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Supply Category *</div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-select
-                        :rules="formRulesNumber"
-                        v-model="form.supply_name"
-                        outlined
-                        dense
-                        :items="suppnamelist"
-                        item-text="supply_name"
-                        item-value="id"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Supply Name *</div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.quantity"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Quantity *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.amount"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Amount *</div>
-                        </template>
-                      </v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -494,14 +477,18 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
-    deleteid: "",
-    tempfile: "",
+    sheet: false,
+    status: [
+      { name: "Active", id: 1 },
+      { name: "Inactive", id: 0 },
+    ],
     table: [],
-    suppcatlist: [],
-    suppnamelist: [],
+    prodcatlist: [],
+    prodsubcatlist: [],
+    date: null,
+    menu: false,
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
@@ -515,11 +502,14 @@ export default {
 
     // Form Data
     form: {
+      id: null,
+      status: null,
       category: null,
-      supply_name: null,
-      quantity: null,
-      amount: null,
-      incoming_date: null,
+      sub_category: null,
+      product_name: null,
+      description: null,
+      price: null,
+      exp_date: null,
     },
 
     // For comparing data
@@ -530,26 +520,31 @@ export default {
       { text: "#", value: "count", align: "start", filterable: false },
       {
         text: "Category",
-        value: "category.supply_cat_name",
+        value: "category.product_cat_name",
         filterable: false,
       },
-      { text: "Supply Name", value: "supply_name.supply_name" },
+      {
+        text: "Sub-Category",
+        value: "sub_category.prod_sub_cat_name",
+        filterable: false,
+      },
+      { text: "Product Name", value: "product_name" },
+      {
+        text: "Price",
+        value: "format_price",
+        align: "right",
+        filterable: false,
+      },
       {
         text: "Quantity",
-        value: "quantity",
+        value: "diff_quantity",
         align: "right",
         filterable: false,
       },
       {
-        text: "Amount",
-        value: "format_amount",
-        align: "right",
-        filterable: false,
-      },
-      {
-        text: "Date",
-        value: "incoming_date",
-        align: "right",
+        text: "Status",
+        value: "status",
+        align: "center",
         filterable: false,
       },
       {
@@ -563,29 +558,33 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
-    dateFrom: null,
-    dateUntil: null,
-    incomingDate: null,
-    date1: false,
-    date2: false,
-    date3: false,
   }),
+
+  // Dynamic Width
+  computed: {
+    widthSize() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return { width: "65px" };
+        case "sm":
+          return { width: "65px" };
+        default:
+          return { width: "72px" };
+      }
+    },
+  },
 
   // Onload
   created() {
     this.get();
-    this.suppCat();
+    this.prodCat();
+    this.prodSubCat();
   },
 
   methods: {
     itemperpage() {
       this.page = 1;
       this.get();
-    },
-
-    getFormatDate(e, format) {
-      const date = moment(e);
-      return date.format(format);
     },
 
     // Format for everytime we call on database
@@ -607,18 +606,16 @@ export default {
                 found += 1;
               }
             }
-          } else if (key == "supply_name") {
-            if (this.currentdata.supply_name) {
-              if (this.currentdata.supply_name.id != this.form.supply_name) {
+          } else if (key == "sub_category") {
+            if (this.currentdata.sub_category) {
+              if (this.currentdata.sub_category.id != this.form.sub_category) {
                 found += 1;
               }
             }
-          } else if (key == "incoming_date") {
+          } else if (key == "exp_date") {
             if (
-              this.getFormatDate(
-                this.currentdata.incoming_date,
-                "YYYY-MM-DD"
-              ) != this.getFormatDate(this.form.incoming_date, "YYYY-MM-DD")
+              this.getFormatDate(this.currentdata.exp_date, "YYYY-MM-DD") !=
+              this.getFormatDate(this.form.exp_date, "YYYY-MM-DD")
             ) {
               found += 1;
             }
@@ -648,8 +645,7 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/isupp/save", this.form)
-
+            .post("api/mprod/save", this.form)
             .then((result) => {
               //if the value is true then save to database
               switch (result.data) {
@@ -686,7 +682,7 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/isupp/get", {
+        .get("api/mprod/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
@@ -703,40 +699,35 @@ export default {
         });
     },
 
-    async suppCat() {
-      await axios.get("api/isupp/suppCat").then((supp_cat) => {
-        this.suppcatlist = supp_cat.data;
+    async prodCat() {
+      await axios.get("api/mprod/prodCat").then((prod_cat) => {
+        this.prodcatlist = prod_cat.data;
       });
     },
 
-    async suppName() {
-      await axios
-        .get("api/isupp/suppName", { params: { category: this.form.category } })
-        .then((supp_name) => {
-          this.suppnamelist = supp_name.data;
-        });
+    async prodSubCat() {
+      await axios.get("api/mprod/prodSubCat").then((prodsub_cat) => {
+        this.prodsubcatlist = prodsub_cat.data;
+      });
+    },
+
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
     },
 
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
+      this.form.status = row.status;
       this.form.category = row.category.id;
-      this.suppName();
-      this.form.supply_name = row.supply_name.id;
-      this.form.quantity = row.quantity;
-      this.form.amount = row.amount;
-      this.form.incoming_date = this.getFormatDate(
-        row.incoming_date,
-        "YYYY-MM-DD"
-      );
+      this.form.sub_category = row.sub_category.id;
+      this.form.product_name = row.product_name;
+      this.form.description = row.description;
+      this.form.price = row.price;
+      this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
-      this.dialog = true;
-    },
-
-    // Open Dialog Form
-    openDialog() {
-      this.$refs.form.reset();
       this.dialog = true;
     },
 

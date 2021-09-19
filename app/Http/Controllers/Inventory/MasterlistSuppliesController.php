@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class MasterlistSuppliesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function save(Request $data)
     {
         $table = tbl_masterlistsupp::where("status", "!=", null);

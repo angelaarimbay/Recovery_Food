@@ -54,7 +54,7 @@
             disabled
             class="px-0"
             style="text-transform: none"
-            >Products List</v-btn
+            >Incoming Products</v-btn
           >
         </v-card-actions>
       </v-layout>
@@ -74,7 +74,7 @@
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
               @click="dialog = true"
             >
-              Add Product
+              Add Incoming Product
             </v-btn>
           </v-card-actions>
 
@@ -126,7 +126,7 @@
                     <v-card-actions>
                       <v-text-field
                         v-model="search"
-                        label="Supply Name"
+                        label="Product Name"
                         single-line
                         dense
                         clearable
@@ -167,6 +167,81 @@
                       </v-select>
                     </v-card-actions>
                   </v-col>
+
+                  <v-spacer></v-spacer>
+
+                  <!-- Date Picker -->
+                  <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-menu
+                        v-model="date1"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="dateFrom"
+                            label="Date From"
+                            prepend-icon="mdi-calendar-range"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                            clearable
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="dateFrom"
+                          @input="date1 = false"
+                          scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-card-actions>
+                  </v-col>
+
+                  <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
+                    <v-card-actions class="py-0">
+                      <v-menu
+                        v-model="date2"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="dateUntil"
+                            label="Date Until"
+                            prepend-icon="mdi-calendar-range"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                            clearable
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="dateUntil"
+                          @input="date2 = false"
+                          scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-card-actions>
+                  </v-col>
                 </v-row>
               </v-list>
             </v-list-group>
@@ -191,7 +266,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
-
+            <template v-slot:[`item.incoming_date`]="{ item }">
+              {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
+            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -243,7 +320,7 @@
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Product
+              Incoming Product
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -263,20 +340,38 @@
                           <div style="font-size: 14px">ID</div>
                         </template>
                       </v-text-field>
-
-                      <v-select
-                        :rules="formRulesNumber"
-                        v-model="form.status"
-                        outlined
-                        dense
-                        :items="status"
-                        item-text="name"
-                        item-value="id"
+                      
+                      <v-menu
+                        v-model="date3"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
                       >
-                        <template slot="label">
-                          <div style="font-size: 14px">Status *</div>
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="form.incoming_date"
+                            label="Incoming Date"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                            clearable
+                            outlined
+                          ></v-text-field>
                         </template>
-                      </v-select>
+                        <v-date-picker
+                          v-model="form.incoming_date"
+                          @input="date3 = false"
+                          scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
+                      </v-menu>
                     </v-col>
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
@@ -288,6 +383,7 @@
                         dense
                         item-text="product_cat_name"
                         item-value="id"
+                        @change="prodName"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Category *</div>
@@ -304,6 +400,7 @@
                         dense
                         item-text="prod_sub_cat_name"
                         item-value="id"
+                        @change="prodName"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Sub Category *</div>
@@ -319,49 +416,31 @@
                       sm="12"
                       md="12"
                     >
-                      <v-text-field
-                        :rules="formRules"
+                      <v-select
+                        :rules="formRulesNumber"
                         v-model="form.product_name"
+                        :items="prodnamelist"
+                        item-text="product_name"
+                        item-value="id"
                         outlined
-                        clearable
                         dense
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Name *</div>
                         </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        v-model="form.description"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Description</div>
-                        </template>
-                      </v-text-field>
+                      </v-select>
                     </v-col>
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
                         :rules="formRules"
-                        v-model="form.price"
+                        v-model="form.quantity"
                         outlined
                         clearable
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Price *</div>
+                          <div style="font-size: 14px">Quantity *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -370,68 +449,16 @@
                       <v-layout align-center>
                         <v-text-field
                           :rules="formRules"
-                          v-model="form.quantity"
+                          v-model="form.amount"
                           outlined
                           clearable
                           dense
                         >
                           <template slot="label">
-                            <div style="font-size: 14px">Quantity *</div>
+                            <div style="font-size: 14px">Amount *</div>
                           </template>
                         </v-text-field>
                       </v-layout>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-menu
-                        ref="menu"
-                        v-model="menu"
-                        :close-on-content-click="false"
-                        :return-value.sync="date"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-text-field
-                            outlined
-                            dense
-                            v-model="form.exp_date"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                            clearable
-                          >
-                            <template slot="label">
-                              <div style="font-size: 14px">Expiration Date</div>
-                            </template></v-text-field
-                          >
-                        </template>
-                        <v-date-picker
-                          v-model="form.exp_date"
-                          no-title
-                          scrollable
-                        >
-                          <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="menu = false">
-                            Cancel
-                          </v-btn>
-                          <v-btn
-                            text
-                            color="primary"
-                            @click="$refs.menu.save(date)"
-                          >
-                            Ok
-                          </v-btn>
-                        </v-date-picker>
-                      </v-menu>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -487,7 +514,7 @@
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
-  middleware: 'auth', 
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -505,9 +532,8 @@ export default {
     table: [],
     prodcatlist: [],
     prodsubcatlist: [],
-    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
+    prodnamelist: [],
+    date: null,
     menu: false,
 
     // Form Rules
@@ -530,7 +556,7 @@ export default {
       description: null,
       price: null,
       quantity: null,
-      exp_date: null,
+      incoming_date: null,
     },
 
     // For comparing data
@@ -549,13 +575,7 @@ export default {
         value: "sub_category.prod_sub_cat_name",
         filterable: false,
       },
-      { text: "Product Name", value: "product_name" },
-      {
-        text: "Price",
-        value: "price",
-        align: "right",
-        filterable: false,
-      },
+      { text: "Product Name", value: "product_name.product_name" },
       {
         text: "Quantity",
         value: "quantity",
@@ -563,9 +583,15 @@ export default {
         filterable: false,
       },
       {
-        text: "Status",
-        value: "status",
-        align: "center",
+        text: "Amount",
+        value: "format_amount",
+        align: "right",
+        filterable: false,
+      },
+      {
+        text: "Date",
+        value: "incoming_date",
+        align: "right",
         filterable: false,
       },
       {
@@ -579,6 +605,12 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
+    dateFrom: null,
+    dateUntil: null,
+    incomingDate: null,
+    date1: false,
+    date2: false,
+    date3: false,
   }),
 
   // Dynamic Width
@@ -633,10 +665,18 @@ export default {
                 found += 1;
               }
             }
-          } else if (key == "exp_date") {
+          } else if (key == "product_name") {
+            if (this.currentdata.product_name) {
+              if (this.currentdata.product_name.id != this.form.product_name) {
+                found += 1;
+              }
+            }
+          } else if (key == "incoming_date") {
             if (
-              this.getFormatDate(this.currentdata.exp_date, "YYYY-MM-DD") !=
-              this.getFormatDate(this.form.exp_date, "YYYY-MM-DD")
+              this.getFormatDate(
+                this.currentdata.incoming_date,
+                "YYYY-MM-DD"
+              ) != this.getFormatDate(this.form.incoming_date, "YYYY-MM-DD")
             ) {
               found += 1;
             }
@@ -666,7 +706,7 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/prodlist/save", this.form)
+            .post("api/inprod/save", this.form)
             .then((result) => {
               //if the value is true then save to database
               switch (result.data) {
@@ -685,7 +725,7 @@ export default {
                     active: true,
                     iconText: "alert",
                     iconColor: "error",
-                    message: "The supply name already exists.",
+                    message: "The product name already exists.",
                   };
                   break;
                 default:
@@ -703,7 +743,7 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/prodlist/get", {
+        .get("api/inprod/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
@@ -721,34 +761,49 @@ export default {
     },
 
     async prodCat() {
-      await axios.get("api/prodlist/prodCat").then((prod_cat) => {
+      await axios.get("api/inprod/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
     },
 
     async prodSubCat() {
-      await axios.get("api/prodlist/prodSubCat").then((prodsub_cat) => {
+      await axios.get("api/inprod/prodSubCat").then((prodsub_cat) => {
         this.prodsubcatlist = prodsub_cat.data;
       });
+    },
+
+    async prodName() {
+      await axios
+        .get("api/inprod/prodName", {
+          params: {
+            category: this.form.category,
+            sub_category: this.form.sub_category,
+          },
+        })
+        .then((prod_name) => {
+          this.prodnamelist = prod_name.data;
+        });
     },
 
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
     },
-    
+
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
-      this.form.status = row.status;
       this.form.category = row.category.id;
       this.form.sub_category = row.sub_category.id;
-      this.form.product_name = row.product_name;
-      this.form.description = row.description;
-      this.form.price = row.price;
+      this.prodName();
+      this.form.product_name = row.product_name.id;
       this.form.quantity = row.quantity;
-      this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
+      this.form.amount = row.amount;
+      this.form.incoming_date = this.getFormatDate(
+        row.incoming_date,
+        "YYYY-MM-DD"
+      );
 
       this.dialog = true;
     },

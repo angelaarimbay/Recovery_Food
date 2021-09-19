@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class ProductsCategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function save(Request $data)
     {
         $table = tbl_prodcat::where("status", "!=", null);
@@ -43,7 +47,7 @@ class ProductsCategoryController extends Controller
         DB::statement(DB::raw("set @row:=0"));
         if ($t->search) { // If has value
             $table = tbl_prodcat::where("status", "!=", null);
-            $table_clone = clone $table;   // Get all items from prodcat 
+            $table_clone = clone $table;   // Get all items from prodcat
  
             return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("product_cat_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
         }

@@ -2,31 +2,37 @@
   <div>
     <v-container v-if="token == ''">
       <v-overlay :value="overlay">
-        <v-progress-circular size="64"></v-progress-circular>
+        <v-progress-circular
+          size="55"
+          color="red darken-2"
+        ></v-progress-circular>
       </v-overlay>
-      <v-row v-if="user">
-        <v-col xl="6" cols="12" class="m-auto">
-          <v-card-text
-            style="background-color: grey"
-            min-height=""
-            min-width=""
-          >
+      <v-row v-if="user" align="center">
+        <v-col
+          cols="12"
+          xl="6"
+          lg="6"
+          md="6"
+          class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
+        >
+          <v-card elevation="6" style="border-radius: 10px">
             <v-form
               ref="form"
               @submit.prevent="login"
               @keydown="form.onKeydown($event)"
             >
-              <v-card-text>
+              <v-card-text class="pa-4 pa-xl-7 pa-lg-7 pa-md-5 pa-sm-5">
                 <v-row>
                   <v-col cols="12" class="text-center">
-                    <h3>Log In</h3>
+                    <h3 class="font-weight-bold" style="color: #616161">
+                      Welcome
+                    </h3>
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12" sm="12">
+                  <v-col cols="12" md="12" class="py-1">
                     <v-text-field
                       :rules="rules.formRules"
-                      hide-details="auto"
                       label="Username"
                       outlined
                       dense
@@ -37,17 +43,15 @@
                           ? form.errors.errors.email[0]
                           : ''
                       "
-                      style="background-color: white"
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="12">
+                  <v-col cols="12" sm="12" class="py-1">
                     <v-text-field
                       label="Password"
                       outlined
                       persistent-placeholder
                       :rules="rules.passwordRules"
-                      hide-details="auto"
                       dense
                       v-model="form.password"
                       :error-messages="
@@ -58,7 +62,6 @@
                       :append-icon="!value ? 'mdi-eye' : 'mdi-eye-off'"
                       @click:append="() => (value = !value)"
                       :type="!value ? 'password' : 'text'"
-                      style="background-color: white"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -69,29 +72,46 @@
                       type="submit"
                       dark
                       block
+                      large
                       color="red darken-2"
                       :loading="form.busy"
                       @click="login"
+                      style="text-transform: none; font-size: 20px"
                       >Log In</v-btn
                     >
                   </v-col>
                 </v-row>
               </v-card-text>
             </v-form>
-          </v-card-text>
+          </v-card>
         </v-col>
-        <v-col xl="6" cols="12">
-          <v-img src="/img/Logo.jpg"></v-img>
+        <v-col cols="12" xl="6" lg="6" md="6">
+          <v-img src="/img/Logo_NO_BG.png" class="hidden-xs-only"></v-img>
         </v-col>
       </v-row>
     </v-container>
     <v-snackbar
       bottom
-      right
       v-model="snackbar.status"
-      :color="snackbar.color + ' lighten-2'"
+      min-width="auto"
       class="text-center"
-      >{{ snackbar.message }}</v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      timeout="2500"
+      ><span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
+      >{{ snackbar.message
+      }}<template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
+        >
+      </template></v-snackbar
     >
   </div>
 </template>
@@ -111,7 +131,7 @@ export default {
     appName: window.config.appName,
     notif: 1,
     overlay: false,
-    snackbar: { status: false, message: "", color: "" },
+    snackbar: { status: false, message: "" },
     token: "",
     value: false,
     rules: {
@@ -145,8 +165,9 @@ export default {
               })
               .then((result) => {
                 this.snackbar.status = true;
-                this.snackbar.color = "primary";
-                this.snackbar.message = "Login Successfully";
+                this.snackbar.iconText = "check";
+                this.snackbar.iconColor = "primary";
+                this.snackbar.message = "Login Successful.";
                 this.overlay = false;
                 this.$store.dispatch("auth/fetchUser");
                 // this.$store.dispatch('auth/fetchUserPermissions')
@@ -158,8 +179,9 @@ export default {
             console.log(result);
             this.overlay = false;
             this.snackbar.status = true;
-            this.snackbar.color = "red";
-            this.snackbar.message = "Invalid Email/Password, Please try again.";
+            this.snackbar.iconText = "alert";
+            this.snackbar.iconColor = "error";
+            this.snackbar.message = "Invalid Email or Password.";
           });
       }
     },

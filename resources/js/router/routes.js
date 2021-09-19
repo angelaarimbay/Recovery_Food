@@ -8,10 +8,10 @@ export default [
         { path: '/home', name: 'home', component: page('dashboard.vue') },
         // Login
         { path: '/login', name: 'login', component: page('auth/login.vue') }, 
-        { path: '/', name: 'dashboard', component: page('dashboard.vue') },
+        { path: '/', name: 'dashboard', component: page('dashboard/dashboard.vue') },
 
         //Dashboard
-        { path: '/dashboard', name: 'dashboard', component: page('dashboard.vue') },
+        { path: '/dashboard', name: 'dashboard', component: page('dashboard/dashboard.vue') },
 
         //Branches
         { path: '/manage_branches', name: 'branches', component: page('manage_branches.vue') },
@@ -30,7 +30,8 @@ export default [
         { path: '/inventory_summary', name: 'inventory', component: page('inventory_summary.vue') },
 
         //Products
-        { path: '/products_list', name: 'products', component: page('products_list.vue') },
+        { path: '/masterlist_products', name: 'products', component: page('masterlist_products.vue') },
+        { path: '/incoming_products', name: 'products', component: page('incoming_products.vue') },
         { path: '/outgoing_products', name: 'products', component: page('outgoing_products.vue') },
 
         //Suppliers

@@ -24,16 +24,19 @@ class tbl_masterlistsupp extends Model
         $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
         $date2 = date("Y-m-d h:i:s", strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
         $incoming = 0;
+
+        //sice we check incoming via total, so if vatable = 0  kukunin nya un, else netprice
+        // tama to. kasi in total for the month ung kinukuha natin from incoming..
         try {
-            $get_specific_item_amount = tbl_incomingsupp::whereBetween("incoming_date", [$date1,$date2])->sum('amount');
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('amount');
             $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('quantity');
     
-            $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 2, ".", ",");
+            $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 6, ".", ",");
             ;
         } catch (\Throwable $th) {
             $incoming = $this->net_price;
         }
-        return $this->vatable == 0 ?  $incoming :  number_format($this->net_price, 2, ".", ",");
+        return $this->vatable == 0 ?  number_format( $incoming , 6, ".", ","):  number_format($this->net_price, 6, ".", ",");
     }
 
     public function getWithoutVatAttribute()
@@ -43,7 +46,7 @@ class tbl_masterlistsupp extends Model
         $date2 = date("Y-m-d h:i:s", strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
         $incoming = 0;
         try {
-            $get_specific_item_amount = tbl_incomingsupp::whereBetween("incoming_date", [$date1,$date2])->sum('amount');
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('amount');
             $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('quantity');
     
             $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 2, ".", ",");

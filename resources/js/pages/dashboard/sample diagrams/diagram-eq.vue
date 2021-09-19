@@ -9,7 +9,7 @@
 
 <script>
   import axios from 'axios' 
-  import BarChart from '../charts/BarChart'
+  import BarChart from '../../charts/BarChart'
   export default {
     components: {
       BarChart

@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 use App\Models\tbl_suppcat;
 use App\Models\tbl_incomingsupp;
 use App\Models\tbl_outgoingsupp;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat\NumberFormatter;
+// use PhpOffice\PhpSpreadsheet\Style\NumberFormat\NumberFormatter; 
+
 
 class InventorySummaryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     //
     public function get(Request $request)
     {

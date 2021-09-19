@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class PurchaseOrdersController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function save(Request $data)
     {
         $table = tbl_purchaseord::where("supplier_name", "!=", null);

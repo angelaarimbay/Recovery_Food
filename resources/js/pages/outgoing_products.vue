@@ -282,8 +282,8 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.created_at`]="{ item }">
-              {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
+            <template v-slot:[`item.outgoing_date`]="{ item }">
+              {{ getFormatDate(item.outgoing_date, "YYYY-MM-DD") }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
@@ -326,6 +326,53 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field v-model="form.id" class="d-none" dense>
+                        <template slot="label">
+                          <div style="font-size: 14px">ID</div>
+                        </template>
+                      </v-text-field>
+
+                      <v-menu
+                        v-model="date3"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="form.outgoing_date"
+                            label="Outgoing Date"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                            clearable
+                            outlined
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="form.outgoing_date"
+                          @input="date3 = false"
+                          scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-col>
+
                     <v-col
                       class="py-0"
                       cols="12"
@@ -482,7 +529,7 @@
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
-  middleware: 'auth', 
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -515,6 +562,7 @@ export default {
       product_name: null,
       quantity: null,
       requesting_branch: null,
+      outgoing_date: null,
     },
 
     // For comparing data
@@ -551,7 +599,12 @@ export default {
         value: "requesting_branch.branch_name",
         filterable: false,
       },
-      { text: "Date", value: "created_at", align: "right", filterable: false },
+      {
+        text: "Date",
+        value: "outgoing_date",
+        align: "right",
+        filterable: false,
+      },
       {
         text: "Actions",
         value: "id",
@@ -567,6 +620,7 @@ export default {
     dateUntil: null,
     date1: false,
     date2: false,
+    date3: false,
   }),
 
   // Onload
@@ -574,7 +628,6 @@ export default {
     this.get();
     this.prodCat();
     this.prodSubCat();
-    this.prodName();
     this.branchName();
   },
 
@@ -628,6 +681,15 @@ export default {
               ) {
                 found += 1;
               }
+            }
+          } else if (key == "outgoing_date") {
+            if (
+              this.getFormatDate(
+                this.currentdata.outgoing_date,
+                "YYYY-MM-DD"
+              ) != this.getFormatDate(this.form.outgoing_date, "YYYY-MM-DD")
+            ) {
+              found += 1;
             }
           } else {
             found += 1;
@@ -750,6 +812,10 @@ export default {
       this.form.product_name = row.product_name.id;
       this.form.quantity = row.quantity;
       this.form.requesting_branch = row.requesting_branch.id;
+      this.form.outgoing_date = this.getFormatDate(
+        row.outgoing_date,
+        "YYYY-MM-DD"
+      );
 
       this.dialog = true;
     },

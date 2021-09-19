@@ -251,8 +251,8 @@
               rounded
             ></v-progress-linear>
 
-            <template v-slot:[`item.created_at`]="{ item }">
-              {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
+            <template v-slot:[`item.incoming_date`]="{ item }">
+              {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
@@ -295,6 +295,53 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field v-model="form.id" class="d-none" dense>
+                        <template slot="label">
+                          <div style="font-size: 14px">ID</div>
+                        </template>
+                      </v-text-field>
+                      
+                      <v-menu
+                        v-model="date3"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="form.incoming_date"
+                            label="Incoming Date"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                            clearable
+                            outlined
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="form.incoming_date"
+                          @input="date3 = false"
+                          scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-col>
+
                     <v-col
                       class="py-0"
                       cols="12"
@@ -413,7 +460,7 @@
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
-  middleware: 'auth', 
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -442,6 +489,7 @@ export default {
       supplier_name: null,
       invoice_number: null,
       amount: null,
+      incoming_date: null,
     },
 
     // For comparing data
@@ -459,11 +507,16 @@ export default {
       },
       {
         text: "Amount",
-        value: "amount",
+        value: "format_amount",
         align: "right",
         filterable: false,
       },
-      { text: "Date", value: "created_at", align: "right", filterable: false },
+      {
+        text: "Date",
+        value: "incoming_date",
+        align: "right",
+        filterable: false,
+      },
       {
         text: "Actions",
         value: "id",
@@ -477,8 +530,10 @@ export default {
     itemsPerPage: 5,
     dateFrom: null,
     dateUntil: null,
+    incomingDate: null,
     date1: false,
     date2: false,
+    date3: false,
   }),
 
   // Dynamic Width
@@ -532,6 +587,15 @@ export default {
               ) {
                 found += 1;
               }
+            }
+          } else if (key == "incoming_date") {
+            if (
+              this.getFormatDate(
+                this.currentdata.incoming_date,
+                "YYYY-MM-DD"
+              ) != this.getFormatDate(this.form.incoming_date, "YYYY-MM-DD")
+            ) {
+              found += 1;
             }
           } else {
             found += 1;
@@ -627,6 +691,10 @@ export default {
       this.form.invoice_number = row.invoice_number;
       this.form.supplier_name = row.supplier_name.id;
       this.form.amount = row.amount;
+      this.form.incoming_date = this.getFormatDate(
+        row.incoming_date,
+        "YYYY-MM-DD"
+      );
 
       this.dialog = true;
     },

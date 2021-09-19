@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import LineChart from '../charts/BarChart'
+  import LineChart from '../../charts/BarChart'
   export default {
     components: {
       LineChart

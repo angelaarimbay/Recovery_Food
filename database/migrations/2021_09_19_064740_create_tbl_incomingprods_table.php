@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTblPurchaseordsTable extends Migration
+class CreateTblIncomingprodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateTblPurchaseordsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_purchaseords', function (Blueprint $table) {
+        Schema::create('tbl_incomingprods', function (Blueprint $table) {
             $table->id();
-            $table->integer('invoice_number');
-            $table->integer('supplier_name')->references('id')->on('tbl_supplist');
+            $table->integer('category')->references('id')->on('tbl_prodcat');
+            $table->integer('sub_category')->references('id')->on('tbl_prodsubcat');
+            $table->integer('product_name')->references('id')->on('tbl_masterlistprod');
+            $table->float('quantity');
             $table->float('amount');
             $table->datetime('incoming_date');
             $table->timestamps();
-
         });
     }
 
@@ -31,6 +32,6 @@ class CreateTblPurchaseordsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_purchaseords');
+        Schema::dropIfExists('tbl_incomingprods');
     }
 }

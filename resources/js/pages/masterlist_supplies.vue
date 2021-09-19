@@ -281,7 +281,7 @@
               </div>
               <div v-else>{{ Math.round(item.without_vat * 100) / 100 }}</div>
             </template>
-             <template v-slot:[`item.with_vat`]="{ item }">
+            <template v-slot:[`item.with_vat`]="{ item }">
               <div class="text-warning" v-if="item.vatable == 1">
                 {{ Math.round(item.with_vat * 100) / 100 }}
               </div>
@@ -722,7 +722,7 @@ export default {
       const date = moment(e);
       return date.format(format);
     },
-   
+
     // getDays() {
     //   var days = new Date(
     //     this.getFormatDate(Date.now(), "Y"),
@@ -922,12 +922,13 @@ export default {
       this.form.unit = row.unit;
       this.form.net_price = row.net_price;
       this.form.vat = row.vat;
-      this.vat = (row.vatable == 0? false: true);
+      this.vat = row.vatable == 0 ? false : true;
       this.temp_vat = row.vat;
       this.form.without_vat = row.without_vat;
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;
+      this.compute();
     },
 
     // Reset Forms

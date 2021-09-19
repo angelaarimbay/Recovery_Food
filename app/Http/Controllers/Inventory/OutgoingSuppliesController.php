@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class OutgoingSuppliesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function save(Request $data)
     {
         $table = tbl_outgoingsupp::where("supply_name","!=",null);

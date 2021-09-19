@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class IncomingSuppliesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function save(Request $data)
     {
        

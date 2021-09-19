@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class BranchesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function save(Request $data)
     {
         $table = tbl_branches::where("status", "!=", null);

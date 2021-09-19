@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
-use App\Models\tbl_prodlist;
+use App\Models\tbl_masterlistprod;
 use App\Models\tbl_branches;
 
 class tbl_outgoingprod extends Model
@@ -26,7 +26,7 @@ class tbl_outgoingprod extends Model
 
     public function product_name()
     {
-        return $this->hasOne(tbl_prodlist::class, 'id', 'product_name');
+        return $this->hasOne(tbl_masterlistprod::class, 'id', 'product_name');
     }
 
     
@@ -37,7 +37,6 @@ class tbl_outgoingprod extends Model
 
     public function getOutgoingAmountAttribute()
     {
-        return tbl_prodlist::where("id", $this->product_name)->first()->price * $this->quantity;
+        return number_format(tbl_masterlistprod::where("id", $this->product_name)->first()->price * $this->quantity,2, ".", ",");
     }
-
 }

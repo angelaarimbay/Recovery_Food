@@ -8,10 +8,13 @@ Route::group(['middleware' => 'guest'], function () {
 
 Route::group(['middleware' => 'api'], function () {
    
-// Manage Branches
+    // Manage Branches
     Route::post('branches/attachment', 'Branches\BranchesController@attachment');
     Route::post('branches/save', 'Branches\BranchesController@save');
     Route::get('branches/get', 'Branches\BranchesController@get');
+
+    // Branches Inventory
+    Route::get('branches/inventory/get', 'Branches\BranchesInventoryController@get');
 
     // Supplies Category
     Route::post('supplies/save', 'Categories\SuppliesCategoryController@save');
@@ -54,11 +57,18 @@ Route::group(['middleware' => 'api'], function () {
     // Inventory Summary
     Route::get('invsumm/get', 'Inventory\InventorySummaryController@get');
 
-    // Products List
-    Route::post('prodlist/save', 'Products\ProductsListController@save');
-    Route::get('prodlist/get', 'Products\ProductsListController@get');
-    Route::get('prodlist/prodCat', 'Products\ProductsListController@prodCat');
-    Route::get('prodlist/prodSubCat', 'Products\ProductsListController@prodSubCat');
+    // Masterlist Products
+    Route::post('mprod/save', 'Products\MasterlistProductsController@save');
+    Route::get('mprod/get', 'Products\MasterlistProductsController@get');
+    Route::get('mprod/prodCat', 'Products\MasterlistProductsController@prodCat');
+    Route::get('mprod/prodSubCat', 'Products\MasterlistProductsController@prodSubCat');
+
+    // Incoming Products
+    Route::post('inprod/save', 'Products\IncomingProductsController@save');
+    Route::get('inprod/get', 'Products\IncomingProductsController@get');
+    Route::get('inprod/prodCat', 'Products\IncomingProductsController@prodCat');
+    Route::get('inprod/prodSubCat', 'Products\IncomingProductsController@prodSubCat');
+    Route::get('inprod/prodName', 'Products\IncomingProductsController@prodName');
 
     // Outgoing Products
     Route::post('outprod/save', 'Products\OutgoingProductsController@save');
@@ -80,4 +90,8 @@ Route::group(['middleware' => 'api'], function () {
     // User Accounts
     Route::post('useracc/save', 'UserAccounts\UserAccountsController@save');
     Route::get('useracc/get', 'UserAccounts\UserAccountsController@get');
+
+    Route::get('walanjo', 'Reports\ReportsController@ExportMasterlist');
+
+
 });
