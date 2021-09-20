@@ -324,6 +324,7 @@ export default {
       {
         text: "Quantity",
         value: "quantity",
+        align: "right"
       },
       {
         text: "Amount",

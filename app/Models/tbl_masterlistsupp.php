@@ -10,7 +10,7 @@ class tbl_masterlistsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['with_vat','without_vat'];
+    public $appends = ['with_vat','without_vat','format_net_price','format_with_vat','format_without_vat'];
 
     
     public function category()
@@ -36,7 +36,7 @@ class tbl_masterlistsupp extends Model
         } catch (\Throwable $th) {
             $incoming = $this->net_price;
         }
-        return $this->vatable == 0 ?  number_format( $incoming , 6, ".", ","):  number_format($this->net_price, 6, ".", ",");
+        return $this->vatable == 0 ?  number_format($incoming, 6, ".", ","):  number_format($this->net_price, 6, ".", ",");
     }
 
     public function getWithoutVatAttribute()
@@ -54,5 +54,20 @@ class tbl_masterlistsupp extends Model
             $incoming = $this->net_price;
         }
         return $this->vatable == 0 ?  number_format($incoming, 2, ".", ","):  number_format($this->net_price / $this->vat, 2, ".", ",");
+    }
+
+    public function getFormatNetPriceAttribute()
+    {
+        return number_format($this->net_price, 2, ".", ",");
+    }
+
+    public function getFormatWithVatAttribute()
+    {
+        return number_format($this->with_vat, 2, ".", ",");
+    }
+
+    public function getFormatWithoutVatAttribute()
+    {
+        return number_format($this->without_vat, 2, ".", ",");
     }
 }

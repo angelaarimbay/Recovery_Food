@@ -77,7 +77,6 @@ class MasterlistSuppliesController extends Controller
 
     public function sum(Request $t)
     {
- 
         //  ->where("date", date("Y-m-d", strtotime($t->date) ) )
         return tbl_masterlistsupp::where("id", $t->id)->sum("net_price");
     }

@@ -663,18 +663,20 @@ export default {
       { text: "Supply Name", value: "supply_name" },
       {
         text: "Net Price",
-        value: "net_price",
+        value: "format_net_price",
         align: "right",
         filterable: false,
       },
       {
         text: "With Vat",
-        value: "with_vat",
+        value: "format_with_vat",
+        align: "right",
         filterable: false,
       },
       {
         text: "Without Vat",
-        value: "without_vat",
+        value: "format_without_vat",
+        align: "right",
         filterable: false,
       },
       {
