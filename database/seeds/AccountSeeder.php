@@ -11,17 +11,16 @@ class AccountSeeder extends Seeder
      * @return void
      */
     public function run()
-    { 
-        User::create([ 
-            'name'=> 'admin',
+    {
+        User::create(
+            [
+            'name'=> '',
+            'first_name'=> 'John',
+            'last_name'=> 'Doe',
+            'email'=> 'johndoe@gmail.com',
             'password'=> bcrypt('123456'),
-            'email'=>'admin' 
-        ], [ 
-            'name'=> 'User',
-            'password'=> bcrypt('123456'),
-            'email'=>'user' 
-        ]
-    );
-        
+            'phone_number'=> '+63912345678'
+        ],
+        );
     }
 }

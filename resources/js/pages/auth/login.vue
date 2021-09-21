@@ -5,6 +5,7 @@
         <v-progress-circular
           size="55"
           color="red darken-2"
+          indeterminate
         ></v-progress-circular>
       </v-overlay>
       <v-row v-if="user" align="center">
@@ -168,10 +169,9 @@ export default {
                 this.snackbar.iconText = "check";
                 this.snackbar.iconColor = "primary";
                 this.snackbar.message = "Login Successful.";
-                this.overlay = false;
                 this.$store.dispatch("auth/fetchUser");
-                this.$store.dispatch('auth/fetchUserPermissions')
-                this.$store.dispatch('auth/fetchUserRoles')
+                this.$store.dispatch("auth/fetchUserPermissions");
+                this.$store.dispatch("auth/fetchUserRoles");
                 this.$router.push({ name: "dashboard" });
               });
           })

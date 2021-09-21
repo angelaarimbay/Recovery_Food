@@ -46,7 +46,7 @@
         center-active
         centered
       >
-        <v-tabs-slider style="border-radius: 5px 5px 0 0"></v-tabs-slider>
+        <v-tabs-slider style="display: none"></v-tabs-slider>
         <v-tab
           :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
           style="text-transform: none"
@@ -121,7 +121,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
-                         @click="get('excel')"
+                      @click="get('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -134,7 +134,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
-                         @click="get('print')"
+                      @click="get('print')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-printer</v-icon></v-btn
@@ -689,7 +689,7 @@ export default {
   middleware: "auth",
   data: () => ({
     tab: null,
-    category: '',
+    category: "",
     suppcatlist: [],
     branchlist: [],
     dateFromIncoming: null,
@@ -712,49 +712,46 @@ export default {
 
   methods: {
     async get(type) {
-    
-          console.log(type)
-          switch (type) {
-            case 'pdf':
-                await axios(
-                  {
-                    url: "/api/walanjo",
-                    method: "GET",
-                    responseType: "blob",
-                    params: { category: this.category, type: type  } 
-                  }, 
-                )
-                .then((response) => {
-                let blob = new Blob([response.data], { type: "application/pdf" });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "data.pdf";
-                link.click(); 
-                });
-              break;
-                case 'excel':
-                 await axios
-                    .get("/api/walanjo", {
-                      method: "GET",
-                      responseType: "arraybuffer",
-                      params: {
-                        category: this.category, type: type
-                      },
-                    })
-                    .then((response) => {
-                let blob = new Blob([response.data], { type: "application/excel" });
-                           let link = document.createElement("a");
-                          link.href = window.URL.createObjectURL(blob);
-                          link.download = "masterlist.xlsx";
-                          link.click();  
-                    });
-                 
+      console.log(type);
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/walanjo",
+            method: "GET",
+            responseType: "blob",
+            params: { category: this.category, type: type },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/walanjo", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: {
+                category: this.category,
+                type: type,
+              },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
 
-              break;
-            default:
-              break;
-          }
-          
+          break;
+        default:
+          break;
+      }
     },
 
     async suppCat() {

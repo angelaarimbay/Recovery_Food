@@ -177,23 +177,33 @@
         </v-card>
       </v-dialog>
 
-      <!---------------------------------------------------------------------- add permission to role -->
+      <!-- Add Permission To Role Dialog -->
       <v-dialog v-model="dialogAddPermissions" max-width="900px">
         <v-card id="dialog" class="bgcolor">
-          <v-card-text class="p-2">
-            <v-card-actions>
-              <h4 class="text-danger">Add Role Permission/s</h4>
-              <v-spacer></v-spacer>
-              <v-icon
-                class="float-right border bg-danger text-white"
-                text
-                @click="dialogAddPermissions = false"
-                >mdi-close
-              </v-icon>
-            </v-card-actions>
-          </v-card-text>
-          <v-card-text class="bgcolor">
-            <v-card>
+          <v-toolbar
+            dense
+            dark
+            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+          >
+            Add Role Permission(s)
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="dialogAddPermissions = false"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
+          </v-toolbar>
+
+          <v-card tile>
+            <v-card-text class="py-2">
+              <br />
               <v-data-table
                 dense
                 class="px-4"
@@ -211,45 +221,52 @@
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
+            </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="#00794b"
-                  style="text-transform: none"
-                  depressed
-                  dark
-                  @click="storeAddPermissionsConfirmation"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-card-text>
+            <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="#00794b"
+                style="text-transform: none"
+                depressed
+                dark
+                @click="storeAddPermissionsConfirmation"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
         </v-card>
       </v-dialog>
 
-      <!---------------------------------------------------------------------- add user to role -->
+      <!-- Add User To Role Dialog -->
       <v-dialog v-model="dialogAddRoles" max-width="900px">
         <v-card id="dialog" class="bgcolor">
-          <v-card-text class="p-2">
-            <v-card-actions>
-              <h4 class="text-danger">Add user roles</h4>
-              <v-spacer></v-spacer>
-              <v-icon
-                class="float-right border bg-danger text-white"
-                text
-                @click="dialogAddRoles = false"
-                >mdi-close
-              </v-icon>
-            </v-card-actions>
-          </v-card-text>
-          <v-card-text class="bgcolor">
-            <v-card>
+          <v-toolbar
+            dense
+            dark
+            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+          >
+            Add Role Permission(s)
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="dialogAddRoles = false"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
+          </v-toolbar>
+
+          <v-card tile>
+            <v-card-text class="py-2">
               <v-card-text>
-                <strong class="text-danger">
-                  Selected employee : {{ username }}</strong
-                ></v-card-text
+                <strong> Selected User : {{ username }}</strong></v-card-text
               >
               <v-data-table
                 dense
@@ -268,21 +285,21 @@
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
+            </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="#00794b"
-                  style="text-transform: none"
-                  depressed
-                  dark
-                  @click="storeUserRoleConfirmation"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-card-text>
+            <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="#00794b"
+                style="text-transform: none"
+                depressed
+                dark
+                @click="storeUserRoleConfirmation"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
         </v-card>
       </v-dialog>
 
@@ -332,7 +349,7 @@
           center-active
           centered
         >
-          <v-tabs-slider style="border-radius: 5px 5px 0 0"></v-tabs-slider>
+          <v-tabs-slider style="display: none"></v-tabs-slider>
           <v-tab
             :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
             style="text-transform: none"
@@ -403,39 +420,23 @@
                   ></v-progress-linear>
 
                   <template v-slot:[`item.id`]="{ item }">
-                    <v-hover v-slot="{ hover }">
-                      <v-btn
-                        class="px-1"
-                        :class="
-                          hover
-                            ? 'btn btn-primary text-white'
-                            : 'btn btn-link text-primary'
-                        "
-                        text
-                        small
-                        @click="editItemRoles(item)"
-                      >
-                        <v-icon> mdi-pencil </v-icon>
-                        <small> - Edit </small>
-                      </v-btn>
-                    </v-hover>
+                    <v-btn
+                      icon
+                      color="red darken-2"
+                      @click="editItemRoles(item)"
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                    >
+                      <v-icon> mdi-pencil </v-icon>
+                    </v-btn>
 
-                    <v-hover v-slot="{ hover }">
-                      <v-btn
-                        class="px-1"
-                        :class="
-                          hover
-                            ? 'btn btn-info text-white'
-                            : 'btn btn-link text-info'
-                        "
-                        text
-                        small
-                        @click="addPermission(item)"
-                      >
-                        <v-icon> mdi-plus </v-icon>
-                        <small> - add / edit Permission </small>
-                      </v-btn>
-                    </v-hover>
+                    <v-btn
+                      icon
+                      color="red darken-2"
+                      @click="addPermission(item)"
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                    >
+                      <v-icon> mdi-plus </v-icon>
+                    </v-btn>
                   </template>
                 </v-data-table>
               </v-container>
@@ -487,22 +488,14 @@
                   ></v-progress-linear>
 
                   <template v-slot:[`item.id`]="{ item }">
-                    <v-hover v-slot="{ hover }">
-                      <v-btn
-                        class="px-1"
-                        :class="
-                          hover
-                            ? 'btn btn-primary text-white'
-                            : 'btn btn-link text-primary'
-                        "
-                        text
-                        small
-                        @click="editItemPermissions(item)"
-                      >
-                        <v-icon> mdi-pencil </v-icon>
-                        <small> - Edit </small>
-                      </v-btn>
-                    </v-hover>
+                    <v-btn
+                      icon
+                      color="red darken-2"
+                      @click="editItemPermissions(item)"
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                    >
+                      <v-icon> mdi-pencil </v-icon>
+                    </v-btn>
                   </template>
                 </v-data-table>
               </v-container>
@@ -555,22 +548,14 @@
                   </template>
 
                   <template v-slot:[`item.id`]="{ item }">
-                    <v-hover v-slot="{ hover }">
-                      <v-btn
-                        class="px-1"
-                        :class="
-                          hover
-                            ? 'btn btn-info text-white'
-                            : 'btn btn-link text-info'
-                        "
-                        text
-                        small
-                        @click="addUserRole(item)"
-                      >
-                        <v-icon> mdi-plus </v-icon>
-                        <small> - Add role </small>
-                      </v-btn>
-                    </v-hover>
+                    <v-btn
+                      icon
+                      color="red darken-2"
+                      @click="addUserRole(item)"
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                    >
+                      <v-icon> mdi-plus </v-icon>
+                    </v-btn>
                   </template>
                 </v-data-table>
               </v-container>
@@ -581,12 +566,20 @@
     </v-form>
   </div>
 </template>
-  
+
+<style>
+.v-data-table__checkbox,
+.v-input--selection-controls__input .mdi-checkbox-marked,
+.v-input--selection-controls__input .mdi-minus-box {
+  color: #d32f2f !important;
+}
+</style>
+
 <script>
 import axios from "axios";
-import Swal from "sweetalert2"
+import Swal from "sweetalert2";
 export default {
-  middleware: 'auth', 
+  middleware: "auth",
   // declarations
   data: () => ({
     snackbar: {
@@ -603,7 +596,7 @@ export default {
     headersRoles: [
       { text: "Role name", align: "start", value: "name" },
       { text: "Role description", value: "description" },
-      { text: "Action", value: "id", sortable: false },
+      { text: "Actions", value: "id", sortable: false },
     ],
     role: { name: "", id: "" },
 
@@ -618,7 +611,7 @@ export default {
         value: "name",
       },
       { text: "Description", value: "description" },
-      { text: "Action", value: "id" },
+      { text: "Actions", value: "id" },
     ],
     permission: { name: "", description: "", id: "" },
     // --------------------------------------------------user role
@@ -626,12 +619,12 @@ export default {
     tableUserrole: [],
     headersUserrole: [
       {
-        text: "Employee",
+        text: "User",
         align: "start",
         value: "name",
       },
       { text: "Current Role/s", value: "roles.name" },
-      { text: "Action", value: "id" },
+      { text: "Actions", value: "id" },
     ],
 
     // --------------------------------------------------set role permission
@@ -657,7 +650,9 @@ export default {
 
   // load
   created() {
-    this.getRoles(); 
+    this.getRoles();
+    this.getPermissions();
+    this.getRolePermissions();
   },
 
   // functions
@@ -772,11 +767,9 @@ export default {
     },
     // save roles
     async storePermissions() {
- 
       await axios
         .post("/api/useracc/storePermission", this.permission)
         .then((result) => {
-          console.log(result.data)
           if (this.editedIndex > -1) {
             Object.assign(this.tablePermissions[this.editedIndex], result.data);
           } else {
@@ -835,7 +828,7 @@ export default {
       self.tablePermissions = [];
       await axios
         .get("/api/useracc/getPermission", { params: { role: item } })
-        .then((result) => { 
+        .then((result) => {
           self.tablePermissions = result.data.data;
           self.selectedAddPermission = result.data.selected;
           self.progressBar = false;
@@ -877,7 +870,7 @@ export default {
           selected: this.selectedAddPermission,
           role: this.rolename,
         })
-        .then((result) => { console.log(result.data)
+        .then((result) => {
           this.snackbar = {
             active: true,
             iconText: "check",
@@ -900,14 +893,12 @@ export default {
     // set user role
     // get roles
     async getAddUserRoles(item) {
-      console.log("yes");
       let self = this;
       self.progressBar = true;
       self.tableAddRoles = [];
       await axios
         .get("/api/useracc/getRoles", { params: { user: item } })
         .then((result) => {
-          console.log(result.data);
           self.tableAddRoles = result.data.data;
           self.selectedAddRoles = result.data.selected;
           self.progressBar = false;
@@ -921,10 +912,10 @@ export default {
           };
         });
     },
-    addUserRole(item) { 
+    addUserRole(item) {
       this.dialogAddRoles = true;
       this.userid = item.id;
-      this.username = item.name; 
+      this.username = item.name;
       this.getAddUserRoles(item.id);
     },
     // store validation
@@ -950,7 +941,6 @@ export default {
           user: this.userid,
         })
         .then((result) => {
-          console.log(result.data);
           this.snackbar = {
             active: true,
             iconText: "check",
@@ -982,7 +972,6 @@ export default {
 
     async remove() {
       await axios.post("/api/useracc/removeUserRole").then((result) => {
-        console.log(result.data);
         this.snackbar = {
           active: true,
           iconText: "check",

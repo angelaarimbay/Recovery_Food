@@ -8,7 +8,7 @@ export const state = {
   users: [],
   token: Cookies.get('token'),
   user_permissions: [],
-  user_roles: [], 
+  user_roles: [],
 }
 
 // getters
@@ -24,49 +24,49 @@ export const getters = {
 
 // mutations
 export const mutations = {
-  [types.SAVE_TOKEN] (state, { token, remember }) {
+  [types.SAVE_TOKEN](state, { token, remember }) {
     state.token = token
     Cookies.set('token', token, { expires: remember ? 365 : null })
-    
+
   },
 
-  [types.FETCH_USER_SUCCESS] (state, { user }) {
+  [types.FETCH_USER_SUCCESS](state, { user }) {
     state.user = user
   },
 
-  [types.FETCH_USER_FAILURE] (state) {
+  [types.FETCH_USER_FAILURE](state) {
     state.token = null
     Cookies.remove('token')
   },
 
-  [types.LOGOUT] (state) {
+  [types.LOGOUT](state) {
     state.user = null
     state.token = null
 
     Cookies.remove('token')
   },
 
-  [types.UPDATE_USER] (state, { user }) {
+  [types.UPDATE_USER](state, { user }) {
     state.user = user
   },
-  ['success_user_permissions'](state, { permissions }){
+  ['success_user_permissions'](state, { permissions }) {
     state.user_permissions = permissions
   },
-  ['success_user_roles'](state, { roles }){
+  ['success_user_roles'](state, { roles }) {
     state.user_roles = roles
   },
-  ['success_get_users'](state, users){
+  ['success_get_users'](state, users) {
     state.users = users
   }
 }
 
 // actions
 export const actions = {
-  saveToken ({ commit, dispatch }, payload) {
+  saveToken({ commit, dispatch }, payload) {
     commit(types.SAVE_TOKEN, payload)
   },
 
-  async fetchUser ({ commit }) {
+  async fetchUser({ commit }) {
     try {
       const { data } = await axios.get('/api/user')
       commit(types.FETCH_USER_SUCCESS, { user: data })
@@ -75,11 +75,11 @@ export const actions = {
     }
   },
 
-  updateUser ({ commit }, payload) {
+  updateUser({ commit }, payload) {
     commit(types.UPDATE_USER, payload)
   },
 
-  async logout ({ commit }) {
+  async logout({ commit }) {
     try {
       await axios.post('/api/logout')
     } catch (e) { }
@@ -87,13 +87,13 @@ export const actions = {
     commit(types.LOGOUT)
   },
 
-  async fetchOauthUrl (ctx, { provider }) {
+  async fetchOauthUrl(ctx, { provider }) {
     const { data } = await axios.post(`/api/oauth/${provider}`)
 
     return data.url
   },
 
-  async fetchUserPermissions ({ commit }) {
+  async fetchUserPermissions({ commit }) {
     try {
       const { data } = await axios.get('/api/user-permissions')
       // APP.USER_PERMISSIONS = data
@@ -103,7 +103,7 @@ export const actions = {
     }
   },
 
-  async fetchUserRoles ({ commit }) {
+  async fetchUserRoles({ commit }) {
     try {
       const { data } = await axios.get('/api/user-roles')
       // APP.USER_ROLES = data
@@ -113,13 +113,13 @@ export const actions = {
     }
   },
 
-  async fetchUsers({state,commit}){
+  async fetchUsers({ state, commit }) {
     try {
       const { data } = await axios.get('/api/users')
-      commit('success_get_users',data)
+      commit('success_get_users', data)
     } catch (e) {
       // commit(types.FETCH_USER_FAILURE)
     }
   }
-  
+
 }

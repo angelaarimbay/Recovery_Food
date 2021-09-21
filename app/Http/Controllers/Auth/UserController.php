@@ -22,13 +22,11 @@ class UserController extends Controller
     {
         $user = \Auth::user();
         return $user->getUserPermissions($user);
-
     }
 
     public function roles()
     {
         $user = \Auth::user();
         return $user->getUserRoles($user);
-
     }
 }

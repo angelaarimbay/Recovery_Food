@@ -64,15 +64,19 @@
             <v-img src="/img/Logo.jpg"></v-img>
           </v-list-item-avatar>
           <v-list-item-title class="font-weight-bold"
-            >Recovery Food  </v-list-item-title
-          >
+            >Recovery Food
+          </v-list-item-title>
         </v-list-item>
       </template>
 
       <v-divider class="m-0"></v-divider>
 
       <v-list nav dense>
-        <v-list-item style="text-decoration: none" to="/dashboard">
+        <v-list-item
+          v-if="user.permissions_list.includes('Access Dashboard')"
+          style="text-decoration: none"
+          to="/dashboard"
+        >
           <v-list-item-icon>
             <v-icon size="23">mdi-view-dashboard</v-icon>
           </v-list-item-icon>
@@ -80,6 +84,7 @@
         </v-list-item>
 
         <v-list-group
+          v-if="user.permissions_list.includes('Access Branches')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -118,6 +123,7 @@
         </v-list-group>
 
         <v-list-group
+          v-if="user.permissions_list.includes('Access Categories')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -167,11 +173,11 @@
         </v-list-group>
 
         <v-list-group
+          v-if="user.permissions_list.includes('Access Inventory')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
           class="mb-1"
-          v-if="user.permissions_list.includes('Access Inventory')"
         >
           <template v-slot:activator>
             <v-list-item-icon>
@@ -184,7 +190,6 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
-              v-if="user.permissions_list.includes('Add Masterlist Supp')"
               to="/masterlist_supplies"
             >
               <v-list-item-icon class="me-3">
@@ -197,7 +202,6 @@
               style="text-decoration: none"
               class="pl-8 mb-1"
               to="/incoming_supplies"
-              v-if="user.permissions_list.includes('View Masterlist Supp')"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -241,6 +245,7 @@
         </v-list-group>
 
         <v-list-group
+          v-if="user.permissions_list.includes('Access Products')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -290,6 +295,7 @@
         </v-list-group>
 
         <v-list-group
+          v-if="user.permissions_list.includes('Access Suppliers')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -327,14 +333,22 @@
           </v-list>
         </v-list-group>
 
-        <v-list-item style="text-decoration: none" to="/reports">
+        <v-list-item
+          v-if="user.permissions_list.includes('Access Reports')"
+          style="text-decoration: none"
+          to="/reports"
+        >
           <v-list-item-icon>
             <v-icon size="23">mdi-account-multiple</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Reports</v-list-item-title>
         </v-list-item>
 
-        <v-list-item style="text-decoration: none" to="/user_accounts">
+        <v-list-item
+          v-if="user.permissions_list.includes('Access User Accounts')"
+          style="text-decoration: none"
+          to="/user_accounts"
+        >
           <v-list-item-icon>
             <v-icon size="23">mdi-account-multiple</v-icon>
           </v-list-item-icon>
@@ -342,6 +356,7 @@
         </v-list-item>
 
         <v-list-group
+          v-if="user.permissions_list.includes('Access Settings')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -425,9 +440,6 @@ export default {
       drawer: true,
       mini: false,
     };
-  },
-  created(){
-    console.log(this.user)
   },
   methods: {
     async logout() {

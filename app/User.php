@@ -3,14 +3,13 @@
 namespace App;
 
 use App\Notifications\ResetPassword;
-use App\Notifications\VerifyEmail;   
+use App\Notifications\VerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
 use Auth;
-
 
 class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 {
@@ -105,7 +104,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     {
         return '639270753972';
     }
-    public function getPermissionslistAttribute(){ 
+    public function getPermissionslistAttribute()
+    {
         return   Auth::user()->getDirectPermissions()->pluck('name');
     }
 
@@ -114,9 +114,9 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         // $userPermissions = $user->getAllPermissions();
         $userPermissions = DB::table('model_has_roles as a')
         ->select('c.name')
-        ->leftJoin('role_has_permissions as b','a.role_id','=','b.role_id')
-        ->leftJoin('permissions as c','b.permission_id','=','c.id')
-        ->where('a.model_id',$user->id)
+        ->leftJoin('role_has_permissions as b', 'a.role_id', '=', 'b.role_id')
+        ->leftJoin('permissions as c', 'b.permission_id', '=', 'c.id')
+        ->where('a.model_id', $user->id)
         ->get();
         $permissions = [];
         foreach ($userPermissions as $userPermission) {
@@ -130,8 +130,8 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     {
         // $user_roles = $user->roles;
         $user_roles = DB::table('model_has_roles as a')
-        ->leftJoin('roles as b','a.role_id','=','b.id')
-        ->where('a.model_id',$user->id)
+        ->leftJoin('roles as b', 'a.role_id', '=', 'b.id')
+        ->where('a.model_id', $user->id)
         ->get();
         $roles = [];
         foreach ($user_roles as $user_role) {
@@ -171,7 +171,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         // $value = System::where('key', 'time_format')->value('value');
         $value = '12';
         return $value;
-    } 
+    }
 
     public function getFullNameAttribute()
     {

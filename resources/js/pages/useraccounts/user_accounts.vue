@@ -31,7 +31,7 @@
           class="font-weight-bold heading my-auto"
           :class="{ h5: $vuetify.breakpoint.smAndDown }"
         >
-          User Accounts   
+          User Accounts
           <!-- {{ json_encode($auth_user)  }} -->
           <!-- <div  v-if="$can('Access Inventory')">yes</div> -->
         </h4>
@@ -179,14 +179,13 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
-
             <template v-slot:[`item.roles`]="{ item }">
-              <span v-for="(val,key) in  item.roles " :key="key">
+              <span v-for="(val, key) in item.roles" :key="key">
+                <v-chip :small="$vuetify.breakpoint.smAndDown">
                   {{ val.name }}
+                </v-chip>
               </span>
-           
-             </template>
-
+            </template>
 
             <template v-slot:[`item.id`]="{ item }">
               <v-btn
@@ -374,7 +373,7 @@
                       sm="12"
                       md="12"
                     >
-                    <v-combobox  
+                      <v-select
                         :rules="formRules"
                         v-model="form.user_role"
                         :items="userrolelist"
@@ -388,12 +387,7 @@
                         <template slot="label">
                           <div style="font-size: 14px">User Role *</div>
                         </template>
-                  </v-combobox>
-
-         
-
-
-
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -449,7 +443,7 @@
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
-  middleware: 'auth', 
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -548,13 +542,11 @@ export default {
       this.get();
     },
 
-
     async getUserRoles() {
-      await axios .get("/api/useracc/getRoles") .then((result) => {
-        this.userrolelist = result.data.data 
-      })
+      await axios.get("/api/useracc/getRoles").then((result) => {
+        this.userrolelist = result.data.data;
+      });
     },
-
 
     // Format for everytime we call on database
     // Always add await and async
@@ -594,7 +586,7 @@ export default {
           // Save or update data in the table
           await axios
             .post("api/useracc/save", this.form)
-            .then((result) => { 
+            .then((result) => {
               //if the value is true then save to database
               switch (result.data) {
                 case 0:
@@ -638,7 +630,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -650,7 +641,6 @@ export default {
 
     // Editing/updating of row
     edit(row) {
-      console.log(row)
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.first_name = row.first_name;
@@ -659,10 +649,9 @@ export default {
       this.form.phone_number = row.phone_number;
       this.form.user_name = row.user_name;
       this.form.password = row.password;
-        for (var key in row.roles) { 
-           this.form.user_role.push(row.roles[key])
-        }
-    
+      for (var key in row.roles) {
+        this.form.user_role.push(row.roles[key]);
+      }
 
       this.dialog = true;
     },
