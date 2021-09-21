@@ -584,6 +584,7 @@
   
 <script>
 import axios from "axios";
+import Swal from "sweetalert2"
 export default {
   middleware: 'auth', 
   // declarations
@@ -594,7 +595,7 @@ export default {
     },
     tab: null,
     formRules: [(v) => !!v || "This is required"],
-    progressBar: true,
+    progressBar: false,
     editedIndex: -1,
     // --------------------------------------------------role
     dialogRoles: false,
@@ -627,7 +628,7 @@ export default {
       {
         text: "Employee",
         align: "start",
-        value: "employee.fullname",
+        value: "name",
       },
       { text: "Current Role/s", value: "roles.name" },
       { text: "Action", value: "id" },
@@ -656,9 +657,7 @@ export default {
 
   // load
   created() {
-    this.getRoles();
-    this.getPermissions();
-    this.getUserRoles();
+    this.getRoles(); 
   },
 
   // functions
@@ -670,9 +669,10 @@ export default {
       self.progressBar = true;
       self.tableRoles = [];
       await axios
-        .get("/api/settings/roles/list")
+        .get("/api/useracc/getRoles")
         .then((result) => {
           self.tableRoles = result.data.data;
+          self.tableUserrole = result.data.data;
           self.progressBar = false;
         })
         .catch((result) => {
@@ -702,7 +702,7 @@ export default {
     // save roles
     async storeRoles() {
       await axios
-        .post("/api/settings/roles/store", this.role)
+        .post("/api/useracc/storeRole", this.role)
         .then((result) => {
           if (this.editedIndex > -1) {
             Object.assign(this.tableRoles[this.editedIndex], result.data);
@@ -741,7 +741,7 @@ export default {
       self.progressBar = true;
       self.tablePermissions = [];
       await axios
-        .get("/api/settings/permissions/list")
+        .get("/api/useracc/getPermission")
         .then((result) => {
           self.tablePermissions = result.data.data;
           self.progressBar = false;
@@ -772,9 +772,11 @@ export default {
     },
     // save roles
     async storePermissions() {
+ 
       await axios
-        .post("/api/settings/permissions/store", this.permission)
+        .post("/api/useracc/storePermission", this.permission)
         .then((result) => {
+          console.log(result.data)
           if (this.editedIndex > -1) {
             Object.assign(this.tablePermissions[this.editedIndex], result.data);
           } else {
@@ -811,7 +813,7 @@ export default {
       self.progressBar = true;
       self.tableUserrole = [];
       await axios
-        .get("/api/settings/user/role/list")
+        .get("/api/useracc/getUserRole")
         .then((result) => {
           self.tableUserrole = result.data;
           self.progressBar = false;
@@ -832,9 +834,8 @@ export default {
       self.progressBar = true;
       self.tablePermissions = [];
       await axios
-        .get("/api/settings/permissions/list", { params: { role: item } })
-        .then((result) => {
-          console.log(result.data);
+        .get("/api/useracc/getPermission", { params: { role: item } })
+        .then((result) => { 
           self.tablePermissions = result.data.data;
           self.selectedAddPermission = result.data.selected;
           self.progressBar = false;
@@ -872,11 +873,11 @@ export default {
     // save role permission
     async storeAddPermissions() {
       await axios
-        .post("/api/settings/role/permission/store", {
+        .post("/api/useracc/storeRolePermission", {
           selected: this.selectedAddPermission,
           role: this.rolename,
         })
-        .then((result) => {
+        .then((result) => { console.log(result.data)
           this.snackbar = {
             active: true,
             iconText: "check",
@@ -899,12 +900,12 @@ export default {
     // set user role
     // get roles
     async getAddUserRoles(item) {
-      console.log(item);
+      console.log("yes");
       let self = this;
       self.progressBar = true;
       self.tableAddRoles = [];
       await axios
-        .get("/api/settings/roles/list", { params: { user: item } })
+        .get("/api/useracc/getRoles", { params: { user: item } })
         .then((result) => {
           console.log(result.data);
           self.tableAddRoles = result.data.data;
@@ -920,12 +921,11 @@ export default {
           };
         });
     },
-    addUserRole(item) {
-      console.log(item);
+    addUserRole(item) { 
       this.dialogAddRoles = true;
-      this.userid = item.employee.id;
-      this.username = item.employee.fullname;
-      this.getAddUserRoles(item.employee.id);
+      this.userid = item.id;
+      this.username = item.name; 
+      this.getAddUserRoles(item.id);
     },
     // store validation
     storeUserRoleConfirmation() {
@@ -945,7 +945,7 @@ export default {
     // save user roles
     async storeUserRole() {
       await axios
-        .post("/api/settings/user/role/store", {
+        .post("/api/useracc/storeUserRole", {
           selected: this.selectedAddRoles,
           user: this.userid,
         })
@@ -981,7 +981,7 @@ export default {
     },
 
     async remove() {
-      await axios.post("/api/settings/roles/remove").then((result) => {
+      await axios.post("/api/useracc/removeUserRole").then((result) => {
         console.log(result.data);
         this.snackbar = {
           active: true,

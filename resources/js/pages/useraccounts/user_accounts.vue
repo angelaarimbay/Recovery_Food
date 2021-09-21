@@ -31,7 +31,9 @@
           class="font-weight-bold heading my-auto"
           :class="{ h5: $vuetify.breakpoint.smAndDown }"
         >
-          User Accounts
+          User Accounts   
+          <!-- {{ json_encode($auth_user)  }} -->
+          <!-- <div  v-if="$can('Access Inventory')">yes</div> -->
         </h4>
         <v-spacer></v-spacer>
 
@@ -177,6 +179,15 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
+
+            <template v-slot:[`item.roles`]="{ item }">
+              <span v-for="(val,key) in  item.roles " :key="key">
+                  {{ val.name }}
+              </span>
+           
+             </template>
+
+
             <template v-slot:[`item.id`]="{ item }">
               <v-btn
                 icon
@@ -363,19 +374,26 @@
                       sm="12"
                       md="12"
                     >
-                      <v-select
+                    <v-combobox  
                         :rules="formRules"
                         v-model="form.user_role"
+                        :items="userrolelist"
                         outlined
                         dense
-                        :items="userRole"
+                        small-chips
+                        multiple
                         item-text="name"
                         item-value="id"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">User Role *</div>
                         </template>
-                      </v-select>
+                  </v-combobox>
+
+         
+
+
+
                     </v-col>
                   </v-row>
                 </v-container>
@@ -438,11 +456,11 @@ export default {
       active: false,
       message: "",
     },
+    userrolelist: [],
     search: "",
     button: false,
     dialog: false,
     sheet: false,
-    userRole: ["Cashier", "Production Assistant", "Stockman", "Supervisor"],
     show1: false,
     show2: false,
     password: "",
@@ -468,7 +486,7 @@ export default {
       user_name: null,
       password: null,
       confirmPass: null,
-      user_role: null,
+      user_role: [],
     },
 
     // For comparing data
@@ -479,7 +497,7 @@ export default {
       { text: "#", value: "count", align: "start", filterable: false },
       {
         text: "Name",
-        value: "full_name",
+        value: "name",
       },
       {
         text: "User Name",
@@ -488,7 +506,7 @@ export default {
       },
       {
         text: "User Role",
-        value: "user_role",
+        value: "roles",
         filterable: false,
       },
       {
@@ -521,6 +539,7 @@ export default {
   // Onload
   created() {
     this.get();
+    this.getUserRoles();
   },
 
   methods: {
@@ -528,6 +547,14 @@ export default {
       this.page = 1;
       this.get();
     },
+
+
+    async getUserRoles() {
+      await axios .get("/api/useracc/getRoles") .then((result) => {
+        this.userrolelist = result.data.data 
+      })
+    },
+
 
     // Format for everytime we call on database
     // Always add await and async
@@ -567,8 +594,7 @@ export default {
           // Save or update data in the table
           await axios
             .post("api/useracc/save", this.form)
-            .then((result) => {
-              console.log(result.data)
+            .then((result) => { 
               //if the value is true then save to database
               switch (result.data) {
                 case 0:
@@ -624,6 +650,7 @@ export default {
 
     // Editing/updating of row
     edit(row) {
+      console.log(row)
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.first_name = row.first_name;
@@ -632,7 +659,10 @@ export default {
       this.form.phone_number = row.phone_number;
       this.form.user_name = row.user_name;
       this.form.password = row.password;
-      this.form.user_role = row.user_role;
+        for (var key in row.roles) { 
+           this.form.user_role.push(row.roles[key])
+        }
+    
 
       this.dialog = true;
     },

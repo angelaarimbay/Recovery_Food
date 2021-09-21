@@ -9,21 +9,14 @@ use Illuminate\Support\Facades\DB;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
+use Auth;
 
 
 class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 {
     use HasRoles;
  
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
-
+    protected $guarded = ['id'];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -48,7 +41,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
      * @var array
      */
     protected $appends = [
-        'photo_url',
+        'photo_url','permissions_list'
     ];
 
     /**
@@ -111,6 +104,9 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function routeNotificationForNexmo($notification)
     {
         return '639270753972';
+    }
+    public function getPermissionslistAttribute(){ 
+        return   Auth::user()->getDirectPermissions()->pluck('name');
     }
 
     public static function getUserPermissions($user)

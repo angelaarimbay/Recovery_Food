@@ -7,6 +7,10 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 Route::group(['middleware' => 'api'], function () {
+ 
+    
+    Route::get('users','UserController@getUsers');
+    Route::get('user', 'Auth\UserController@current');
    
     // Manage Branches
     Route::post('branches/attachment', 'Branches\BranchesController@attachment');
@@ -91,7 +95,16 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('useracc/save', 'UserAccounts\UserAccountsController@save');
     Route::get('useracc/get', 'UserAccounts\UserAccountsController@get');
 
+
+    Route::get('useracc/getPermission', 'UserController@getPermission');
+    Route::get('useracc/getRoles', 'UserController@getRoles');
+    Route::get('useracc/getUserRole', 'UserController@getUserRole');
+
+    Route::post('useracc/storeRole', 'UserController@storeRole');
+    Route::post('useracc/storePermission', 'UserController@storePermission');
+    Route::post('useracc/storeRolePermission', 'UserController@storeRolePermission');
+    Route::post('useracc/storeUserRole', 'UserController@storeUserRole');
+    Route::post('useracc/removeUserRole', 'UserController@removeUserRole');
+
     Route::get('walanjo', 'Reports\ReportsController@ExportMasterlist');
-
-
 });

@@ -30,28 +30,82 @@ class UserAccountsController extends Controller
                  "password"=>  Crypt::encryptString($data->password), 
                 ]
             );
+               
+        $for_request_default = 0;
+        //create roles  
+        $get_role = [];
+        foreach ($data->user_role as $key => $value) {
+            if ($value == 'Probationary') {
+                $for_request_default++;
+            }
+            array_push($get_role, $value['name']);
+        }
+        // get selected user 
+        $user =  User::where("id", $data->id)->first();
+        // syncronize roles (add/delete)
+        $user->syncRoles($get_role);
+        // get current permission based on role/user selected
+        $get_permission = $user->getPermissionsViaRoles($get_role);
+        // syncornize permission (add/delete)
+        $user->syncPermissions($get_permission);
+
+
+
+
         } else {
-            User::create( [ "name"=>$data->first_name.' '.$data->last_name,
+         $return =   User::create( [ "name"=>$data->first_name.' '.$data->last_name,
             "first_name"=>$data->first_name,
             "last_name"=>$data->last_name,
             "email"=>$data->email,
             "phone_number"=>$data->phone_number, 
             "password"=>  Crypt::encryptString($data->password), 
            ] + ['name'=>'']);
+
+   
+           $for_request_default = 0;
+           //create roles  
+           $get_role = [];
+           foreach ($data->user_role as $key => $value) {
+               if ($value == 'Probationary') {
+                   $for_request_default++;
+               }
+               array_push($get_role, $value['name']);
+           }
+           // get selected user 
+           $user =  User::where("id", $return->id)->first();
+           // syncronize roles (add/delete)
+           $user->syncRoles($get_role);
+           // get current permission based on role/user selected
+           $get_permission = $user->getPermissionsViaRoles($get_role);
+           // syncornize permission (add/delete)
+           $user->syncPermissions($get_permission);
+   
+   
+   
+
         }
         return 0;
     }
     public function get(Request $t)
     {
+      
         DB::statement(DB::raw("set @row:=0"));
         if ($t->search) { // If has value
             $table = User::where("email", "!=", null);
             $table_clone = clone $table;   // Get all items from suppcat
            
-            return $table_clone->selectRaw("email as user_name  , @row:=@row+1 as row ")->where("email", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+            $data = $table_clone->with('roles')->selectRaw("*, email as user_name  , @row:=@row+1 as row ")->where("email", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+       
+        }else{
+            $data =  User::with('roles')->selectRaw("*, email as user_name  , @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+      
         }
-        // Else
-        return  User::selectRaw("email as user_name, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+    
+      
+        return $data;
+    
+        
+    
     }
 
 

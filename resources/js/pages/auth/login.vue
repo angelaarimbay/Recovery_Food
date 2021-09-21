@@ -170,8 +170,8 @@ export default {
                 this.snackbar.message = "Login Successful.";
                 this.overlay = false;
                 this.$store.dispatch("auth/fetchUser");
-                // this.$store.dispatch('auth/fetchUserPermissions')
-                // this.$store.dispatch('auth/fetchUserRoles')
+                this.$store.dispatch('auth/fetchUserPermissions')
+                this.$store.dispatch('auth/fetchUserRoles')
                 this.$router.push({ name: "dashboard" });
               });
           })

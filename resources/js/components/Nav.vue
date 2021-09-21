@@ -64,7 +64,7 @@
             <v-img src="/img/Logo.jpg"></v-img>
           </v-list-item-avatar>
           <v-list-item-title class="font-weight-bold"
-            >Recovery Food</v-list-item-title
+            >Recovery Food  </v-list-item-title
           >
         </v-list-item>
       </template>
@@ -171,6 +171,7 @@
           color="#FFFFFF"
           active-class="bg-grey"
           class="mb-1"
+          v-if="user.permissions_list.includes('Access Inventory')"
         >
           <template v-slot:activator>
             <v-list-item-icon>
@@ -183,6 +184,7 @@
             <v-list-item
               style="text-decoration: none"
               class="pl-8 mb-1"
+              v-if="user.permissions_list.includes('Add Masterlist Supp')"
               to="/masterlist_supplies"
             >
               <v-list-item-icon class="me-3">
@@ -195,6 +197,7 @@
               style="text-decoration: none"
               class="pl-8 mb-1"
               to="/incoming_supplies"
+              v-if="user.permissions_list.includes('View Masterlist Supp')"
             >
               <v-list-item-icon class="me-3">
                 <v-icon size="16">mdi-circle</v-icon>
@@ -422,6 +425,9 @@ export default {
       drawer: true,
       mini: false,
     };
+  },
+  created(){
+    console.log(this.user)
   },
   methods: {
     async logout() {
