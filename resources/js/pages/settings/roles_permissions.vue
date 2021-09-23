@@ -376,7 +376,7 @@
         <v-tabs-items v-model="tab">
           <v-tab-item>
             <!-- Roles List -->
-            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-container class="py-0">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <!-- Buttons -->
@@ -445,7 +445,7 @@
 
           <v-tab-item>
             <!-- Permissions List -->
-            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-container class="py-0">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <v-btn
@@ -504,7 +504,7 @@
 
           <v-tab-item>
             <!-- User Roles -->
-            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-container class="py-0">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <v-spacer></v-spacer>

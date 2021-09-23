@@ -15,7 +15,7 @@ class UserAccountsController extends Controller
         $this->middleware('auth');
     }
     public function save(Request $data)
-    { 
+    {
         $table = User::where("email", "!=", null);
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
@@ -26,86 +26,72 @@ class UserAccountsController extends Controller
                  "first_name"=>$data->first_name,
                  "last_name"=>$data->last_name,
                  "email"=>$data->email,
-                 "phone_number"=>$data->phone_number, 
-                 "password"=>  Crypt::encryptString($data->password), 
+                 "phone_number"=>$data->phone_number,
+                 "password"=>  bcrypt($data->password),
                 ]
             );
                
-        $for_request_default = 0;
-        //create roles  
-        $get_role = [];
-        foreach ($data->user_role as $key => $value) {
-            if ($value == 'Probationary') {
-                $for_request_default++;
+            $for_request_default = 0;
+            //create roles
+            $get_role = [];
+            foreach ($data->user_role as $key => $value) {
+                if ($value == 'Probationary') {
+                    $for_request_default++;
+                }
+                array_push($get_role, $value['name']);
             }
-            array_push($get_role, $value['name']);
-        }
-        // get selected user 
-        $user =  User::where("id", $data->id)->first();
-        // syncronize roles (add/delete)
-        $user->syncRoles($get_role);
-        // get current permission based on role/user selected
-        $get_permission = $user->getPermissionsViaRoles($get_role);
-        // syncornize permission (add/delete)
-        $user->syncPermissions($get_permission);
-
-
-
-
+            // get selected user
+            $user =  User::where("id", $data->id)->first();
+            // syncronize roles (add/delete)
+            $user->syncRoles($get_role);
+            // get current permission based on role/user selected
+            $get_permission = $user->getPermissionsViaRoles($get_role);
+            // syncornize permission (add/delete)
+            $user->syncPermissions($get_permission);
         } else {
-         $return =   User::create( [ "name"=>$data->first_name.' '.$data->last_name,
+            $return =   User::create([ "name"=>$data->first_name.' '.$data->last_name,
             "first_name"=>$data->first_name,
             "last_name"=>$data->last_name,
             "email"=>$data->email,
-            "phone_number"=>$data->phone_number, 
-            "password"=>  Crypt::encryptString($data->password), 
+            "phone_number"=>$data->phone_number,
+            "password"=>  Crypt::encryptString($data->password),
            ] + ['name'=>'']);
 
    
-           $for_request_default = 0;
-           //create roles  
-           $get_role = [];
-           foreach ($data->user_role as $key => $value) {
-               if ($value == 'Probationary') {
-                   $for_request_default++;
-               }
-               array_push($get_role, $value['name']);
-           }
-           // get selected user 
-           $user =  User::where("id", $return->id)->first();
-           // syncronize roles (add/delete)
-           $user->syncRoles($get_role);
-           // get current permission based on role/user selected
-           $get_permission = $user->getPermissionsViaRoles($get_role);
-           // syncornize permission (add/delete)
-           $user->syncPermissions($get_permission);
-   
-   
-   
-
+            $for_request_default = 0;
+            //create roles
+            $get_role = [];
+            foreach ($data->user_role as $key => $value) {
+                if ($value == 'Probationary') {
+                    $for_request_default++;
+                }
+                array_push($get_role, $value['name']);
+            }
+            // get selected user
+            $user =  User::where("id", $return->id)->first();
+            // syncronize roles (add/delete)
+            $user->syncRoles($get_role);
+            // get current permission based on role/user selected
+            $get_permission = $user->getPermissionsViaRoles($get_role);
+            // syncornize permission (add/delete)
+            $user->syncPermissions($get_permission);
         }
         return 0;
     }
     public function get(Request $t)
     {
-      
         DB::statement(DB::raw("set @row:=0"));
         if ($t->search) { // If has value
             $table = User::where("email", "!=", null);
             $table_clone = clone $table;   // Get all items from suppcat
            
-            $data = $table_clone->with('roles')->selectRaw("*, email as user_name  , @row:=@row+1 as row ")->where("email", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
-       
-        }else{
-            $data =  User::with('roles')->selectRaw("*, email as user_name  , @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
-      
+            $data = $table_clone->with('roles')->selectRaw("*, @row:=@row+1 as row ")->where("email", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+        } else {
+            $data =  User::with('roles')->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
         }
     
       
         return $data;
-    
-        
-    
     }
 
 
@@ -142,7 +128,7 @@ class UserAccountsController extends Controller
         return User::with(["roles", 'employee'])->get();
     }
 
-    // save roles  
+    // save roles
     public function storeRole(Request $request)
     {
         $data = Role::query();
@@ -214,10 +200,10 @@ class UserAccountsController extends Controller
             array_push($get_role, $value['name']);
         }
        
-        // // get selected user 
-      $user =  User::where("emplid", $request->user)->first();
+        // // get selected user
+        $user =  User::where("emplid", $request->user)->first();
         // syncronize roles (add/delete)
-             $user->syncRoles($get_role);
+        $user->syncRoles($get_role);
      
         // get current permission based on role/user selected
         $get_permission = $user->getPermissionsViaRoles($get_role);
@@ -229,9 +215,4 @@ class UserAccountsController extends Controller
         $user =  User::where("emplid", 2)->first();
         return  $user->removeRole('Admin');
     }
-
-
-
-
-
 }

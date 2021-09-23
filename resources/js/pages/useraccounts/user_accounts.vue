@@ -310,27 +310,6 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.user_name"
-                        outlined
-                        clearable
-                        dense
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Username *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
                         :rules="formRules"
@@ -477,7 +456,6 @@ export default {
       last_name: null,
       email: null,
       phone_number: null,
-      user_name: null,
       password: null,
       confirmPass: null,
       user_role: [],
@@ -495,7 +473,7 @@ export default {
       },
       {
         text: "User Name",
-        value: "user_name",
+        value: "email",
         filterable: false,
       },
       {
@@ -604,7 +582,7 @@ export default {
                     active: true,
                     iconText: "alert",
                     iconColor: "error",
-                    message: "The user name already exists.",
+                    message: "The email already exists.",
                   };
                   break;
                 default:
@@ -647,7 +625,6 @@ export default {
       this.form.last_name = row.last_name;
       this.form.email = row.email;
       this.form.phone_number = row.phone_number;
-      this.form.user_name = row.user_name;
       this.form.password = row.password;
       for (var key in row.roles) {
         this.form.user_role.push(row.roles[key]);

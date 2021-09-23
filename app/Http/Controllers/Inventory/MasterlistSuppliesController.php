@@ -50,6 +50,7 @@ class MasterlistSuppliesController extends Controller
     }
     public function get(Request $t)
     {
+        
         DB::statement(DB::raw("set @row:=0"));
         if ($t->search) { // If has value
             $table = tbl_masterlistsupp::with("category")->where("status", "!=", null);

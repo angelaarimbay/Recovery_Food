@@ -712,7 +712,6 @@ export default {
 
   methods: {
     async get(type) {
-      console.log(type);
       switch (type) {
         case "pdf":
           await axios({

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width: 280px">
     <v-container v-if="token == ''">
       <v-overlay :value="overlay">
         <v-progress-circular
@@ -16,7 +16,11 @@
           md="6"
           class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
         >
-          <v-card elevation="6" style="border-radius: 10px">
+          <v-card
+            elevation="6"
+            style="border-radius: 10px"
+            class="d-flex align-center justify-center"
+          >
             <v-form
               ref="form"
               @submit.prevent="login"
@@ -34,7 +38,7 @@
                   <v-col cols="12" md="12" class="py-1">
                     <v-text-field
                       :rules="rules.formRules"
-                      label="Username"
+                      label="Email"
                       outlined
                       dense
                       persistent-placeholder

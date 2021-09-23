@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <v-app-bar v-if="user" dense dark class="red darken-2" app>
+  <div style="min-width: 280px">
+    <!-- Inventory -->
+    <v-app-bar v-if="(user = '')" dense dark class="red darken-2" app>
       <template v-if="user">
         <v-app-bar-nav-icon
           v-if="$vuetify.breakpoint.xsOnly"
@@ -48,9 +49,46 @@
       </v-menu>
     </v-app-bar>
 
+    <!-- POS -->
+    <v-app-bar v-if="user" dense dark class="red darken-2" app>
+      <v-list-item-avatar class="my-0">
+        <v-img src="/img/Logo.jpg"></v-img>
+      </v-list-item-avatar>
+      <v-list-item-title class="font-weight-bold hidden-sm-and-down"
+        >Point of Sale System</v-list-item-title
+      >
+      <v-spacer></v-spacer>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            dark
+            v-if="user"
+            text
+            v-bind="attrs"
+            v-on="on"
+            style="text-transform: none"
+            :small="$vuetify.breakpoint.smAndDown"
+          >
+            <v-icon class="round">mdi-account</v-icon><span>Account</span>
+          </v-btn>
+        </template>
+        <v-list dense>
+          <v-list-item>
+            <v-list-item-title>Menu 1</v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>Menu 2</v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>Menu 3</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-app-bar>
+
     <v-navigation-drawer
       height="100%"
-      v-if="user"
+      v-if="(user = '')"
       app
       v-model="drawer"
       :permanent="$vuetify.breakpoint.smAndUp"
@@ -72,11 +110,7 @@
       <v-divider class="m-0"></v-divider>
 
       <v-list nav dense>
-        <v-list-item
-          v-if="user.permissions_list.includes('Access Dashboard')"
-          style="text-decoration: none"
-          to="/dashboard"
-        >
+        <v-list-item style="text-decoration: none" to="/dashboard">
           <v-list-item-icon>
             <v-icon size="23">mdi-view-dashboard</v-icon>
           </v-list-item-icon>
@@ -84,7 +118,6 @@
         </v-list-item>
 
         <v-list-group
-          v-if="user.permissions_list.includes('Access Branches')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -123,7 +156,6 @@
         </v-list-group>
 
         <v-list-group
-          v-if="user.permissions_list.includes('Access Categories')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -173,7 +205,6 @@
         </v-list-group>
 
         <v-list-group
-          v-if="user.permissions_list.includes('Access Inventory')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -245,7 +276,6 @@
         </v-list-group>
 
         <v-list-group
-          v-if="user.permissions_list.includes('Access Products')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -295,7 +325,6 @@
         </v-list-group>
 
         <v-list-group
-          v-if="user.permissions_list.includes('Access Suppliers')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"
@@ -333,22 +362,14 @@
           </v-list>
         </v-list-group>
 
-        <v-list-item
-          v-if="user.permissions_list.includes('Access Reports')"
-          style="text-decoration: none"
-          to="/reports"
-        >
+        <v-list-item style="text-decoration: none" to="/reports">
           <v-list-item-icon>
             <v-icon size="23">mdi-account-multiple</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Reports</v-list-item-title>
         </v-list-item>
 
-        <v-list-item
-          v-if="user.permissions_list.includes('Access User Accounts')"
-          style="text-decoration: none"
-          to="/user_accounts"
-        >
+        <v-list-item style="text-decoration: none" to="/user_accounts">
           <v-list-item-icon>
             <v-icon size="23">mdi-account-multiple</v-icon>
           </v-list-item-icon>
@@ -356,7 +377,6 @@
         </v-list-item>
 
         <v-list-group
-          v-if="user.permissions_list.includes('Access Settings')"
           no-action
           color="#FFFFFF"
           active-class="bg-grey"

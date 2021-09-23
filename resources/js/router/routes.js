@@ -48,6 +48,8 @@ export default [
   //Roles/Permissions
   { path: '/roles_permissions', name: 'users', component: page('settings/roles_permissions.vue') },
 
+  //POS
+  { path: '/posmenu', name: 'pos', component: page('pos/posmenu.vue') },
 
   { path: '/auth/index', name: 'auth.index', component: page('auth/index.vue') },
   { path: '/template', name: 'template', component: page('template.vue') },
