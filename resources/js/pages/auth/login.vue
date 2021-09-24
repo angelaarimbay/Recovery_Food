@@ -1,0 +1,197 @@
+<template>
+  <div style="min-width: 280px">
+    <v-container v-if="token == ''">
+      <v-overlay :value="overlay">
+        <v-progress-circular
+          size="55"
+          color="red darken-2"
+          indeterminate
+        ></v-progress-circular>
+      </v-overlay>
+      <v-row v-if="user" align="center">
+        <v-col
+          cols="12"
+          xl="6"
+          lg="6"
+          md="6"
+          class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
+        >
+          <v-card
+            elevation="6"
+            style="border-radius: 10px"
+            class="d-flex align-center justify-center"
+          >
+            <v-form
+              ref="form"
+              @submit.prevent="login"
+              @keydown="form.onKeydown($event)"
+            >
+              <v-card-text class="pa-4 pa-xl-7 pa-lg-7 pa-md-5 pa-sm-5">
+                <v-row>
+                  <v-col cols="12" class="text-center">
+                    <h3 class="font-weight-bold" style="color: #616161">
+                      Welcome
+                    </h3>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" md="12" class="py-1">
+                    <v-text-field
+                      :rules="rules.formRules"
+                      label="Email"
+                      outlined
+                      dense
+                      persistent-placeholder
+                      v-model="form.email"
+                      :error-messages="
+                        form.errors.has('email')
+                          ? form.errors.errors.email[0]
+                          : ''
+                      "
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" sm="12" class="py-1">
+                    <v-text-field
+                      label="Password"
+                      outlined
+                      persistent-placeholder
+                      :rules="rules.passwordRules"
+                      dense
+                      v-model="form.password"
+                      :error-messages="
+                        form.errors.has('password')
+                          ? form.errors.errors.password[0]
+                          : ''
+                      "
+                      :append-icon="!value ? 'mdi-eye' : 'mdi-eye-off'"
+                      @click:append="() => (value = !value)"
+                      :type="!value ? 'password' : 'text'"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col cols="12">
+                    <v-btn
+                      type="submit"
+                      dark
+                      block
+                      large
+                      color="red darken-2"
+                      :loading="form.busy"
+                      @click="login"
+                      style="text-transform: none; font-size: 20px"
+                      >Log In</v-btn
+                    >
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-form>
+          </v-card>
+        </v-col>
+        <v-col cols="12" xl="6" lg="6" md="6">
+          <v-img src="/img/Logo_NO_BG.png" class="hidden-xs-only"></v-img>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-snackbar
+      bottom
+      v-model="snackbar.status"
+      min-width="auto"
+      class="text-center"
+      :vertical="$vuetify.breakpoint.xsOnly"
+      timeout="2500"
+      ><span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
+      >{{ snackbar.message
+      }}<template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
+        >
+      </template></v-snackbar
+    >
+  </div>
+</template>
+
+<script>
+import Form from "vform";
+import axios from "axios";
+export default {
+ 
+  middleware: "guest",
+
+  metaInfo() {
+    return { title: "login" };
+  },
+  data: () => ({
+    user: true,
+    drawer: null,
+    appName: window.config.appName,
+    notif: 1,
+    overlay: false,
+    snackbar: { status: false, message: "" },
+    token: "",
+    value: false,
+    rules: {
+      formRules: [(v) => !!v || "This is required"],
+      passwordRules: [
+        (v) => !!v || "This is required",
+        (v) => (v && v.length <= 10) || "Password must be 10 characters",
+      ],
+    },
+    form: new Form({
+      email: "",
+      password: "",
+    }),
+    remember: false,
+  }),
+
+  methods: {
+    async login() {
+      if (this.$refs.form.validate()) {
+        this.overlay = true;
+        // Submit the form.
+        await axios
+          .post("/api/login", this.form)
+          .then((result) => { 
+            // Save the token.
+            this.user = false;
+            this.$store
+              .dispatch("auth/saveToken", {
+                token: result.data.token,
+                remember: this.remember,
+              })
+              .then((res) => {
+                
+                this.snackbar.status = true;
+                this.snackbar.iconText = "check";
+                this.snackbar.iconColor = "primary";
+                this.snackbar.message = "Login Successful.";
+                this.$store.dispatch("auth/fetchUser");
+                this.$store.dispatch("auth/fetchUserPermissions");
+                this.$store.dispatch("auth/fetchUserRoles");  
+                 this.$router.push({ name: 'dashboard' }).catch(errr=>{})  
+
+              });
+          })
+          .catch((result) => {
+            console.log(result);
+            this.overlay = false;
+            this.snackbar.status = true;
+            this.snackbar.iconText = "alert";
+            this.snackbar.iconColor = "error";
+            this.snackbar.message = "Invalid Email or Password.";
+          });
+      }
+    },
+  },
+};
+</script>

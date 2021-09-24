@@ -1,29 +1,76 @@
 <template>
-  <v-app>
-    <nv />
-    <!-- Sizes your content based upon application components -->
-    <v-main style="background-color: #fafafa">
-      <!-- Provides the application the proper gutter -->
-      <v-container fluid>
-        <!-- If using vue-router -->
-        <router-view></router-view>
-      </v-container>
+  <v-app style="background-color: #f1ffff">
+    <loading ref="loading" />
+    <div v-if="!user">
+      <!-- If no user, apply this header. Else, apply nav -->
+      <v-card flat tile height="48px" color="red darken-2"> </v-card>
+    </div>
+
+    <v-main>
+      <component :is="layout" v-if="layout" />
     </v-main>
 
     <ft />
   </v-app>
 </template>
+
 <script>
-import nv from "../components/Nav.vue";
-import ft from "../components/Footer.vue";
+import ft from "./Footer";
+import Loading from "./Loading";
+import { mapGetters } from "vuex";
+// Load layout components dynamically.
+const requireContext = require.context("~/layouts", false, /.*\.vue$/);
+
+const layouts = requireContext
+  .keys()
+  .map((file) => [file.replace(/(^.\/)|(\.vue$)/g, ""), requireContext(file)])
+  .reduce((components, [name, component]) => {
+    components[name] = component.default || component;
+    return components;
+  }, {});
+
 export default {
-  mounted() {
-    console.log("Component mounted.");
-  },
+  el: "#app",
   components: {
-    nv,
+    Loading,
     ft,
  
+  },
+
+  data: () => ({
+    layout: null,
+    defaultLayout: "default",
+  }),
+ 
+  computed: mapGetters({
+    user: "auth/user",
+  }),
+  metaInfo() {
+    const { appName } = window.config;
+
+    return {
+      title: appName,
+      titleTemplate: `%s · ${appName}`,
+    };
+  },
+
+  mounted() {
+    this.$loading = this.$refs.loading;
+  },
+
+  methods: {
+    /**
+     * Set the application layout.
+     *
+     * @param {String} layout
+     */
+    setLayout(layout) {
+      if (!layout || !layouts[layout]) {
+        layout = this.defaultLayout;
+      }
+
+      this.layout = layouts[layout];
+    },
   },
 };
 </script>

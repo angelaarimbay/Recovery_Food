@@ -15,17 +15,11 @@ class CreateTblIncomingsuppsTable extends Migration
     {
         Schema::create('tbl_incomingsupps', function (Blueprint $table) {
             $table->id();
-            $table->integer('invoice_number');
-            $table->string('supplier_name');
-            $table->string('supplier_description');
-            $table->string('category');
-            $table->string('supply_name');
-            $table->string('supply_description')->nullable();
-            $table->string('unit');
-            $table->float('net_price');
-            $table->float('with_vat');
-            $table->integer('quantity');
+            $table->integer('category')->references('id')->on('tbl_suppcat');
+            $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
+            $table->float('quantity');
             $table->float('amount');
+            $table->datetime('incoming_date');
 
             // $table->string('col'); //required string
             // $table->string('col')->nullable(); //optional string

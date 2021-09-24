@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class tbl_suppcat extends Model
 {
-    //every time nagagawa ka ng model/table 
-    //lalagyan mo na agad nito 
+    // Always include this code for every model/table created
     protected $guarded = ['id'];
-
 }

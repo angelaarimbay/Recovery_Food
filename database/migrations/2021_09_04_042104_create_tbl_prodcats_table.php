@@ -15,8 +15,8 @@ class CreateTblProdcatsTable extends Migration
     {
         Schema::create('tbl_prodcats', function (Blueprint $table) {
             $table->id();
-            $table->string('prod_cat_name');
-            $table->string('status');
+            $table->string('product_cat_name');
+            $table->integer('status')->default(1); //0 = inactive, else active
             $table->timestamps();
         });
     }

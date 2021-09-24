@@ -1,5 +1,6 @@
-import axios from 'axios' 
-import router from '../router/routes'
+import axios from 'axios'
+import store from '~/store'
+import router from '~/router'
 import Swal from 'sweetalert2'
 import i18n from '~/plugins/i18n'
 

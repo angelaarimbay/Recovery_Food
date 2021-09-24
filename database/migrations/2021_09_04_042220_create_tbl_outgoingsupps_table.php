@@ -15,15 +15,11 @@ class CreateTblOutgoingsuppsTable extends Migration
     {
         Schema::create('tbl_outgoingsupps', function (Blueprint $table) {
             $table->id();
-            $table->string('category');
-            $table->string('supply_name');
-            $table->string('supply_description')->nullable();
-            $table->string('unit');
-            $table->float('net_price');
-            $table->float('with_vat');
-            $table->integer('quantity');
-            $table->float('amount');
-            $table->string('requesting_branch');
+            $table->integer('category')->references('id')->on('tbl_suppcat');
+            $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
+            $table->float('quantity');
+            $table->integer('requesting_branch')->references('id')->on('tbl_branches');
+            $table->datetime('outgoing_date');
             $table->timestamps();
         });
     }
