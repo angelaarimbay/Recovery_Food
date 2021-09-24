@@ -222,9 +222,15 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -285,8 +291,12 @@ export default {
 
   // Onload
   created() {
-    this.get();
-    this.suppCat();
+    if (this.user.permissionslist.includes("Access Inventory")) {
+      this.get();
+      this.suppCat();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {
@@ -308,7 +318,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
           //if the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

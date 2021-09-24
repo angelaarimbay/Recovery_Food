@@ -292,9 +292,15 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     search: "",
@@ -324,12 +330,12 @@ export default {
       {
         text: "Quantity",
         value: "quantity",
-        align: "right"
+        align: "right",
       },
       {
         text: "Amount",
         value: "outgoing_amount",
-        align: "right"
+        align: "right",
       },
     ],
     page: 1,
@@ -343,9 +349,13 @@ export default {
 
   // Onload
   created() {
-    this.get();
-    this.suppCat();
-    this.branchName();
+    if (this.user.permissionslist.includes("Access Branches")) {
+      this.get();
+      this.suppCat();
+      this.branchName();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {
@@ -370,7 +380,6 @@ export default {
         .then((result) => {
           this.table = result.data;
           this.progressbar = false;
-          console.log(result.data);
         });
     },
 

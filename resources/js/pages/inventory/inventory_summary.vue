@@ -153,9 +153,15 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     table: [],
@@ -191,6 +197,15 @@ export default {
     date1: false,
     date2: false,
   }),
+
+  //On Load
+  created() {
+    if (this.user.permissionslist.includes("Access Inventory")) {
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
+  },
+
   methods: {
     async get() {
       this.progressbar = true;

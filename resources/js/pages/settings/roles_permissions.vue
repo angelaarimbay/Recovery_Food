@@ -576,6 +576,7 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios";
 import Swal from "sweetalert2";
 export default {
@@ -650,9 +651,13 @@ export default {
 
   // load
   created() {
-    this.getRoles();
-    this.getPermissions();
-    this.getRolePermissions();
+    if (this.user.permissionslist.includes("Access Settings")) {
+      this.getRoles();
+      this.getPermissions();
+      this.getRolePermissions();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   // functions
@@ -983,6 +988,9 @@ export default {
   },
   //new of update title
   computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
     formTitle() {
       return this.editedIndex === -1 ? "ADD NEW " : "UPDATE ";
     },

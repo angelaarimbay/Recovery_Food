@@ -308,7 +308,7 @@
                           <div style="font-size: 14px">ID</div>
                         </template>
                       </v-text-field>
-                      
+
                       <v-menu
                         v-model="date3"
                         :close-on-content-click="false"
@@ -458,9 +458,15 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -536,24 +542,14 @@ export default {
     date3: false,
   }),
 
-  // Dynamic Width
-  computed: {
-    widthSize() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return { width: "65px" };
-        case "sm":
-          return { width: "65px" };
-        default:
-          return { width: "72px" };
-      }
-    },
-  },
-
   // Onload
   created() {
-    this.get();
-    this.suppName();
+    if (this.user.permissionslist.includes("Access Suppliers")) {
+      this.get();
+      this.suppName();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {

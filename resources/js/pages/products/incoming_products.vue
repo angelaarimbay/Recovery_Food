@@ -272,23 +272,6 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
-            <template v-slot:[`item.status`]="{ item }">
-              <v-chip
-                style="justify-content: center"
-                :style="widthSize"
-                :small="$vuetify.breakpoint.smAndDown"
-                :color="
-                  item.status == '1'
-                    ? '#43A047'
-                    : item.status == '0'
-                    ? '#FF6F00'
-                    : ''
-                "
-                dark
-              >
-                {{ item.status == 1 ? "Active" : "Inactive" }}
-              </v-chip>
-            </template>
             <template v-slot:[`item.id`]="{ item }">
               <v-btn
                 icon
@@ -340,7 +323,7 @@
                           <div style="font-size: 14px">ID</div>
                         </template>
                       </v-text-field>
-                      
+
                       <v-menu
                         v-model="date3"
                         :close-on-content-click="false"
@@ -512,9 +495,15 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -525,10 +514,6 @@ export default {
     button: false,
     dialog: false,
     sheet: false,
-    status: [
-      { name: "Active", id: 1 },
-      { name: "Inactive", id: 0 },
-    ],
     table: [],
     prodcatlist: [],
     prodsubcatlist: [],
@@ -549,7 +534,6 @@ export default {
     // Form Data
     form: {
       id: null,
-      status: null,
       category: null,
       sub_category: null,
       product_name: null,
@@ -613,25 +597,15 @@ export default {
     date3: false,
   }),
 
-  // Dynamic Width
-  computed: {
-    widthSize() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return { width: "65px" };
-        case "sm":
-          return { width: "65px" };
-        default:
-          return { width: "72px" };
-      }
-    },
-  },
-
   // Onload
   created() {
-    this.get();
-    this.prodCat();
-    this.prodSubCat();
+    if (this.user.permissionslist.includes("Access Products")) {
+      this.get();
+      this.prodCat();
+      this.prodSubCat();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {

@@ -684,6 +684,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
@@ -707,7 +708,11 @@ export default {
   }),
 
   created() {
-    this.suppCat();
+    if (this.user.permissionslist.includes("Access Reports")) {
+      this.suppCat();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {
@@ -767,6 +772,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
     height() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":

@@ -594,6 +594,7 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
@@ -697,6 +698,9 @@ export default {
 
   // Dynamic Width
   computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
     widthSize() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -711,8 +715,12 @@ export default {
 
   // Onload
   created() {
-    this.get();
-    this.suppCat();
+    if (this.user.permissionslist.includes("Access Inventory")) {
+      this.get();
+      this.suppCat();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
     // this.getDays();
   },
 

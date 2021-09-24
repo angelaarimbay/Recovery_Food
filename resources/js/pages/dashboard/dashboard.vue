@@ -1,15 +1,17 @@
 <template>
-  <div style="min-width: 280px">
+  <div
+    style="min-width: 280px"
+    v-if="!user.permissionslist.includes('Access POS')"
+  >
     <v-container class="py-2">
       <v-layout row wrap>
         <h4
           class="font-weight-bold heading my-auto"
           :class="{ h5: $vuetify.breakpoint.smAndDown }"
         >
-          Dashboard 
+          Dashboard
         </h4>
         <v-spacer></v-spacer>
-
 
         <!-- Cards Settings -->
         <v-tooltip bottom>
@@ -290,18 +292,29 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex' 
+import { mapGetters } from "vuex";
 export default {
-  middleware: 'auth', 
-  
-  computed: {
-        ...mapGetters({
-            user: 'auth/user',
-            permissions: 'auth/user_permissions',
-            roles: 'auth/user_roles',
-        }),
+  middleware: "auth",
 
-    },
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
+
+  created() {
+    if (this.user.permissionslist.includes("Access Dashboard")) {
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
+  },
+
+  mounted() {
+    if (this.user.permissionslist.includes("Access POS")) {
+      this.$router.push({ name: "pos" }).catch((errr) => {});
+    }
+  },
+
   data: () => ({
     sheet: false,
     checkbox1: true,

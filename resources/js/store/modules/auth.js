@@ -18,8 +18,7 @@ export const getters = {
   token: state => state.token,
   check: state => state.user !== null,
   user_permissions: state => state.user_permissions,
-  user_roles: state => state.user_roles,
-  departments: state => state.departments
+  user_roles: state => state.user_roles, 
 }
 
 // mutations
@@ -41,8 +40,7 @@ export const mutations = {
 
   [types.LOGOUT](state) {
     state.user = null
-    state.token = null
-
+    state.token = null 
     Cookies.remove('token')
   },
 
@@ -62,14 +60,20 @@ export const mutations = {
 
 // actions
 export const actions = {
-  saveToken({ commit, dispatch }, payload) {
+  saveToken({ commit, dispatch }, payload) { 
     commit(types.SAVE_TOKEN, payload)
   },
 
   async fetchUser({ commit }) {
     try {
-      const { data } = await axios.get('/api/user')
-      commit(types.FETCH_USER_SUCCESS, { user: data })
+      await axios.get('/api/user').then(result=>{ 
+        if(result.data){ 
+           commit(types.FETCH_USER_SUCCESS, { user: result.data }) 
+        }else{
+          this.$store.dispatch('auth/logout')
+        }
+      })
+     
     } catch (e) {
       commit(types.FETCH_USER_FAILURE)
     }
@@ -81,7 +85,8 @@ export const actions = {
 
   async logout({ commit }) {
     try {
-      await axios.post('/api/logout')
+      // this.$auth.logout()
+      await axios.post('/api/logout') 
     } catch (e) { }
 
     commit(types.LOGOUT)

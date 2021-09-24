@@ -40,7 +40,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
      * @var array
      */
     protected $appends = [
-        'photo_url','permissions_list'
+        'photo_url','permissionslist'
     ];
 
     /**
@@ -102,7 +102,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 
     public function routeNotificationForNexmo($notification)
     {
-        return '639270753972';
+        return '';
     }
     public function getPermissionslistAttribute()
     {

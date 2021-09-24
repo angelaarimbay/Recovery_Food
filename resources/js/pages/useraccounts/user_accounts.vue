@@ -352,7 +352,7 @@
                       sm="12"
                       md="12"
                     >
-                      <v-select
+                      <v-combobox
                         :rules="formRules"
                         v-model="form.user_role"
                         :items="userrolelist"
@@ -361,12 +361,11 @@
                         small-chips
                         multiple
                         item-text="name"
-                        item-value="id"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">User Role *</div>
                         </template>
-                      </v-select>
+                      </v-combobox>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -420,9 +419,15 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -494,24 +499,14 @@ export default {
     itemsPerPage: 5,
   }),
 
-  // Dynamic Width
-  computed: {
-    widthSize() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return { width: "65px" };
-        case "sm":
-          return { width: "65px" };
-        default:
-          return { width: "72px" };
-      }
-    },
-  },
-
   // Onload
   created() {
-    this.get();
-    this.getUserRoles();
+    if (this.user.permissionslist.includes("Access User Accounts")) {
+      this.get();
+      this.getUserRoles();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {
@@ -619,6 +614,7 @@ export default {
 
     // Editing/updating of row
     edit(row) {
+      console.log(row);
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.first_name = row.first_name;

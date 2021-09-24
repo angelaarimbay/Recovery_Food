@@ -5,12 +5,12 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'guest'], function () {
     Route::post('login', 'Auth\LoginController@login');
 });
+Route::get('user', 'Auth\UserController@current');
 
 Route::group(['middleware' => 'api'], function () {
  
     
     Route::get('users','UserController@getUsers');
-    Route::get('user', 'Auth\UserController@current');
    
     // Manage Branches
     Route::post('branches/attachment', 'Branches\BranchesController@attachment');

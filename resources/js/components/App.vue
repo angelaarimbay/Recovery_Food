@@ -40,6 +40,7 @@ export default {
     layout: null,
     defaultLayout: "default",
   }),
+ 
   computed: mapGetters({
     user: "auth/user",
   }),

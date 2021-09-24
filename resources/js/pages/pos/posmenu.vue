@@ -25,21 +25,21 @@
       </template>
     </v-snackbar>
 
-    <v-card style="border-radius: 10px">
-      <v-row no-gutters>
-        <v-col cols="12" xl="6" lg="6" md="6" sm="12">
+    <v-row no-gutters>
+      <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
+        <v-card style="border-radius: 10px" class="pa-2">
           <v-card
             dark
             flat
             height="50"
             color="red darken-4"
             style="border-radius: 10px"
-            class="ma-2 d-flex align-center justify-center"
+            class="d-flex align-center justify-center"
           >
             <span>Products List</span>
           </v-card>
 
-          <v-row no-gutters class="ma-2">
+          <v-row no-gutters class="mt-2">
             <!-- Items Per Page -->
             <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
               <v-card-actions>
@@ -58,7 +58,7 @@
             <v-spacer></v-spacer>
 
             <!-- Search Field -->
-            <v-col cols="8" xl="4" lg="4" md="6" sm="8" class="my-auto">
+            <v-col cols="8" xl="5" lg="5" md="7" sm="8" class="my-auto">
               <v-card-actions>
                 <v-text-field
                   v-model="search"
@@ -97,7 +97,6 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            class="ma-2"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -121,23 +120,23 @@
               color="red darken-2"
             ></v-pagination>
           </div>
-        </v-col>
+        </v-card>
+      </v-col>
 
-        <v-divider vertical class="hidden-sm-and-down"></v-divider>
-
-        <v-col cols="12" xl="6" lg="6" md="6" sm="12">
+      <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
+        <v-card style="border-radius: 10px" class="pa-2">
           <v-card
             dark
             flat
             height="50"
             color="red darken-4"
             style="border-radius: 10px"
-            class="ma-2 d-flex align-center justify-center"
+            class="d-flex align-center justify-center"
           >
             <span>Order Details</span>
           </v-card>
 
-          <v-row no-gutters class="ma-2">
+          <v-row no-gutters class="mt-2">
             <!-- Items Per Page -->
             <v-card-actions>
               <span
@@ -177,7 +176,6 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            class="ma-2"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -201,22 +199,85 @@
               color="red darken-2"
             ></v-pagination>
           </div>
+        </v-card>
+      </v-col>
+    </v-row>
 
-          <v-card flat height="50" class="mx-4 d-flex align-center">
-            <strong style="color: #616161">Total</strong>
-            <v-spacer></v-spacer>
-            <strong><h5>0.00</h5></strong>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-card>
+    <v-row no-gutters>
+      <v-spacer></v-spacer>
+
+      <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
+        <v-card
+          height="50"
+          class="d-flex align-center pa-3"
+          style="border-radius: 10px"
+        >
+          <strong style="color: #616161">Total</strong>
+          <v-spacer></v-spacer>
+          <strong>0.00</strong>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row no-gutters>
+      <v-spacer></v-spacer>
+
+      <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
+        <v-card style="border-radius: 10px" class="pa-3">
+          <v-row align="center" justify="center">
+            <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
+              <v-text-field outlined clearable dense hide-details>
+                <template slot="label">
+                  <div style="font-size: 14px">Payment</div>
+                </template>
+              </v-text-field>
+            </v-col>
+
+            <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
+              <v-text-field outlined clearable dense hide-details>
+                <template slot="label">
+                  <div style="font-size: 14px">Discount</div>
+                </template>
+              </v-text-field>
+            </v-col>
+
+            <v-col cols="12" xl="4" lg="4" md="12" sm="12" class="pb-0">
+              <v-text-field outlined dense disabled hide-details>
+                <template slot="label">
+                  <div style="font-size: 14px">Change</div>
+                </template>
+              </v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row class="mt-2">
+            <v-col>
+              <v-btn
+                dark
+                block
+                color="green darken-3"
+                style="text-transform: none"
+              >
+                Done
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -308,6 +369,15 @@ export default {
       this.page = 1;
       this.get();
     },
+
+    async get() {},
+  },
+
+  created() {
+    if (this.user.permissionslist.includes("Access POS")) {
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 };
 </script>

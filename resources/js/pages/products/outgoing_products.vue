@@ -527,9 +527,15 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -625,10 +631,14 @@ export default {
 
   // Onload
   created() {
-    this.get();
-    this.prodCat();
-    this.prodSubCat();
-    this.branchName();
+    if (this.user.permissionslist.includes("Access Products")) {
+      this.get();
+      this.prodCat();
+      this.prodSubCat();
+      this.branchName();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {

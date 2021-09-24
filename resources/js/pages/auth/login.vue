@@ -125,6 +125,7 @@
 import Form from "vform";
 import axios from "axios";
 export default {
+ 
   middleware: "guest",
 
   metaInfo() {
@@ -160,7 +161,7 @@ export default {
         // Submit the form.
         await axios
           .post("/api/login", this.form)
-          .then((result) => {
+          .then((result) => { 
             // Save the token.
             this.user = false;
             this.$store
@@ -168,15 +169,17 @@ export default {
                 token: result.data.token,
                 remember: this.remember,
               })
-              .then((result) => {
+              .then((res) => {
+                
                 this.snackbar.status = true;
                 this.snackbar.iconText = "check";
                 this.snackbar.iconColor = "primary";
                 this.snackbar.message = "Login Successful.";
                 this.$store.dispatch("auth/fetchUser");
                 this.$store.dispatch("auth/fetchUserPermissions");
-                this.$store.dispatch("auth/fetchUserRoles");
-                this.$router.push({ name: "dashboard" });
+                this.$store.dispatch("auth/fetchUserRoles");  
+                 this.$router.push({ name: 'dashboard' }).catch(errr=>{})  
+
               });
           })
           .catch((result) => {

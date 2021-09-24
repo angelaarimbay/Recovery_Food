@@ -123,7 +123,6 @@
                     style="max-width: 230px"
                     class="my-auto"
                   >
-                  
                     <v-card-actions>
                       <v-text-field
                         v-model="search"
@@ -246,7 +245,6 @@
               dense
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-              
             >
               View Branch
               <v-spacer></v-spacer>
@@ -479,7 +477,7 @@
                     </v-col>
 
                     <v-col class="py-0">
-                      <hr class="mt-0"/>
+                      <hr class="mt-0" />
                     </v-col>
 
                     <v-col
@@ -606,9 +604,10 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
-  middleware: 'auth', 
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     loading: false,
@@ -676,6 +675,9 @@ export default {
 
   // Dynamic Width
   computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
     widthSize() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -690,7 +692,11 @@ export default {
 
   // Onload
   created() {
-    this.get();
+    if (this.user.permissionslist.includes("Access Branches")) {
+      this.get();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {
@@ -782,7 +788,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

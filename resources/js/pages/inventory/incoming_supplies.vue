@@ -324,7 +324,7 @@
                           <div style="font-size: 14px">ID</div>
                         </template>
                       </v-text-field>
-                      
+
                       <v-menu
                         v-model="date3"
                         :close-on-content-click="false"
@@ -484,9 +484,15 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -573,8 +579,12 @@ export default {
 
   // Onload
   created() {
-    this.get();
-    this.suppCat();
+    if (this.user.permissionslist.includes("Access Inventory")) {
+      this.get();
+      this.suppCat();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {

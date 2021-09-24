@@ -335,9 +335,10 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
-  middleware: 'auth', 
+  middleware: "auth",
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -398,6 +399,9 @@ export default {
 
   // Dynamic Width
   computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
     widthSize() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -412,7 +416,11 @@ export default {
 
   // Onload
   created() {
-    this.get();
+    if (this.user.permissionslist.includes("Access Categories")) {
+      this.get();
+    } else {
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    }
   },
 
   methods: {

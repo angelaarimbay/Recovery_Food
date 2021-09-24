@@ -1,437 +1,465 @@
 <template>
   <div style="min-width: 280px">
-    <!-- Inventory -->
-    <v-app-bar v-if="(user = '')" dense dark class="red darken-2" app>
-      <template v-if="user">
-        <v-app-bar-nav-icon
-          v-if="$vuetify.breakpoint.xsOnly"
-          @click.stop="
-            mini = false;
-            drawer = !drawer;
-          "
-        ></v-app-bar-nav-icon>
-        <v-app-bar-nav-icon
-          v-else
-          @click.stop="mini = !mini"
-        ></v-app-bar-nav-icon>
-      </template>
-      <v-list-item-title class="font-weight-bold hidden-sm-and-down"
-        >Inventory and Sales Monitoring System</v-list-item-title
+    <template v-if="user">
+      <!-- Inventory -->
+
+      <v-app-bar
+        v-if="!user.permissionslist.includes('Access POS')"
+        dense
+        dark
+        class="red darken-2"
+        app
       >
-
-      <v-spacer></v-spacer>
-
-      <v-menu offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            dark
-            v-if="user"
-            text
-            v-bind="attrs"
-            v-on="on"
-            style="text-transform: none"
-            :small="$vuetify.breakpoint.smAndDown"
-          >
-            <v-icon class="round">mdi-account</v-icon><span>Account</span>
-          </v-btn>
+        <template class="d-none">
+          <v-app-bar-nav-icon
+            v-if="$vuetify.breakpoint.xsOnly"
+            @click.stop="
+              mini = false;
+              drawer = !drawer;
+            "
+          ></v-app-bar-nav-icon>
+          <v-app-bar-nav-icon
+            v-else
+            @click.stop="mini = !mini"
+          ></v-app-bar-nav-icon>
         </template>
-        <v-list dense>
-          <v-list-item>
-            <v-list-item-title>Menu 1</v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>Menu 2</v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>Menu 3</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-app-bar>
+        <v-list-item-title class="font-weight-bold hidden-sm-and-down"
+          >Inventory and Sales Monitoring System</v-list-item-title
+        >
 
-    <!-- POS -->
-    <v-app-bar v-if="user" dense dark class="red darken-2" app>
-      <v-list-item-avatar class="my-0">
-        <v-img src="/img/Logo.jpg"></v-img>
-      </v-list-item-avatar>
-      <v-list-item-title class="font-weight-bold hidden-sm-and-down"
-        >Point of Sale System</v-list-item-title
+        <v-spacer></v-spacer>
+
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              dark
+              text
+              v-bind="attrs"
+              v-on="on"
+              style="text-transform: none"
+              :small="$vuetify.breakpoint.smAndDown"
+            >
+              <v-icon class="round">mdi-account</v-icon><span>Account</span>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item>
+              <v-list-item-title>Menu 1</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title>Menu 2</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title>Menu 3</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-app-bar>
+
+      <!-- POS -->
+      <v-app-bar
+        v-if="user.permissionslist.includes('Access POS')"
+        dense
+        dark
+        class="red darken-2"
+        app
       >
-      <v-spacer></v-spacer>
-      <v-menu offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            dark
-            v-if="user"
-            text
-            v-bind="attrs"
-            v-on="on"
-            style="text-transform: none"
-            :small="$vuetify.breakpoint.smAndDown"
-          >
-            <v-icon class="round">mdi-account</v-icon><span>Account</span>
-          </v-btn>
+        <v-list-item-avatar class="my-0">
+          <v-img src="/img/Logo.jpg"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-title class="font-weight-bold hidden-sm-and-down"
+          >Point of Sale System</v-list-item-title
+        >
+        <v-spacer></v-spacer>
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              dark
+              text
+              v-bind="attrs"
+              v-on="on"
+              style="text-transform: none"
+              :small="$vuetify.breakpoint.smAndDown"
+            >
+              <v-icon class="round">mdi-account</v-icon><span>Account</span>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item>
+              <v-list-item-title>Menu 1</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title>Menu 2</v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title @click="logout" style="cursor: pointer">Logout </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-app-bar>
+
+      <v-navigation-drawer
+        height="100%"
+        app
+        v-if="
+          user.permissionslist.length > 0 &&
+          !user.permissionslist.includes('Access POS')
+        "
+        v-model="drawer"
+        :permanent="$vuetify.breakpoint.smAndUp"
+        :mini-variant.sync="mini"
+        dark
+        class="grey darken-4"
+      >
+        <template v-slot:prepend>
+          <v-list-item class="px-2 red darken-4">
+            <v-list-item-avatar class="my-0">
+              <v-img src="/img/Logo.jpg"></v-img>
+            </v-list-item-avatar>
+            <v-list-item-title class="font-weight-bold"
+              >Recovery Food
+            </v-list-item-title>
+          </v-list-item>
         </template>
-        <v-list dense>
-          <v-list-item>
-            <v-list-item-title>Menu 1</v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>Menu 2</v-list-item-title>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-title>Menu 3</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </v-app-bar>
 
-    <v-navigation-drawer
-      height="100%"
-      v-if="(user = '')"
-      app
-      v-model="drawer"
-      :permanent="$vuetify.breakpoint.smAndUp"
-      :mini-variant.sync="mini"
-      dark
-      class="grey darken-4"
-    >
-      <template v-slot:prepend>
-        <v-list-item class="px-2 red darken-4">
-          <v-list-item-avatar class="my-0">
-            <v-img src="/img/Logo.jpg"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-title class="font-weight-bold"
-            >Recovery Food
-          </v-list-item-title>
-        </v-list-item>
-      </template>
-
-      <v-divider class="m-0"></v-divider>
-
-      <v-list nav dense>
-        <v-list-item style="text-decoration: none" to="/dashboard">
-          <v-list-item-icon>
-            <v-icon size="23">mdi-view-dashboard</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Dashboard</v-list-item-title>
-        </v-list-item>
-
-        <v-list-group
-          no-action
-          color="#FFFFFF"
-          active-class="bg-grey"
-          class="mb-1"
-        >
-          <template v-slot:activator>
-            <v-list-item-icon>
-              <v-icon size="23">mdi-storefront</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Branches</v-list-item-title>
-          </template>
-
-          <v-list class="p-0" flat>
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/manage_branches"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Manage Branches</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/branches_inventory"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Branches Inventory</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-list-group>
-
-        <v-list-group
-          no-action
-          color="#FFFFFF"
-          active-class="bg-grey"
-          class="mb-1"
-        >
-          <template v-slot:activator>
-            <v-list-item-icon>
-              <v-icon size="23">mdi-tag-multiple</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Categories</v-list-item-title>
-          </template>
-
-          <v-list class="p-0" flat>
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/supplies_category"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Supplies Category</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/products_category"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Products Category</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/products_sub_category"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Products-Sub Category</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-list-group>
-
-        <v-list-group
-          no-action
-          color="#FFFFFF"
-          active-class="bg-grey"
-          class="mb-1"
-        >
-          <template v-slot:activator>
-            <v-list-item-icon>
-              <v-icon size="23">mdi-package</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Inventory</v-list-item-title>
-          </template>
-
-          <v-list class="p-0" flat>
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/masterlist_supplies"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Masterlist Supplies</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/incoming_supplies"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Incoming Supplies</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/outgoing_supplies"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Outgoing Supplies</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/main_inventory"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Main Inventory</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/inventory_summary"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Inventory Summary</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-list-group>
-
-        <v-list-group
-          no-action
-          color="#FFFFFF"
-          active-class="bg-grey"
-          class="mb-1"
-        >
-          <template v-slot:activator>
-            <v-list-item-icon>
-              <v-icon size="23">mdi-package-variant-closed</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Products</v-list-item-title>
-          </template>
-
-          <v-list class="p-0" flat>
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/masterlist_products"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Masterlist Products</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/incoming_products"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Incoming Products</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/outgoing_products"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Outgoing Products</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-list-group>
-
-        <v-list-group
-          no-action
-          color="#FFFFFF"
-          active-class="bg-grey"
-          class="mb-1"
-        >
-          <template v-slot:activator>
-            <v-list-item-icon>
-              <v-icon size="23">mdi-truck</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Suppliers</v-list-item-title>
-          </template>
-
-          <v-list class="p-0" flat>
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/suppliers_list"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Suppliers List</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/purchase_orders"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Purchase Orders</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-list-group>
-
-        <v-list-item style="text-decoration: none" to="/reports">
-          <v-list-item-icon>
-            <v-icon size="23">mdi-account-multiple</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Reports</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item style="text-decoration: none" to="/user_accounts">
-          <v-list-item-icon>
-            <v-icon size="23">mdi-account-multiple</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>User Accounts</v-list-item-title>
-        </v-list-item>
-
-        <v-list-group
-          no-action
-          color="#FFFFFF"
-          active-class="bg-grey"
-          class="mb-1"
-        >
-          <template v-slot:activator>
-            <v-list-item-icon>
-              <v-icon size="23">mdi-wrench</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Settings</v-list-item-title>
-          </template>
-
-          <v-list class="p-0" flat>
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/roles_permissions"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Roles/Permissions</v-list-item-title>
-            </v-list-item>
-
-            <v-list-item
-              style="text-decoration: none"
-              class="pl-8 mb-1"
-              to="/sett2"
-            >
-              <v-list-item-icon class="me-3">
-                <v-icon size="16">mdi-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Company</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-list-group>
-      </v-list>
-
-      <template v-slot:append>
         <v-divider class="m-0"></v-divider>
-        <v-list-item
-          class="pb-1"
-          color="#FFFFFF"
-          style="text-decoration: none"
-          @click="logout"
-          nav
-          dense
-        >
-          <v-list-item-icon>
-            <v-icon size="23">mdi-logout</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Log Out</v-list-item-title>
-        </v-list-item>
-      </template>
-    </v-navigation-drawer>
+
+        <v-list nav dense>
+          <v-list-item
+            v-if="user.permissionslist.includes('Access Dashboard')"
+            style="text-decoration: none"
+            :to="{ name: 'dashboard' }"
+          >
+            <v-list-item-icon>
+              <v-icon size="23">mdi-view-dashboard</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Dashboard</v-list-item-title>
+          </v-list-item>
+
+          <v-list-group
+            v-if="user.permissionslist.includes('Access Branches')"
+            no-action
+            color="#FFFFFF"
+            active-class="bg-grey"
+            class="mb-1"
+          >
+            <template v-slot:activator>
+              <v-list-item-icon>
+                <v-icon size="23">mdi-storefront</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Branches</v-list-item-title>
+            </template>
+
+            <v-list class="p-0" flat>
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'manage-branches' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Manage Branches</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'branches-inventory' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Branches Inventory</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-list-group>
+
+          <v-list-group
+            v-if="user.permissionslist.includes('Access Categories')"
+            no-action
+            color="#FFFFFF"
+            active-class="bg-grey"
+            class="mb-1"
+          >
+            <template v-slot:activator>
+              <v-list-item-icon>
+                <v-icon size="23">mdi-tag-multiple</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Categories</v-list-item-title>
+            </template>
+
+            <v-list class="p-0" flat>
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'supplies-category' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Supplies Category</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'products-category' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Products Category</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'products-sub-category' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Products-Sub Category</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-list-group>
+
+          <v-list-group
+            v-if="user.permissionslist.includes('Access Inventory')"
+            no-action
+            color="#FFFFFF"
+            active-class="bg-grey"
+            class="mb-1"
+          >
+            <template v-slot:activator>
+              <v-list-item-icon>
+                <v-icon size="23">mdi-package</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Inventory</v-list-item-title>
+            </template>
+
+            <v-list class="p-0" flat>
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'masterlist-supplies' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Masterlist Supplies</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'incoming-supplies' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Incoming Supplies</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'outgoing-supplies' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Outgoing Supplies</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'main-inventory' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Main Inventory</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'inventory-summary' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Inventory Summary</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-list-group>
+
+          <v-list-group
+            v-if="user.permissionslist.includes('Access Products')"
+            no-action
+            color="#FFFFFF"
+            active-class="bg-grey"
+            class="mb-1"
+          >
+            <template v-slot:activator>
+              <v-list-item-icon>
+                <v-icon size="23">mdi-package-variant-closed</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Products</v-list-item-title>
+            </template>
+
+            <v-list class="p-0" flat>
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'masterlist-products' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Masterlist Products</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'incoming-products' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Incoming Products</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'outgoing-products' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Outgoing Products</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-list-group>
+
+          <v-list-group
+            v-if="user.permissionslist.includes('Access Suppliers')"
+            no-action
+            color="#FFFFFF"
+            active-class="bg-grey"
+            class="mb-1"
+          >
+            <template v-slot:activator>
+              <v-list-item-icon>
+                <v-icon size="23">mdi-truck</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Suppliers</v-list-item-title>
+            </template>
+
+            <v-list class="p-0" flat>
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'suppliers-list' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Suppliers List</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'purchase-orders' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Purchase Orders</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-list-group>
+
+          <v-list-item style="text-decoration: none" :to="{ name: 'reports' }">
+            <v-list-item-icon>
+              <v-icon size="23">mdi-account-multiple</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Reports</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item
+            style="text-decoration: none"
+            :to="{ name: 'user-accounts' }"
+          >
+            <v-list-item-icon>
+              <v-icon size="23">mdi-account-multiple</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>User Accounts</v-list-item-title>
+          </v-list-item>
+
+          <v-list-group
+            no-action
+            color="#FFFFFF"
+            active-class="bg-grey"
+            class="mb-1"
+          >
+            <template v-slot:activator>
+              <v-list-item-icon>
+                <v-icon size="23">mdi-wrench</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Settings</v-list-item-title>
+            </template>
+
+            <v-list class="p-0" flat>
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'roles-permissions' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Roles/Permissions</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                to="/sett2"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Company</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-list-group>
+        </v-list>
+
+        <template v-slot:append>
+          <v-divider class="m-0"></v-divider>
+          <v-list-item
+            class="pb-1"
+            color="#FFFFFF"
+            style="text-decoration: none"
+            @click="logout"
+            nav
+            dense
+          >
+            <v-list-item-icon>
+              <v-icon size="23">mdi-logout</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Log Out</v-list-item-title>
+          </v-list-item>
+        </template>
+      </v-navigation-drawer>
+    </template>
   </div>
 </template>
 
@@ -446,7 +474,9 @@
 
 <script>
 import { mapGetters } from "vuex";
+import template from "../pages/template.vue";
 export default {
+  components: { template },
   middleware: "auth",
   computed: {
     ...mapGetters({
@@ -461,6 +491,7 @@ export default {
       mini: false,
     };
   },
+
   methods: {
     async logout() {
       // Log out the user.

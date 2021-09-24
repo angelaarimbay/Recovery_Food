@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function current(Request $request)
     {
-        return response()->json($request->user());
+        return  auth()->user();
     }
 
     public function permissions()
