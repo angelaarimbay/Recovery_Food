@@ -106,5 +106,11 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('useracc/storeUserRole', 'UserController@storeUserRole');
     Route::post('useracc/removeUserRole', 'UserController@removeUserRole');
 
-    Route::get('walanjo', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('reports/incoming/supplies/get', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('reports/outgoing/supplies/get', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('reports/main/get', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('reports/inventory/summary/get', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('reports/sales/report/get', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('reports/transaction/report/get', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('reports/purchase/order/get', 'Reports\ReportsController@ExportMasterlist');
 });

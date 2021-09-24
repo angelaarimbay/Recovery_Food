@@ -176,6 +176,7 @@
                       color="primary"
                       class="mx-1"
                       v-on="data.on"
+                      @click="getPDF_Incoming_supplies('pdf')"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-pdf</v-icon></v-btn
                     >
@@ -187,6 +188,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                    @click="getEXCEL_Incoming_supplies('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -307,6 +309,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getPDF_Outgoing('pdf')" 
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-pdf</v-icon></v-btn
@@ -319,6 +322,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getEXCEL_Outgoing_supplies('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -455,6 +459,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getPDF_Main('pdf')" 
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-pdf</v-icon></v-btn
@@ -467,6 +472,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getEXCEL_Main_inventory('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -518,6 +524,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getPDF_Inventory_summary('pdf')" 
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-pdf</v-icon></v-btn
@@ -530,6 +537,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getEXCEL_Inventory_summary('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -556,15 +564,7 @@
 
         <v-tab-item>
           <!-- Sales Report -->
-        </v-tab-item>
-
-        <v-tab-item>
-          <!-- Transaction Report -->
-        </v-tab-item>
-
-        <v-tab-item>
-          <!-- Purchase Order Report -->
-          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+    <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
                 <v-tooltip bottom>
@@ -572,6 +572,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getPDF_Sales_report('pdf')" 
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-pdf</v-icon></v-btn
@@ -584,6 +585,106 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getEXCEL_Sales_report('excel')"
+                      v-on="data.on"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      ><v-icon>mdi-file-excel</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Export to Excel</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="primary"
+                      class="mx-1"
+                      v-on="data.on"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      ><v-icon>mdi-printer</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Print</span>
+                </v-tooltip></v-card-actions
+              >
+            </v-container>
+          </v-container>
+        </v-tab-item>
+
+        <v-tab-item>
+          <!-- Transaction Report -->
+    <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+              <v-card-actions class="px-0 justify-center">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="primary"
+                      class="mx-1"
+                      @click="getPDF_Transaction_report('pdf')" 
+                      v-on="data.on"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      ><v-icon>mdi-file-pdf</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Export to PDF</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="primary"
+                      class="mx-1"
+                      @click="getEXCEL_Transaction_report('excel')"
+                      v-on="data.on"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      ><v-icon>mdi-file-excel</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Export to Excel</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="primary"
+                      class="mx-1"
+                      v-on="data.on"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      ><v-icon>mdi-printer</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Print</span>
+                </v-tooltip></v-card-actions
+              >
+            </v-container>
+          </v-container>
+        </v-tab-item>
+
+       
+
+
+        <v-tab-item>
+          <!-- Purchase Order Report -->
+          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+              <v-card-actions class="px-0 justify-center">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="primary"
+                      class="mx-1"
+                          @click="getPDF_Purchase_order('pdf')" 
+                      v-on="data.on"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      ><v-icon>mdi-file-pdf</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Export to PDF</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="primary"
+                      class="mx-1"
+                      @click="getEXCEL_Purchase_order('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -715,7 +816,304 @@ export default {
     }
   },
 
-  methods: {
+
+
+
+ methods: {
+
+
+ async getPDF_Incoming_supplies(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/incoming/supplies/get",
+            method: "GET",
+            responseType: "blob",
+           params: { category: this.category, from: this.from, to: this.to },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/incoming/supplies/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: { category: this.category, from: this.from, to: this.to },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
+ async getPDF_Outgoing(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/outgoing/supplies/get",
+            method: "GET",
+            responseType: "blob",
+            params: {branch: this.branch, category: this.category, type: type },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/outgoing/supplies/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: {branch: this.branch, category: this.category, type: type }, 
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "mastelist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
+async getPDF_Main(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/main/get",
+            method: "GET",
+            responseType: "blob",
+            params: { category: this.category, type: type },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/main/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: {
+                category: this.category,
+                type: type,
+              },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
+
+async getPDF_Inventory_summary(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/inventory/summary/get",
+            method: "GET",
+            responseType: "blob",
+            params: { category: this.category, type: type },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/inventory/summary/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: {
+                category: this.category,
+                type: type,
+              },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
+
+async getPDF_Sales_report(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/sales/report/get",
+            method: "GET",
+            responseType: "blob",
+            params: { category: this.category, type: type },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/sales/report/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: {
+                category: this.category,
+                type: type,
+              },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
+
+async getPDF_Transaction_report(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/transaction/report/get",
+            method: "GET",
+            responseType: "blob",
+            params: { category: this.category, type: type },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/transaction/report/ge", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: {
+                category: this.category,
+                type: type,
+              },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
+
+    async getPDF_Purchase_order(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/purchase/order/get",
+            method: "GET",
+            responseType: "blob",
+            params: {date: this.date, to: this.to, type: type },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/purchase/order/geo", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: {date: this.date, to: this.to, type: type,
+              },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
+
+
+
+
+
+
+
+
+
     async get(type) {
       switch (type) {
         case "pdf":

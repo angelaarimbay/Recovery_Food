@@ -15,9 +15,9 @@ class AccountSeeder extends Seeder
         User::create(
             [
             'name'=> '',
-            'first_name'=> 'John',
-            'last_name'=> 'Doe',
-            'email'=> 'johndoe@gmail.com',
+            'first_name'=> 'admin',
+            'last_name'=> 'admin',
+            'email'=> 'admin@gmail.com',
             'password'=> bcrypt('123456'),
             'phone_number'=> '+63912345678'
         ],
