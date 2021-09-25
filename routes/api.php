@@ -106,5 +106,11 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('useracc/storeUserRole', 'UserController@storeUserRole');
     Route::post('useracc/removeUserRole', 'UserController@removeUserRole');
 
+    Route::get('useracc/branchName', 'UserAccounts\UserAccountsController@branchName');
+
+    // POS
+    Route::get('pos/prodlist/get', 'POS\ProductsListController@get');
+
+    // Reports
     Route::get('walanjo', 'Reports\ReportsController@ExportMasterlist');
 });

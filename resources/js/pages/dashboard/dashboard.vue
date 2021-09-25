@@ -305,15 +305,15 @@ export default {
   created() {
     if (this.user.permissionslist.includes("Access Dashboard")) {
     } else {
-      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
-    }
-  },
-
-  mounted() {
-    if (this.user.permissionslist.includes("Access POS")) {
+        if (this.user.permissionslist.includes("Access POS")) {
       this.$router.push({ name: "pos" }).catch((errr) => {});
+      }else{
+
+      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+      }
     }
   },
+ 
 
   data: () => ({
     sheet: false,

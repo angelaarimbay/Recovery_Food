@@ -4,6 +4,7 @@ namespace App\Http\Controllers\UserAccounts;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\tbl_branches;
 use App\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,7 @@ class UserAccountsController extends Controller
                  "last_name"=>$data->last_name,
                  "email"=>$data->email,
                  "phone_number"=>$data->phone_number,
+                 "branch"=>$data->branch,
                  "password"=>  bcrypt($data->password),
                 ]
             );
@@ -54,6 +56,7 @@ class UserAccountsController extends Controller
             "last_name"=>$data->last_name,
             "email"=>$data->email,
             "phone_number"=>$data->phone_number,
+            "branch"=>$data->branch,
             "password"=>  Crypt::encryptString($data->password),
            ] + ['name'=>'']);
 
@@ -214,5 +217,9 @@ class UserAccountsController extends Controller
     {
         $user =  User::where("emplid", 2)->first();
         return  $user->removeRole('Admin');
+    }
+    public function branchName()
+    {
+        return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
     }
 }

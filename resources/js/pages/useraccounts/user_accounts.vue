@@ -353,7 +353,8 @@
                       md="12"
                     >
                       <v-combobox
-                        :rules="formRules"
+                      class="d-none"
+                        :rules="formRulesNumber"
                         v-model="form.user_role"
                         :items="userrolelist"
                         outlined
@@ -366,6 +367,23 @@
                           <div style="font-size: 14px">User Role *</div>
                         </template>
                       </v-combobox>
+                    </v-col>
+
+                    <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.branch"
+                        :items="branchlist"
+                        item-text="branch_name"
+                        item-value="id"
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Branch *</div>
+                        </template>
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -444,6 +462,7 @@ export default {
     password: "",
     confirmPass: "",
     table: [],
+    branchlist: [],
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
@@ -464,6 +483,7 @@ export default {
       password: null,
       confirmPass: null,
       user_role: [],
+      branch: null,
     },
 
     // For comparing data
@@ -477,13 +497,13 @@ export default {
         value: "name",
       },
       {
-        text: "User Name",
+        text: "Email",
         value: "email",
         filterable: false,
       },
       {
-        text: "User Role",
-        value: "roles",
+        text: "Branch",
+        value: "branch.branch_name",
         filterable: false,
       },
       {
@@ -503,7 +523,8 @@ export default {
   created() {
     if (this.user.permissionslist.includes("Access User Accounts")) {
       this.get();
-      this.getUserRoles();
+      // this.getUserRoles();
+      this.branchName();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
@@ -518,6 +539,12 @@ export default {
     async getUserRoles() {
       await axios.get("/api/useracc/getRoles").then((result) => {
         this.userrolelist = result.data.data;
+      });
+    },
+
+    async branchName() {
+      await axios.get("api/useracc/branchName").then((bran_name) => {
+        this.branchlist = bran_name.data;
       });
     },
 
@@ -614,18 +641,16 @@ export default {
 
     // Editing/updating of row
     edit(row) {
-      console.log(row);
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.first_name = row.first_name;
       this.form.last_name = row.last_name;
       this.form.email = row.email;
       this.form.phone_number = row.phone_number;
-      this.form.password = row.password;
-      for (var key in row.roles) {
+      this.form.password = row.password; 
+      for (var key in row.branch) {
         this.form.user_role.push(row.roles[key]);
       }
-
       this.dialog = true;
     },
 

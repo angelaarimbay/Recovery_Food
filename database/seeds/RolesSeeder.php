@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use App\Models\roles;
+use Illuminate\Database\Seeder; 
+use Spatie\Permission\Models\Role;
 
 class RolesSeeder extends Seeder
 {
@@ -12,26 +12,26 @@ class RolesSeeder extends Seeder
      */
     public function run()
     {
-        roles::insert([ 
+        Role::insert([ 
             [
                 'name' => 'Admin',
-                'description' => '',
+                'description' => '', 'guard_name' => 'api', 'created_at' => '2021-04-25 21:27:22.540', 'updated_at' => '2021-09-06 16:19:59.357'
             ],
             [
                 'name' => 'Cashier',
-                'description' => '',
+                'description' => '', 'guard_name' => 'api', 'created_at' => '2021-04-25 21:27:22.540', 'updated_at' => '2021-09-06 16:19:59.357'
             ],
             [
                 'name' => 'Stockman',
-                'description' => '',
+                'description' => '', 'guard_name' => 'api', 'created_at' => '2021-04-25 21:27:22.540', 'updated_at' => '2021-09-06 16:19:59.357'
             ],
             [
                 'name' => 'Production Assistant',
-                'description' => '',
+                'description' => '', 'guard_name' => 'api', 'created_at' => '2021-04-25 21:27:22.540', 'updated_at' => '2021-09-06 16:19:59.357'
             ],
             [
                 'name' => 'Supervisor',
-                'description' => '',
+                'description' => '', 'guard_name' => 'api', 'created_at' => '2021-04-25 21:27:22.540', 'updated_at' => '2021-09-06 16:19:59.357'
             ],
         ]);
     }

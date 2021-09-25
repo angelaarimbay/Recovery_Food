@@ -17,10 +17,20 @@ class AccountSeeder extends Seeder
             'name'=> '',
             'first_name'=> 'John',
             'last_name'=> 'Doe',
-            'email'=> 'johndoe@gmail.com',
+            'email'=> 'admin@gmail.com',
             'password'=> bcrypt('123456'),
-            'phone_number'=> '+63912345678'
-        ],
+            'phone_number'=> '+63912345678',
+            'branch'=> '1'
+            ],
+            [
+                'name'=> '',
+                'first_name'=> 'John',
+                'last_name'=> 'Doe',
+                'email'=> 'user@gmail.com',
+                'password'=> bcrypt('123456'),
+                'phone_number'=> '+63912345678',
+                'branch'=> '1'
+                ],
         );
     }
 }

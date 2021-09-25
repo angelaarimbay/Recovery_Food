@@ -245,9 +245,6 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.created_at`]="{ item }">
-              {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
-            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
