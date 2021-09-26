@@ -97,9 +97,9 @@
         </v-tab>
       </v-tabs>
 
+     <!-- Masterlist Supplies Report -->
       <v-tabs-items v-model="tab">
         <v-tab-item>
-          <!-- Masterlist Supplies Report -->
           <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
@@ -108,7 +108,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
-                      @click="get('pdf')"
+                      @click="getPDF_Masterlist('pdf')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-pdf</v-icon></v-btn
@@ -151,7 +151,7 @@
                       :items="suppcatlist"
                       item-text="supply_cat_name"
                       item-value="id"
-                      v-model="category"
+                      v-model="masterlist_category"
                       class="my-0"
                       clearable
                       dense
@@ -164,9 +164,8 @@
             </v-container>
           </v-container>
         </v-tab-item>
-
-        <v-tab-item>
-          <!-- Incoming Supplies Report -->
+      <!-- Incoming Supplies Report -->
+        <v-tab-item> 
           <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
@@ -217,6 +216,7 @@
                       :items="suppcatlist"
                       item-text="supply_cat_name"
                       item-value="id"
+                      v-model="incominglist_category"
                       class="my-0"
                       clearable
                       dense
@@ -299,8 +299,8 @@
           </v-container>
         </v-tab-item>
 
-        <v-tab-item>
           <!-- Outgoing Supplies Report -->
+        <v-tab-item>
           <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
@@ -351,6 +351,7 @@
                       :items="branchlist"
                       item-text="supply_cat_name"
                       item-value="id"
+                      v-model="outgoinglist_category"
                       class="my-0"
                       clearable
                       dense
@@ -449,8 +450,8 @@
           </v-container>
         </v-tab-item>
 
-        <v-tab-item>
           <!-- Main Inventory Report -->
+        <v-tab-item>
           <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
@@ -514,8 +515,8 @@
           </v-container>
         </v-tab-item>
 
-        <v-tab-item>
           <!-- Inventory Summary Report -->
+        <v-tab-item>
           <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
@@ -562,9 +563,9 @@
           </v-container>
         </v-tab-item>
 
-        <v-tab-item>
           <!-- Sales Report -->
-    <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+        <v-tab-item>
+          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
                 <v-tooltip bottom>
@@ -610,9 +611,9 @@
           </v-container>
         </v-tab-item>
 
-        <v-tab-item>
           <!-- Transaction Report -->
-    <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+        <v-tab-item>
+          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
                 <v-tooltip bottom>
@@ -657,12 +658,9 @@
             </v-container>
           </v-container>
         </v-tab-item>
-
-       
-
-
-        <v-tab-item>
+ 
           <!-- Purchase Order Report -->
+        <v-tab-item>
           <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-card-actions class="px-0 justify-center">
@@ -779,6 +777,7 @@
             </v-container>
           </v-container>
         </v-tab-item>
+
       </v-tabs-items>
     </v-card>
   </div>
@@ -791,9 +790,14 @@ export default {
   middleware: "auth",
   data: () => ({
     tab: null,
-    category: "",
-    suppcatlist: [],
-    branchlist: [],
+    //parameters
+      //masterlist
+        masterlist_category: "",
+      //incoming
+        incominglist_category: "",
+      //outgoing
+        outgoinglist_category: "",
+
     dateFromIncoming: null,
     dateUntilIncoming: null,
     dateFromOutgoing: null,
@@ -806,6 +810,12 @@ export default {
     date4: false,
     date9: false,
     date10: false,
+
+    //lists
+    suppcatlist: [],
+    branchlist: [],
+
+  
   }),
 
   created() {
@@ -821,6 +831,45 @@ export default {
 
  methods: {
 
+ async getPDF_Masterlist(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/masterlist/get",
+            method: "GET",
+            responseType: "blob",
+           params: { category: this.masterlist_category, type: type },
+          }).then((response) => {  
+            console.log(response.data)
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/masterlist/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: { category: this.category, from: this.from, to: this.to },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
 
  async getPDF_Incoming_supplies(type) {
       switch (type) {
@@ -831,6 +880,7 @@ export default {
             responseType: "blob",
            params: { category: this.category, from: this.from, to: this.to },
           }).then((response) => {
+          
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);

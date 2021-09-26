@@ -106,11 +106,16 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('useracc/storeUserRole', 'UserController@storeUserRole');
     Route::post('useracc/removeUserRole', 'UserController@removeUserRole');
 
-    Route::get('reports/incoming/supplies/get', 'Reports\ReportsController@ExportMasterlist');
-    Route::get('reports/outgoing/supplies/get', 'Reports\ReportsController@ExportMasterlist');
-    Route::get('reports/main/get', 'Reports\ReportsController@ExportMasterlist');
-    Route::get('reports/inventory/summary/get', 'Reports\ReportsController@ExportMasterlist');
-    Route::get('reports/sales/report/get', 'Reports\ReportsController@ExportMasterlist');
-    Route::get('reports/transaction/report/get', 'Reports\ReportsController@ExportMasterlist');
-    Route::get('reports/purchase/order/get', 'Reports\ReportsController@ExportMasterlist');
-});
+    //masterlist tlga ung sa incoming ?
+    Route::get('reports/masterlist/get', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('reports/incoming/supplies/get', 'Reports\ReportsController@ExportIncominglist');
+    Route::get('reports/outgoing/supplies/get', 'Reports\ReportsController@ExportOutgoinglist');
+    Route::get('reports/main/get', 'Reports\ReportsController@ExportMain');
+    Route::get('reports/inventory/summary/get', 'Reports\ReportsController@ExportInventorysummary');
+    Route::get('reports/sales/report/get', 'Reports\ReportsController@ExportSales');
+    Route::get('reports/transaction/report/get', 'Reports\ReportsController@ExportTransaction');
+    Route::get('reports/purchase/order/get', 'Reports\ReportsController@ExportPurchase');
+}); 
+
+
+ 
