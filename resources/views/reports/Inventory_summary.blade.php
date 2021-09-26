@@ -1,6 +1,6 @@
 
 <html>
-<style>
+<!-- <style>
     .table_timelogs   td  {  
     border: 1px solid #ddd;
     text-align: center;
@@ -17,32 +17,79 @@
         page-break-after: always;
     }
 
+</style> -->
+
+<style>
+    table, td, th {
+        padding: 10px;
+        border: 1px solid lightgray;
+        border-collapse: collapse;
+        text-align: center;
+        
+    }
+    
+    td{
+        font-size: 15px;
+     
+        
+    }
+    
+    th{
+    background-color:aliceblue;
+        color: black;
+    } 
+    
+  .body{
+          margin: 0;
+  padding: 0;
+  background-color: #FAFAFA;
+  font: 12pt "Tahoma";
+    }
+
+    .Inv_summary{
+    display: block;
+    margin-left:auto;
+    margin-right: auto;
+    width: 190px;
+    font-style:oblique;
+
+    }
+    
 </style>
+
+
+
+
     <body>
 
-    <div style="padding-left: 40%; padding-top: -30;">   
+    <div style="padding-left: 42%; padding-top: -30;">   
 
             <img  src="{{ public_path(). '/img/logo.jpg' }}" 
-                style=" display: block;  margin-left: auto; margin-right: auto;  width: 150px;"></img>
+                style=" display: block;  margin-left: auto; margin-right: auto;  width: 120px;"></img>
      </div>
 
+     <p class="Inv_summary">Inventory Summary  Report</p>
 
-    <table   >
+<p class="date">Date exported:
+       {{ date("Y-m-d") }}
+   </p> <hr class="line">
+
+
+    <table>
          <tr>
-            <th><h6>supply_name</h6></th>
-            <th><h6>TIME IN</h6></th> 
-            <th><h6>TIME OUT</h6></th> 
-            <th><h6>SOURCE</h6></th>  
-            <th><h6>REMARKS</h6></th>
+            <th><h6>Category</h6></th>
+            <th><h6>Incoming</h6></th> 
+            <th><h6>Outgoing</h6></th>  
+          
         </tr>
         @foreach ($data as $items)  
        
                 <tr>
-                   <td  style="width: 20%;">   {{ $items['supply_name'] }}</td>
-                   <td  style="width: 20%;">   </td>
-                   <td  style="width: 20%;">  </td>  
-                   <td  style="width: 20%;">   </td>
-                   <td  style="width: 50%; font-size: 8px; text-align: left; padding-left: 5px;">   </td> 
+                   <td  style="width: 20%;">   {{ $items['category'] }}</td>
+                   <td  style="width: 20%;">  {{ $items['incoming'] }}   </td>
+                   <td  style="width: 20%;">   {{ $items['outgoing'] }} </td>  
+                 
+       
 
                 </tr>  
           

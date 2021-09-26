@@ -10,7 +10,7 @@ class tbl_masterlistsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['category_name','with_vat','without_vat','format_net_price','format_with_vat','format_without_vat'];
+    public $appends = ['category_name','with_vat','without_vat','format_net_price','format_with_vat','format_without_vat','format_net_price'];
 
     
     public function category()
@@ -73,4 +73,5 @@ class tbl_masterlistsupp extends Model
     {
         return number_format($this->without_vat, 2, ".", ",");
     }
+    
 }

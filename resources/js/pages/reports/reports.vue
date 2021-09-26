@@ -216,7 +216,7 @@
                       :items="suppcatlist"
                       item-text="supply_cat_name"
                       item-value="id"
-                      v-model="incominglist_category"
+                      v-model="incoming_category"
                       class="my-0"
                       clearable
                       dense
@@ -239,7 +239,7 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="dateFromIncoming"
+                          v-model="incoming_from"
                           label="Date From"
                           prepend-icon="mdi-calendar-range"
                           readonly
@@ -250,7 +250,7 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        v-model="dateFromIncoming"
+                        v-model="incoming_from"
                         @input="date1 = false"
                         scrollable
                         no-title
@@ -273,7 +273,7 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="dateUntilIncoming"
+                          v-model="incoming_to"
                           label="Date Until"
                           prepend-icon="mdi-calendar-range"
                           readonly
@@ -284,7 +284,7 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        v-model="dateUntilIncoming"
+                        v-model="incoming_to"
                         @input="date2 = false"
                         scrollable
                         no-title
@@ -349,9 +349,9 @@
                   <v-card-actions class="pb-0 pt-4">
                     <v-select
                       :items="branchlist"
-                      item-text="supply_cat_name"
+                      item-text="branch_name"
                       item-value="id"
-                      v-model="outgoinglist_category"
+                      v-model="outgoing_branch"
                       class="my-0"
                       clearable
                       dense
@@ -369,6 +369,7 @@
                       item-text="supply_cat_name"
                       item-value="id"
                       class="my-0"
+                      v-model="outgoing_category"
                       clearable
                       dense
                       label="Category"
@@ -390,7 +391,7 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="dateFromOutgoing"
+                          v-model="outgoing_from"
                           label="Date From"
                           prepend-icon="mdi-calendar-range"
                           readonly
@@ -401,7 +402,7 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        v-model="dateFromOutgoing"
+                        v-model="outgoing_from"
                         @input="date3 = false"
                         scrollable
                         no-title
@@ -424,7 +425,7 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="dateUntilOutgoing"
+                          v-model="outgoing_to"
                           label="Date Until"
                           prepend-icon="mdi-calendar-range"
                           readonly
@@ -435,7 +436,7 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        v-model="dateUntilOutgoing"
+                        v-model="outgoing_to"
                         @input="date4 = false"
                         scrollable
                         no-title
@@ -502,6 +503,7 @@
                       :items="suppcatlist"
                       item-text="supply_cat_name"
                       item-value="id"
+                      v-model="main_category"
                       class="my-0"
                       clearable
                       dense
@@ -794,14 +796,18 @@ export default {
       //masterlist
         masterlist_category: "",
       //incoming
-        incominglist_category: "",
+        incoming_category: "",
+        incoming_from: null,
+        incoming_to: null,
       //outgoing
-        outgoinglist_category: "",
+        outgoing_branch: "", 
+        outgoing_category: "", 
+        outgoing_from: null,
+        outgoing_to: null,
+      //main
+        main_category: '', 
 
-    dateFromIncoming: null,
-    dateUntilIncoming: null,
-    dateFromOutgoing: null,
-    dateUntilOutgoing: null,
+
     dateFromPO: null,
     dateUntilPO: null,
     date1: false,
@@ -821,17 +827,14 @@ export default {
   created() {
     if (this.user.permissionslist.includes("Access Reports")) {
       this.suppCat();
+      this.branchName();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
-  },
-
-
-
-
+  }, 
  methods: {
 
- async getPDF_Masterlist(type) {
+  async getPDF_Masterlist(type) {
       switch (type) {
         case "pdf":
           await axios({
@@ -853,8 +856,8 @@ export default {
             .get("/api/reports/masterlist/get", {
               method: "GET",
               responseType: "arraybuffer",
-              params: { category: this.category, from: this.from, to: this.to },
-            })
+             params: { category: this.masterlist_category, type: type },
+          })
             .then((response) => {
               let blob = new Blob([response.data], {
                 type: "application/excel",
@@ -869,18 +872,17 @@ export default {
         default:
           break;
       }
-    },
-
- async getPDF_Incoming_supplies(type) {
+    }, 
+  async getPDF_Incoming_supplies(type) {
       switch (type) {
         case "pdf":
           await axios({
             url: "/api/reports/incoming/supplies/get",
             method: "GET",
             responseType: "blob",
-           params: { category: this.category, from: this.from, to: this.to },
+           params: {  type: type, category: this.incoming_category, from: this.incoming_from, to: this.incoming_to },
           }).then((response) => {
-          
+            console.log(response.data)
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
@@ -893,8 +895,8 @@ export default {
             .get("/api/reports/incoming/supplies/get", {
               method: "GET",
               responseType: "arraybuffer",
-              params: { category: this.category, from: this.from, to: this.to },
-            })
+             params: {  type: type, category: this.incoming_category, from: this.incoming_from, to: this.incoming_to },
+          })
             .then((response) => {
               let blob = new Blob([response.data], {
                 type: "application/excel",
@@ -909,16 +911,17 @@ export default {
         default:
           break;
       }
-    },
- async getPDF_Outgoing(type) {
+    }, 
+  async getPDF_Outgoing(type) {
       switch (type) {
         case "pdf":
           await axios({
             url: "/api/reports/outgoing/supplies/get",
             method: "GET",
             responseType: "blob",
-            params: {branch: this.branch, category: this.category, type: type },
+            params: { type: type, branch: this.outgoing_branch, category: this.outgoing_category, from: this.outgoing_from, to: this.outgoing_to },
           }).then((response) => {
+            console.log(response.data)
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
@@ -931,7 +934,7 @@ export default {
             .get("/api/reports/outgoing/supplies/get", {
               method: "GET",
               responseType: "arraybuffer",
-              params: {branch: this.branch, category: this.category, type: type }, 
+             params: { type: type, branch: this.outgoing_branch, category: this.outgoing_category, from: this.outgoing_from, to: this.outgoing_to },
             })
             .then((response) => {
               let blob = new Blob([response.data], {
@@ -947,16 +950,17 @@ export default {
         default:
           break;
       }
-    },
-async getPDF_Main(type) {
+    }, 
+  async getPDF_Main(type) {
       switch (type) {
         case "pdf":
           await axios({
             url: "/api/reports/main/get",
             method: "GET",
             responseType: "blob",
-            params: { category: this.category, type: type },
+            params: { category: this.main_category, type: type },
           }).then((response) => {
+            console.log(response.data)
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
@@ -969,10 +973,7 @@ async getPDF_Main(type) {
             .get("/api/reports/main/get", {
               method: "GET",
               responseType: "arraybuffer",
-              params: {
-                category: this.category,
-                type: type,
-              },
+            params: { category: this.main_category, type: type },
             })
             .then((response) => {
               let blob = new Blob([response.data], {
@@ -990,14 +991,14 @@ async getPDF_Main(type) {
       }
     },
 
-async getPDF_Inventory_summary(type) {
+    async getPDF_Inventory_summary(type) {
       switch (type) {
         case "pdf":
           await axios({
             url: "/api/reports/inventory/summary/get",
             method: "GET",
             responseType: "blob",
-            params: { category: this.category, type: type },
+            params: {  type: type },
           }).then((response) => {
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
@@ -1011,10 +1012,7 @@ async getPDF_Inventory_summary(type) {
             .get("/api/reports/inventory/summary/get", {
               method: "GET",
               responseType: "arraybuffer",
-              params: {
-                category: this.category,
-                type: type,
-              },
+              params: {  type: type },
             })
             .then((response) => {
               let blob = new Blob([response.data], {

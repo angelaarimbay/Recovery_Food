@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\tbl_suppcat;
 use App\Models\tbl_masterlistsupp;
+use App\Models\tbl_supplist;
 use Illuminate\Support\Facades\DB;
 
 class tbl_incomingsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['quantity_difference','quantity_amount','category_details','supply_name_details','format_amount'];
+    public $appends = ['category_name','quantity_difference','quantity_amount','category_details','supply_name_details','format_amount','supplier_details'];
 
     public function category()
     {
@@ -35,11 +36,18 @@ class tbl_incomingsupp extends Model
     {
         return tbl_suppcat::where("id", $this->category)->first();
     }
+    public function getCategoryNameAttribute()
+    {
+        return tbl_suppcat::where("id", $this->category)->first()->supply_cat_name;
+    }
     public function getSupplyNameDetailsAttribute()
     {
         return tbl_masterlistsupp::where("id", $this->supply_name)->first();
     }
-
+    public function getSupplierDetailsAttribute()
+    {
+        return tbl_supplist::where("id", $this->supply_name)->first();
+    }
     // For Main Inventory
     public function getQuantityAmountAttribute()
     {

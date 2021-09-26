@@ -38,8 +38,8 @@ class InventorySummaryController extends Controller
             $temp['outgoing'] =  number_format(tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("outgoing_amount"), 2, ".", ",");
                
  
-            $temp['stocks'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity")
-                                  - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity");
+            $temp['stocks'] = number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount")
+                                  - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("outgoing_amount"), 2, ".", ",");
             array_push($return, $temp);
         }
 
