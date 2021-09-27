@@ -587,6 +587,7 @@ export default {
       active: false,
       message: "",
     },
+    
     tab: null,
     formRules: [(v) => !!v || "This is required"],
     progressBar: false,

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\tbl_masterlistsupp;
 
 class MainController extends Controller
 {
@@ -18,5 +19,11 @@ class MainController extends Controller
 
     }
 
+
+    public function sample (){
+       return tbl_masterlistsupp::where("status", 1)->get()->count("supply_name");
+
+        // output nan total na
+    }
   
 }

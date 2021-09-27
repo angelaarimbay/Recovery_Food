@@ -19,6 +19,12 @@ Route::group(['middleware' => 'api'], function () {
 
     // Branches Inventory
     Route::get('branches/inventory/get', 'Branches\BranchesInventoryController@get');
+    Route::get('branches/inventory/get2', 'Branches\BranchesInventoryController@get2');
+    Route::get('branches/inventory/suppCat', 'Branches\BranchesInventoryController@suppCat');
+    Route::get('branches/inventory/branchName', 'Branches\BranchesInventoryController@branchName');
+    Route::get('branches/inventory/prodCat', 'Branches\BranchesInventoryController@prodCat');
+    Route::get('branches/inventory/prodSubCat', 'Branches\BranchesInventoryController@prodSubCat');
+
 
     // Supplies Category
     Route::post('supplies/save', 'Categories\SuppliesCategoryController@save');
@@ -109,8 +115,10 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('useracc/branchName', 'UserAccounts\UserAccountsController@branchName');
 
     // POS
+    Route::post('pos/prodlist/save', 'POS\ProductsListController@save');
     Route::get('pos/prodlist/get', 'POS\ProductsListController@get');
 
     // Reports
     Route::get('walanjo', 'Reports\ReportsController@ExportMasterlist');
+    Route::get('po', 'Reports\ReportsController@ExportPO');
 });

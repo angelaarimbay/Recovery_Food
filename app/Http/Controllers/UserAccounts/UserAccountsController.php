@@ -33,23 +33,23 @@ class UserAccountsController extends Controller
                 ]
             );
                
-            $for_request_default = 0;
-            //create roles
-            $get_role = [];
-            foreach ($data->user_role as $key => $value) {
-                if ($value == 'Probationary') {
-                    $for_request_default++;
-                }
-                array_push($get_role, $value['name']);
-            }
-            // get selected user
-            $user =  User::where("id", $data->id)->first();
-            // syncronize roles (add/delete)
-            $user->syncRoles($get_role);
-            // get current permission based on role/user selected
-            $get_permission = $user->getPermissionsViaRoles($get_role);
-            // syncornize permission (add/delete)
-            $user->syncPermissions($get_permission);
+            // $for_request_default = 0;
+            // //create roles
+            // $get_role = [];
+            // foreach ($data->user_role as $key => $value) {
+            //     if ($value == 'Probationary') {
+            //         $for_request_default++;
+            //     }
+            //     array_push($get_role, $value['name']);
+            // }
+            // // get selected user
+            // $user =  User::where("id", $data->id)->first();
+            // // syncronize roles (add/delete)
+            // $user->syncRoles($get_role);
+            // // get current permission based on role/user selected
+            // $get_permission = $user->getPermissionsViaRoles($get_role);
+            // // syncornize permission (add/delete)
+            // $user->syncPermissions($get_permission);
         } else {
             $return =   User::create([ "name"=>$data->first_name.' '.$data->last_name,
             "first_name"=>$data->first_name,
@@ -61,23 +61,23 @@ class UserAccountsController extends Controller
            ] + ['name'=>'']);
 
    
-            $for_request_default = 0;
-            //create roles
-            $get_role = [];
-            foreach ($data->user_role as $key => $value) {
-                if ($value == 'Probationary') {
-                    $for_request_default++;
-                }
-                array_push($get_role, $value['name']);
-            }
-            // get selected user
-            $user =  User::where("id", $return->id)->first();
-            // syncronize roles (add/delete)
-            $user->syncRoles($get_role);
-            // get current permission based on role/user selected
-            $get_permission = $user->getPermissionsViaRoles($get_role);
-            // syncornize permission (add/delete)
-            $user->syncPermissions($get_permission);
+            // $for_request_default = 0;
+            // //create roles
+            // $get_role = [];
+            // foreach ($data->user_role as $key => $value) {
+            //     if ($value == 'Probationary') {
+            //         $for_request_default++;
+            //     }
+            //     array_push($get_role, $value['name']);
+            // }
+            // // get selected user
+            // $user =  User::where("id", $return->id)->first();
+            // // syncronize roles (add/delete)
+            // $user->syncRoles($get_role);
+            // // get current permission based on role/user selected
+            // $get_permission = $user->getPermissionsViaRoles($get_role);
+            // // syncornize permission (add/delete)
+            // $user->syncPermissions($get_permission);
         }
         return 0;
     }

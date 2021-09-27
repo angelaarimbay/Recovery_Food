@@ -23,7 +23,6 @@ class tbl_outgoingsupp extends Model
     {
         return $this->hasOne(tbl_masterlistsupp::class, 'id', 'supply_name');
     }
-
     
     public function requesting_branch()
     {
@@ -34,5 +33,4 @@ class tbl_outgoingsupp extends Model
     {
         return number_format(tbl_masterlistsupp::where("id",$this->supply_name)->first()->with_vat * $this->quantity, 2, ".", ",");
     }
-    
 }

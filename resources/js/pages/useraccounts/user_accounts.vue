@@ -483,7 +483,7 @@ export default {
       password: null,
       confirmPass: null,
       user_role: [],
-      branch: null,
+      branch: [],
     },
 
     // For comparing data
@@ -503,7 +503,7 @@ export default {
       },
       {
         text: "Branch",
-        value: "branch.branch_name",
+        value: "branch_details.branch_name",
         filterable: false,
       },
       {
@@ -618,6 +618,7 @@ export default {
       }
     },
     async get() {
+     
       this.progressbar = true; // Show the progress bar
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
@@ -630,6 +631,7 @@ export default {
           },
         })
         .then((result) => {
+           console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -641,6 +643,7 @@ export default {
 
     // Editing/updating of row
     edit(row) {
+      console.log(row)
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.first_name = row.first_name;
@@ -648,9 +651,7 @@ export default {
       this.form.email = row.email;
       this.form.phone_number = row.phone_number;
       this.form.password = row.password; 
-      for (var key in row.branch) {
-        this.form.user_role.push(row.roles[key]);
-      }
+       this.form.branch = row.branch_details.id ; 
       this.dialog = true;
     },
 

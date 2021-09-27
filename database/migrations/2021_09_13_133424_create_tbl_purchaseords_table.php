@@ -18,7 +18,7 @@ class CreateTblPurchaseordsTable extends Migration
             $table->integer('invoice_number');
             $table->integer('supplier_name')->references('id')->on('tbl_supplist');
             $table->float('amount');
-            $table->datetime('incoming_date');
+            $table->datetime('incoming_date'); 
             $table->timestamps();
 
         });

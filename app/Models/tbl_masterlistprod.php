@@ -8,8 +8,12 @@ class tbl_masterlistprod extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['diff_quantity','format_price'];
-
+    public $appends = ['diff_quantity','format_price','format_unit_price'];
+    
+    public function getFormatUnitPriceAttribute()
+    {
+        return number_format($this->price, 2, ".", ",");
+    }
     public function category()
     {
         return $this->hasOne(tbl_prodcat::class, 'id', 'category');

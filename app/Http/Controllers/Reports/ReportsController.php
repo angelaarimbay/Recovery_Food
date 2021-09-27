@@ -8,6 +8,10 @@ use App\Models\tbl_suppcat;
 use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_incomingsupp;
 use App\Models\tbl_outgoingsupp;  
+use App\Models\tbl_purchaseord;  
+use App\Models\tbl_pos;  
+
+
 use Illuminate\Support\Facades\DB;
 use niklasravnsborg\LaravelPdf\Facades\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
@@ -59,5 +63,139 @@ class ReportsController extends Controller
       
     }
 
+
+
+
+    public function ExportPO(Request $t)
+    {
+
+     
+        DB::statement(DB::raw("set @row:=0")); 
+  
+        //para malaman mo kung may laman need mo return to, pero pag eexport mo na sa pdf aalisin mo ung return
+          $data = tbl_purchaseord::with('supplier_name_details')->whereBetween('incoming_date',[$t->from, $t->to])
+                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
+
+        switch ($t->type) {
+        case 'pdf':
+            $content['data'] = $data; 
+            $pdf = PDF::loadView('reports.purchaseorder', $content, [], [
+                'format' => 'A4-L' // A4 paper daw ung default nyo, so A4 yan then -L meaning Landscape
+              ]);
+            return $pdf->stream();
+        break;
+        case 'excel':  //ikaw na mag set dito ng mga columns na need. excel to. ok p
+            //columns
+            $columns = ['ID1','Supply name1','Category1']; //lalagay mo lang header ng excel mo   
+            //data
+                $dataitems = [];
+             foreach ($data as $key => $value) { //ito nmn syempre ung galing sa data
+                    $temp = [];
+                    $temp['ID'] = $value->row;
+                    $temp['supply_name'] = $value->supply_name;
+                    $temp['category'] = tbl_suppcat::where("id",$value->category)->first()->supply_cat_name;
+                //   kaw na mag tuloy. oo
+                    array_push($dataitems,$temp);
+             }    
+            return   Excel::download(new InventoryExport($dataitems,$columns), "your report name.xlsx");
+        break;
+        case 'print': 
+
+        break;
+        default:
+        # code...
+        break;
+        }
+                       
+      
+    }
+
+
+    public function ExportTP(Request $t)
+    {
+
+     
+        DB::statement(DB::raw("set @row:=0"));  
+        //para malaman mo kung may laman need mo return to, pero pag eexport mo na sa pdf aalisin mo ung return
+          $data = tbl_pos::whereBetween('created_at',[$t->from, $t->to])
+                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
+
+        switch ($t->type) {
+        case 'pdf':
+            $content['data'] = $data; 
+            $pdf = PDF::loadView('reports.transactionreport', $content, [], [
+                'format' => 'A4-L' // A4 paper daw ung default nyo, so A4 yan then -L meaning Landscape
+              ]);
+            return $pdf->stream();
+        break;
+        case 'excel':  //ikaw na mag set dito ng mga columns na need. excel to. ok p
+            //columns
+            $columns = ['ID1','Supply name1','Category1']; //lalagay mo lang header ng excel mo   
+            //data
+                $dataitems = [];
+             foreach ($data as $key => $value) { //ito nmn syempre ung galing sa data
+                    $temp = [];
+                    $temp['ID'] = $value->row;
+                    $temp['supply_name'] = $value->supply_name;
+                    $temp['category'] = tbl_suppcat::where("id",$value->category)->first()->supply_cat_name;
+                //   kaw na mag tuloy. oo
+                    array_push($dataitems,$temp);
+             }    
+            return   Excel::download(new InventoryExport($dataitems,$columns), "your report name.xlsx");
+        break;
+        case 'print': 
+
+        break;
+        default:
+        # code...
+        break;
+        }
+                       
+      
+    }
+
+    //sales report,
+    public function ExportSP(Request $t)
+    {
+
+     
+        DB::statement(DB::raw("set @row:=0"));  
+        //para malaman mo kung may laman need mo return to, pero pag eexport mo na sa pdf aalisin mo ung return
+          $data = tbl_pos::whereBetween('created_at',[$t->from, $t->to])
+                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
+
+        switch ($t->type) {
+        case 'pdf':
+            $content['data'] = $data; 
+            $pdf = PDF::loadView('reports.transactionreport', $content, [], [
+                'format' => 'A4-L' // A4 paper daw ung default nyo, so A4 yan then -L meaning Landscape
+              ]);
+            return $pdf->stream();
+        break;
+        case 'excel':  //ikaw na mag set dito ng mga columns na need. excel to. ok p
+            //columns
+            $columns = ['ID1','Supply name1','Category1']; //lalagay mo lang header ng excel mo   
+            //data
+                $dataitems = [];
+             foreach ($data as $key => $value) { //ito nmn syempre ung galing sa data
+                    $temp = [];
+                    $temp['ID'] = $value->row;
+                    $temp['supply_name'] = $value->supply_name;
+                    $temp['category'] = tbl_suppcat::where("id",$value->category)->first()->supply_cat_name;
+                //   kaw na mag tuloy. oo
+                    array_push($dataitems,$temp);
+             }    
+            return   Excel::download(new InventoryExport($dataitems,$columns), "your report name.xlsx");
+        break;
+        case 'print': 
+
+        break;
+        default:
+        # code...
+        break;
+        }
+                       
+      
+    }
 
 }

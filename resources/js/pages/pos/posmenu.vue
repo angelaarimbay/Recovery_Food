@@ -66,6 +66,7 @@
                   single-line
                   dense
                   clearable
+                  autocomplete="off"
                 ></v-text-field>
                 <v-tooltip bottom>
                   <template #activator="data">
@@ -93,7 +94,7 @@
             :items="table1.data"
             :loading="progressbar1"
             :page.sync="page"
-            ref="progress1"
+            ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
@@ -102,7 +103,7 @@
             <v-progress-linear
               color="red darken-2"
               class="px-0 mx-0"
-              slot="progress1"
+              slot="progress"
               indeterminate
               rounded
             ></v-progress-linear>
@@ -110,14 +111,21 @@
               {{ item.row }}</template
             >
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="selectItem(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-cart</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    :large="$vuetify.breakpoint.mdAndUp"
+                    v-on="data.on"
+                    icon
+                    color="red darken-2"
+                    @click="selectItem(item)"
+                    :small="$vuetify.breakpoint.smAndDown"
+                  >
+                    <v-icon>mdi-cart</v-icon>
+                  </v-btn>
+                </template>
+                <span>Add Order</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -145,25 +153,27 @@
           </v-toolbar>
           <v-card tile style="background-color: #f5f5f5">
             <v-card-text class="py-2">
-              <br />
               <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                 <v-row>
-                  <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
                       >Item Selected:
-                      {{ selectedrow.product_name.product_name }}</span
+                      <strong>{{
+                        selectedrow.product_name.product_name
+                      }}</strong></span
                     >
                   </v-col>
                 </v-row>
-                <hr />
                 <v-row>
                   <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                     <v-text-field
                       v-model="quantity"
-                      :rules="formRules"
                       outlined
                       clearable
                       dense
+                      @focus="clearQ"
+                      @blur="resetQ"
+                      autocomplete="off"
                     >
                       <template slot="label">
                         <div style="font-size: 14px">Quantity *</div>
@@ -195,7 +205,7 @@
                 dark
                 style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
-                @click="addItem"
+                @click="validateQty"
               >
                 Save
               </v-btn>
@@ -219,25 +229,28 @@
 
           <v-row no-gutters class="mt-2">
             <!-- Items Per Page -->
-            <v-card-actions>
-              <span
-                style="color: #616161"
-                :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
-                >Sales Count: {{ table2.length }}</span
-              >
-            </v-card-actions>
+            <v-col cols="6" class="my-auto">
+              <v-card-actions>
+                <span
+                  style="color: #616161"
+                  :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+                  >Sales Count: {{ table2.length }}</span
+                >
+              </v-card-actions>
+            </v-col>
 
             <v-spacer></v-spacer>
 
             <!-- Mode Field -->
-            <v-col cols="6" xl="4" lg="4" md="6" sm="7" class="my-0 py-0">
+            <v-col cols="6" xl="4" lg="4" md="6" sm="7" class="my-auto">
               <v-card-actions>
                 <v-select
                   outlined
                   dense
-                  :items="['Walk In', 'Take Out', 'Delivery']"
-                  hide-details="auto"
-                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-4 mb-sm-2"
+                  v-model="mode"
+                  :items="['Walk-In', 'Take-Out']"
+                  hide-details
+                  class="mb-0 mb-xl-5 mb-lg-5 mb-md-5 mb-sm-2"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Mode</div>
@@ -251,11 +264,9 @@
           <v-data-table
             :headers="headers2"
             :items="table2"
-            fixed-header
-            dense
             height="230"
             :loading="progressbar2"
-            ref="progress2"
+            ref="progress"
             :items-per-page="table2.length"
             hide-default-footer
           >
@@ -263,27 +274,30 @@
             <v-progress-linear
               color="red darken-2"
               class="px-0 mx-0"
-              slot="progress2"
+              slot="progress"
               indeterminate
               rounded
             ></v-progress-linear>
+
             <template v-slot:[`item.row`]="{ item }">
-            <v-btn
-              icon
-              color="red darken-2"
-              @click="deleteItem(item)"
-              :x-small="$vuetify.breakpoint.smAndDown"
-            >
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </template>
-
-
-
-
-
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    :large="$vuetify.breakpoint.mdAndUp"
+                    v-on="data.on"
+                    icon
+                    color="red darken-2"
+                    @click="deleteItem(item)"
+                    :small="$vuetify.breakpoint.smAndDown"
+                  >
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>Remove Item</span>
+              </v-tooltip>
+            </template>
           </v-data-table>
-        
+
           <!-- Paginate -->
           <!-- <div class="text-center pt-2">
             <v-pagination
@@ -303,7 +317,7 @@
           >
             <strong style="color: #616161">Total: </strong>
             <v-spacer></v-spacer>
-            <strong>{{ totalamount }}</strong>
+            <strong style="font-size: 27px">{{ totalamount }}</strong>
           </v-card>
         </v-col>
 
@@ -312,12 +326,19 @@
             <v-row align="center" justify="center">
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  ref="payment"
                   v-model="payment"
-                  @change="getChange"
+                  @input="getChange($event)"
                   outlined
                   clearable
                   dense
                   hide-details
+                  @click:clear="change = 0"
+                  @focus="clearP"
+                  @blur="resetP"
+                  persistent-placeholder
+                  autocomplete="off"
+                  :disabled="!disabled"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Payment</div>
@@ -328,11 +349,16 @@
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
                   v-model="discount"
-                  @change="getChange"
+                  @input="getChange($event)"
                   outlined
                   clearable
                   dense
                   hide-details
+                  persistent-placeholder
+                  @focus="clearD"
+                  @blur="resetD"
+                  autocomplete="off"
+                  :disabled="!disabled"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Discount</div>
@@ -347,6 +373,7 @@
                   dense
                   disabled
                   hide-details
+                  filled
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Change</div>
@@ -358,12 +385,13 @@
             <v-row class="mt-2">
               <v-col>
                 <v-btn
-                  dark
                   block
                   color="green darken-3"
-                  style="text-transform: none"
+                  style="text-transform: none; color: white"
+                  :disabled="!disabled"
+                  @click="save"
                 >
-                  Done
+                  Pay
                 </v-btn>
               </v-col>
             </v-row>
@@ -374,6 +402,19 @@
   </div>
 </template>
 
+<style>
+.v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
+</style>
+
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -383,6 +424,13 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
+    disabled() {
+      if (this.table2.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
   data: () => ({
     progressbar1: false,
@@ -393,6 +441,7 @@ export default {
     },
     search: "",
     button: false,
+    mode: "",
     quantity: 0,
     dialog: false,
     selectedrow: { product_name: "" },
@@ -440,7 +489,7 @@ export default {
       },
       {
         text: "Unit Price",
-        value: "product_name.price",
+        value: "product_name.format_unit_price",
         align: "right",
         filterable: false,
       },
@@ -467,10 +516,15 @@ export default {
       { text: "#", value: "id", align: "start", filterable: false },
       {
         text: "Product Name",
-        value: "product_name",
+        value: "product",
         filterable: false,
       },
-      { text: "Unit Price", value: "unit", align: "right", filterable: false },
+      {
+        text: "Unit Price",
+        value: "unit_price",
+        align: "right",
+        filterable: false,
+      },
       {
         text: "Qty",
         value: "quantity",
@@ -501,8 +555,9 @@ export default {
       // for (var key in this.table2.sub_total) {
       //       arrayshit.push( this.table2[key].sub_total);
       // }
-      this.totalamount = this.table2.reduce((a, b) => a + b.sub_total, 0);
+      this.totalamount = numeral(this.table2.reduce((a, b) => a + b.temp_sub_total, 0)).format("0,0.00");
     },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -520,54 +575,175 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           this.table1 = result.data;
           this.progressbar1 = false;
+        })
+        .catch((result) => {
+          // If false or error when saving
         });
     },
 
-    selectItem(item) {
-      this.dialog = true;
-      this.selectedrow = item;
-      console.log(item);
-      // 1. open dialog
-      // 2. input ka
-      // 3. pag ok mo ito ung code
-      //     this.table1.push(item); //add new row/data to datable
-      // 4. pag mag add quantity ka same item. depende sayo.
-      // ako kasi ni checheck ko kung existing ung item pag exisitng add quantity lang ndi new row
-
-      //gawin mo na
-      //ito ung code para mapapunta sa 2nd table mo
-      //pero ito ay update. for example na check mo na exsiting ung item. then update mo ung quantity.
-      // var index = this.selected.documents.indexOf(item);
-      // Object.assign(this.table2[index], item); //get specific index values
-      //ito nmn ung add new row sa isang table.
-
-      //    ikaw na gumawa ng condition.
-    },
-    addItem() {
-      this.table2.push({
-        id: this.table2.length + 1,
-        product_name: this.selectedrow.product_name.product_name,
-        unit: this.selectedrow.product_name.price,
-        quantity: this.quantity,
-        sub_total: this.quantity * this.selectedrow.product_name.price,
+    async save() {
+      await axios.post("/api/pos/prodlist/save", this.table2).then((result) => {
+        console.log(result.data);
+        //kaw na mag add nyan
+        //  this.snackbar = {
+        //           active: true,
+        //           iconText: "check",
+        //           iconColor: "success",
+        //           message: "Successfully saved.",
+        //         };
       });
-      this.getTotal();
     },
+
+    selectItem(item) {
+      if (this.mode) {
+        this.dialog = true;
+        this.selectedrow = item;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Select mode of transaction first!",
+        };
+      }
+    },
+
+    validateQty() {
+
+      var quantity = 0;
+     if(this.table2.length>0){ 
+        for (var key in this.table2) { 
+          if(this.table2[key].product === this.selectedrow.product_name.product_name ){
+              quantity  +=   parseInt(this.table2[key].quantity) ;
+          } 
+        } 
+      } 
+     
+    if(this.selectedrow.quantity <= quantity){
+          this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "error",
+                message: "Error! Please input correct quantity.",
+              }; 
+    }else{
+         this.addItem(); 
+    }
+    
+          
+       
+     
+    
+    },
+
+
+
+    addItem() {
+  
+        this.table2.push({
+          id: this.table2.length + 1,
+          category: this.selectedrow.category.id,
+          sub_category: this.selectedrow.sub_category.id,
+          product: this.selectedrow.product_name.product_name,
+          product_name: this.selectedrow.product_name.id,
+          unit_price: this.selectedrow.product_name.format_unit_price,
+
+          quantity: this.quantity,
+          sub_total:  numeral(this.quantity * this.selectedrow.product_name.price).format("0,0.00"),
+           temp_sub_total:   this.quantity * this.selectedrow.product_name.price ,
+          mode: this.mode,
+        });
+        this.snackbar = {
+          active: true,
+          iconText: "check",
+          iconColor: "success",
+          message: "Successfully added.",
+        };
+        this.getTotal();
+        this.cancel();
+       
+    },
+
     deleteItem(item) {
       this.editedIndex = this.table2.indexOf(item);
       this.table2.splice(this.editedIndex, 1);
+      this.snackbar = {
+        active: true,
+        iconText: "check",
+        iconColor: "success",
+        message: "Successfully removed.",
+      };
       this.getTotal();
     },
+
     getChange() {
-      this.change = this.payment - (this.discount / 100) * this.totalamount;
+      if (this.payment >= this.totalamount) {
+        if (this.discount > 0) {
+          this.change = this.payment - (this.discount / 100) * this.totalamount;
+        } else if (this.discount == null || this.discount == 0) {
+          this.change = this.payment - this.totalamount;
+        }
+      } else {
+        if (this.payment !== null) {
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Error! Please input correct payment.",
+          };
+        }
+      }
     },
 
-    // Reset Forms
+    // Reset Form
     cancel() {
-      this.$refs.form.reset();
+      this.quantity = 0;
       this.dialog = false;
+    },
+
+    // Reset Value of Quantity text-field
+    resetQ() {
+      if (this.quantity == null) {
+        this.quantity = 0;
+      }
+    },
+
+    // Clear Value of Quantity text-field
+    clearQ() {
+      if (this.quantity == 0) {
+        this.quantity = null;
+      }
+    },
+
+    // Reset Value of Payment text-field
+    resetP() {
+      if (this.payment == null) {
+        this.payment = 0;
+      }
+    },
+
+    // Clear Value of Payment text-field
+    clearP() {
+      if (this.payment == 0) {
+        this.payment = null;
+      }
+    },
+
+    // Reset Value of Discount text-field
+    resetD() {
+      if (this.discount == null) {
+        this.discount = 0;
+      }
+    },
+
+    // Clear Value of Discount text-field
+    clearD() {
+      if (this.discount == 0) {
+        this.discount = null;
+      }
     },
   },
 

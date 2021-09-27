@@ -170,7 +170,6 @@ export default {
                 remember: this.remember,
               })
               .then((res) => {
-                
                 this.snackbar.status = true;
                 this.snackbar.iconText = "check";
                 this.snackbar.iconColor = "primary";
