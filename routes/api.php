@@ -2,15 +2,19 @@
  
 use Illuminate\Support\Facades\Route;
 
-Route::group(['middleware' => 'guest'], function () {
-    Route::post('login', 'Auth\LoginController@login');
-});
-Route::get('user', 'Auth\UserController@current');
+    Route::group(['middleware' => 'guest'], function () {
+        Route::post('login', 'Auth\LoginController@login');
+    });
+    Route::get('user', 'Auth\UserController@current');
 
-Route::group(['middleware' => 'api'], function () {
- 
-    
-    Route::get('users','UserController@getUsers');
+    Route::group(['middleware' => 'api'], function () {
+    Route::get('users', 'UserController@getUsers');
+
+    // Dashboard
+    Route::get('dashboard/getSupp', 'Dashboard\MainController@getSupp');
+    Route::get('dashboard/getProd', 'Dashboard\MainController@getProd');
+    Route::get('dashboard/getPO', 'Dashboard\MainController@getPO');
+    Route::get('dashboard/getUser', 'Dashboard\MainController@getUser');
    
     // Manage Branches
     Route::post('branches/attachment', 'Branches\BranchesController@attachment');

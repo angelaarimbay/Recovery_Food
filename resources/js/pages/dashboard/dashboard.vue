@@ -129,160 +129,193 @@
       </v-layout>
     </v-container>
 
-    <v-container>
-      <v-layout row wrap class="pb-1">
-        <v-flex xs12 sm6 md4 lg3 xl3>
+    <!-- Cards -->
+    <v-container class="pa-0">
+      <v-row no-gutters>
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"
+          class="pa-1"
+          :hidden="!hiddenCard1"
+        >
           <v-card
             elevation="6"
-            style="
-              border-radius: 10px;
-              border-left: 20px solid #827717;
-              white-space: nowrap;
-              overflow: hidden;
-            "
-            class="ma-1 ma-sm-2 ma-md-3 ma-lg-3 ma-xl-3"
+            style="border-radius: 10px; border-left: 13px solid #827717"
+            class="pa-0"
+            height="100"
           >
             <v-card-title
               style="color: #827717"
-              class="pb-0 h6"
+              class="pt-2 caption"
               :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
               >Total Supplies</v-card-title
             >
-            <v-card-text class="pb-0">
-              <div
-                class="mb-0 h3 font-weight-bold black--text"
-                :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
-              >
-                0
-              </div>
-            </v-card-text>
-            <v-card-actions class="pt-0"
+            <v-card-subtitle
+              class="h3 pb-0 mb-0"
+              style="color: #000000; font-weight: bold"
+              :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >{{ supp }}
+              <v-progress-circular
+                size="25"
+                indeterminate
+                :hidden="hidden1"
+                color="red darken-2"
+              ></v-progress-circular
+            ></v-card-subtitle>
+            <v-card-actions
               ><v-btn
                 text
                 small
-                class="ml-auto caption"
-                :class="{ 'mx-auto': $vuetify.breakpoint.xsOnly }"
-                style="text-transform: none"
+                class="mx-auto caption"
+                style="text-transform: none; text-decoration: none"
+                :to="{ name: 'masterlist-supplies' }"
                 >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
               ></v-card-actions
             >
           </v-card>
-        </v-flex>
+        </v-col>
 
-        <v-flex xs12 sm6 md4 lg3 xl3>
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"
+          class="pa-1"
+          :hidden="!hiddenCard2"
+        >
           <v-card
             elevation="6"
-            style="
-              border-radius: 10px;
-              border-left: 20px solid #827717;
-              white-space: nowrap;
-              overflow: hidden;
-            "
-            class="ma-1 ma-sm-2 ma-md-3 ma-lg-3 ma-xl-3"
+            style="border-radius: 10px; border-left: 13px solid #827717"
+            class="pa-0"
+            height="100"
           >
             <v-card-title
               style="color: #827717"
-              class="pb-0 h6"
+              class="pt-2 caption"
               :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
               >Total Products</v-card-title
             >
-            <v-card-text class="pb-0">
-              <div
-                class="mb-0 h3 font-weight-bold black--text"
-                :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
-              >
-                0
-              </div>
-            </v-card-text>
-            <v-card-actions class="pt-0"
+            <v-card-subtitle
+              class="h3 pb-0 mb-0"
+              style="color: #000000; font-weight: bold"
+              :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >{{ prod }}
+              <v-progress-circular
+                size="25"
+                indeterminate
+                :hidden="hidden2"
+                color="red darken-2"
+              ></v-progress-circular
+            ></v-card-subtitle>
+            <v-card-actions
               ><v-btn
                 text
                 small
-                class="ml-auto caption"
-                :class="{ 'mx-auto': $vuetify.breakpoint.xsOnly }"
-                style="text-transform: none"
+                class="mx-auto caption"
+                style="text-transform: none; text-decoration: none"
+                :to="{ name: 'masterlist-products' }"
                 >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
               ></v-card-actions
             >
           </v-card>
-        </v-flex>
+        </v-col>
 
-        <v-flex xs12 sm6 md4 lg3 xl3>
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"
+          class="pa-1"
+          :hidden="!hiddenCard3"
+        >
           <v-card
             elevation="6"
-            style="
-              border-radius: 10px;
-              border-left: 20px solid #827717;
-              white-space: nowrap;
-              overflow: hidden;
-            "
-            class="ma-1 ma-sm-2 ma-md-3 ma-lg-3 ma-xl-3"
+            style="border-radius: 10px; border-left: 13px solid #827717"
+            class="pa-0"
+            height="100"
           >
             <v-card-title
               style="color: #827717"
-              class="pb-0 h6"
+              class="pt-2 caption"
               :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
-              >Total Purchase Orders</v-card-title
+              >Total PO</v-card-title
             >
-            <v-card-text class="pb-0">
-              <div
-                class="mb-0 h3 font-weight-bold black--text"
-                :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
-              >
-                0
-              </div>
-            </v-card-text>
-            <v-card-actions class="pt-0"
+            <v-card-subtitle
+              class="h3 pb-0 mb-0"
+              style="color: #000000; font-weight: bold"
+              :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >{{ po }}
+              <v-progress-circular
+                size="25"
+                indeterminate
+                :hidden="hidden3"
+                color="red darken-2"
+              ></v-progress-circular
+            ></v-card-subtitle>
+            <v-card-actions
               ><v-btn
                 text
                 small
-                class="ml-auto caption"
-                :class="{ 'mx-auto': $vuetify.breakpoint.xsOnly }"
-                style="text-transform: none"
+                class="mx-auto caption"
+                style="text-transform: none; text-decoration: none"
+                :to="{ name: 'purchase-orders' }"
                 >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
               ></v-card-actions
             >
           </v-card>
-        </v-flex>
+        </v-col>
 
-        <v-flex xs12 sm6 md4 lg3 xl3>
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"
+          class="pa-1"
+          :hidden="!hiddenCard4"
+        >
           <v-card
             elevation="6"
-            style="
-              border-radius: 10px;
-              border-left: 20px solid #827717;
-              white-space: nowrap;
-              overflow: hidden;
-            "
-            class="ma-1 ma-sm-2 ma-md-3 ma-lg-3 ma-xl-3"
+            style="border-radius: 10px; border-left: 13px solid #827717"
+            class="pa-0"
+            height="100"
           >
             <v-card-title
               style="color: #827717"
-              class="pb-0 h6"
+              class="pt-2 caption"
               :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
               >Total Users</v-card-title
             >
-            <v-card-text class="pb-0">
-              <div
-                class="mb-0 h3 font-weight-bold black--text"
-                :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
-              >
-                0
-              </div>
-            </v-card-text>
-            <v-card-actions class="pt-0"
+            <v-card-subtitle
+              class="h3 pb-0 mb-0"
+              style="color: #000000; font-weight: bold"
+              :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >{{ useracc }}
+              <v-progress-circular
+                size="25"
+                indeterminate
+                :hidden="hidden4"
+                color="red darken-2"
+              ></v-progress-circular
+            ></v-card-subtitle>
+            <v-card-actions
               ><v-btn
                 text
                 small
-                class="ml-auto caption"
-                :class="{ 'mx-auto': $vuetify.breakpoint.xsOnly }"
-                style="text-transform: none"
+                class="mx-auto caption"
+                style="text-transform: none; text-decoration: none"
+                :to="{ name: 'user-accounts' }"
                 >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
               ></v-card-actions
             >
           </v-card>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <v-divider
         style="border: 2px solid #bdbdbd; border-radius: 5px"
@@ -293,34 +326,125 @@
 
 <script>
 import { mapGetters } from "vuex";
+import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
-
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
-  },
-
-  created() {
-    if (this.user.permissionslist.includes("Access Dashboard")) {
-    } else {
-        if (this.user.permissionslist.includes("Access POS")) {
-      this.$router.push({ name: "pos" }).catch((errr) => {});
-      }else{
-
-      this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+    hiddenCard1() {
+      if (this.checkbox1 == false) {
+        return false;
+      } else {
+        return true;
       }
-    }
+    },
+    hiddenCard2() {
+      if (this.checkbox2 == false) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    hiddenCard3() {
+      if (this.checkbox3 == false) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    hiddenCard4() {
+      if (this.checkbox4 == false) {
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
- 
-
   data: () => ({
     sheet: false,
     checkbox1: true,
     checkbox2: true,
     checkbox3: true,
     checkbox4: true,
+    supp: null,
+    prod: null,
+    po: null,
+    useracc: null,
+    hidden1: true,
+    hidden2: true,
+    hidden3: true,
+    hidden4: true,
   }),
+
+  methods: {
+    async getSupp() {
+      this.hidden1 = false;
+      await axios
+        .get("/api/dashboard/getSupp")
+        .then((result) => {
+          this.supp = result.data;
+          this.hidden1 = true;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async getProd() {
+      this.hidden2 = false;
+      await axios
+        .get("/api/dashboard/getProd")
+        .then((result) => {
+          this.prod = result.data;
+          this.hidden2 = true;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async getPO() {
+      this.hidden3 = false;
+      await axios
+        .get("/api/dashboard/getPO")
+        .then((result) => {
+          this.po = result.data;
+          this.hidden3 = true;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async getUser() {
+      this.hidden4 = false;
+      await axios
+        .get("/api/dashboard/getUser")
+        .then((result) => {
+          this.useracc = result.data;
+          this.hidden4 = true;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+  },
+
+  created() {
+    if (this.user.permissionslist.includes("Access Dashboard")) {
+      this.getSupp();
+      this.getProd();
+      this.getPO();
+      this.getUser();
+    } else {
+      if (this.user.permissionslist.includes("Access POS")) {
+        this.$router.push({ name: "pos" }).catch((errr) => {});
+      } else {
+        this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+      }
+    }
+  },
 };
 </script>

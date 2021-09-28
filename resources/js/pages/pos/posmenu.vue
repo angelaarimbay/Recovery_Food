@@ -555,7 +555,9 @@ export default {
       // for (var key in this.table2.sub_total) {
       //       arrayshit.push( this.table2[key].sub_total);
       // }
-      this.totalamount = numeral(this.table2.reduce((a, b) => a + b.temp_sub_total, 0)).format("0,0.00");
+      this.totalamount = numeral(
+        this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
+      ).format("0,0.00");
     },
 
     itemperpage() {
@@ -575,7 +577,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -586,7 +587,6 @@ export default {
 
     async save() {
       await axios.post("/api/pos/prodlist/save", this.table2).then((result) => {
-        console.log(result.data);
         //kaw na mag add nyan
         //  this.snackbar = {
         //           active: true,
@@ -612,59 +612,54 @@ export default {
     },
 
     validateQty() {
-
       var quantity = 0;
-     if(this.table2.length>0){ 
-        for (var key in this.table2) { 
-          if(this.table2[key].product === this.selectedrow.product_name.product_name ){
-              quantity  +=   parseInt(this.table2[key].quantity) ;
-          } 
-        } 
-      } 
-     
-    if(this.selectedrow.quantity <= quantity){
-          this.snackbar = {
-                active: true,
-                iconText: "alert",
-                iconColor: "error",
-                message: "Error! Please input correct quantity.",
-              }; 
-    }else{
-         this.addItem(); 
-    }
-    
-          
-       
-     
-    
-    },
+      if (this.table2.length > 0) {
+        for (var key in this.table2) {
+          if (
+            this.table2[key].product ===
+            this.selectedrow.product_name.product_name
+          ) {
+            quantity += parseInt(this.table2[key].quantity);
+          }
+        }
+      }
 
-
-
-    addItem() {
-  
-        this.table2.push({
-          id: this.table2.length + 1,
-          category: this.selectedrow.category.id,
-          sub_category: this.selectedrow.sub_category.id,
-          product: this.selectedrow.product_name.product_name,
-          product_name: this.selectedrow.product_name.id,
-          unit_price: this.selectedrow.product_name.format_unit_price,
-
-          quantity: this.quantity,
-          sub_total:  numeral(this.quantity * this.selectedrow.product_name.price).format("0,0.00"),
-           temp_sub_total:   this.quantity * this.selectedrow.product_name.price ,
-          mode: this.mode,
-        });
+      if (this.selectedrow.quantity <= quantity) {
         this.snackbar = {
           active: true,
-          iconText: "check",
-          iconColor: "success",
-          message: "Successfully added.",
+          iconText: "alert",
+          iconColor: "error",
+          message: "Error! Please input correct quantity.",
         };
-        this.getTotal();
-        this.cancel();
-       
+      } else {
+        this.addItem();
+      }
+    },
+
+    addItem() {
+      this.table2.push({
+        id: this.table2.length + 1,
+        category: this.selectedrow.category.id,
+        sub_category: this.selectedrow.sub_category.id,
+        product: this.selectedrow.product_name.product_name,
+        product_name: this.selectedrow.product_name.id,
+        unit_price: this.selectedrow.product_name.format_unit_price,
+
+        quantity: this.quantity,
+        sub_total: numeral(
+          this.quantity * this.selectedrow.product_name.price
+        ).format("0,0.00"),
+        temp_sub_total: this.quantity * this.selectedrow.product_name.price,
+        mode: this.mode,
+      });
+      this.snackbar = {
+        active: true,
+        iconText: "check",
+        iconColor: "success",
+        message: "Successfully added.",
+      };
+      this.getTotal();
+      this.cancel();
     },
 
     deleteItem(item) {

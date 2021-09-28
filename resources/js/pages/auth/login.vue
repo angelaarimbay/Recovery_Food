@@ -48,6 +48,7 @@
                           ? form.errors.errors.email[0]
                           : ''
                       "
+                      prepend-icon="mdi-email"
                     ></v-text-field>
                   </v-col>
 
@@ -67,6 +68,7 @@
                       :append-icon="!value ? 'mdi-eye' : 'mdi-eye-off'"
                       @click:append="() => (value = !value)"
                       :type="!value ? 'password' : 'text'"
+                      prepend-icon="mdi-key"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -125,7 +127,6 @@
 import Form from "vform";
 import axios from "axios";
 export default {
- 
   middleware: "guest",
 
   metaInfo() {
@@ -161,7 +162,7 @@ export default {
         // Submit the form.
         await axios
           .post("/api/login", this.form)
-          .then((result) => { 
+          .then((result) => {
             // Save the token.
             this.user = false;
             this.$store
@@ -176,13 +177,11 @@ export default {
                 this.snackbar.message = "Login Successful.";
                 this.$store.dispatch("auth/fetchUser");
                 this.$store.dispatch("auth/fetchUserPermissions");
-                this.$store.dispatch("auth/fetchUserRoles");  
-                 this.$router.push({ name: 'dashboard' }).catch(errr=>{})  
-
+                this.$store.dispatch("auth/fetchUserRoles");
+                this.$router.push({ name: "dashboard" }).catch((errr) => {});
               });
           })
           .catch((result) => {
-            console.log(result);
             this.overlay = false;
             this.snackbar.status = true;
             this.snackbar.iconText = "alert";

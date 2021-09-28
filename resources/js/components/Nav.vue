@@ -39,18 +39,20 @@
               style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
             >
-              <v-icon class="round">mdi-account</v-icon><span>{{ user.name }}</span>
+              <v-icon class="round">mdi-account</v-icon
+              ><span>{{ user.name }}</span>
             </v-btn>
           </template>
           <v-list dense>
             <v-list-item>
-              <v-list-item-title>Menu 1</v-list-item-title>
+              <v-list-item-title style="cursor: pointer"
+                >Password</v-list-item-title
+              >
             </v-list-item>
             <v-list-item>
-              <v-list-item-title>Menu 2</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Menu 3</v-list-item-title>
+              <v-list-item-title @click="logout" style="cursor: pointer"
+                >Logout
+              </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -81,15 +83,15 @@
               style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
             >
-              <v-icon class="round">mdi-account</v-icon><span>{{ user.name }}</span>
+              <v-icon class="round">mdi-account</v-icon
+              ><span>{{ user.name }}</span>
             </v-btn>
           </template>
           <v-list dense>
             <v-list-item>
-              <v-list-item-title>Menu 1</v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Menu 2</v-list-item-title>
+              <v-list-item-title style="cursor: pointer"
+                >Password</v-list-item-title
+              >
             </v-list-item>
             <v-list-item>
               <v-list-item-title @click="logout" style="cursor: pointer"
