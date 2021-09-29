@@ -44,6 +44,6 @@ return [
      |
      */
 
-    'expires' => env('VIEW_CHECK_EXPIRATION', true),
+    // 'expires' => env('VIEW_CHECK_EXPIRATION', true),
 
 ];

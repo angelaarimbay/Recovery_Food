@@ -15,7 +15,7 @@ class CreateTblBranchesTable extends Migration
     {
         Schema::create('tbl_branches', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
+            $table->integer('status')->default(1); //0 = inactive, else active
             $table->string('branch_name');
             $table->string('location');
             $table->string('phone_number');

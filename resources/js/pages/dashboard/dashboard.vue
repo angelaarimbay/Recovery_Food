@@ -1,0 +1,450 @@
+<template>
+  <div
+    style="min-width: 280px"
+    v-if="!user.permissionslist.includes('Access POS')"
+  >
+    <v-container class="py-2">
+      <v-layout row wrap>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Dashboard
+        </h4>
+        <v-spacer></v-spacer>
+
+        <!-- Cards Settings -->
+        <v-tooltip bottom>
+          <template #activator="data">
+            <v-btn
+              :small="$vuetify.breakpoint.xsOnly"
+              large
+              icon
+              dark
+              color="red darken-2"
+              class="mx-1"
+              v-on="data.on"
+              @click="sheet = !sheet"
+            >
+              <v-icon>mdi-settings</v-icon>
+            </v-btn>
+          </template>
+          <span>Manage Cards</span>
+        </v-tooltip>
+
+        <v-bottom-sheet v-model="sheet" inset width="500px">
+          <v-sheet class="text-center" style="border-radius: 10px 10px 0px 0px">
+            <v-btn
+              color="#FF5252"
+              depressed
+              dark
+              style="text-transform: none"
+              small
+              class="mt-5"
+              @click="sheet = !sheet"
+            >
+              Close
+            </v-btn>
+
+            <!-- Cards -->
+            <v-row no-gutters>
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                <v-row
+                  align="center"
+                  class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
+                >
+                  <v-checkbox
+                    v-model="checkbox1"
+                    hide-details
+                    color="red darken-3"
+                    class="shrink mt-0 pt-0"
+                  ></v-checkbox>
+                  <v-card-title
+                    class="h6 my-auto px-0 font-weight-bold"
+                    style="color: #616161"
+                    >Supplies</v-card-title
+                  >
+                </v-row>
+              </v-col>
+
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                <v-row
+                  align="center"
+                  class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
+                >
+                  <v-checkbox
+                    v-model="checkbox2"
+                    hide-details
+                    color="red darken-3"
+                    class="shrink mt-0 pt-0"
+                  ></v-checkbox>
+                  <v-card-title
+                    class="h6 my-auto px-0 font-weight-bold"
+                    style="color: #616161"
+                    >Products</v-card-title
+                  >
+                </v-row>
+              </v-col>
+
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                <v-row
+                  align="center"
+                  class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
+                >
+                  <v-checkbox
+                    v-model="checkbox3"
+                    hide-details
+                    color="red darken-3"
+                    class="shrink mt-0 pt-0"
+                  ></v-checkbox>
+                  <v-card-title
+                    class="h6 my-auto px-0 font-weight-bold"
+                    style="color: #616161"
+                    >Purchase Orders</v-card-title
+                  >
+                </v-row>
+              </v-col>
+
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                <v-row
+                  align="center"
+                  class="mx-7 my-xl-2 my-lg-2 my-md-1 my-sm-1 my-0"
+                >
+                  <v-checkbox
+                    v-model="checkbox4"
+                    hide-details
+                    color="red darken-3"
+                    class="shrink mt-0 pt-0"
+                  ></v-checkbox>
+                  <v-card-title
+                    class="h6 my-auto px-0 font-weight-bold"
+                    style="color: #616161"
+                    >Users</v-card-title
+                  >
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-sheet>
+        </v-bottom-sheet>
+      </v-layout>
+    </v-container>
+
+    <!-- Cards -->
+    <v-container class="pa-0">
+      <v-row no-gutters>
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"
+          class="pa-1"
+          :hidden="!hiddenCard1"
+        >
+          <v-card
+            elevation="6"
+            style="border-radius: 10px; border-left: 13px solid #827717"
+            class="pa-0"
+            height="100"
+          >
+            <v-card-title
+              style="color: #827717"
+              class="pt-2 caption"
+              :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+              >Total Supplies</v-card-title
+            >
+            <v-card-subtitle
+              class="h3 pb-0 mb-0"
+              style="color: #000000; font-weight: bold"
+              :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >{{ supp }}
+              <v-progress-circular
+                size="25"
+                indeterminate
+                :hidden="hidden1"
+                color="red darken-2"
+              ></v-progress-circular
+            ></v-card-subtitle>
+            <v-card-actions
+              ><v-btn
+                text
+                small
+                class="mx-auto caption"
+                style="text-transform: none; text-decoration: none"
+                :to="{ name: 'masterlist-supplies' }"
+                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+              ></v-card-actions
+            >
+          </v-card>
+        </v-col>
+
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"
+          class="pa-1"
+          :hidden="!hiddenCard2"
+        >
+          <v-card
+            elevation="6"
+            style="border-radius: 10px; border-left: 13px solid #827717"
+            class="pa-0"
+            height="100"
+          >
+            <v-card-title
+              style="color: #827717"
+              class="pt-2 caption"
+              :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+              >Total Products</v-card-title
+            >
+            <v-card-subtitle
+              class="h3 pb-0 mb-0"
+              style="color: #000000; font-weight: bold"
+              :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >{{ prod }}
+              <v-progress-circular
+                size="25"
+                indeterminate
+                :hidden="hidden2"
+                color="red darken-2"
+              ></v-progress-circular
+            ></v-card-subtitle>
+            <v-card-actions
+              ><v-btn
+                text
+                small
+                class="mx-auto caption"
+                style="text-transform: none; text-decoration: none"
+                :to="{ name: 'masterlist-products' }"
+                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+              ></v-card-actions
+            >
+          </v-card>
+        </v-col>
+
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"
+          class="pa-1"
+          :hidden="!hiddenCard3"
+        >
+          <v-card
+            elevation="6"
+            style="border-radius: 10px; border-left: 13px solid #827717"
+            class="pa-0"
+            height="100"
+          >
+            <v-card-title
+              style="color: #827717"
+              class="pt-2 caption"
+              :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+              >Total PO</v-card-title
+            >
+            <v-card-subtitle
+              class="h3 pb-0 mb-0"
+              style="color: #000000; font-weight: bold"
+              :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >{{ po }}
+              <v-progress-circular
+                size="25"
+                indeterminate
+                :hidden="hidden3"
+                color="red darken-2"
+              ></v-progress-circular
+            ></v-card-subtitle>
+            <v-card-actions
+              ><v-btn
+                text
+                small
+                class="mx-auto caption"
+                style="text-transform: none; text-decoration: none"
+                :to="{ name: 'purchase-orders' }"
+                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+              ></v-card-actions
+            >
+          </v-card>
+        </v-col>
+
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="4"
+          sm="6"
+          class="pa-1"
+          :hidden="!hiddenCard4"
+        >
+          <v-card
+            elevation="6"
+            style="border-radius: 10px; border-left: 13px solid #827717"
+            class="pa-0"
+            height="100"
+          >
+            <v-card-title
+              style="color: #827717"
+              class="pt-2 caption"
+              :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
+              >Total Users</v-card-title
+            >
+            <v-card-subtitle
+              class="h3 pb-0 mb-0"
+              style="color: #000000; font-weight: bold"
+              :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
+              >{{ useracc }}
+              <v-progress-circular
+                size="25"
+                indeterminate
+                :hidden="hidden4"
+                color="red darken-2"
+              ></v-progress-circular
+            ></v-card-subtitle>
+            <v-card-actions
+              ><v-btn
+                text
+                small
+                class="mx-auto caption"
+                style="text-transform: none; text-decoration: none"
+                :to="{ name: 'user-accounts' }"
+                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+              ></v-card-actions
+            >
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <v-divider
+        style="border: 2px solid #bdbdbd; border-radius: 5px"
+      ></v-divider>
+    </v-container>
+  </div>
+</template>
+
+<script>
+import { mapGetters } from "vuex";
+import axios from "axios"; // Library for sending api request
+export default {
+  middleware: "auth",
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+    hiddenCard1() {
+      if (this.checkbox1 == false) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    hiddenCard2() {
+      if (this.checkbox2 == false) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    hiddenCard3() {
+      if (this.checkbox3 == false) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    hiddenCard4() {
+      if (this.checkbox4 == false) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
+  data: () => ({
+    sheet: false,
+    checkbox1: true,
+    checkbox2: true,
+    checkbox3: true,
+    checkbox4: true,
+    supp: null,
+    prod: null,
+    po: null,
+    useracc: null,
+    hidden1: true,
+    hidden2: true,
+    hidden3: true,
+    hidden4: true,
+  }),
+
+  methods: {
+    async getSupp() {
+      this.hidden1 = false;
+      await axios
+        .get("/api/dashboard/getSupp")
+        .then((result) => {
+          this.supp = result.data;
+          this.hidden1 = true;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async getProd() {
+      this.hidden2 = false;
+      await axios
+        .get("/api/dashboard/getProd")
+        .then((result) => {
+          this.prod = result.data;
+          this.hidden2 = true;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async getPO() {
+      this.hidden3 = false;
+      await axios
+        .get("/api/dashboard/getPO")
+        .then((result) => {
+          this.po = result.data;
+          this.hidden3 = true;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async getUser() {
+      this.hidden4 = false;
+      await axios
+        .get("/api/dashboard/getUser")
+        .then((result) => {
+          this.useracc = result.data;
+          this.hidden4 = true;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+  },
+
+  created() {
+    if (this.user.permissionslist.includes("Access Dashboard")) {
+      this.getSupp();
+      this.getProd();
+      this.getPO();
+      this.getUser();
+    } else {
+      if (this.user.permissionslist.includes("Access POS")) {
+        this.$router.push({ name: "pos" }).catch((errr) => {});
+      } else {
+        this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+      }
+    }
+  },
+};
+</script>

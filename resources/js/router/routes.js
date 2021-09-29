@@ -1,50 +1,55 @@
 function page(path) {
-    return () => import(/* webpackChunkName: '' */ `../pages/${path}`).then(m => m.default || m)
+  return () => import(/* webpackChunkName: '' */ `../pages/${path}`).then(m => m.default || m)
 }
 
-export default {
-    mode: 'history',
-    routes: [
-        // { path:'*', component: page('errors/page-not-found.vue') }, 
-        // { path:'/',  component: page('login.vue') },  
-        { path: '/', name: 'dashboard', component: page('dashboard.vue') },
+export default [
 
-        //Dashboard
-        { path: '/dashboard', name: 'dashboard', component: page('dashboard.vue') },
+  { path: '*', name:'invalid-page', component: page('errors/page-not-found.vue') }, 
+  // Login
+  { path: '/login', name: 'login', component: page('auth/login.vue') },
+  { path: '/', name: 'home', component: page('dashboard/dashboard.vue') },
 
-        //Branches
-        { path: '/manage_branches', name: 'branches', component: page('manage_branches.vue') },
-        { path: '/branches_inventory', name: 'branches', component: page('branches_inventory.vue') },
+  //Dashboard
+  { path: '/dashboard', name: 'dashboard', component: page('dashboard/dashboard.vue') },
 
-        //Categories
-        { path: '/supplies_category', name: 'categories', component: page('supplies_category.vue') },
-        { path: '/products_category', name: 'categories', component: page('products_category.vue') },
-        { path: '/products_sub_category', name: 'categories', component: page('products_sub_category.vue') },
+  //Branches
+  { path: '/manage_branches', name: 'manage-branches', component: page('branches/manage_branches.vue') },
+  { path: '/branches_inventory', name: 'branches-inventory', component: page('branches/branches_inventory.vue') },
 
-        //Inventory
-        { path: '/masterlist_supplies', name: 'inventory', component: page('masterlist_supplies.vue') },
-        { path: '/incoming_supplies', name: 'inventory', component: page('incoming_supplies.vue') },
-        { path: '/outgoing_supplies', name: 'inventory', component: page('outgoing_supplies.vue') },
-        { path: '/main_inventory', name: 'inventory', component: page('main_inventory.vue') },
-        { path: '/inventory_summary', name: 'inventory', component: page('inventory_summary.vue') },
+  //Categories
+  { path: '/supplies_category', name: 'supplies-category', component: page('categories/supplies_category.vue') },
+  { path: '/products_category', name: 'products-category', component: page('categories/products_category.vue') },
+  { path: '/products_sub_category', name: 'products-sub-category', component: page('categories/products_sub_category.vue') },
 
-        //Products
-        { path: '/products_list', name: 'products', component: page('products_list.vue') },
-        { path: '/outgoing_products', name: 'products', component: page('outgoing_products.vue') },
+  //Inventory
+  { path: '/masterlist_supplies', name: 'masterlist-supplies', component: page('inventory/masterlist_supplies.vue') },
+  { path: '/incoming_supplies', name: 'incoming-supplies', component: page('inventory/incoming_supplies.vue') },
+  { path: '/outgoing_supplies', name: 'outgoing-supplies', component: page('inventory/outgoing_supplies.vue') },
+  { path: '/main_inventory', name: 'main-inventory', component: page('inventory/main_inventory.vue') },
+  { path: '/inventory_summary', name: 'inventory-summary', component: page('inventory/inventory_summary.vue') },
 
-        //Suppliers
-        { path: '/suppliers_list', name: 'products', component: page('suppliers_list.vue') },
-        { path: '/purchase_orders', name: 'products', component: page('purchase_orders.vue') },
+  //Products
+  { path: '/masterlist_products', name: 'masterlist-products', component: page('products/masterlist_products.vue') },
+  { path: '/incoming_products', name: 'incoming-products', component: page('products/incoming_products.vue') },
+  { path: '/outgoing_products', name: 'outgoing-products', component: page('products/outgoing_products.vue') },
 
-        //User Accounts
-        { path: '/user_accounts', name: 'products', component: page('user_accounts.vue') },
+  //Suppliers
+  { path: '/suppliers_list', name: 'suppliers-list', component: page('suppliers/suppliers_list.vue') },
+  { path: '/purchase_orders', name: 'purchase-orders', component: page('suppliers/purchase_orders.vue') },
 
-        { path: '/survey/infosheet', name: 'survey.infosheet', component: page('survey/infosheet.vue') },
-        { path: '/accumulation', name: 'accumulation', component: page('maps/accumulation.vue') },
-        { path: '/maps/googlemap', name: 'maps.googlemap', component: page('maps/googlemap.vue') },
-        { path: '/auth/index', name: 'auth.index', component: page('auth/index.vue') },
+  //Reports
+  { path: '/reports', name: 'reports', component: page('reports/reports.vue') },
 
-        { path: '/template', name: 'template', component: page('template.vue') },
+  //User Accounts
+  { path: '/user_accounts', name: 'user-accounts', component: page('useraccounts/user_accounts.vue') },
+  { path: '/user_roles', name: 'users-roles', component: page('user_roles.vue') },
 
-    ]
-}
+  //Roles/Permissions
+  { path: '/roles_permissions', name: 'roles-permissions', component: page('settings/roles_permissions.vue') },
+
+  //POS
+  { path: '/posmenu', name: 'pos', component: page('pos/posmenu.vue') },
+
+  { path: '/auth/index', name: 'auth.index', component: page('auth/index.vue') },
+  { path: '/template', name: 'template', component: page('template.vue') },
+]
