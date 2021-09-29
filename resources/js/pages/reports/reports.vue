@@ -585,6 +585,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                      @click="getPO('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -759,31 +760,32 @@ export default {
       }
     },
 
-      async getPO(type) {
+    async getPO(type) {
       switch (type) {
         case "pdf":
           await axios({
             url: "/api/po",
             method: "GET",
-            responseType: "blob", //nicocoment ito para makita mo ung laman 
+            responseType: "blob", //nicocoment ito para makita mo ung laman
             //pero pag ppdf mo na need mo uncomment yaan
             params: { from: this.dateFromPO, to: this.dateUntilPO, type: type }, //wag mo aalisin ung type:type, jan ni checheck kung pdf or excel
           }).then((response) => {
-            console.log(response.data)
+            console.log(response.data);
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
-            link.download = "data.pdf";
+            link.download = "Purchase Order Report.pdf";
             link.click();
           });
           break;
         case "excel":
           await axios
-            .get("/api/walanjo", {
+            .get("/api/po", {
               method: "GET",
               responseType: "arraybuffer",
               params: {
-                category: this.category,
+                from: this.dateFromPO,
+                to: this.dateUntilPO,
                 type: type,
               },
             })
@@ -793,7 +795,7 @@ export default {
               });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
-              link.download = "masterlist.xlsx";
+              link.download = "Purchase Order Report.xlsx";
               link.click();
             });
 

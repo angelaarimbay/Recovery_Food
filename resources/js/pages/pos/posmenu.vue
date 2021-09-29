@@ -605,8 +605,8 @@ export default {
         this.snackbar = {
           active: true,
           iconText: "alert",
-          iconColor: "error",
-          message: "Select mode of transaction first!",
+          iconColor: "warning",
+          message: "Select a mode of transaction first!",
         };
       }
     },
@@ -675,21 +675,10 @@ export default {
     },
 
     getChange() {
-      if (this.payment >= this.totalamount) {
-        if (this.discount > 0) {
-          this.change = this.payment - (this.discount / 100) * this.totalamount;
-        } else if (this.discount == null || this.discount == 0) {
-          this.change = this.payment - this.totalamount;
-        }
-      } else {
-        if (this.payment !== null) {
-          this.snackbar = {
-            active: true,
-            iconText: "alert",
-            iconColor: "error",
-            message: "Error! Please input correct payment.",
-          };
-        }
+      if (this.discount > 0) {
+        this.change = this.payment - (this.totalamount - ((this.discount / 100) * this.totalamount));
+      } else if (this.discount == null || this.discount == 0) {
+        this.change = this.payment - this.totalamount;
       }
     },
 
