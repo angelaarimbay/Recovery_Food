@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\tbl_outgoingprod;
 use App\Models\tbl_pos;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductsListController extends Controller
 {
@@ -19,12 +21,34 @@ class ProductsListController extends Controller
     public function get(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
-        return tbl_outgoingprod::with(["category","sub_category","product_name"])
+        $table =  tbl_outgoingprod::with(["category","sub_category","product_name"]) 
         ->whereHas("requesting_branch", function ($q) {
             $q->where("id", auth()->user()->branch);
         })->whereHas("product_name", function ($q1) use ($t) {
             $q1->where("product_name", "like", "%".$t->search."%");
-        }) ->selectRaw("*, @row:=@row+1 as row")->paginate($t->itemsPerPage, "*", "page", $t->page);
+        }) ;
+
+
+        $return = [];
+        $row = 1;
+        foreach ($table->get() as $key => $value) {
+            $temp=[];
+             if($value->quantity_diff != 0){ 
+                array_push($return, $value);
+             } 
+            
+        }
+    
+
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), 5, $t->page, []);
+      
+    }
+
+    public function getSalesCount(){ 
+        return tbl_pos::where(['branch'=> auth()->user()->branch])
+        ->whereBetween("created_at",[date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 11:59:58')) ] )                
+        ->count();
     }
     
     public function save(Request $t)
@@ -36,7 +60,10 @@ class ProductsListController extends Controller
                              'product_name'=> $value['product_name'],
                              'quantity'=> $value['quantity'],
                              'sub_total'=> $value['sub_total'],
-                             'sub_total_discounted'=> $value['sub_total_discounted'] ,
+                             'sub_total_discounted'=> $value['sub_total_discounted'],
+                             'payment'=> $value['payment'],
+                             'discount'=> $value['discount'],
+                             'change'=> $value['change'],
                              'mode'=> $value['mode'],
                              'reference_no'=>$refno,
                              'branch'=> auth()->user()->branch,

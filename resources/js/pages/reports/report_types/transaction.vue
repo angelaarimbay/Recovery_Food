@@ -86,7 +86,7 @@
                   color="red darken-2"
                   icon
                   v-on="data.on"
-                  @click="getSalesReport"
+                  @click="getTransactionReport"
                   class="mb-3"
                 >
                   <v-icon>mdi-magnify</v-icon></v-btn
@@ -110,7 +110,7 @@
               clearable
               v-model="branch"
               dense
-              @change="getSalesReport"
+              @change="getTransactionReport"
               label="Branch"
             >
             </v-select>
@@ -134,7 +134,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="dateFromSP"
+                  v-model="dateFromTP"
                   label="Date From"
                   prepend-icon="mdi-calendar-range"
                   readonly
@@ -145,13 +145,13 @@
                 ></v-text-field>
               </template>
               <v-date-picker
-                v-model="dateFromSP"
+                v-model="dateFromTP"
                 @input="date1 = false"
                 scrollable
                 no-title
                 color="red darken-2"
                 dark
-                @change="getSalesReport"
+                @change="getTransactionReport"
               ></v-date-picker>
             </v-menu>
           </v-card-actions>
@@ -171,7 +171,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="dateUntilSP"
+                  v-model="dateUntilTP"
                   label="Date Until"
                   prepend-icon="mdi-calendar-range"
                   readonly
@@ -182,13 +182,13 @@
                 ></v-text-field>
               </template>
               <v-date-picker
-                v-model="dateUntilSP"
+                v-model="dateUntilTP"
                 @input="date2 = false"
                 scrollable
                 no-title
                 color="red darken-2"
                 dark
-                @change="getSalesReport"
+                @change="getTransactionReport"
               ></v-date-picker>
             </v-menu>
           </v-card-actions>
@@ -224,7 +224,7 @@
         <v-btn
           icon
           color="red darken-2"
-          @click="getSPInfo(item)"
+          @click="getTPInfo(item)"
           :x-small="$vuetify.breakpoint.smAndDown"
         >
           <v-icon>mdi-eye</v-icon>
@@ -273,7 +273,7 @@
                 <strong> Reference No: {{ table2[0]["reference_no"] }}</strong>
                 <v-spacer></v-spacer>
                 <strong>
-                  Sales Amount:
+                  Bill Total:
                   {{ sales_var }}
                 </strong>
                 <br />
@@ -286,6 +286,12 @@
                   <v-spacer></v-spacer>
                   Mode: {{ table2[0]["mode"] }} <br />
                   Cashier: {{ table2[0]["cashier"]["name"] }}
+                </v-card-actions>
+
+                <v-card-actions>
+                    Payment: {{ table2[0]["payment"] }} <br/>
+                    Discount: {{ table2[0]["discount"] }} <br/>
+                    Change: {{ table2[0]["change"] }} <br/>
                 </v-card-actions>
               </div>
             </v-card-text>
@@ -357,12 +363,12 @@ export default {
     viewdialog: false,
     date1: false,
     date2: false,
-    dateFromSP: null,
-    dateUntilSP: null,
+    dateFromTP: null,
+    dateUntilTP: null,
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
-    // Table Headers SP
+    // Table Headers TP
     headers: [
       { text: "#", value: "count", align: "start", filterable: false },
       {
@@ -378,7 +384,13 @@ export default {
         filterable: false,
       },
       {
-        text: "Sales Amount",
+        text: "Total Product(s)",
+        value: "quantity",
+        align: "right",
+        filterable: false,
+      },
+      {
+        text: "Total Amount",
         value: "sub_total_discounted",
         align: "right",
         filterable: false,
@@ -399,7 +411,7 @@ export default {
         value: "product_name.product_name",
         filterable: false,
       },
-      {
+            {
         text: "Unit Price",
         value: "product_name.format_unit_price",
         align: "right",
@@ -421,11 +433,11 @@ export default {
   }),
 
   created() {
-    this.getSalesReport();
+    this.getTransactionReport();
     this.branchName();
   },
   methods: {
-    async getSalesReport() {
+    async getTransactionReport() {
       this.progressbar = true;
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios({
@@ -436,11 +448,11 @@ export default {
           itemsPerPage: this.itemsPerPage,
           search: this.search,
           branch: this.branch,
-          dateFromSP: this.dateFromSP,
-          dateUntilSP: this.dateUntilSP,
+          dateFromSP: this.dateFromTP,
+          dateUntilSP: this.dateUntilTP,
         },
       }).then((response) => {
-        console.log(response.data);
+          console.log(response.data)
         this.table = response.data;
         this.progressbar = false;
       });
@@ -451,15 +463,12 @@ export default {
       return date.format(format);
     },
 
-    async getSPInfo(item) {
-      //san mo ni call yan.
+    async getTPInfo(item) {
       this.viewdialog = true;
       this.progressbar = true;
       await axios("/api/sales_report/info", {
         params: { reference_no: item.reference_no },
       }).then((result) => {
-        console.log(result.data);
-        //lagay mo table mo table2
         this.table2 = result.data;
         this.sales_var = numeral(
           this.table2.reduce((a, b) => a + b.sub_total_discounted, 0)
@@ -517,7 +526,7 @@ export default {
     },
     itemperpage() {
       this.page = 1;
-      this.getSalesReport();
+      this.getTransactionReport();
     },
 
     // Close View Dialog
@@ -531,7 +540,7 @@ export default {
     },
     page(val) {
       this.page = val;
-      this.getSalesReport();
+      this.getTransactionReport();
     },
     id: {
       handler: function (v) {},

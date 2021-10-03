@@ -524,254 +524,7 @@
 
         <v-tab-item>
           <!-- Transaction Report -->
-          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-            <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-              <v-card-actions class="px-0 justify-center">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-file-pdf</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Export to PDF</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-file-excel</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Export to Excel</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-printer</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Print</span>
-                </v-tooltip></v-card-actions
-              >
-              <v-row no-gutters>
-                <!-- Items Per Page -->
-                <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-                  <v-card-actions>
-                    <v-select
-                      style="max-width: 82px"
-                      dense
-                      v-model="itemsPerPage2"
-                      label="Items per page"
-                      @change="itemperpage2"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-
-                <v-spacer></v-spacer>
-
-                <!-- Search Field -->
-                <v-col
-                  cols="8"
-                  xl="4"
-                  lg="4"
-                  md="6"
-                  sm="8"
-                  style="max-width: 230px"
-                  class="my-auto"
-                >
-                  <v-card-actions>
-                    <v-text-field
-                      v-model="search2"
-                      label="Product Name"
-                      single-line
-                      dense
-                      clearable
-                    ></v-text-field>
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          :small="$vuetify.breakpoint.smAndDown"
-                          :large="$vuetify.breakpoint.mdAndUp"
-                          color="red darken-2"
-                          icon
-                          v-on="data.on"
-                          @click="getTransactionReport"
-                          class="mb-3"
-                        >
-                          <v-icon>mdi-magnify</v-icon></v-btn
-                        >
-                      </template>
-                      <span>Search</span>
-                    </v-tooltip>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters>
-                <!-- Branch Field -->
-                <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
-                  <v-card-actions class="py-0">
-                    <v-select
-                      :items="branchlist"
-                      item-text="branch_name"
-                      item-value="id"
-                      class="my-0"
-                      clearable
-                      dense
-                      @change="getTransactionReport"
-                      label="Branch"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-
-                <!-- Category Field -->
-                <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-                  <v-card-actions class="py-0">
-                    <v-select
-                      :items="prodcatlist"
-                      item-text="product_cat_name"
-                      item-value="id"
-                      class="my-0"
-                      v-model="category2"
-                      @change="getTransactionReport"
-                      clearable
-                      dense
-                      label="Category"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-
-                <v-spacer></v-spacer>
-
-                <!-- Date Picker -->
-                <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-                  <v-card-actions class="py-0">
-                    <v-menu
-                      v-model="date7"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="dateFromTP"
-                          label="Date From"
-                          prepend-icon="mdi-calendar-range"
-                          readonly
-                          v-on="on"
-                          class="py-0"
-                          dense
-                          clearable
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="dateFromTP"
-                        @input="date7 = false"
-                        scrollable
-                        no-title
-                        color="red darken-2"
-                        dark
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-card-actions>
-                </v-col>
-
-                <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-                  <v-card-actions class="py-0">
-                    <v-menu
-                      v-model="date8"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="dateUntilTP"
-                          label="Date Until"
-                          prepend-icon="mdi-calendar-range"
-                          readonly
-                          v-on="on"
-                          class="py-0"
-                          dense
-                          clearable
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="dateUntilTP"
-                        @input="date8 = false"
-                        scrollable
-                        no-title
-                        color="red darken-2"
-                        dark
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-            </v-container>
-
-            <!-- Table -->
-            <v-data-table
-              :headers="headers2"
-              :items="table1.data"
-              :loading="progressbar2"
-              :page.sync="page2"
-              ref="progress"
-              :items-per-page="itemsPerPage2"
-              hide-default-footer
-              @page-count="pageCount = $event"
-            >
-              <!-- Progress Bar -->
-              <v-progress-linear
-                color="red darken-2"
-                class="px-0 mx-0"
-                slot="progress"
-                indeterminate
-                rounded
-              ></v-progress-linear>
-              <template v-slot:[`item.outgoing_date`]="{ item }">
-                {{ getFormatDate(item.outgoing_date, "YYYY-MM-DD") }}</template
-              >
-              <template v-slot:[`item.count`]="{ item }">
-                {{ item.row }}</template
-              >
-            </v-data-table>
-
-            <!-- Paginate -->
-            <div class="text-center pt-2">
-              <v-pagination
-                v-model="page1"
-                :total-visible="5"
-                :length="table1.last_page"
-                color="red darken-2"
-              ></v-pagination>
-            </div>
-          </v-container>
+          <transaction1/>
         </v-tab-item>
 
         <v-tab-item>
@@ -913,15 +666,14 @@
 <script>
 import masterlists1 from './report_types/masterlist.vue'
 import sales1 from './report_types/sales.vue'
+import transaction1 from './report_types/transaction.vue'
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
-  
   middleware: "auth",
     components: {
-    masterlists1,sales1
+    masterlists1,sales1,transaction1
   },
-
 
   data: () => ({
     progressbar1: false,
@@ -1088,7 +840,6 @@ export default {
             //pero pag ppdf mo na need mo uncomment yaan
             params: { from: this.dateFromPO, to: this.dateUntilPO, type: type }, //wag mo aalisin ung type:type, jan ni checheck kung pdf or excel
           }).then((response) => {
-            console.log(response.data);
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);

@@ -39,7 +39,7 @@ class MainInventoryController extends Controller
         }
 
         $items =   Collection::make($return);
-        return new LengthAwarePaginator($items->forPage(1, $t->itemsPerPage), $table->count(), 5, $t->page, []);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), 5, $t->page, []);
       
     }
     public function suppCat()

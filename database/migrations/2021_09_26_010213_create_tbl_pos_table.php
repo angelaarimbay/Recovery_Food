@@ -21,6 +21,9 @@ class CreateTblPosTable extends Migration
             $table->float('quantity');
             $table->float('sub_total');
             $table->float('sub_total_discounted');
+            $table->float('payment');
+            $table->float('discount');
+            $table->float('change');
             $table->string('mode');
             $table->string('reference_no');
             $table->integer('branch')->references('id')->on('tbl_branches');

@@ -10,7 +10,10 @@ use App\Models\tbl_incomingsupp;
 use App\Models\tbl_outgoingsupp;
 use App\Models\tbl_purchaseord;
 use App\Models\tbl_pos;
+use App\Models\tbl_branches;
 
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 use Illuminate\Support\Facades\DB;
 use niklasravnsborg\LaravelPdf\Facades\Pdf;
@@ -144,35 +147,49 @@ class ReportsController extends Controller
         }
     }
 
-
-
     public function ListSP(Request $t){
-      
 
-        DB::statement(DB::raw("set @row:=0"));
-        $table = tbl_pos::with(["branch",'product_name'])
-                        ->selectRaw("*, @row:=@row+1 as row ");
+        // return $t->all();
 
-
+         $table = tbl_pos::with(["branch"])
+                        ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
+                        ->groupby(["branch","created_at","reference_no"])
+                         ;
+ 
         if($t->branch){
            $table->where("branch",$t->branch);
         }
-        if($t->category){
-            $table->where("branch",$t->category);
-         }
+     
          if($t->search){
-            $table->whereHas('supply_name', function ($q) use ($t) {
-                $q->where('supply_name', 'like', "%".$t->search."%");
-            });
+            $table->where("reference_no", "like", "%".$t->search."%");
+      
          }
-
-
-        return  $table->paginate($t->itemsPerPage, "*", "page", $t->page);
-
+         if ($t->dateFromSP && $t->dateUntilSP){
+             $table->whereBetween("created_at",[$t->dateFromSP, $t->dateUntilSP]);
+         }
+ 
+        
+         $return = [];
+         $row = 1;
+         foreach ($table->get() as $key => $value) { 
+             
+             $temp=[];
+             $temp['row'] = $row++ ;
+             $temp['quantity'] =  $value->quantity;
+             $temp['sub_total_discounted'] =  number_format($value->sub_total_discounted, 2, ".", ",") ;
+             $temp['branch'] =   $value->branch ;
+              $temp['branch_name'] = tbl_branches::where("id", $value->branch)->first()->branch_name;
+             $temp['created_at'] =  date("Y-m-d", strtotime($value->created_at)) ;
+             $temp['reference_no'] =  $value->reference_no;
+             array_push($return, $temp);
+         }
+         $items =   Collection::make($return); 
+         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page);
     }
 
-
-
+    public function getSPInfo(Request $t) { 
+      return  tbl_pos::with(["branch",'product_name','cashier'])->where("reference_no",$t->reference_no)->get();
+    }
 
     //sales report,
     public function ExportSP(Request $t)
@@ -182,22 +199,23 @@ class ReportsController extends Controller
       
 
         DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_pos::with(["branch",'product_name'])
-                        ->selectRaw("*, @row:=@row+1 as row ");
-
+     
+        $data = tbl_pos::with(["branch"])
+        ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
+        ->groupby(["branch","created_at","reference_no"]) ;
 
         if($t->branch){
-           $data->where("branch",$t->branch);
-        }
-        if($t->category){
-            $data->where("branch",$t->category);
+            $table->where("branch",$t->branch);
          }
-         if($t->search){
-            $data->whereHas('supply_name', function ($q) use ($t) {
-                $q->where('supply_name', 'like', "%".$t->search."%");
-            });
-         }
-
+      
+          if($t->search){
+             $table->where("reference_no", "like", "%".$t->search."%");
+       
+          }
+          if ($t->dateFromSP && $t->dateUntilSP){
+              $table->whereBetween("created_at",[$t->dateFromSP, $t->dateUntilSP]);
+          }
+          
         switch ($t->type) {
         case 'pdf':
             $content['data'] = $data;
@@ -206,12 +224,12 @@ class ReportsController extends Controller
               ]);
             return $pdf->stream();
         break;
-        case 'excel':  //ikaw na mag set dito ng mga columns na need. excel to. ok p
+        case 'excel':
             //columns
-            $columns = ['ID1','Supply name1','Category1']; //lalagay mo lang header ng excel mo
+            $columns = ['ID1','Supply name1','Category1'];
             //data
                 $dataitems = [];
-             foreach ($data as $key => $value) { //ito nmn syempre ung galing sa data
+             foreach ($data as $key => $value) {
                  $temp = [];
                  $temp['ID'] = $value->row;
                  $temp['supply_name'] = $value->supply_name;
