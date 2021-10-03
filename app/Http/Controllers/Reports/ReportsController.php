@@ -105,7 +105,6 @@ class ReportsController extends Controller
         }
     }
 
-
     public function ExportTP(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
@@ -145,13 +144,59 @@ class ReportsController extends Controller
         }
     }
 
+
+
+    public function ListSP(Request $t){
+      
+
+        DB::statement(DB::raw("set @row:=0"));
+        $table = tbl_pos::with(["branch",'product_name'])
+                        ->selectRaw("*, @row:=@row+1 as row ");
+
+
+        if($t->branch){
+           $table->where("branch",$t->branch);
+        }
+        if($t->category){
+            $table->where("branch",$t->category);
+         }
+         if($t->search){
+            $table->whereHas('supply_name', function ($q) use ($t) {
+                $q->where('supply_name', 'like', "%".$t->search."%");
+            });
+         }
+
+
+        return  $table->paginate($t->itemsPerPage, "*", "page", $t->page);
+
+    }
+
+
+
+
     //sales report,
     public function ExportSP(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
         //para malaman mo kung may laman need mo return to, pero pag eexport mo na sa pdf aalisin mo ung return
-        $data = tbl_pos::whereBetween('created_at', [$t->from, $t->to])
-                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
+      
+
+        DB::statement(DB::raw("set @row:=0"));
+        $data = tbl_pos::with(["branch",'product_name'])
+                        ->selectRaw("*, @row:=@row+1 as row ");
+
+
+        if($t->branch){
+           $data->where("branch",$t->branch);
+        }
+        if($t->category){
+            $data->where("branch",$t->category);
+         }
+         if($t->search){
+            $data->whereHas('supply_name', function ($q) use ($t) {
+                $q->where('supply_name', 'like', "%".$t->search."%");
+            });
+         }
 
         switch ($t->type) {
         case 'pdf':

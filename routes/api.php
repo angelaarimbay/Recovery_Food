@@ -125,4 +125,8 @@ use Illuminate\Support\Facades\Route;
     // Reports
     Route::get('walanjo', 'Reports\ReportsController@ExportMasterlist');
     Route::get('po', 'Reports\ReportsController@ExportPO');
+    
+    Route::get('sales_report/list', 'Reports\ReportsController@ListSP'); 
+    Route::get('sales_report', 'Reports\ReportsController@ExportSP');
+
 });

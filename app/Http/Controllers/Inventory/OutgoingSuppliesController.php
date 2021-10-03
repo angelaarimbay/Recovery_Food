@@ -18,7 +18,7 @@ class OutgoingSuppliesController extends Controller
     }
     public function save(Request $data)
     {
-        $table = tbl_outgoingsupp::where("supply_name","!=",null);
+        $table = tbl_outgoingsupp::where("supply_name", "!=", null);
 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
@@ -31,7 +31,6 @@ class OutgoingSuppliesController extends Controller
                  "requesting_branch"=>$data->requesting_branch,
                 ]
             );
-            
         } else {
             tbl_outgoingsupp::create($data->all());
         }
@@ -40,29 +39,44 @@ class OutgoingSuppliesController extends Controller
     
     public function get(Request $t)
     {
+        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
+                ($t->branch? " and requesting_branch=".$t->branch:"");
+ 
         DB::statement(DB::raw("set @row:=0"));
+        $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])
+        ->selectRaw("*, @row:=@row+1 as row ")
+        ->whereRaw($where)
+        ->where("supply_name", "!=", null);
+ 
         if ($t->search) { // If has value
-            $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])->where("supply_name","!=",null);;
             $table_clone = clone $table;   // Get all items from outgoingsupp
-           
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+
+            if ($t->dateFrom && $t->dateUntil) {
+                $table_clone->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+            }
+            return $table_clone->whereHas('supply_name', function ($q) use ($t) {
+                $q->where('supply_name', 'like', "%".$t->search."%");
+            }) ->paginate($t->itemsPerPage, "*", "page", 1);
         }
         // Else
-        return  tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+        if ($t->dateFrom && $t->dateUntil) {
+            $table->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+        }
+        return  $table->paginate($t->itemsPerPage, "*", "page", $t->page);
     }
 
     public function suppCat()
     {
-        return tbl_suppcat::select(["supply_cat_name","id"])->where("status",1)->get();
+        return tbl_suppcat::select(["supply_cat_name","id"])->where("status", 1)->get();
     }
 
     public function suppName(Request $t)
     {
-        return tbl_masterlistsupp::select(["supply_name","id"])->where("category", $t->category)->where("status",1)->get();
+        return tbl_masterlistsupp::select(["supply_name","id"])->where("category", $t->category)->where("status", 1)->get();
     }
 
     public function branchName()
     {
-        return tbl_branches::select(["branch_name","id"])->where("status",1)->get();
+        return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
     }
 }

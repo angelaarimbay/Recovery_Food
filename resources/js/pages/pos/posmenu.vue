@@ -310,14 +310,17 @@
         </v-card>
 
         <v-col cols="12" xl="12" lg="12" md="12" sm="12" class="pa-0 mt-2">
-          <v-card
-            height="50"
-            class="d-flex align-center pa-3"
-            style="border-radius: 10px"
-          >
-            <strong style="color: #616161">Total: </strong>
-            <v-spacer></v-spacer>
-            <strong style="font-size: 27px">{{ totalamount }}</strong>
+          <v-card height="95" class="pa-3" style="border-radius: 10px">
+            <v-card-actions class="p-0 m-0">
+              <strong style="color: #616161">Total: </strong>
+              <v-spacer></v-spacer>
+              <strong style="font-size: 27px">{{ totalamount }}</strong>
+            </v-card-actions>
+            <v-card-actions class="p-0 m-0">
+              <strong style="color: #616161">Discounted Total: </strong>
+              <v-spacer></v-spacer>
+              <strong style="font-size: 27px">{{ discountedamount }}</strong>
+            </v-card-actions>
           </v-card>
         </v-col>
 
@@ -428,6 +431,9 @@ export default {
       if (this.table2.length > 0) {
         return true;
       } else {
+        this.payment = 0;
+        this.discount = 0;
+        this.change = 0;
         return false;
       }
     },
@@ -446,6 +452,7 @@ export default {
     dialog: false,
     selectedrow: { product_name: "" },
     totalamount: 0,
+    discountedamount: 0,
     payment: 0,
     discount: 0,
     change: 0,
@@ -557,6 +564,14 @@ export default {
       // }
       this.totalamount = numeral(
         this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
+      ).format("0,0.00"); //string na to. error ka . nag format tayo e.
+      //so need mo lang  this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
+
+      //yan. try
+      this.discountedamount = numeral(
+        this.table2.reduce((a, b) => a + b.temp_sub_total, 0) -
+          (this.discount / 100) *
+            this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
       ).format("0,0.00");
     },
 
@@ -649,6 +664,9 @@ export default {
         sub_total: numeral(
           this.quantity * this.selectedrow.product_name.price
         ).format("0,0.00"),
+        sub_total_discounted:
+          this.discount * this.selectedrow.product_name.price -
+          this.selectedrow.product_name.price,
         temp_sub_total: this.quantity * this.selectedrow.product_name.price,
         mode: this.mode,
       });
@@ -659,6 +677,7 @@ export default {
         message: "Successfully added.",
       };
       this.getTotal();
+      this.getChange();
       this.cancel();
     },
 
@@ -672,13 +691,18 @@ export default {
         message: "Successfully removed.",
       };
       this.getTotal();
+      this.getChange();
     },
 
     getChange() {
       if (this.discount > 0) {
-        this.change = this.payment - (this.totalamount - ((this.discount / 100) * this.totalamount));
+        this.change =
+          this.payment -
+          (this.totalamount - (this.discount / 100) * this.totalamount);
+        this.getTotal();
       } else if (this.discount == null || this.discount == 0) {
         this.change = this.payment - this.totalamount;
+        this.getTotal();
       }
     },
 

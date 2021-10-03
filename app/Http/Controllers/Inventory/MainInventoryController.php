@@ -18,29 +18,30 @@ class MainInventoryController extends Controller
     }
     public function get(Request $t)
     {
-        DB::statement(DB::raw("set @row:=0"));
-        if ($t->search) { // If has value
-            $table = tbl_incomingsupp::with(["category","supply_name"])->groupby(["category","supply_name"]);
-            return $table->selectRaw("category,supply_name, @row:=@row+1 as row ")->where("supply_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
-        }
-        $data = tbl_incomingsupp::with(["category","supply_name"])->groupby(["category","supply_name"])->selectRaw("category,supply_name")->get();
-
+        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
+        $table = tbl_incomingsupp::with(["category","supply_name"])
+                                    ->whereRaw($where)->whereHas('supply_name', function ($q) use ($t) {
+                                        $q->where('supply_name', 'like', "'%".$t->search."%");
+                                    })
+                                    ->groupby(["category","supply_name"])
+                                    ->selectRaw("category,supply_name")
+                                    ->get();
         $return = [];
         $row = 1;
-        foreach ($data as $key => $value) {
+        foreach ($table as $key => $value) {
             $temp=[];
             $temp['row'] = $row++ ;
             $temp['category'] =  $value->category_details;
             $temp['supply_name'] =  $value->supply_name_details ;
             $temp['quantity_amount'] =  number_format($value->quantity_amount, 2, ".", ",");
-            $temp['quantity_difference'] =  $value->quantity_difference ;
+            $temp['quantity_difference'] =  ($value->quantity_difference??0) ;
             array_push($return, $temp);
         }
- 
-        $items =   Collection::make($return);
-        return new LengthAwarePaginator($items->forPage(1, $t->itemsPerPage), $data->count(), 5, $t->page, []);
-    }
 
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator($items->forPage(1, $t->itemsPerPage), $table->count(), 5, $t->page, []);
+      
+    }
     public function suppCat()
     {
         return tbl_suppcat::select(["supply_cat_name","id"])->where("status", 1)->get();

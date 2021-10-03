@@ -125,69 +125,7 @@
       <v-tabs-items v-model="tab">
         <v-tab-item>
           <!-- Masterlist Supplies Report -->
-          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-            <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-              <v-card-actions class="px-0 justify-center">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      @click="get('pdf')"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-file-pdf</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Export to PDF</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      @click="get('excel')"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-file-excel</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Export to Excel</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      @click="get('print')"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-printer</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Print</span>
-                </v-tooltip></v-card-actions
-              >
-              <!-- Category Field -->
-              <v-row no-gutters justify="center">
-                <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-                  <v-card-actions class="pb-0 pt-4">
-                    <v-select
-                      :items="suppcatlist"
-                      item-text="supply_cat_name"
-                      item-value="id"
-                      v-model="category"
-                      class="my-0"
-                      clearable
-                      dense
-                      label="Category"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-container>
+          <masterlists1/>
         </v-tab-item>
 
         <v-tab-item>
@@ -581,254 +519,7 @@
 
         <v-tab-item>
           <!-- Sales Report -->
-          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-            <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-              <v-card-actions class="px-0 justify-center">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-file-pdf</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Export to PDF</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-file-excel</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Export to Excel</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="primary"
-                      class="mx-1"
-                      v-on="data.on"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      ><v-icon>mdi-printer</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Print</span>
-                </v-tooltip></v-card-actions
-              >
-              <v-row no-gutters>
-                <!-- Items Per Page -->
-                <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-                  <v-card-actions>
-                    <v-select
-                      style="max-width: 82px"
-                      dense
-                      v-model="itemsPerPage1"
-                      label="Items per page"
-                      @change="itemperpage1"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-
-                <v-spacer></v-spacer>
-
-                <!-- Search Field -->
-                <v-col
-                  cols="8"
-                  xl="4"
-                  lg="4"
-                  md="6"
-                  sm="8"
-                  style="max-width: 230px"
-                  class="my-auto"
-                >
-                  <v-card-actions>
-                    <v-text-field
-                      v-model="search1"
-                      label="Product Name"
-                      single-line
-                      dense
-                      clearable
-                    ></v-text-field>
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          :small="$vuetify.breakpoint.smAndDown"
-                          :large="$vuetify.breakpoint.mdAndUp"
-                          color="red darken-2"
-                          icon
-                          v-on="data.on"
-                          @click="getSalesReport"
-                          class="mb-3"
-                        >
-                          <v-icon>mdi-magnify</v-icon></v-btn
-                        >
-                      </template>
-                      <span>Search</span>
-                    </v-tooltip>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters>
-                <!-- Branch Field -->
-                <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
-                  <v-card-actions class="py-0">
-                    <v-select
-                      :items="branchlist"
-                      item-text="branch_name"
-                      item-value="id"
-                      class="my-0"
-                      clearable
-                      dense
-                      @change="getSalesReport"
-                      label="Branch"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-
-                <!-- Category Field -->
-                <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-                  <v-card-actions class="py-0">
-                    <v-select
-                      :items="prodcatlist"
-                      item-text="product_cat_name"
-                      item-value="id"
-                      class="my-0"
-                      v-model="category1"
-                      @change="getSalesReport"
-                      clearable
-                      dense
-                      label="Category"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-
-                <v-spacer></v-spacer>
-
-                <!-- Date Picker -->
-                <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-                  <v-card-actions class="py-0">
-                    <v-menu
-                      v-model="date5"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="dateFromSP"
-                          label="Date From"
-                          prepend-icon="mdi-calendar-range"
-                          readonly
-                          v-on="on"
-                          class="py-0"
-                          dense
-                          clearable
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="dateFromSP"
-                        @input="date5 = false"
-                        scrollable
-                        no-title
-                        color="red darken-2"
-                        dark
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-card-actions>
-                </v-col>
-
-                <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-                  <v-card-actions class="py-0">
-                    <v-menu
-                      v-model="date6"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="dateUntilSP"
-                          label="Date Until"
-                          prepend-icon="mdi-calendar-range"
-                          readonly
-                          v-on="on"
-                          class="py-0"
-                          dense
-                          clearable
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="dateUntilSP"
-                        @input="date6 = false"
-                        scrollable
-                        no-title
-                        color="red darken-2"
-                        dark
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-            </v-container>
-
-            <!-- Table -->
-            <v-data-table
-              :headers="headers1"
-              :items="table1.data"
-              :loading="progressbar1"
-              :page.sync="page1"
-              ref="progress"
-              :items-per-page="itemsPerPage1"
-              hide-default-footer
-              @page-count="pageCount = $event"
-            >
-              <!-- Progress Bar -->
-              <v-progress-linear
-                color="red darken-2"
-                class="px-0 mx-0"
-                slot="progress"
-                indeterminate
-                rounded
-              ></v-progress-linear>
-              <template v-slot:[`item.outgoing_date`]="{ item }">
-                {{ getFormatDate(item.outgoing_date, "YYYY-MM-DD") }}</template
-              >
-              <template v-slot:[`item.count`]="{ item }">
-                {{ item.row }}</template
-              >
-            </v-data-table>
-
-            <!-- Paginate -->
-            <div class="text-center pt-2">
-              <v-pagination
-                v-model="page1"
-                :total-visible="5"
-                :length="table1.last_page"
-                color="red darken-2"
-              ></v-pagination>
-            </div>
-          </v-container>
+          <sales1/>
         </v-tab-item>
 
         <v-tab-item>
@@ -1220,10 +911,18 @@
 </style>
 
 <script>
+import masterlists1 from './report_types/masterlist.vue'
+import sales1 from './report_types/sales.vue'
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
+  
   middleware: "auth",
+    components: {
+    masterlists1,sales1
+  },
+
+
   data: () => ({
     progressbar1: false,
     progressbar2: false,
@@ -1241,6 +940,7 @@ export default {
     branchlist: [],
     prodcatlist: [],
     table1: [],
+    table2: [],
     branch1: "",
     branch2: "",
     dateFromIncoming: null,
@@ -1269,36 +969,7 @@ export default {
     itemsPerPage1: 5,
     itemsPerPage2: 5,
 
-    // Table Headers SP
-    headers1: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      {
-        text: "Branch",
-        value: "",
-        filterable: false,
-      },
-      { text: "Date & Time", value: "" },
-      {
-        text: "Reference No.",
-        value: "",
-        align: "right",
-        filterable: false,
-      },
-      {
-        text: "Sales Amount",
-        value: "",
-        align: "right",
-        filterable: false,
-      },
-      {
-        text: "Actions",
-        value: "id",
-        align: "center",
-        sortable: false,
-        filterable: false,
-      },
-    ],
-
+  
     // Table Headers TP
     headers2: [
       { text: "#", value: "count", align: "start", filterable: false },
@@ -1347,64 +1018,64 @@ export default {
   },
 
   methods: {
-    itemperpage1() {
-      this.page1 = 1;
-      this.getSalesReport();
-    },
+   
 
     itemperpage2() {
       this.page2 = 1;
       this.getTransactionReport();
     },
 
-    async get(type) {
-      switch (type) {
-        case "pdf":
-          await axios({
-            url: "/api/walanjo",
-            method: "GET",
-            responseType: "blob",
-            params: { category: this.category, type: type },
-          }).then((response) => {
-            let blob = new Blob([response.data], { type: "application/pdf" });
-            let link = document.createElement("a");
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "data.pdf";
-            link.click();
-          });
-          break;
-        case "excel":
-          await axios
-            .get("/api/walanjo", {
-              method: "GET",
-              responseType: "arraybuffer",
-              params: {
-                category: this.category,
-                type: type,
-              },
-            })
-            .then((response) => {
-              let blob = new Blob([response.data], {
-                type: "application/excel",
-              });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "masterlist.xlsx";
-              link.click();
-            });
-
-          break;
-        default:
-          break;
-      }
-    },
-
+ 
     async getSalesReport() {
-      await axios.get("/api/sales_report").then(() => {});
+      this.progressbar = true; // Show the progress bar
+      // Get data from tables
+      this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+      await axios
+        .get("/api/sales_report", {
+          params: {
+            page: this.page,
+            itemsPerPage: this.itemsPerPage,
+            search: this.search,
+            branch: this.branch,
+            category: this.category,
+            dateFrom: this.dateFrom,
+            dateUntil: this.dateUntil,
+          },
+        })
+        .then((result) => {
+          // If the value is true then get the data
+          this.table1 = result.data;
+          this.progressbar = false; // Hide the progress bar
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
     },
 
     async getTransactionReport() {
-      await axios.get("/api/transaction_report").then(() => {});
+      this.progressbar = true; // Show the progress bar
+      // Get data from tables
+      this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+      await axios
+        .get("/api/transaction_report", {
+          params: {
+            page: this.page,
+            itemsPerPage: this.itemsPerPage,
+            search: this.search,
+            branch: this.branch,
+            category: this.category,
+            dateFrom: this.dateFrom,
+            dateUntil: this.dateUntil,
+          },
+        })
+        .then((result) => {
+          // If the value is true then get the data
+          this.table2 = result.data;
+          this.progressbar = false; // Hide the progress bar
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
     },
 
     async getPO(type) {
@@ -1453,19 +1124,19 @@ export default {
     },
 
     async prodCat() {
-      await axios.get("api/outprod/prodCat").then((prod_cat) => {
+      await axios.get("/api/outprod/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
     },
 
     async suppCat() {
-      await axios.get("api/msupp/suppCat").then((supp_cat) => {
+      await axios.get("/api/msupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
     async branchName() {
-      await axios.get("api/osupp/branchName").then((bran_name) => {
+      await axios.get("/api/osupp/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },

@@ -142,6 +142,7 @@
                   <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-select
+                        v-model="category"
                         :items="suppcatlist"
                         item-text="supply_cat_name"
                         item-value="id"
@@ -149,6 +150,7 @@
                         clearable
                         dense
                         label="Category"
+                        @change="get"
                       >
                       </v-select>
                     </v-card-actions>
@@ -238,21 +240,12 @@ export default {
       message: "",
     },
     search: "",
+    category: "",
     button: false,
     dialog: false,
     progressBar: false,
     table: [],
     suppcatlist: [],
-
-    // Form Rules
-    formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
-    ],
 
     // Form Data
     form: {
@@ -310,11 +303,12 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/misupp/get", {
+        .get("/api/misupp/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            category: this.category
           },
         })
         .then((result) => {
@@ -328,7 +322,7 @@ export default {
     },
 
     async suppCat() {
-      await axios.get("api/misupp/suppCat").then((supp_cat) => {
+      await axios.get("/api/misupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },

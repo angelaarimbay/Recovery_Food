@@ -499,12 +499,12 @@ export default {
         value: "supply_name.supply_name",
       },
       {
-        text: "Quantity",
+        text: "Qty",
         value: "quantity",
         align: "right",
       },
       {
-        text: "Amount",
+        text: "Total Amount",
         value: "outgoing_amount",
         align: "right",
       },
@@ -578,7 +578,7 @@ export default {
       this.progressbar = true;
       this.itemsPerPage1 = parseInt(this.itemsPerPage1) ?? 0;
       await axios
-        .get("api/branches/inventory/get", {
+        .get("/api/branches/inventory/get", {
           params: {
             branch: this.branch1,
             category: this.category1,
@@ -597,7 +597,7 @@ export default {
       this.progressbar = true;
       this.itemsPerPage2 = parseInt(this.itemsPerPage2) ?? 0;
       await axios
-        .get("api/branches/inventory/get2", {
+        .get("/api/branches/inventory/get2", {
           params: {
             branch: this.branch2,
             category: this.category2,
@@ -613,19 +613,19 @@ export default {
     },
 
     async suppCat() {
-      await axios.get("api/branches/inventory/suppCat").then((supp_cat) => {
+      await axios.get("/api/branches/inventory/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
     async branchName() {
-      await axios.get("api/branches/inventory/branchName").then((bran_name) => {
+      await axios.get("/api/branches/inventory/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },
 
     async prodCat() {
-      await axios.get("api/branches/inventory/prodCat").then((prod_cat) => {
+      await axios.get("/api/branches/inventory/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
     },
