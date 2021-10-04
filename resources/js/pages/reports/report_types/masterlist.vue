@@ -80,7 +80,7 @@ export default {
       switch (type) {
         case "pdf":
           await axios({
-            url: "/api/walanjo",
+            url: "/api/reports/masterlist/get",
             method: "GET",
             responseType: "blob",
             params: { category: this.category, type: type },

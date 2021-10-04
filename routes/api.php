@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
     Route::group(['middleware' => 'api'], function () {
         Route::get('users', 'UserController@getUsers');
+        Route::post('/changepassword', 'UserController@change_password'); 
 
         // Dashboard
         Route::get('dashboard/getSupp', 'Dashboard\MainController@getSupp');
@@ -133,4 +134,17 @@ use Illuminate\Support\Facades\Route;
         Route::get('sales_report/list', 'Reports\ReportsController@ListSP');
         Route::get('sales_report', 'Reports\ReportsController@ExportSP');
         Route::get('sales_report/info', 'Reports\ReportsController@getSPInfo');
+    
+        //from angela
+        Route::get('reports/masterlist/get', 'Reports\ReportsController@ExportMasterlist1');
+        Route::get('reports/incoming/supplies/get', 'Reports\ReportsController@ExportIncominglist');
+        Route::get('reports/outgoing/supplies/get', 'Reports\ReportsController@ExportOutgoinglist');
+        Route::get('reports/main/get', 'Reports\ReportsController@ExportMain');
+        Route::get('reports/inventory/summary/get', 'Reports\ReportsController@ExportInventorysummary');
+        Route::get('reports/sales/report/get', 'Reports\ReportsController@ExportSales');
+        Route::get('reports/transaction/report/get', 'Reports\ReportsController@ExportTransaction');
+        Route::get('reports/purchase/order/get', 'Reports\ReportsController@ExportPurchase');
+        //from angela
+    
+    
     });

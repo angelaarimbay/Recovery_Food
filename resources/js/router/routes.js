@@ -11,6 +11,7 @@ export default [
 
   //Dashboard
   { path: '/dashboard', name: 'dashboard', component: page('dashboard/dashboard.vue') },
+  { path: '/reset/password', name: 'password', component: page('settings/password.vue') },
 
   //Branches
   { path: '/manage_branches', name: 'manage-branches', component: page('branches/manage_branches.vue') },

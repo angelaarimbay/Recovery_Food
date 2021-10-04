@@ -138,7 +138,8 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
-                      v-on="data.on"
+                       @click="getPDF_Incoming_supplies('pdf')"
+                     v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-pdf</v-icon></v-btn
                     >
@@ -150,6 +151,7 @@
                     <v-btn
                       color="primary"
                       class="mx-1"
+                    @click="getEXCEL_Incoming_supplies('excel')"
                       v-on="data.on"
                       :small="$vuetify.breakpoint.smAndDown"
                       ><v-icon>mdi-file-excel</v-icon></v-btn
@@ -177,7 +179,8 @@
                     <v-select
                       :items="suppcatlist"
                       item-text="supply_cat_name"
-                      item-value="id"
+                    v-model="incoming_category"
+                       item-value="id"
                       class="my-0"
                       clearable
                       dense
@@ -200,8 +203,8 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="dateFromIncoming"
-                          label="Date From"
+                            v-model="incoming_from"
+                       label="Date From"
                           prepend-icon="mdi-calendar-range"
                           readonly
                           v-on="on"
@@ -211,7 +214,7 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        v-model="dateFromIncoming"
+                        v-model="incoming_from"
                         @input="date1 = false"
                         scrollable
                         no-title
@@ -234,7 +237,7 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="dateUntilIncoming"
+                          v-model="incoming_to"
                           label="Date Until"
                           prepend-icon="mdi-calendar-range"
                           readonly
@@ -245,7 +248,7 @@
                         ></v-text-field>
                       </template>
                       <v-date-picker
-                        v-model="dateUntilIncoming"
+                        v-model="incoming_to"
                         @input="date2 = false"
                         scrollable
                         no-title
@@ -757,6 +760,21 @@ export default {
         filterable: false,
       },
     ],
+
+    //from angela
+    //incoming
+        incoming_category: "",
+        incoming_from: null,
+        incoming_to: null,
+      //outgoing
+        outgoing_branch: "", 
+        outgoing_category: "", 
+        outgoing_from: null,
+        outgoing_to: null,
+      //main
+        main_category: '', 
+ 
+
   }),
 
   created() {
@@ -771,6 +789,219 @@ export default {
 
   methods: {
    
+
+    //from angela. pwede mo custom depende sa iyo, ung mga naming etc.. 
+  async getPDF_Masterlist(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/masterlist/get",
+            method: "GET",
+            responseType: "blob",
+           params: { category: this.masterlist_category, type: type },
+          }).then((response) => {  
+            console.log(response.data)
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/masterlist/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+             params: { category: this.masterlist_category, type: type },
+          })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    }, 
+  async getPDF_Incoming_supplies(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/incoming/supplies/get",
+            method: "GET",
+            responseType: "blob",
+           params: {  type: type, category: this.incoming_category, from: this.incoming_from, to: this.incoming_to },
+          }).then((response) => {
+            console.log(response.data)
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/incoming/supplies/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+             params: {  type: type, category: this.incoming_category, from: this.incoming_from, to: this.incoming_to },
+          })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    }, 
+  async getPDF_Outgoing(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/outgoing/supplies/get",
+            method: "GET",
+            responseType: "blob",
+            params: { type: type, branch: this.outgoing_branch, category: this.outgoing_category, from: this.outgoing_from, to: this.outgoing_to },
+          }).then((response) => {
+            console.log(response.data)
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/outgoing/supplies/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+             params: { type: type, branch: this.outgoing_branch, category: this.outgoing_category, from: this.outgoing_from, to: this.outgoing_to },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "mastelist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    }, 
+  async getPDF_Main(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/main/get",
+            method: "GET",
+            responseType: "blob",
+            params: { category: this.main_category, type: type },
+          }).then((response) => {
+            console.log(response.data)
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/main/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+            params: { category: this.main_category, type: type },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    }, 
+  async getPDF_Inventory_summary(type) {
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/inventory/summary/get",
+            method: "GET",
+            responseType: "blob",
+            params: {  type: type },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "data.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/inventory/summary/get", {
+              method: "GET",
+              responseType: "arraybuffer",
+              params: {  type: type },
+            })
+            .then((response) => {
+              let blob = new Blob([response.data], {
+                type: "application/excel",
+              });
+              let link = document.createElement("a");
+              link.href = window.URL.createObjectURL(blob);
+              link.download = "masterlist.xlsx";
+              link.click();
+            });
+
+          break;
+        default:
+          break;
+      }
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     itemperpage2() {
       this.page2 = 1;

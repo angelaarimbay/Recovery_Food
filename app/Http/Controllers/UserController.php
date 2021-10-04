@@ -20,7 +20,14 @@ class UserController extends Controller
     { 
         return User::get();
     }
- 
+    
+    public function change_password(Request $request){
+        User::where("id",auth()->user()->id)->update([
+            'password' => bcrypt($request->password),
+        ]);
+        return true;
+    }
+
 
     public function getPermission(Request $request)
     {

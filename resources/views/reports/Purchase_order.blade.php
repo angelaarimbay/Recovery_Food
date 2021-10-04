@@ -29,8 +29,8 @@
 
     <table   >
          <tr>
-            <th><h6>same lang din </h6></th>
-            <th><h6>dito din depende sa kelangan mo</h6></th> 
+            <th><h6>supply_name</h6></th>
+            <th><h6>TIME IN</h6></th> 
             <th><h6>TIME OUT</h6></th> 
             <th><h6>SOURCE</h6></th>  
             <th><h6>REMARKS</h6></th>
@@ -38,10 +38,9 @@
         @foreach ($data as $items)  
        
                 <tr>
-                <td  style="width: 20%;">  </td>
-                   <!-- <td  style="width: 20%;"> delete ko muna mag eerror pag wla ung column na un sa $data  </td>  -->
-                   <td  style="width: 20%;">  </td>
-                   <td  style="width: 20%;"> </td>  
+                   <td  style="width: 20%;">   {{ $items['supply_name'] }}</td>
+                   <td  style="width: 20%;">   </td>
+                   <td  style="width: 20%;">  </td>  
                    <td  style="width: 20%;">   </td>
                    <td  style="width: 50%; font-size: 8px; text-align: left; padding-left: 5px;">   </td> 
 

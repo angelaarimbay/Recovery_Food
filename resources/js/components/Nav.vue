@@ -45,7 +45,7 @@
           </template>
           <v-list dense>
             <v-list-item>
-              <v-list-item-title style="cursor: pointer"
+              <v-list-item-title :to="'/rest/password'" style="cursor: pointer"
                 >Password</v-list-item-title
               >
             </v-list-item>
@@ -57,7 +57,7 @@
           </v-list>
         </v-menu>
       </v-app-bar>
-
+  
       <!-- POS -->
       <v-app-bar
         v-if="user.permissionslist.includes('Access POS')"
