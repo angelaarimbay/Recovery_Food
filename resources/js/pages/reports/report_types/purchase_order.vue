@@ -42,21 +42,74 @@
           <span>Print</span>
         </v-tooltip></v-card-actions
       >
-      <!-- Category Field -->
+
       <v-row no-gutters justify="center">
+        <!-- Date Picker -->
         <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
-            <v-select
-              :items="suppcatlist"
-              item-text="supply_cat_name"
-              item-value="id"
-              v-model="category"
-              class="my-0"
-              clearable
-              dense
-              label="Category"
+            <v-menu
+              v-model="date1"
+              :close-on-content-click="false"
+              :nudge-right="35"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
             >
-            </v-select>
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateFromPO"
+                  label="Date From"
+                  prepend-icon="mdi-calendar-range"
+                  readonly
+                  v-on="on"
+                  class="py-0"
+                  dense
+                  clearable
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="dateFromPO"
+                @input="date1 = false"
+                scrollable
+                no-title
+                color="red darken-2"
+                dark
+              ></v-date-picker>
+            </v-menu>
+          </v-card-actions>
+        </v-col>
+
+        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
+          <v-card-actions class="pb-0 pt-4">
+            <v-menu
+              v-model="date2"
+              :close-on-content-click="false"
+              :nudge-right="35"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateUntilPO"
+                  label="Date Until"
+                  prepend-icon="mdi-calendar-range"
+                  readonly
+                  v-on="on"
+                  class="py-0"
+                  dense
+                  clearable
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="dateUntilPO"
+                @input="date2 = false"
+                scrollable
+                no-title
+                color="red darken-2"
+                dark
+              ></v-date-picker>
+            </v-menu>
           </v-card-actions>
         </v-col>
       </v-row>
@@ -68,37 +121,42 @@
 import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
-    category: "",
-    suppcatlist: [],
+    dateFromPO: null,
+    dateUntilPO: null,
+    date1: false,
+    date2: false,
+    snackbar: {
+      active: false,
+      message: "",
+    },
   }),
 
-  created() {
-    this.suppCat();
-  },
   methods: {
     async get(type) {
       switch (type) {
         case "pdf":
           await axios({
-            url: "/api/reports/masterlist/get",
+            url: "/api/reports/purchaseorder/get",
             method: "GET",
-            responseType: "blob",
-            params: { category: this.category, type: type },
+            responseType: "blob", //nicocoment ito para makita mo ung laman
+            //pero pag ppdf mo na need mo uncomment yaan
+            params: { from: this.dateFromPO, to: this.dateUntilPO, type: type }, //wag mo aalisin ung type:type, jan ni checheck kung pdf or excel
           }).then((response) => {
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
-            link.download = "data.pdf";
+            link.download = "Purchase Order Report.pdf";
             link.click();
           });
           break;
         case "excel":
           await axios
-            .get("/api/walanjo", {
+            .get("/api/reports/purchaseorder/get", {
               method: "GET",
               responseType: "arraybuffer",
               params: {
-                category: this.category,
+                from: this.dateFromPO,
+                to: this.dateUntilPO,
                 type: type,
               },
             })
@@ -108,7 +166,7 @@ export default {
               });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
-              link.download = "masterlist.xlsx";
+              link.download = "Purchase Order Report.xlsx";
               link.click();
             });
 
@@ -116,11 +174,6 @@ export default {
         default:
           break;
       }
-    },
-    async suppCat() {
-      await axios.get("/api/msupp/suppCat").then((supp_cat) => {
-        this.suppcatlist = supp_cat.data;
-      });
     },
   },
 };

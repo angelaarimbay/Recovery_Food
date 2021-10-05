@@ -100,7 +100,7 @@
 
       <v-row no-gutters>
         <!-- Branch Field -->
-        <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
+        <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
           <v-card-actions class="py-0">
             <v-select
               :items="branchlist"
@@ -440,7 +440,6 @@ export default {
           dateUntilSP: this.dateUntilSP,
         },
       }).then((response) => {
-        console.log(response.data);
         this.table = response.data;
         this.progressbar = false;
       });
@@ -458,7 +457,6 @@ export default {
       await axios("/api/sales_report/info", {
         params: { reference_no: item.reference_no },
       }).then((result) => {
-        console.log(result.data);
         //lagay mo table mo table2
         this.table2 = result.data;
         this.sales_var = numeral(

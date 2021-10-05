@@ -100,7 +100,7 @@
 
       <v-row no-gutters>
         <!-- Branch Field -->
-        <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
+        <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
           <v-card-actions class="py-0">
             <v-select
               :items="branchlist"
@@ -289,9 +289,9 @@
                 </v-card-actions>
 
                 <v-card-actions>
-                    Payment: {{ table2[0]["payment"] }} <br/>
-                    Discount: {{ table2[0]["discount"] }} <br/>
-                    Change: {{ table2[0]["change"] }} <br/>
+                  Payment: {{ table2[0]["payment"] }} <br />
+                  Discount: {{ table2[0]["discount"] }} <br />
+                  Change: {{ table2[0]["change"] }} <br />
                 </v-card-actions>
               </div>
             </v-card-text>
@@ -411,7 +411,7 @@ export default {
         value: "product_name.product_name",
         filterable: false,
       },
-            {
+      {
         text: "Unit Price",
         value: "product_name.format_unit_price",
         align: "right",
@@ -452,7 +452,6 @@ export default {
           dateUntilSP: this.dateUntilTP,
         },
       }).then((response) => {
-          console.log(response.data)
         this.table = response.data;
         this.progressbar = false;
       });

@@ -46,6 +46,7 @@
           @click="action(snackbar2.type)"
           >Yes</v-btn
         >
+
         <v-btn
           :small="$vuetify.breakpoint.smAndDown"
           v-bind="attrs"
@@ -762,9 +763,7 @@ export default {
         .get("/api/sales_report/sales_count")
         .then((result) => { 
             this.salescount = result.data;
-          
         });
-         
     },
 
     selectItem(item) {
