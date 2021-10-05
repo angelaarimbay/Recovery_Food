@@ -28,12 +28,12 @@ class BranchesInventoryController extends Controller
                  ($t->category? ($t->branch?" and ":"")." category=".$t->category:"") ;
  
      
-            $table= tbl_outgoingsupp::with(["category","supply_name","requesting_branch"]);
+            $table= tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])->selectRaw("*, @row:=@row+1 as row ");
             if ($where) {
                 if ($t->search) {
                     $table = $table->whereRaw($where)
                             ->whereHas('supply_name', function ($q) use ($t) {
-                                $q->where('supply_name', 'like', '%'.$t->search.'%');
+                                $q->where('supply_name', 'like', "%".$t->search."%");
                             });
                 } else {
                     $table = $table->whereRaw($where);
@@ -41,10 +41,10 @@ class BranchesInventoryController extends Controller
             }
             if ($t->search) {
                 return $table ->whereHas('supply_name', function ($q) use ($t) {
-                    $q->where('supply_name', 'like', '%'.$t->search.'%');
-                })->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+                    $q->where('supply_name', 'like', "%".$t->search."%");
+                })->paginate($t->itemsPerPage, "*", "page", $t->page);
             } else {
-                return $table->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+                return $table->paginate($t->itemsPerPage, "*", "page", $t->page);
             }
         } else {
             return [];
@@ -64,7 +64,7 @@ class BranchesInventoryController extends Controller
                 if ($t->search) {
                     $table = $table->whereRaw($where)
                             ->whereHas('product_name', function ($q) use ($t) {
-                                $q->where('product_name', 'like', '%'.$t->search.'%');
+                                $q->where('product_name', 'like', "'%".$t->search."%");
                             });
                 } else {
                     $table = $table->whereRaw($where);
@@ -72,7 +72,7 @@ class BranchesInventoryController extends Controller
             }
             if ($t->search) {
                 return $table ->whereHas('product_name', function ($q) use ($t) {
-                    $q->where('product_name', 'like', '%'.$t->search.'%');
+                    $q->where('product_name', 'like', "'%".$t->search."%");
                 })->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
             } else {
                 return $table->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);

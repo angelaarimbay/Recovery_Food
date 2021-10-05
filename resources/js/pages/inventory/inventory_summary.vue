@@ -210,7 +210,7 @@ export default {
     async get() {
       this.progressbar = true;
       await axios
-        .get("api/invsumm/get", {
+        .get("/api/invsumm/get", {
           params: { from: this.dateFrom, to: this.dateUntil },
         })
         .then((result) => {

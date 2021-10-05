@@ -40,15 +40,24 @@ class IncomingSuppliesController extends Controller
     
     public function get(Request $t)
     {
-        DB::statement(DB::raw("set @row:=0"));
+        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
+        DB::statement(DB::raw("set @row:=0")); 
+        $table = tbl_incomingsupp::with(["category","supply_name"])->selectRaw("*, @row:=@row+1 as row ")->whereRaw($where);
+      
         if ($t->search) { // If has value
-            $table = tbl_incomingsupp::with(["category","supply_name"])->where("supply_name", "!=", null);
-            $table_clone = clone $table;   // Get all items from incomingsupp
-           
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supply_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+            $table_clone = clone $table;   // Get all items from incomingsupp  
+            if($t->dateFrom && $t->dateUntil){
+                $table_clone->whereBetween("incoming_date",[date("Y-m-d",strtotime($t->dateFrom)), date("Y-m-d",strtotime($t->dateUntil))]);
+            } 
+            return $table_clone->whereHas('supply_name', function ($q) use ($t) {
+                $q->where('supply_name', 'like', "%".$t->search."%");
+            }) ->paginate($t->itemsPerPage, "*", "page", 1);
         }
-        // Else
-        return  tbl_incomingsupp::with(["category","supply_name"])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+        // Else 
+        if($t->dateFrom && $t->dateUntil){
+            $table->whereBetween("incoming_date",[date("Y-m-d",strtotime($t->dateFrom)), date("Y-m-d",strtotime($t->dateUntil))]);
+        } 
+        return  $table->paginate($t->itemsPerPage, "*", "page", $t->page);
     }
 
     public function suppCat()

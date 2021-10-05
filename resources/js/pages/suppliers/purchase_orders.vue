@@ -186,6 +186,7 @@
                           no-title
                           color="red darken-2"
                           dark
+                          @change="get"
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -222,6 +223,7 @@
                           no-title
                           color="red darken-2"
                           dark
+                          @change="get"
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -321,8 +323,9 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
+                            :rules="formRules"
                             v-model="form.incoming_date"
-                            label="Incoming Date"
+                            label="Incoming Date *"
                             readonly
                             v-on="on"
                             class="py-0"
@@ -372,7 +375,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.supplier_name"
                         outlined
                         dense
@@ -402,7 +405,7 @@
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Amount *</div>
+                          <div style="font-size: 14px">Total Amount *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -481,10 +484,12 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
+    ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
@@ -512,7 +517,7 @@ export default {
         filterable: false,
       },
       {
-        text: "Amount",
+        text: "Total Amount",
         value: "format_amount",
         align: "right",
         filterable: false,
@@ -619,31 +624,17 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/porder/save", this.form)
+            .post("/api/porder/save", this.form)
             .then((result) => {
               //if the value is true then save to database
-              switch (result.data) {
-                case 0:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "check",
-                    iconColor: "success",
-                    message: "Successfully saved.",
-                  };
-                  this.get();
-                  this.cancel();
-                  break;
-                case 1:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "The supply category already exists.",
-                  };
-                  break;
-                default:
-                  break;
-              }
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully saved.",
+              };
+              this.get();
+              this.cancel();
             })
             .catch((result) => {
               // If false or error when saving
@@ -657,11 +648,14 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/porder/get", {
+        .get("/api/porder/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            dateFrom: this.dateFrom,
+            dateUntil: this.dateUntil,
+            
           },
         })
         .then((result) => {
@@ -675,7 +669,7 @@ export default {
     },
 
     async suppName() {
-      await axios.get("api/porder/suppName").then((supp_name) => {
+      await axios.get("/api/porder/suppName").then((supp_name) => {
         this.suppnamelist = supp_name.data;
       });
     },

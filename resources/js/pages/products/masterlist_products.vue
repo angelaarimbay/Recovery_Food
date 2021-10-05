@@ -156,6 +156,7 @@
                   <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-select
+                        v-model="category"
                         :items="prodcatlist"
                         item-text="product_cat_name"
                         item-value="id"
@@ -163,6 +164,7 @@
                         clearable
                         dense
                         label="Category"
+                        @change="get"
                       >
                       </v-select>
                     </v-card-actions>
@@ -267,7 +269,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.status"
                         outlined
                         dense
@@ -283,7 +285,7 @@
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.category"
                         :items="prodcatlist"
                         outlined
@@ -299,7 +301,7 @@
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.sub_category"
                         :items="prodsubcatlist"
                         outlined
@@ -478,6 +480,7 @@ export default {
       message: "",
     },
     search: "",
+    category: "",
     button: false,
     dialog: false,
     sheet: false,
@@ -493,10 +496,12 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
+    ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
@@ -537,7 +542,7 @@ export default {
         filterable: false,
       },
       {
-        text: "Quantity",
+        text: "Qty",
         value: "diff_quantity",
         align: "right",
         filterable: false,
@@ -549,7 +554,7 @@ export default {
         filterable: false,
       },
       {
-        text: "Actions",
+        text: "Action(s)",
         value: "id",
         align: "center",
         sortable: false,
@@ -653,7 +658,7 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/mprod/save", this.form)
+            .post("/api/mprod/save", this.form)
             .then((result) => {
               //if the value is true then save to database
               switch (result.data) {
@@ -690,11 +695,12 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/mprod/get", {
+        .get("/api/mprod/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            category: this.category
           },
         })
         .then((result) => {
@@ -708,13 +714,13 @@ export default {
     },
 
     async prodCat() {
-      await axios.get("api/mprod/prodCat").then((prod_cat) => {
+      await axios.get("/api/mprod/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
     },
 
     async prodSubCat() {
-      await axios.get("api/mprod/prodSubCat").then((prodsub_cat) => {
+      await axios.get("/api/mprod/prodSubCat").then((prodsub_cat) => {
         this.prodsubcatlist = prodsub_cat.data;
       });
     },

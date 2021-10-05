@@ -234,6 +234,7 @@
                   <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-select
+                        v-model="category"
                         :items="suppcatlist"
                         item-text="supply_cat_name"
                         item-value="id"
@@ -241,6 +242,7 @@
                         clearable
                         dense
                         label="Category"
+                        @change="get"
                       >
                       </v-select>
                     </v-card-actions>
@@ -350,7 +352,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.status"
                         outlined
                         dense
@@ -366,7 +368,7 @@
 
                     <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.category"
                         outlined
                         :items="suppcatlist"
@@ -615,6 +617,7 @@ export default {
     supply_id: "",
     disable: "",
     table: [],
+    category: "",
     suppcatlist: [],
     dayslist: [],
     date: null,
@@ -622,12 +625,11 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
     ],
 
     // Form Data
@@ -684,7 +686,7 @@ export default {
         filterable: false,
       },
       {
-        text: "Actions",
+        text: "Action(s)",
         value: "id",
         align: "center",
         sortable: false,
@@ -762,7 +764,10 @@ export default {
         if (this.currentdata[key] != this.form[key]) {
           if (key == "category") {
             if (this.currentdata.category) {
-              if (this.currentdata.category.id == this.form.category) {
+              if (
+                parseInt(this.currentdata.category.id) !=
+                parseInt(this.form.category)
+              ) {
                 found += 1;
               }
             }
@@ -800,7 +805,7 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/msupp/save", this.form)
+            .post("/api/msupp/save", this.form)
             .then((result) => {
               //if the value is true then save to database
               switch (result.data) {
@@ -837,11 +842,12 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/msupp/get", {
+        .get("/api/msupp/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            category: this.category,
           },
         })
         .then((result) => {
@@ -856,7 +862,7 @@ export default {
 
     async sum() {
       await axios
-        .get("api/msupp/sum", {
+        .get("/api/msupp/sum", {
           params: {
             id: this.supply_id,
           },
@@ -871,7 +877,7 @@ export default {
 
     async validateItem() {
       await axios
-        .get("api/msupp/validateItem", {
+        .get("/api/msupp/validateItem", {
           params: {
             name: this.form.supply_name,
           },
@@ -887,7 +893,7 @@ export default {
     },
 
     async suppCat() {
-      await axios.get("api/msupp/suppCat").then((supp_cat) => {
+      await axios.get("/api/msupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },

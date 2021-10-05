@@ -162,7 +162,9 @@
                         class="my-0"
                         clearable
                         dense
+                        v-model="category"
                         label="Category"
+                        @change="get"
                       >
                       </v-select>
                     </v-card-actions>
@@ -202,6 +204,7 @@
                           no-title
                           color="red darken-2"
                           dark
+                          @change="get"
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -238,6 +241,7 @@
                           no-title
                           color="red darken-2"
                           dark
+                          @change="get"
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -337,6 +341,7 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
+                            :rules="formRules"
                             v-model="form.incoming_date"
                             label="Incoming Date"
                             readonly
@@ -367,7 +372,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.category"
                         outlined
                         dense
@@ -391,7 +396,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.supply_name"
                         outlined
                         dense
@@ -428,7 +433,7 @@
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Amount *</div>
+                          <div style="font-size: 14px">Total Amount *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -505,18 +510,18 @@ export default {
     dialog: false,
     deleteid: "",
     tempfile: "",
+    category: "",
     table: [],
     suppcatlist: [],
     suppnamelist: [],
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
     ],
 
     // Form Data
@@ -541,13 +546,13 @@ export default {
       },
       { text: "Supply Name", value: "supply_name.supply_name" },
       {
-        text: "Quantity",
+        text: "Qty",
         value: "quantity",
         align: "right",
         filterable: false,
       },
       {
-        text: "Amount",
+        text: "Total Amount",
         value: "format_amount",
         align: "right",
         filterable: false,
@@ -559,7 +564,7 @@ export default {
         filterable: false,
       },
       {
-        text: "Actions",
+        text: "Action(s)",
         value: "id",
         align: "center",
         sortable: false,
@@ -658,32 +663,17 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/isupp/save", this.form)
-
+            .post("/api/isupp/save", this.form)
             .then((result) => {
               //if the value is true then save to database
-              switch (result.data) {
-                case 0:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "check",
-                    iconColor: "success",
-                    message: "Successfully saved.",
-                  };
-                  this.get();
-                  this.cancel();
-                  break;
-                case 1:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "The supply name already exists.",
-                  };
-                  break;
-                default:
-                  break;
-              }
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully saved.",
+              };
+              this.get();
+              this.cancel();
             })
             .catch((result) => {
               // If false or error when saving
@@ -696,11 +686,14 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/isupp/get", {
+        .get("/api/isupp/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            category: this.category,
+            dateFrom: this.dateFrom,
+            dateUntil: this.dateUntil,
           },
         })
         .then((result) => {
@@ -714,14 +707,18 @@ export default {
     },
 
     async suppCat() {
-      await axios.get("api/isupp/suppCat").then((supp_cat) => {
+      await axios.get("/api/isupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
+
     async suppName() {
+      this.form.supply_name = null;
       await axios
-        .get("api/isupp/suppName", { params: { category: this.form.category } })
+        .get("/api/isupp/suppName", {
+          params: { category: this.form.category },
+        })
         .then((supp_name) => {
           this.suppnamelist = supp_name.data;
         });
@@ -740,7 +737,6 @@ export default {
         row.incoming_date,
         "YYYY-MM-DD"
       );
-
       this.dialog = true;
     },
 

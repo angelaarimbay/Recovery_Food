@@ -317,18 +317,41 @@
         </v-col>
       </v-row>
 
+      <!-- Divider -->
       <v-divider
         style="border: 2px solid #bdbdbd; border-radius: 5px"
       ></v-divider>
+
+      <!-- Graphs -->
+      <v-row no-gutters>
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-3">
+          <v-card elevation="6" style="border-radius: 10px" class="pa-3">
+            <bar-chart :options="options" :chart-data="datacollection">
+            </bar-chart>
+          </v-card>
+        </v-col>
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-3">
+          <v-card elevation="6" style="border-radius: 10px" class="pa-3">
+            <bar-chart1 :options="options1" :chart-data="datacollection1">
+            </bar-chart1>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
 
 <script>
+import BarChart from "../charts/BarChart";
+import BarChart1 from "../charts/BarChart";
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  components: {
+    BarChart,
+    BarChart1,
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -368,6 +391,9 @@ export default {
     checkbox2: true,
     checkbox3: true,
     checkbox4: true,
+    branch: "",
+    year: "",
+    month: "",
     supp: null,
     prod: null,
     po: null,
@@ -376,6 +402,111 @@ export default {
     hidden2: true,
     hidden3: true,
     hidden4: true,
+
+    datacollection: {},
+    options: {
+      // onClick: function(e,i) {
+      //     e = i[0];
+      //     this.selecteditem = this.data.labels[e._index];
+      //     that.selectCresta(e._index)
+      // },
+      plugins: {
+        zoom: {
+          zoom: {
+            wheel: {
+              enabled: true,
+            },
+            pinch: {
+              enabled: true,
+            },
+            mode: "xy",
+          },
+        },
+      },
+
+      responsiveAnimationDuration: 0,
+      tooltips: {
+        enabled: true,
+        mode: "single",
+        callbacks: {
+          label: function (data) {
+            return [
+              "₱ " +
+                data.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            ];
+          },
+          title: function (data) {
+            return "Sale: " + data[0].label;
+          },
+        },
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+              callback: function (value, index, values) {
+                return (
+                  "PHP " +
+                  value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                );
+              },
+            },
+          },
+        ],
+      },
+    },
+
+    datacollection1: {},
+    options1: {
+      // onClick: function(e,i) {
+      //     e = i[0];
+      //     this.selecteditem = this.data.labels[e._index];
+      //     that.selectCresta(e._index)
+      // },
+      plugins: {
+        zoom: {
+          zoom: {
+            wheel: {
+              enabled: true,
+            },
+            pinch: {
+              enabled: true,
+            },
+            mode: "xy",
+          },
+        },
+      },
+
+      responsiveAnimationDuration: 0,
+      tooltips: {
+        enabled: true,
+        mode: "single",
+        callbacks: {
+          label: function (data) {
+            return [
+              "₱ " +
+                data.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            ];
+          },
+          title: function (data) {
+            return "Purchase: " + data[0].label;
+          },
+        },
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+              callback: function (value, index, values) {
+                return value;
+              },
+            },
+          },
+        ],
+      },
+    },
   }),
 
   methods: {
@@ -430,6 +561,45 @@ export default {
           // If false or error when saving
         });
     },
+
+    async getSalesGraph() {
+      await axios
+        .get("/api/dashboard/getSalesGraph", {
+          params: { branch: 1, year: 2021, month: "" },
+        })
+        .then((result) => {
+          this.datacollection = {
+            labels: result.data.month,
+            datasets: [
+              {
+                label: "Sale",
+                backgroundColor: "#D32F2F",
+                data: result.data.data,
+              },
+            ],
+          };
+        })
+        .catch((result) => {});
+    },
+    async getProductsGraph() {
+      await axios
+        .get("/api/dashboard/getProductsGraph", {
+          params: { category: 1, branch: 1, year: 2021, month: 10 },
+        })
+        .then((result) => {
+          this.datacollection1 = {
+            labels: result.data.name,
+            datasets: [
+              {
+                label: "Purchase",
+                backgroundColor: "#D32F2F",
+                data: result.data.sold,
+              },
+            ],
+          };
+        })
+        .catch((result) => {});
+    },
   },
 
   created() {
@@ -438,6 +608,8 @@ export default {
       this.getProd();
       this.getPO();
       this.getUser();
+      this.getSalesGraph();
+      this.getProductsGraph();
     } else {
       if (this.user.permissionslist.includes("Access POS")) {
         this.$router.push({ name: "pos" }).catch((errr) => {});

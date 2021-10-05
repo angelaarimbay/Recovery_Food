@@ -11,6 +11,7 @@ export default [
 
   //Dashboard
   { path: '/dashboard', name: 'dashboard', component: page('dashboard/dashboard.vue') },
+  { path: '/password', name: 'password', component: page('settings/password.vue') },
 
   //Branches
   { path: '/manage_branches', name: 'manage-branches', component: page('branches/manage_branches.vue') },
@@ -51,5 +52,4 @@ export default [
   { path: '/posmenu', name: 'pos', component: page('pos/posmenu.vue') },
 
   { path: '/auth/index', name: 'auth.index', component: page('auth/index.vue') },
-  { path: '/template', name: 'template', component: page('template.vue') },
 ]

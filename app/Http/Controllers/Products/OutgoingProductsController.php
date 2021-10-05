@@ -41,15 +41,30 @@ class OutgoingProductsController extends Controller
     
     public function get(Request $t)
     {
+        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
+                ($t->branch? " and requesting_branch=".$t->branch:"");
+ 
         DB::statement(DB::raw("set @row:=0"));
+        $table = tbl_outgoingprod::with(["category","sub_category","product_name","requesting_branch"])
+        ->selectRaw("*, @row:=@row+1 as row ")
+        ->whereRaw($where)
+        ->where("product_name", "!=", null);
+ 
         if ($t->search) { // If has value
-            $table = tbl_outgoingprod::with(["category","sub_category","product_name","requesting_branch"])->where("product_name", "!=", null);
-            $table_clone = clone $table;   // Get all items from outgoingprod
-           
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("product_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+            $table_clone = clone $table;   // Get all items from outgoingsupp
+
+            if ($t->dateFrom && $t->dateUntil) {
+                $table_clone->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+            }
+            return $table_clone->whereHas('product_name', function ($q) use ($t) {
+                $q->where('product_name', 'like', "%".$t->search."%");
+            }) ->paginate($t->itemsPerPage, "*", "page", 1);
         }
         // Else
-        return  tbl_outgoingprod::with(["category","sub_category","product_name","requesting_branch"])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+        if ($t->dateFrom && $t->dateUntil) {
+            $table->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+        }
+        return  $table->paginate($t->itemsPerPage, "*", "page", $t->page);
     }
 
     public function prodCat()

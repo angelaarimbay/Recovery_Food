@@ -39,11 +39,19 @@ class PurchaseOrdersController extends Controller
         if ($t->search) { // If has value
             $table = tbl_purchaseord::with("supplier_name")->where("supplier_name", "!=", null);
             $table_clone = clone $table;   // Get all items from purchaseord
-           
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supplier_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+            if ($t->dateFrom && $t->dateUntil) {
+                $table_clone->whereBetween("incoming_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+            }
+            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->whereHas('supplier_name', function ($q) use ($t) {
+                $q->where('supplier_name', 'like', "%".$t->search."%");
+            }) ->paginate($t->itemsPerPage, "*", "page", 1);
         }
+       $table = tbl_purchaseord::with("supplier_name");
         // Else
-        return  tbl_purchaseord::with("supplier_name")->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+        if ($t->dateFrom && $t->dateUntil) {
+            $table->whereBetween("incoming_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+        }
+        return  $table->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
     }
 
     public function suppName()

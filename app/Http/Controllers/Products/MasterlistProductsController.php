@@ -52,17 +52,16 @@ class MasterlistProductsController extends Controller
     }
     public function get(Request $t)
     {
-        DB::statement(DB::raw("set @row:=0"));
-        if ($t->search) { // If has value
-            $table = tbl_masterlistprod::with(["category","sub_category"])->where("status", "!=", null);
-            $table_clone = clone $table;   // Get all items from masterlistprod
-           
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("product_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
-        }
-        // Else
-        return  tbl_masterlistprod::with(["category","sub_category"])->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
-    }
+        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
+        ($t->search?" and product_name like '%".$t->search."%'":'');
 
+        // return $where;
+        DB::statement(DB::raw("set @row:=0"));
+        return $table = tbl_masterlistprod::with(["category","sub_category"])
+        ->whereRaw($where)
+        ->selectRaw("*, @row:=@row+1 as row ")
+        ->paginate($t->itemsPerPage, "*", "page", $t->page);
+    }
     public function prodCat()
     {
         return tbl_prodcat::select(["product_cat_name","id"])->where("status", 1)->get();

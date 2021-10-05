@@ -25,6 +25,39 @@
       </template>
     </v-snackbar>
 
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar2.active"
+      timeout="10000"
+    >
+      <span
+        ><v-icon :color="snackbar2.iconColor">{{
+          `mdi-${snackbar2.iconText}`
+        }}</v-icon></span
+      >
+      {{ snackbar2.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="action(snackbar2.type)"
+          >Yes</v-btn
+        >
+
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar2.active = false"
+          >Cancel</v-btn
+        >
+      </template>
+    </v-snackbar>
+
     <v-row no-gutters>
       <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
         <v-card style="border-radius: 10px" class="pa-2">
@@ -234,7 +267,7 @@
                 <span
                   style="color: #616161"
                   :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
-                  >Sales Count: {{ table2.length }}</span
+                  >Sales Count: {{ salescount }}</span
                 >
               </v-card-actions>
             </v-col>
@@ -310,14 +343,17 @@
         </v-card>
 
         <v-col cols="12" xl="12" lg="12" md="12" sm="12" class="pa-0 mt-2">
-          <v-card
-            height="50"
-            class="d-flex align-center pa-3"
-            style="border-radius: 10px"
-          >
-            <strong style="color: #616161">Total: </strong>
-            <v-spacer></v-spacer>
-            <strong style="font-size: 27px">{{ totalamount }}</strong>
+          <v-card height="95" class="pa-3" style="border-radius: 10px">
+            <v-card-actions class="p-0 m-0">
+              <strong style="color: #616161; font-size: 14px">Total: </strong>
+              <v-spacer></v-spacer>
+              <strong style="font-size: 22px">{{ totalamount }}</strong>
+            </v-card-actions>
+            <v-card-actions class="p-0 m-0">
+              <strong style="color: #616161">Grand Total: </strong>
+              <v-spacer></v-spacer>
+              <strong style="font-size: 27px">{{ discountedamount }}</strong>
+            </v-card-actions>
           </v-card>
         </v-col>
 
@@ -383,13 +419,63 @@
             </v-row>
 
             <v-row class="mt-2">
-              <v-col>
+              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      v-on="data.on"
+                      block
+                      color="light-blue darken-3"
+                      style="text-transform: none; color: white"
+                      :disabled="!disabled"
+                    >
+                      <v-icon>mdi-printer</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Print Receipt</span>
+                </v-tooltip>
+              </v-col>
+              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      v-on="data.on"
+                      block
+                      color="red darken-3"
+                      style="text-transform: none; color: white"
+                      :disabled="!disabled"
+                      @click="validate('void')"
+                    >
+                      Void
+                    </v-btn>
+                  </template>
+                  <span>Void Order(s)</span>
+                </v-tooltip>
+              </v-col>
+              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      v-on="data.on"
+                      block
+                      color="green darken-3"
+                      style="text-transform: none; color: white"
+                      :disabled="!disabled"
+                      @click="validate('new')"
+                    >
+                      New
+                    </v-btn>
+                  </template>
+                  <span>New Order</span>
+                </v-tooltip>
+              </v-col>
+              <v-col cols="12" xl="6" lg="6" md="12" sm="12">
                 <v-btn
                   block
                   color="green darken-3"
                   style="text-transform: none; color: white"
                   :disabled="!disabled"
-                  @click="save"
+                  @click="validate('save')"
                 >
                   Pay
                 </v-btn>
@@ -428,6 +514,9 @@ export default {
       if (this.table2.length > 0) {
         return true;
       } else {
+        this.payment = 0;
+        this.discount = 0;
+        this.change = 0;
         return false;
       }
     },
@@ -439,6 +528,10 @@ export default {
       active: false,
       message: "",
     },
+    snackbar2: {
+      active: false,
+      message: "",
+    },
     search: "",
     button: false,
     mode: "",
@@ -446,10 +539,12 @@ export default {
     dialog: false,
     selectedrow: { product_name: "" },
     totalamount: 0,
+    discountedamount: 0,
     payment: 0,
     discount: 0,
     change: 0,
-    table1: [],
+    salescount: 0,
+        table1: [],
     table2: [],
     prodcatlist: [],
     prodsubcatlist: [],
@@ -495,7 +590,7 @@ export default {
       },
       {
         text: "Qty",
-        value: "quantity",
+        value: "quantity_diff",
         align: "right",
         filterable: false,
       },
@@ -558,8 +653,24 @@ export default {
       this.totalamount = numeral(
         this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
       ).format("0,0.00");
-    },
 
+      this.discountedamount = numeral(
+        this.table2.reduce((a, b) => a + b.temp_sub_total, 0) -
+          (this.discount / 100) *
+            this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
+      ).format("0,0.00");
+
+      for (let i = 0; i < this.table2.length; i++) {
+        this.table2[i].sub_total_discounted =
+          this.table2[i].quantity *
+          (this.table2[i].unit_price -
+            (this.discount / 100) * this.table2[i].unit_price);
+
+        this.table2[i].payment = this.payment;
+        this.table2[i].discount = this.discount;
+        this.table2[i].change = this.change;
+      }
+    },
     itemperpage() {
       this.page = 1;
       this.get();
@@ -577,6 +688,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -585,16 +697,73 @@ export default {
         });
     },
 
+    validate(type) {
+      switch (type) {
+        case "save":
+          this.snackbar2 = {
+            active: true,
+            iconText: "comment-question-outline",
+            iconColor: "warning",
+            message: "Do you wish to continue?",
+            type: "save",
+          };
+          break;
+        case "void":
+          this.snackbar2 = {
+            active: true,
+            iconText: "comment-question-outline",
+            iconColor: "warning",
+            message: "Do you want to void the order?",
+            type: "void",
+          };
+          break;
+        case "new":
+          this.snackbar2 = {
+            active: true,
+            iconText: "comment-question-outline",
+            iconColor: "warning",
+            message: "Do you want to make new order?",
+            type: "new",
+          };
+          break;
+        default:
+          break;
+      }
+    },
+
     async save() {
-      await axios.post("/api/pos/prodlist/save", this.table2).then((result) => {
-        //kaw na mag add nyan
-        //  this.snackbar = {
-        //           active: true,
-        //           iconText: "check",
-        //           iconColor: "success",
-        //           message: "Successfully saved.",
-        //         };
-      });
+      this.snackbar2.active = false;
+
+      if (parseInt(this.payment) >= parseInt(this.totalamount)) {
+        await axios
+          .post("/api/pos/prodlist/save", this.table2)
+          .then((result) => {
+            this.newOrder();
+            this.get();
+            this.getSalesCount();
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully checked-out.",
+            };
+          });
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Error! Please input correct payment first.",
+        };
+      }
+    },
+
+    async getSalesCount() {
+      await axios
+        .get("/api/sales_report/sales_count")
+        .then((result) => { 
+            this.salescount = result.data;
+        });
     },
 
     selectItem(item) {
@@ -622,17 +791,28 @@ export default {
             quantity += parseInt(this.table2[key].quantity);
           }
         }
-      }
-
-      if (this.selectedrow.quantity <= quantity) {
-        this.snackbar = {
-          active: true,
-          iconText: "alert",
-          iconColor: "error",
-          message: "Error! Please input correct quantity.",
-        };
-      } else {
-        this.addItem();
+        if ( parseInt( this.selectedrow.quantity_diff) <= quantity) {
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Error! Please input correct quantity.",
+          };
+        } else {
+          this.addItem();
+        }
+      } else { 
+        if (parseInt(this.selectedrow.quantity_diff) >=  this.quantity) {
+         
+          this.addItem();
+        } else {
+           this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Error! Please input correct quantity.",
+          };
+        }
       }
     },
 
@@ -650,6 +830,7 @@ export default {
           this.quantity * this.selectedrow.product_name.price
         ).format("0,0.00"),
         temp_sub_total: this.quantity * this.selectedrow.product_name.price,
+
         mode: this.mode,
       });
       this.snackbar = {
@@ -659,6 +840,7 @@ export default {
         message: "Successfully added.",
       };
       this.getTotal();
+      this.getChange();
       this.cancel();
     },
 
@@ -672,13 +854,20 @@ export default {
         message: "Successfully removed.",
       };
       this.getTotal();
+      this.getChange();
     },
 
     getChange() {
-      if (this.discount > 0) {
-        this.change = this.payment - (this.totalamount - ((this.discount / 100) * this.totalamount));
-      } else if (this.discount == null || this.discount == 0) {
-        this.change = this.payment - this.totalamount;
+      if (this.payment > 0) {
+        if (this.discount > 0) {
+          this.change =
+            this.payment -
+            (this.totalamount - (this.discount / 100) * this.totalamount);
+          this.getTotal();
+        } else if (this.discount == null || this.discount == 0) {
+          this.change = this.payment - this.totalamount;
+          this.getTotal();
+        }
       }
     },
 
@@ -729,11 +918,53 @@ export default {
         this.discount = null;
       }
     },
+
+    action(type) {
+      switch (type) {
+        case "save":
+          this.save();
+          break;
+        case "void":
+          this.voidOrder();
+          break;
+        case "new":
+          this.newOrder();
+          break;
+        default:
+          break;
+      }
+      this.snackbar2.active = false;
+    },
+
+    voidOrder() {
+      this.table2 = [];
+      this.getTotal();
+      this.mode = null;
+      this.snackbar = {
+        active: true,
+        iconText: "check",
+        iconColor: "success",
+        message: "Successfully voided.",
+      };
+    },
+
+    newOrder() {
+      this.table2 = [];
+      this.getTotal();
+      this.mode = null;
+      this.snackbar = {
+        active: true,
+        iconText: "check",
+        iconColor: "success",
+        message: "Successfully created a new order.",
+      };
+    },
   },
 
   created() {
     if (this.user.permissionslist.includes("Access POS")) {
       this.get();
+      this.getSalesCount();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }

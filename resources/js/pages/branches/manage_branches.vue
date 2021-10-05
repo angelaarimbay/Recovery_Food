@@ -378,7 +378,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.status"
                         outlined
                         dense
@@ -628,10 +628,10 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
+    formRulesNumberRange: [(v) => {
+      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
+      return "This is required";
+    }],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
@@ -648,7 +648,13 @@ export default {
     },
 
     // For comparing data
-    currentdata: {},
+    currentdata: {id: null,
+      status: null,
+      branch_name: null,
+      location: null,
+      phone_number: null,
+      email_add: null,
+      branch_image: null,},
 
     // Table Headers
     headers: [
@@ -661,7 +667,7 @@ export default {
         filterable: false,
       },
       {
-        text: "Actions",
+        text: "Action(s)",
         value: "id",
         align: "center",
         sortable: false,
@@ -717,7 +723,7 @@ export default {
       // Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
-        if (this.currentdata[key] != this.form[key]) {
+        if (this.currentdata[key] != this.form[key]) { 
           found += 1;
         }
       }
@@ -742,7 +748,7 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/branches/save", this.form)
+            .post("/api/branches/save", this.form)
             .then((result) => {
               //if the value is true then save to database
               switch (result.data) {
@@ -780,7 +786,7 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/branches/get", {
+        .get("/api/branches/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
@@ -810,20 +816,21 @@ export default {
       this.$refs.uploader.click();
     },
     deletefile() {
-      this.$refs.uploader.value = null;
-
-      this.tempfile = "";
-      this.form.branch_image = "";
+      this.$refs.uploader.value = null; 
+      this.tempfile = null;
+      this.form.branch_image = null;
+ 
     },
 
     // For attachment
     async attachment(e) {
+      if( e.target.files[0]){
       this.loading = true;
       var dataform = new FormData(); // Can use typical jquery form data
       dataform.append("file", e.target.files[0]);
 
       await axios
-        .post("api/branches/attachment", dataform, {
+        .post("/api/branches/attachment", dataform, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((result) => {
@@ -831,6 +838,8 @@ export default {
           this.form.branch_image = result.data.filename;
           this.loading = false;
         });
+      }
+     
     },
     // For uploading
     // Editing/updating of row

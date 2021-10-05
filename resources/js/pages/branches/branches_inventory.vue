@@ -91,9 +91,9 @@
                           <v-select
                             style="max-width: 82px"
                             dense
-                            v-model="itemsPerPage"
+                            v-model="itemsPerPage1"
                             label="Items per page"
-                            @change="itemperpage"
+                            @change="itemperpage1"
                             :items="[
                               1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                             ]"
@@ -116,7 +116,7 @@
                       >
                         <v-card-actions>
                           <v-text-field
-                            v-model="search"
+                            v-model="search1"
                             label="Supply Name"
                             single-line
                             dense
@@ -130,7 +130,7 @@
                                 color="red darken-2"
                                 icon
                                 v-on="data.on"
-                                @click="get"
+                                @click="getSupplies"
                                 class="mb-3"
                               >
                                 <v-icon>mdi-magnify</v-icon></v-btn
@@ -148,20 +148,20 @@
                         cols="6"
                         xl="2"
                         lg="2"
-                        md="2"
+                        md="4"
                         sm="6"
                         class="my-auto"
                       >
                         <v-card-actions class="py-0">
                           <v-select
                             :items="branchlist"
-                            v-model="branch"
+                            v-model="branch1"
                             item-text="branch_name"
                             item-value="id"
                             class="my-0"
                             clearable
                             dense
-                            @change="get"
+                            @change="getSupplies"
                             label="Branch"
                           >
                           </v-select>
@@ -173,7 +173,7 @@
                         cols="6"
                         xl="2"
                         lg="2"
-                        md="2"
+                        md="4"
                         sm="6"
                         class="my-auto"
                       >
@@ -183,8 +183,8 @@
                             item-text="supply_cat_name"
                             item-value="id"
                             class="my-0"
-                            v-model="category"
-                            @change="get"
+                            v-model="category1"
+                            @change="getSupplies"
                             clearable
                             dense
                             label="Category"
@@ -202,9 +202,9 @@
                 :headers="headers1"
                 :items="table1.data"
                 :loading="progressbar"
-                :page.sync="page"
+                :page.sync="page1"
                 ref="progress"
-                :items-per-page="itemsPerPage"
+                :items-per-page="itemsPerPage1"
                 hide-default-footer
                 @page-count="pageCount = $event"
               >
@@ -234,7 +234,7 @@
               <!-- Paginate -->
               <div class="text-center pt-2">
                 <v-pagination
-                  v-model="page"
+                  v-model="page1"
                   :total-visible="5"
                   :length="table1.last_page"
                   color="red darken-2"
@@ -276,9 +276,9 @@
                           <v-select
                             style="max-width: 82px"
                             dense
-                            v-model="itemsPerPage"
+                            v-model="itemsPerPage2"
                             label="Items per page"
-                            @change="itemperpage"
+                            @change="itemperpage2"
                             :items="[
                               1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                             ]"
@@ -301,7 +301,7 @@
                       >
                         <v-card-actions>
                           <v-text-field
-                            v-model="search"
+                            v-model="search2"
                             label="Product Name"
                             single-line
                             dense
@@ -315,7 +315,7 @@
                                 color="red darken-2"
                                 icon
                                 v-on="data.on"
-                                @click="get"
+                                @click="getProducts"
                                 class="mb-3"
                               >
                                 <v-icon>mdi-magnify</v-icon></v-btn
@@ -333,20 +333,20 @@
                         cols="6"
                         xl="2"
                         lg="2"
-                        md="2"
+                        md="4"
                         sm="6"
                         class="my-auto"
                       >
                         <v-card-actions class="py-0">
                           <v-select
                             :items="branchlist"
-                            v-model="branch"
+                            v-model="branch2"
                             item-text="branch_name"
                             item-value="id"
                             class="my-0"
                             clearable
                             dense
-                            @change="get"
+                            @change="getProducts"
                             label="Branch"
                           >
                           </v-select>
@@ -358,7 +358,7 @@
                         cols="6"
                         xl="2"
                         lg="2"
-                        md="2"
+                        md="4"
                         sm="6"
                         class="my-auto"
                       >
@@ -368,8 +368,8 @@
                             item-text="product_cat_name"
                             item-value="id"
                             class="my-0"
-                            v-model="category"
-                            @change="get"
+                            v-model="category2"
+                            @change="getProducts"
                             clearable
                             dense
                             label="Category"
@@ -387,9 +387,9 @@
                 :headers="headers2"
                 :items="table2.data"
                 :loading="progressbar"
-                :page.sync="page"
+                :page.sync="page2"
                 ref="progress"
-                :items-per-page="itemsPerPage"
+                :items-per-page="itemsPerPage2"
                 hide-default-footer
                 @page-count="pageCount = $event"
               >
@@ -419,7 +419,7 @@
               <!-- Paginate -->
               <div class="text-center pt-2">
                 <v-pagination
-                  v-model="page"
+                  v-model="page2"
                   :total-visible="5"
                   :length="table2.last_page"
                   color="red darken-2"
@@ -467,9 +467,12 @@ export default {
   },
   data: () => ({
     progressbar: false,
-    search: "",
-    branch: "",
-    category: "",
+    search1: "",
+    search2: "",
+    branch1: "",
+    branch2: "",
+    category1: "",
+    category2: "",
     loading: false,
     tab: null,
     table1: [],
@@ -496,12 +499,12 @@ export default {
         value: "supply_name.supply_name",
       },
       {
-        text: "Quantity",
+        text: "Qty",
         value: "quantity",
         align: "right",
       },
       {
-        text: "Amount",
+        text: "Total Amount",
         value: "outgoing_amount",
         align: "right",
       },
@@ -540,15 +543,18 @@ export default {
         align: "right",
       },
     ],
-    page: 1,
+    page1: 1,
+    page2: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage1: 5,
+    itemsPerPage2: 5,
   }),
 
   // Onload
   created() {
     if (this.user.permissionslist.includes("Access Branches")) {
-      this.get();
+      this.getSupplies();
+      this.getProducts();
       this.suppCat();
       this.branchName();
       this.prodCat();
@@ -558,22 +564,27 @@ export default {
   },
 
   methods: {
-    itemperpage() {
-      this.page = 1;
-      this.get();
+    itemperpage1() {
+      this.page1 = 1;
+      this.getSupplies();
     },
 
-    async get() {
+    itemperpage2() {
+      this.page2 = 1;
+      this.getProducts();
+    },
+
+    async getSupplies() {
       this.progressbar = true;
-      this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+      this.itemsPerPage1 = parseInt(this.itemsPerPage1) ?? 0;
       await axios
-        .get("api/branches/inventory/get", {
+        .get("/api/branches/inventory/get", {
           params: {
-            branch: this.branch,
-            category: this.category,
-            page: this.page,
-            itemsPerPage: this.itemsPerPage,
-            search: this.search,
+            branch: this.branch1,
+            category: this.category1,
+            page: this.page1,
+            itemsPerPage: this.itemsPerPage1,
+            search: this.search1,
           },
         })
         .then((result) => {
@@ -582,17 +593,17 @@ export default {
         });
     },
 
-    async get() {
+    async getProducts() {
       this.progressbar = true;
-      this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+      this.itemsPerPage2 = parseInt(this.itemsPerPage2) ?? 0;
       await axios
-        .get("api/branches/inventory/get2", {
+        .get("/api/branches/inventory/get2", {
           params: {
-            branch: this.branch,
-            category: this.category,
-            page: this.page,
-            itemsPerPage: this.itemsPerPage,
-            search: this.search,
+            branch: this.branch2,
+            category: this.category2,
+            page: this.page2,
+            itemsPerPage: this.itemsPerPage2,
+            search: this.search2,
           },
         })
         .then((result) => {
@@ -602,19 +613,19 @@ export default {
     },
 
     async suppCat() {
-      await axios.get("api/branches/inventory/suppCat").then((supp_cat) => {
+      await axios.get("/api/branches/inventory/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
     async branchName() {
-      await axios.get("api/branches/inventory/branchName").then((bran_name) => {
+      await axios.get("/api/branches/inventory/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },
 
     async prodCat() {
-      await axios.get("api/branches/inventory/prodCat").then((prod_cat) => {
+      await axios.get("/api/branches/inventory/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
     },

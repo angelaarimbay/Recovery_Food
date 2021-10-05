@@ -247,7 +247,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.status"
                         outlined
                         dense
@@ -354,13 +354,10 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
-    ],
+    formRulesNumberRange: [(v) => {
+      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
+      return "This is required";
+    }],
 
     // Form Data
     form: {
@@ -383,7 +380,7 @@ export default {
         filterable: false,
       },
       {
-        text: "Actions",
+        text: "Action(s)",
         value: "id",
         align: "center",
         sortable: false,
@@ -464,7 +461,7 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/supplies/save", this.form)
+            .post("/api/supplies/save", this.form)
             .then((result) => {
               //if the value is true then save to database
               switch (result.data) {
@@ -502,7 +499,7 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/supplies/get", {
+        .get("/api/supplies/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,

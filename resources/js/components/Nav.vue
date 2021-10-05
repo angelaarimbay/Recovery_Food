@@ -44,7 +44,7 @@
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item>
+            <v-list-item :to="{ name: 'password' }" style="text-decoration: none">
               <v-list-item-title style="cursor: pointer"
                 >Password</v-list-item-title
               >
@@ -88,7 +88,7 @@
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item>
+            <v-list-item :to="{ name: 'password' }" style="text-decoration: none">
               <v-list-item-title style="cursor: pointer"
                 >Password</v-list-item-title
               >
