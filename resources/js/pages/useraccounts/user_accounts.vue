@@ -353,7 +353,7 @@
                       md="12"
                     >
                       <v-combobox
-                      class="d-none"
+                        class="d-none"
                         :rules="formRulesNumber"
                         v-model="form.user_role"
                         :items="userrolelist"
@@ -369,9 +369,16 @@
                       </v-combobox>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumberRange"
                         v-model="form.branch"
                         :items="branchlist"
                         item-text="branch_name"
@@ -466,10 +473,12 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
+    ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
@@ -618,7 +627,6 @@ export default {
       }
     },
     async get() {
-     
       this.progressbar = true; // Show the progress bar
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
@@ -631,7 +639,6 @@ export default {
           },
         })
         .then((result) => {
-           console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -643,15 +650,13 @@ export default {
 
     // Editing/updating of row
     edit(row) {
-      console.log(row)
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.first_name = row.first_name;
       this.form.last_name = row.last_name;
       this.form.email = row.email;
       this.form.phone_number = row.phone_number;
-      this.form.password = row.password; 
-       this.form.branch = row.branch_details.id ; 
+      this.form.branch = row.branch_details.id;
       this.dialog = true;
     },
 

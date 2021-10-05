@@ -290,7 +290,7 @@
 
                 <v-card-actions>
                   Payment: {{ table2[0]["payment"] }} <br />
-                  Discount: {{ table2[0]["discount"] }} <br />
+                  Discount: {{ table2[0]["discount"] }}% <br />
                   Change: {{ table2[0]["change"] }} <br />
                 </v-card-actions>
               </div>
@@ -396,7 +396,7 @@ export default {
         filterable: false,
       },
       {
-        text: "Actions",
+        text: "Action(s)",
         value: "id",
         align: "center",
         sortable: false,
