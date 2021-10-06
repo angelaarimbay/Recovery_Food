@@ -325,15 +325,41 @@
       <!-- Graphs -->
       <v-row no-gutters>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-3">
-          <v-card elevation="6" style="border-radius: 10px" class="pa-3">
+          <v-card
+            elevation="6"
+            style="border-radius: 10px"
+            class="pa-3"
+            :loading="progressbar1"
+            ref="progress"
+          >
             <bar-chart :options="options" :chart-data="datacollection">
             </bar-chart>
+            <v-progress-linear
+              color="red darken-2"
+              class="px-0 mx-0"
+              slot="progress"
+              indeterminate
+              rounded
+            ></v-progress-linear>
           </v-card>
         </v-col>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-3">
-          <v-card elevation="6" style="border-radius: 10px" class="pa-3">
+          <v-card
+            elevation="6"
+            style="border-radius: 10px"
+            class="pa-3"
+            :loading="progressbar2"
+            ref="progress"
+          >
             <bar-chart1 :options="options1" :chart-data="datacollection1">
             </bar-chart1>
+            <v-progress-linear
+              color="red darken-2"
+              class="px-0 mx-0"
+              slot="progress"
+              indeterminate
+              rounded
+            ></v-progress-linear>
           </v-card>
         </v-col>
       </v-row>
@@ -402,6 +428,8 @@ export default {
     hidden2: true,
     hidden3: true,
     hidden4: true,
+    progressbar1: false,
+    progressbar2: false,
 
     datacollection: {},
     options: {
@@ -563,6 +591,7 @@ export default {
     },
 
     async getSalesGraph() {
+      this.progressbar1 = true;
       await axios
         .get("/api/dashboard/getSalesGraph", {
           params: { branch: 1, year: 2021, month: "" },
@@ -578,10 +607,12 @@ export default {
               },
             ],
           };
+          this.progressbar1 = false;
         })
         .catch((result) => {});
     },
     async getProductsGraph() {
+      this.progressbar2 = true;
       await axios
         .get("/api/dashboard/getProductsGraph", {
           params: { category: 1, branch: 1, year: 2021, month: 10 },
@@ -597,6 +628,7 @@ export default {
               },
             ],
           };
+          this.progressbar2 = false;
         })
         .catch((result) => {});
     },

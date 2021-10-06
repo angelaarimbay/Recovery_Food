@@ -88,7 +88,7 @@ class UserAccountsController extends Controller
             $table = User::where("email", "!=", null);
             $table_clone = clone $table;   // Get all items from suppcat
            
-            $data = $table_clone->with('roles')->selectRaw("*, @row:=@row+1 as row ")->where("email", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+            $data = $table_clone->with('roles')->selectRaw("*, @row:=@row+1 as row ")->where("name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
         } else {
             $data =  User::with('roles')->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
         }
