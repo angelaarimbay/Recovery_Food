@@ -661,6 +661,7 @@ export default {
         filterable: false,
       },
       { text: "Supply Name", value: "supply_name" },
+      { text: "Unit", value: "unit", filterable: false },
       {
         text: "Net Price",
         value: "format_net_price",
