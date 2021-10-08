@@ -150,6 +150,9 @@ export default {
                 link.click();
               });
             break;
+          case "print":
+
+            break;
           default:
             break;
         }

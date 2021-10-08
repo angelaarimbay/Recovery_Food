@@ -39,20 +39,30 @@ class ReportsController extends Controller
         break;
         case 'excel':
             //columns
-            $columns = ['ID1','Supply name1','Category1'];
+            $columns = ['CATEGORY','SUPPLY NAME','DESCRIPTION','UNIT','NET PRICE','WITH VAT','VAT','WITHOUT VAT','EXPIRATION DATE'];
             //data
                 $dataitems = [];
             foreach ($data as $key => $value) {
                 $temp = [];
-                $temp['ID'] = $value->row;
-                $temp['supply_name'] = $value->supply_name;
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
+                $temp['supply_name'] = $value->supply_name;
+                $temp['description'] = $value->description;
+                $temp['unit'] = $value->unit;
+                $temp['format_net_price'] = $value->format_net_price;
+                $temp['format_with_vat'] = $value->format_with_vat;
+                $temp['vat'] = $value->vat;
+                $temp['format_without_vat'] = $value->format_without_vat;
+                $temp['exp_date'] = date("Y-m-d", strtotime($value->exp_date));
                 array_push($dataitems, $temp);
             }
-            return   Excel::download(new InventoryExport($dataitems, $columns), "your report name.xlsx");
+            return Excel::download(new InventoryExport($dataitems, $columns), "Masterlist Supplies Report.xlsx");
         break;
         case 'print':
-
+            $content['data'] = $data;
+            $pdf = PDF::loadView('reports.masterlistsupplies', $content, [], [
+                'format' => 'A4-L'
+            ]);
+            return $pdf->stream();
         break;
         default:
         # code...

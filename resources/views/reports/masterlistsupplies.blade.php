@@ -48,28 +48,28 @@
         <table style="width: 100%">
             <!-- Header -->
             <tr>
-                <th><h6>Category</h6></th>
-                <th><h6>Supply name</h6></th> 
-                <th><h6>Description</h6></th> 
-                <th><h6>Unit</h6></th>  
-                <th><h6>Net Price</h6></th>
-                <th><h6>With Vat</h6></th>
-                <th><h6>Vat</h6></th>
-                <th><h6>Without Vat</h6></th>
-                <th><h6>Expiration Date</h6></th>
+                <th><h6>CATEGORY</h6></th>
+                <th><h6>SUPPLY NAME</h6></th> 
+                <th><h6>DESCRIPTION</h6></th> 
+                <th><h6>UNIT</h6></th>  
+                <th><h6>NET PRICE</h6></th>
+                <th><h6>WITH VAT</h6></th>
+                <th><h6>VAT</h6></th>
+                <th><h6>WITHOUT VAT</h6></th>
+                <th><h6>EXPIRATION DATE</h6></th>
             </tr>
             <!-- Rows -->
             @foreach ($data as $items)   
             <tr>
-                <td  style="width: 10%"> {{ $items['category'] }} </td>
-                <td  style="width: 10%"> {{ $items['supply_name'] }} </td>
-                <td  style="width: 10%"> {{ $items['description'] }} </td>  
-                <td  style="width: 10%"> {{ $items['unit'] }}  </td>
-                <td  style="width: 10%"> {{ $items['format_net_price'] }} </td>
-                <td  style="width: 10%"> {{ $items['format_with_vat'] }} </td>
-                <td  style="width: 10%"> {{ $items['vat'] }} </td>
-                <td  style="width: 10%"> {{ $items['format_without_vat'] }} </td>  
-                <td  style="width: 10%"> {{ date("Y-m-d",strtotime( $items['exp_date'])) }} </td>
+                <td  style="width: auto"> {{ $items['category_name'] }} </td>
+                <td  style="width: auto"> {{ $items['supply_name'] }} </td>
+                <td  style="width: auto"> {{ $items['description'] }} </td>  
+                <td  style="width: auto"> {{ $items['unit'] }}  </td>
+                <td  style="width: auto"> {{ $items['format_net_price'] }} </td>
+                <td  style="width: auto"> {{ $items['format_with_vat'] }} </td>
+                <td  style="width: auto"> {{ $items['vat'] }} </td>
+                <td  style="width: auto"> {{ $items['format_without_vat'] }} </td>  
+                <td  style="width: auto"> {{ date("Y-m-d",strtotime( $items['exp_date'])) }} </td>
             </tr>  
             @endforeach
         </table>
