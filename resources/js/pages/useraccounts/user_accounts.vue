@@ -500,27 +500,37 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Name",
-        value: "name",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
       },
       {
-        text: "Email",
+        text: "NAME",
+        value: "name",
+        class: "black--text",
+      },
+      {
+        text: "EMAIL",
         value: "email",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Branch",
+        text: "BRANCH",
         value: "branch_details.branch_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Actions",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,

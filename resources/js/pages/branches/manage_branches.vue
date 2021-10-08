@@ -628,10 +628,12 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: [(v) => {
-      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
-      return "This is required";
-    }],
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
+        return "This is required";
+      },
+    ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
@@ -648,30 +650,40 @@ export default {
     },
 
     // For comparing data
-    currentdata: {id: null,
+    currentdata: {
+      id: null,
       status: null,
       branch_name: null,
       location: null,
       phone_number: null,
       email_add: null,
-      branch_image: null,},
+      branch_image: null,
+    },
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Branch Name", value: "branch_name" },
       {
-        text: "Status",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      { text: "BRANCH NAME", value: "branch_name", class: "black--text" },
+      {
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Action(s)",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -723,7 +735,7 @@ export default {
       // Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
-        if (this.currentdata[key] != this.form[key]) { 
+        if (this.currentdata[key] != this.form[key]) {
           found += 1;
         }
       }
@@ -816,30 +828,28 @@ export default {
       this.$refs.uploader.click();
     },
     deletefile() {
-      this.$refs.uploader.value = null; 
+      this.$refs.uploader.value = null;
       this.tempfile = null;
       this.form.branch_image = null;
- 
     },
 
     // For attachment
     async attachment(e) {
-      if( e.target.files[0]){
-      this.loading = true;
-      var dataform = new FormData(); // Can use typical jquery form data
-      dataform.append("file", e.target.files[0]);
+      if (e.target.files[0]) {
+        this.loading = true;
+        var dataform = new FormData(); // Can use typical jquery form data
+        dataform.append("file", e.target.files[0]);
 
-      await axios
-        .post("/api/branches/attachment", dataform, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((result) => {
-          this.tempfile = result.data.fakename;
-          this.form.branch_image = result.data.filename;
-          this.loading = false;
-        });
+        await axios
+          .post("/api/branches/attachment", dataform, {
+            headers: { "Content-Type": "multipart/form-data" },
+          })
+          .then((result) => {
+            this.tempfile = result.data.fakename;
+            this.form.branch_image = result.data.filename;
+            this.loading = false;
+          });
       }
-     
     },
     // For uploading
     // Editing/updating of row

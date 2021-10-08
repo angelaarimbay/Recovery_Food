@@ -374,15 +374,32 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Product Category", value: "product_cat_name" },
-      { text: "Status", value: "status", align: "center", filterable: false },
       {
-        text: "Action(s)",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "PRODUCT CATEGORY",
+        value: "product_cat_name",
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
+        value: "status",
+        align: "center",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,

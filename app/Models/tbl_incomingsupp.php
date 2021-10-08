@@ -35,6 +35,7 @@ class tbl_incomingsupp extends Model
     {
         return tbl_suppcat::where("id", $this->category)->first();
     }
+    
     public function getSupplyNameDetailsAttribute()
     {
         return tbl_masterlistsupp::where("id", $this->supply_name)->first();
@@ -44,8 +45,7 @@ class tbl_incomingsupp extends Model
     public function getQuantityAmountAttribute()
     {
         $incoming = DB::table("tbl_incomingsupps")->where("supply_name", $this->supply_name)->sum("amount");
-        $outgoing = DB::table("tbl_masterlistsupps")->where("id", $this->supply_name)->first()->net_price * DB::table("tbl_outgoingsupps")->where("supply_name", $this->supply_name)->sum("quantity") ;
-
+        $outgoing = DB::table("tbl_masterlistsupps")->where("id", $this->supply_name)->first()->net_price  * DB::table("tbl_outgoingsupps")->where("supply_name", $this->supply_name)->sum("quantity");
         return ceil($incoming - $outgoing);
     }
 

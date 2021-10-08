@@ -24,44 +24,43 @@
     }
 
     .header{
-        display: block;
-        margin-left:auto;
-        margin-right: auto;
-        width: 190px;
-        font-style:oblique;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+        margin: 0px;
     }
 </style>
-
     <body>
-    <div style="padding-left: 42%; padding-top: -30;">   
+    <div style="text-align: center">   
             <img src="{{ public_path(). '/img/logo.jpg' }}" 
-                style=" display: block;  margin-left: auto; margin-right: auto;  width: 120px;"></img>
+                style=" display: block;  margin-left: auto; margin-right: auto;  width: 130px;"></img>
     </div>
     <p class="header">Inventory Summary Report</p>
-
     <p class="date">Date exported:
         {{ date("Y-m-d") }}
-    </p> <hr class="line">
+    </p>
 
         <!-- Table -->
         <table style="width: 100%">
             <!-- Header -->
             <tr>
-                <th><h6>Category</h6></th>
-                <th><h6>Incoming Supplies</h6></th>
-                <th><h6>Outgoing Supplies</h6></th>
-                <th><h6>Stocks On hand</h6></th>
+                <th><h6>SUPPLIES CATEGORY</h6></th>
+                <th><h6>INCOMING SUPPLIES</h6></th>
+                <th><h6>OUTGOING SUPPLIES</h6></th>
+                <th><h6>STOCKS ON HAND</h6></th>
             </tr>
             <!-- Rows -->
             @foreach ($data as $items)  
             <tr>
-                <td  style="width: 25%;"> {{ $items['category'] }} </td>
-                <td  style="width: 25%;"> {{ $items['incoming'] }} </td>
-                <td  style="width: 25%;"> {{ $items['outgoing'] }} </td>
-                <td  style="width: 25%;"> {{ $items['stocks'] }} </td>
+                <td  style="width: auto"> {{ $items['category'] }} </td>
+                <td  style="width: auto"> {{ $items['incoming'] }} </td>
+                <td  style="width: auto"> {{ $items['outgoing'] }} </td>
+                <td  style="width: auto"> {{ $items['stocks'] }} </td>
             </tr>  
             @endforeach
         </table>
+        <!-- Page Number -->
+        <p style="bottom: 0%; position: fixed">Page {PAGENO} of {nb}</p>
     </body>
 </iframe>
 </html>

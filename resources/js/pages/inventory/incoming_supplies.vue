@@ -270,6 +270,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supply_full`]="{ item }"
+              >{{ item.supply_name.supply_name }}
+              {{ item.supply_name.description }}</template
+            >
             <template v-slot:[`item.incoming_date`]="{ item }">
               {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
             >
@@ -505,7 +509,6 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
     deleteid: "",
@@ -538,37 +541,71 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
+        class: "black--text",
       },
-      { text: "Supply Name", value: "supply_name.supply_name" },
       {
-        text: "Qty",
+        text: "SUPPLY NAME",
+        value: "supply_full",
+        class: "black--text",
+      },
+      {
+        text: "UNIT",
+        value: "supply_name.unit",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "NET PRICE",
+        value: "supply_name.format_net_price",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "WITH VAT",
+        value: "supply_name.format_with_vat",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "QTY",
         value: "quantity",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Total Amount",
+        text: "AMT",
         value: "format_amount",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Date",
+        text: "DATE",
         value: "incoming_date",
-        align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Action(s)",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -711,7 +748,6 @@ export default {
         this.suppcatlist = supp_cat.data;
       });
     },
-
 
     async suppName() {
       this.form.supply_name = null;

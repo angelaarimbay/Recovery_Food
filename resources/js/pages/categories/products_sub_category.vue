@@ -375,20 +375,32 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Product-Sub Category", value: "prod_sub_cat_name" },
       {
-        text: "Status",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "PRODUCT-SUB CATEGORY",
+        value: "prod_sub_cat_name",
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Action(s)",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,

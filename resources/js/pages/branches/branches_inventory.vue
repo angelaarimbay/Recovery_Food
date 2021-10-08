@@ -483,64 +483,87 @@ export default {
     branchlist: [],
     // Table Headers 1
     headers1: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Branch",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "BRANCH",
         value: "requesting_branch.branch_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Category",
+        text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Supply Name",
+        text: "SUPPLY NAME",
         value: "supply_name.supply_name",
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity",
         align: "right",
+        class: "black--text",
       },
       {
-        text: "Total Amount",
+        text: "TOTAL AMT",
         value: "outgoing_amount",
         align: "right",
+        class: "black--text",
       },
     ],
 
     // Table Headers 2
     headers2: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Branch",
-        value: "requesting_branch.branch_name",
+        text: "#",
+        value: "count",
+        align: "start",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Category",
+        text: "BRANCH",
+        value: "requesting_branch.branch_name",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.product_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
         text: "Sub-Category",
         value: "sub_category.prod_sub_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Product Name",
+        text: "PRODUCT NAME",
         value: "product_name.product_name",
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity",
         align: "right",
+        class: "black--text",
       },
       {
-        text: "Total Amount",
+        text: "TOTAL AMT",
         value: "outgoing_amount",
         align: "right",
+        class: "black--text",
       },
     ],
     page1: 1,
@@ -619,9 +642,11 @@ export default {
     },
 
     async branchName() {
-      await axios.get("/api/branches/inventory/branchName").then((bran_name) => {
-        this.branchlist = bran_name.data;
-      });
+      await axios
+        .get("/api/branches/inventory/branchName")
+        .then((bran_name) => {
+          this.branchlist = bran_name.data;
+        });
     },
 
     async prodCat() {

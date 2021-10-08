@@ -43,7 +43,7 @@
       >
       <!-- Category Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="12" xl="2" lg="3" md="3" sm="12" class="my-auto">
+        <v-col cols="12" xl="2" lg="3" md="4" sm="12" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-select
               v-model="category"
@@ -60,7 +60,7 @@
         </v-col>
 
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-menu
               v-model="date1"
@@ -94,7 +94,7 @@
           </v-card-actions>
         </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-menu
               v-model="date2"
@@ -154,59 +154,52 @@ export default {
 
   methods: {
     async get(type) {
-      if (
-        this.category == "" &&
-        this.incoming_from == "" &&
-        this.incoming_to == ""
-      ) {
-        alert("GG");
-      } else {
-        switch (type) {
-          case "pdf":
-            await axios({
-              url: "/api/reports/incomingsupplies/get",
+      switch (type) {
+        case "pdf":
+          await axios({
+            url: "/api/reports/incomingsupplies/get",
+            method: "GET",
+            responseType: "blob",
+            params: {
+              type: type,
+              category: this.category,
+              from: this.incoming_from,
+              to: this.incoming_to,
+            },
+          }).then((response) => {
+            let blob = new Blob([response.data], { type: "application/pdf" });
+            let link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Incoming Supplies Report.pdf";
+            link.click();
+          });
+          break;
+        case "excel":
+          await axios
+            .get("/api/reports/incomingsupplies/get", {
               method: "GET",
-              responseType: "blob",
+              responseType: "arraybuffer",
               params: {
                 type: type,
-                category: this.category,
+                category: this.category, 
                 from: this.incoming_from,
                 to: this.incoming_to,
               },
-            }).then((response) => {
-              console.log(response.data);
-              let blob = new Blob([response.data], { type: "application/pdf" });
+            })
+            .then((response) => {
+              // console.log(response.data)
+              // return;
+              let blob = new Blob([response.data], {
+              type: "application/excel",
+              });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
-              link.download = "Incoming Supplies Report.pdf";
+              link.download = "Incoming Supplies Report.xlsx";
               link.click();
             });
-            break;
-          case "excel":
-            await axios
-              .get("/api/reports/incomingsupplies/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  type: type,
-                  category: this.incoming_category,
-                  from: this.incoming_from,
-                  to: this.incoming_to,
-                },
-              })
-              .then((response) => {
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Incoming Supplies Report.xlsx";
-                link.click();
-              });
-            break;
-          default:
-            break;
-        }
+          break;
+        default:
+          break;
       }
     },
 

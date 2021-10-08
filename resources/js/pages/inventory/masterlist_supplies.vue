@@ -271,6 +271,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supply_full`]="{ item }"
+              >{{ item.supply_name }} {{ item.description }}</template
+            >
             <template v-slot:[`item.exp_date`]="{ item }">
               {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
             >
@@ -667,7 +670,7 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      { text: "SUPPLY NAME", value: "supply_name", class: "black--text" },
+      { text: "SUPPLY NAME", value: "supply_full", class: "black--text" },
       { text: "UNIT", value: "unit", filterable: false, class: "black--text" },
       {
         text: "NET PRICE",

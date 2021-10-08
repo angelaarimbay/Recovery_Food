@@ -587,7 +587,7 @@ export default {
       active: false,
       message: "",
     },
-    
+
     tab: null,
     formRules: [(v) => !!v || "This is required"],
     progressBar: false,
@@ -596,9 +596,14 @@ export default {
     dialogRoles: false,
     tableRoles: [],
     headersRoles: [
-      { text: "Role name", align: "start", value: "name" },
-      { text: "Role description", value: "description" },
-      { text: "Actions", value: "id", sortable: false },
+      {
+        text: "ROLE NAME",
+        align: "start",
+        value: "name",
+        class: "black--text",
+      },
+      { text: "ROLE DESCRIPTION", value: "description", class: "black--text" },
+      { text: "ACTION(S)", value: "id", sortable: false, class: "black--text" },
     ],
     role: { name: "", id: "" },
 
@@ -608,12 +613,13 @@ export default {
     tablePermissions: [],
     headersPermissions: [
       {
-        text: "Permission name",
+        text: "PERMISSION NAME",
         align: "start",
         value: "name",
+        class: "black--text",
       },
-      { text: "Description", value: "description" },
-      { text: "Actions", value: "id" },
+      { text: "DESCRIPTION", value: "description", class: "black--text" },
+      { text: "ACTION(S)", value: "id", class: "black--text" },
     ],
     permission: { name: "", description: "", id: "" },
     // --------------------------------------------------user role
@@ -621,20 +627,26 @@ export default {
     tableUserrole: [],
     headersUserrole: [
       {
-        text: "User",
+        text: "USER",
         align: "start",
         value: "name",
+        class: "black--text"
       },
-      { text: "Current Role/s", value: "roles.name" },
-      { text: "Actions", value: "id" },
+      { text: "CURRENT ROLE(S)", value: "roles.name", class: "black--text" },
+      { text: "ACTION(S)", value: "id", class: "black--text" },
     ],
 
     // --------------------------------------------------set role permission
     dialogAddPermissions: false,
     selectedAddPermission: [],
     headersAddPermissions: [
-      { text: "Permission", align: "start", value: "name" },
-      { text: "Description", value: "description" },
+      {
+        text: "PERMISSION",
+        align: "start",
+        value: "name",
+        class: "black--text",
+      },
+      { text: "DESCRIPTION", value: "description", class: "black--text" },
     ],
     rolename: "",
 
@@ -645,8 +657,8 @@ export default {
     username: "",
     userid: "",
     headersAddRoles: [
-      { text: "Role", align: "start", value: "name" },
-      { text: "Description", value: "description" },
+      { text: "ROLE", align: "start", value: "name", class: "black--text" },
+      { text: "DESCRIPTION", value: "description", class: "black--text" },
     ],
   }),
 

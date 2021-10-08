@@ -42,6 +42,76 @@
           <span>Print</span>
         </v-tooltip></v-card-actions
       >
+      <v-row no-gutters justify="center">
+        <!-- Date Picker -->
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
+          <v-card-actions class="pb-0 pt-4">
+            <v-menu
+              v-model="date1"
+              :close-on-content-click="false"
+              :nudge-right="35"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateFrom"
+                  label="Date From"
+                  prepend-icon="mdi-calendar-range"
+                  readonly
+                  v-on="on"
+                  class="py-0"
+                  dense
+                  clearable
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="dateFrom"
+                @input="date1 = false"
+                scrollable
+                no-title
+                color="red darken-2"
+                dark
+              ></v-date-picker>
+            </v-menu>
+          </v-card-actions>
+        </v-col>
+
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
+          <v-card-actions class="pb-0 pt-4">
+            <v-menu
+              v-model="date2"
+              :close-on-content-click="false"
+              :nudge-right="35"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateUntil"
+                  label="Date Until"
+                  prepend-icon="mdi-calendar-range"
+                  readonly
+                  v-on="on"
+                  class="py-0"
+                  dense
+                  clearable
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="dateUntil"
+                @input="date2 = false"
+                scrollable
+                no-title
+                color="red darken-2"
+                dark
+              ></v-date-picker>
+            </v-menu>
+          </v-card-actions>
+        </v-col>
+      </v-row>
     </v-container>
   </v-container>
 </template>
@@ -50,7 +120,10 @@
 import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
-
+    dateFrom: null,
+    dateUntil: null,
+    date1: false,
+    date2: false,
   }),
   methods: {
     async get(type) {
@@ -60,7 +133,7 @@ export default {
             url: "/api/reports/inventorysummary/get",
             method: "GET",
             responseType: "blob",
-            params: { type: type },
+            params: { type: type, from: this.dateFrom, to: this.dateUntil },
           }).then((response) => {
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");

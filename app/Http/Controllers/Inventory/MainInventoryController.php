@@ -21,7 +21,7 @@ class MainInventoryController extends Controller
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
         $table = tbl_incomingsupp::with(["category","supply_name"])
                                     ->whereRaw($where)->whereHas('supply_name', function ($q) use ($t) {
-                                        $q->where('supply_name', 'like', "'%".$t->search."%");
+                                        $q->where('supply_name', 'like', "%".$t->search."%");
                                     })
                                     ->groupby(["category","supply_name"])
                                     ->selectRaw("category,supply_name")

@@ -81,6 +81,7 @@ export default {
   },
 
   methods: {
+    
     async get(type) {
       switch (type) {
         case "pdf":
@@ -88,9 +89,8 @@ export default {
             url: "/api/reports/maininventory/get",
             method: "GET",
             responseType: "blob",
-            params: { category: this.main_category, type: type },
+            params: { category: this.category, type: type },
           }).then((response) => {
-            console.log(response.data);
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
@@ -103,7 +103,7 @@ export default {
             .get("/api/reports/maininventory/get", {
               method: "GET",
               responseType: "arraybuffer",
-              params: { category: this.main_category, type: type },
+              params: { category: this.category, type: type },
             })
             .then((response) => {
               let blob = new Blob([response.data], {
@@ -114,7 +114,6 @@ export default {
               link.download = "Main Inventory Report.xlsx";
               link.click();
             });
-
           break;
         default:
           break;

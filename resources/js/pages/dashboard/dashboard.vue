@@ -324,6 +324,9 @@
 
       <!-- Graphs -->
       <v-row no-gutters>
+        <v-col cols="6"> ABC </v-col>
+      </v-row>
+      <v-row no-gutters>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-3">
           <v-card
             elevation="6"

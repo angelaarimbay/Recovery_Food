@@ -69,7 +69,7 @@
       >
       <!-- Branch Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="6" xl="2" lg="3" md="3" sm="12" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-select
               v-model="branch"
@@ -86,7 +86,7 @@
         </v-col>
 
         <!-- Category Field -->
-        <v-col cols="6" xl="2" lg="3" md="3" sm="12" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-select
               v-model="category"
@@ -103,7 +103,7 @@
         </v-col>
 
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-menu
               v-model="date1"
@@ -137,7 +137,7 @@
           </v-card-actions>
         </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-menu
               v-model="date2"
@@ -208,12 +208,14 @@ export default {
             responseType: "blob",
             params: {
               type: type,
-              branch: this.outgoing_branch,
-              category: this.outgoing_category,
+              branch: this.branch,
+              category: this.category,
               from: this.outgoing_from,
               to: this.outgoing_to,
             },
           }).then((response) => {
+            // console.log(response.data);
+            // return;
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
@@ -228,8 +230,8 @@ export default {
               responseType: "arraybuffer",
               params: {
                 type: type,
-                branch: this.outgoing_branch,
-                category: this.outgoing_category,
+                branch: this.branch,
+                category: this.category,
                 from: this.outgoing_from,
                 to: this.outgoing_to,
               },
@@ -243,7 +245,6 @@ export default {
               link.download = "Outgoing Supplies Report.xlsx";
               link.click();
             });
-
           break;
         default:
           break;

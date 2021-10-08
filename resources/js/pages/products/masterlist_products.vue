@@ -523,42 +523,54 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.product_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Sub-Category",
+        text: "SUB-CATEGORY",
         value: "sub_category.prod_sub_cat_name",
         filterable: false,
+        class: "black--text",
       },
-      { text: "Product Name", value: "product_name" },
+      { text: "PRODUCT-NAME", value: "product_name", class: "black--text" },
       {
-        text: "Price",
+        text: "PRICE",
         value: "format_price",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "diff_quantity",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Status",
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Action(s)",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -700,7 +712,7 @@ export default {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
-            category: this.category
+            category: this.category,
           },
         })
         .then((result) => {

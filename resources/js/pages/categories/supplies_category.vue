@@ -354,10 +354,12 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: [(v) => {
-      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
-      return "This is required";
-    }],
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
+        return "This is required";
+      },
+    ],
 
     // Form Data
     form: {
@@ -371,20 +373,32 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Supply Category", value: "supply_cat_name" },
       {
-        text: "Status",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUPPLY CATEGORY",
+        value: "supply_cat_name",
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Action(s)",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,

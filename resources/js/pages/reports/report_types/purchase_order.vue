@@ -138,16 +138,18 @@ export default {
           await axios({
             url: "/api/reports/purchaseorder/get",
             method: "GET",
-            responseType: "blob", //nicocoment ito para makita mo ung laman
-            //pero pag ppdf mo na need mo uncomment yaan
-            params: { from: this.dateFromPO, to: this.dateUntilPO, type: type }, //wag mo aalisin ung type:type, jan ni checheck kung pdf or excel
+            responseType: "blob",
+            params: { type: type, from: this.dateFromPO, to: this.dateUntilPO },
           }).then((response) => {
+            // console.log(response.data);
+            // return;
             let blob = new Blob([response.data], { type: "application/pdf" });
             let link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
             link.download = "Purchase Order Report.pdf";
             link.click();
           });
+
           break;
         case "excel":
           await axios
@@ -155,9 +157,9 @@ export default {
               method: "GET",
               responseType: "arraybuffer",
               params: {
+                type: type,
                 from: this.dateFromPO,
                 to: this.dateUntilPO,
-                type: type,
               },
             })
             .then((response) => {
@@ -169,7 +171,6 @@ export default {
               link.download = "Purchase Order Report.xlsx";
               link.click();
             });
-
           break;
         default:
           break;

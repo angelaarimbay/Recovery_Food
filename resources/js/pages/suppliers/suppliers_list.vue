@@ -173,7 +173,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
-
+            <template v-slot:[`item.supplier_full`]="{ item }"
+              >{{ item.supplier_name }} {{ item.description }}</template
+            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -469,24 +471,46 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Supplier Name", value: "supplier_name" },
-      { text: "Description", value: "description", filterable: false },
-      { text: "Phone Number", value: "phone_number", filterable: false },
-      { text: "Contact Person", value: "contact_person", filterable: false },
-      { text: "Address", value: "address", filterable: false },
       {
-        text: "Status",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      { text: "SUPPLIER NAME", value: "supplier_full", class: "black--text" },
+      {
+        text: "PHONE NUMBER",
+        value: "phone_number",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CONTACT PERSON",
+        value: "contact_person",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ADDRESS",
+        value: "address",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Actions",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,

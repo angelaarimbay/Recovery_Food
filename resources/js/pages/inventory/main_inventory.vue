@@ -179,7 +179,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
-
+            <template v-slot:[`item.supply_full`]="{ item }"
+              >{{ item.supply_name.supply_name }}
+              {{ item.supply_name.description }}</template
+            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -262,19 +265,50 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
+        class: "black--text",
       },
-      { text: "Supply Name", value: "supply_name.supply_name" },
-      { text: "Stocks On Hand", value: "quantity_difference", align: "right" },
       {
-        text: "Total Amount",
+        text: "SUPPLY NAME",
+        value: "supply_full",
+        class: "black--text",
+      },
+      {
+        text: "UNIT",
+        value: "supply_name.unit",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "NET PRICE",
+        value: "supply_name.format_net_price",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "STOCKS ON HAND",
+        value: "quantity_difference",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "TOTAL AMT",
         value: "quantity_amount",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -308,7 +342,7 @@ export default {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
-            category: this.category
+            category: this.category,
           },
         })
         .then((result) => {
@@ -336,7 +370,6 @@ export default {
       this.form.min_order_qty = row.min_order_qty;
       this.form.order_frequency = row.order_frequency;
       this.form.ending_inv_qty = row.ending_inv_qty;
-
       this.dialog = true;
     },
 

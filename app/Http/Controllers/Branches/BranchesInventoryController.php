@@ -64,7 +64,7 @@ class BranchesInventoryController extends Controller
                 if ($t->search) {
                     $table = $table->whereRaw($where)
                             ->whereHas('product_name', function ($q) use ($t) {
-                                $q->where('product_name', 'like', "'%".$t->search."%");
+                                $q->where('product_name', 'like', "%".$t->search."%");
                             });
                 } else {
                     $table = $table->whereRaw($where);
@@ -72,7 +72,7 @@ class BranchesInventoryController extends Controller
             }
             if ($t->search) {
                 return $table ->whereHas('product_name', function ($q) use ($t) {
-                    $q->where('product_name', 'like', "'%".$t->search."%");
+                    $q->where('product_name', 'like', "%".$t->search."%");
                 })->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
             } else {
                 return $table->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);

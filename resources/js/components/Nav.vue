@@ -478,9 +478,9 @@
 
 <script>
 import { mapGetters } from "vuex";
-import template from "../pages/template.vue";
+// import template from "../pages/template.vue";
 export default {
-  components: { template },
+  // components: { template },
   middleware: "auth",
   computed: {
     ...mapGetters({
