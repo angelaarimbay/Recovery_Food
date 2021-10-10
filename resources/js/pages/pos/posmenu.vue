@@ -140,6 +140,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.product_full`]="{ item }"
+              >{{ item.product_name.product_name }}
+              {{ item.product_name.description }}</template
+            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -172,6 +176,53 @@
             ></v-pagination>
           </div>
         </v-card>
+
+        <v-dialog v-model="dialog1">
+          <v-toolbar
+            dense
+            dark
+            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+          >
+            Preview Receipt
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="dialog1 = false"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
+          </v-toolbar>
+          <iframe :src="pdfview" width="500" height="500"></iframe>
+        </v-dialog>
+        <v-dialog v-model="dialog2">
+          <v-toolbar
+            dense
+            dark
+            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+          >
+            View Sales History
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="dialog2 = false"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
+          </v-toolbar>
+          <iframe :src="pdfview1" width="500" height="500"></iframe>
+        </v-dialog>
       </v-col>
 
       <!-- Quantity Dialog Form -->
@@ -311,7 +362,6 @@
               indeterminate
               rounded
             ></v-progress-linear>
-
             <template v-slot:[`item.row`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -362,6 +412,7 @@
             <v-row align="center" justify="center">
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  :rules="formRulesNumberRange"
                   ref="payment"
                   v-model="payment"
                   @input="getChange($event)"
@@ -384,6 +435,7 @@
 
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  :rules="formRulesNumberRange"
                   v-model="discount"
                   @input="getChange($event)"
                   outlined
@@ -419,57 +471,85 @@
             </v-row>
 
             <v-row class="mt-2">
-              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      v-on="data.on"
-                      block
-                      color="light-blue darken-3"
-                      style="text-transform: none; color: white"
-                      :disabled="!disabled"
-                    >
-                      <v-icon>mdi-printer</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Print Receipt</span>
-                </v-tooltip>
+              <v-col cols="12" xl="8" lg="8" md="12" sm="12">
+                <v-row no-gutters>
+                  <v-col cols="3">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          @click="getSalesToday"
+                          color="orange darken-3"
+                          style="text-transform: none; color: white"
+                        >
+                          <v-icon>mdi-history</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Sales History</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          @click="getReceipt"
+                          color="light-blue darken-3"
+                          style="text-transform: none; color: white"
+                          :disabled="!disabled"
+                        >
+                          <v-icon>mdi-printer</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Print</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          color="red darken-3"
+                          style="text-transform: none; color: white"
+                          :disabled="!disabled"
+                          @click="validate('void')"
+                        >
+                          Void
+                        </v-btn>
+                      </template>
+                      <span>Void Order(s)</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          color="green darken-3"
+                          style="text-transform: none; color: white"
+                          :disabled="!disabled"
+                          @click="validate('new')"
+                        >
+                          New
+                        </v-btn>
+                      </template>
+                      <span>New Order</span>
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
               </v-col>
-              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      v-on="data.on"
-                      block
-                      color="red darken-3"
-                      style="text-transform: none; color: white"
-                      :disabled="!disabled"
-                      @click="validate('void')"
-                    >
-                      Void
-                    </v-btn>
-                  </template>
-                  <span>Void Order(s)</span>
-                </v-tooltip>
-              </v-col>
-              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      v-on="data.on"
-                      block
-                      color="green darken-3"
-                      style="text-transform: none; color: white"
-                      :disabled="!disabled"
-                      @click="validate('new')"
-                    >
-                      New
-                    </v-btn>
-                  </template>
-                  <span>New Order</span>
-                </v-tooltip>
-              </v-col>
-              <v-col cols="12" xl="6" lg="6" md="12" sm="12">
+              <v-col
+                cols="12"
+                xl="4"
+                lg="4"
+                md="12"
+                sm="12"
+                class="pt-0 pt-xl-3 pt-lg-3 pt-md-3 pt-sm-0"
+              >
                 <v-btn
                   block
                   color="green darken-3"
@@ -522,6 +602,8 @@ export default {
     },
   },
   data: () => ({
+    pdfview: "",
+    pdfview1: "",
     progressbar1: false,
     progressbar2: false,
     snackbar: {
@@ -544,17 +626,21 @@ export default {
     discount: 0,
     change: 0,
     salescount: 0,
-        table1: [],
+    table1: [],
     table2: [],
     prodcatlist: [],
+    reference_no: "",
     prodsubcatlist: [],
-
+    dialog1: false,
+    dialog2: false,
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
+    ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
@@ -566,33 +652,44 @@ export default {
 
     // Table Headers
     headers1: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.product_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Sub Category",
+        text: "SUB-CATEGORY",
         value: "sub_category.prod_sub_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Product Name",
-        value: "product_name.product_name",
-        align: "right",
+        text: "PRODUCT NAME",
+        value: "product_full",
+        class: "black--text",
+        class: "black--text",
       },
       {
-        text: "Unit Price",
+        text: "UNIT PRICE",
         value: "product_name.format_unit_price",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity_diff",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
         text: "",
@@ -608,29 +705,39 @@ export default {
 
     // Table Headers
     headers2: [
-      { text: "#", value: "id", align: "start", filterable: false },
       {
-        text: "Product Name",
-        value: "product",
+        text: "#",
+        value: "id",
+        align: "start",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Unit Price",
+        text: "PRODUCT NAME",
+        value: "product",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "UNIT PRICE",
         value: "unit_price",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Sub-Total",
+        text: "SUB-TOTAL",
         value: "sub_total",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
         text: "",
@@ -647,9 +754,6 @@ export default {
 
   methods: {
     getTotal() {
-      // for (var key in this.table2.sub_total) {
-      //       arrayshit.push( this.table2[key].sub_total);
-      // }
       this.totalamount = numeral(
         this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
       ).format("0,0.00");
@@ -688,13 +792,37 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
           this.table1 = result.data;
           this.progressbar1 = false;
         })
         .catch((result) => {
           // If false or error when saving
         });
+    },
+
+    async getReceipt() {
+      await axios({
+        url: "/api/pos/receipt",
+        method: "GET",
+        responseType: "blob",
+        params: { reference_no: this.reference_no },
+      }).then((response) => {
+        let blob = new Blob([response.data], { type: "application/pdf" });
+        this.pdfview = window.URL.createObjectURL(blob);
+        this.dialog1 = true;
+      });
+    },
+
+    async getSalesToday() {
+      await axios({
+        url: "/api/pos/today",
+        method: "GET",
+        responseType: "blob",
+      }).then((response) => {
+        let blob = new Blob([response.data], { type: "application/pdf" });
+        this.pdfview1 = window.URL.createObjectURL(blob);
+        this.dialog2 = true;
+      });
     },
 
     validate(type) {
@@ -738,7 +866,8 @@ export default {
         await axios
           .post("/api/pos/prodlist/save", this.table2)
           .then((result) => {
-            this.newOrder();
+            this.reference_no = result.data.reference_no;
+
             this.get();
             this.getSalesCount();
             this.snackbar = {
@@ -759,11 +888,9 @@ export default {
     },
 
     async getSalesCount() {
-      await axios
-        .get("/api/sales_report/sales_count")
-        .then((result) => { 
-            this.salescount = result.data;
-        });
+      await axios.get("/api/sales_report/sales_count").then((result) => {
+        this.salescount = result.data;
+      });
     },
 
     selectItem(item) {
@@ -791,7 +918,7 @@ export default {
             quantity += parseInt(this.table2[key].quantity);
           }
         }
-        if ( parseInt( this.selectedrow.quantity_diff) <= quantity) {
+        if (parseInt(this.selectedrow.quantity_diff) <= quantity) {
           this.snackbar = {
             active: true,
             iconText: "alert",
@@ -801,12 +928,11 @@ export default {
         } else {
           this.addItem();
         }
-      } else { 
-        if (parseInt(this.selectedrow.quantity_diff) >=  this.quantity) {
-         
+      } else {
+        if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
           this.addItem();
         } else {
-           this.snackbar = {
+          this.snackbar = {
             active: true,
             iconText: "alert",
             iconColor: "error",
@@ -821,7 +947,7 @@ export default {
         id: this.table2.length + 1,
         category: this.selectedrow.category.id,
         sub_category: this.selectedrow.sub_category.id,
-        product: this.selectedrow.product_name.product_name,
+        product: this.selectedrow.product_name.product_name.concat(" " + this.selectedrow.product_name.description),
         product_name: this.selectedrow.product_name.id,
         unit_price: this.selectedrow.product_name.format_unit_price,
 
@@ -950,6 +1076,7 @@ export default {
 
     newOrder() {
       this.table2 = [];
+      this.reference_no = "";
       this.getTotal();
       this.mode = null;
       this.snackbar = {

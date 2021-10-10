@@ -1,6 +1,31 @@
 <template>
   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
     <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+      <!-- Snackbar -->
+      <v-snackbar
+        :vertical="$vuetify.breakpoint.xsOnly"
+        min-width="auto"
+        v-model="snackbar.active"
+        timeout="2500"
+      >
+        <span
+          ><v-icon :color="snackbar.iconColor">{{
+            `mdi-${snackbar.iconText}`
+          }}</v-icon></span
+        >
+        {{ snackbar.message }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
+            v-bind="attrs"
+            color="primary"
+            text
+            @click="snackbar.active = false"
+            >Close</v-btn
+          >
+        </template>
+      </v-snackbar>
+
       <v-card-actions class="px-0 justify-center">
         <v-tooltip bottom>
           <template #activator="data">
@@ -280,12 +305,12 @@
 
                 <v-card-actions>
                   Branch: {{ table2[0]["branch"]["branch_name"] }}<br />
-                  Date/Time:
+                  Date:
                   {{ getFormatDate(table2[0]["created_at"], "YYYY-MM-DD")
                   }}<br />
-                  <v-spacer></v-spacer>
+                  <!-- <v-spacer></v-spacer>
                   Mode: {{ table2[0]["mode"] }} <br />
-                  Cashier: {{ table2[0]["cashier"]["name"] }}
+                  Cashier: {{ table2[0]["cashier"]["name"] }} -->
                 </v-card-actions>
               </div>
             </v-card-text>
@@ -345,7 +370,10 @@ import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
     progressbar: false,
-    category: "",
+    snackbar: {
+      active: false,
+      message: "",
+    },
     branch: "",
     search: "",
     reference_no: "",
@@ -378,7 +406,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "DATE & TIME",
+        text: "DATE",
         value: "created_at",
         filterable: false,
         class: "black--text",
@@ -469,13 +497,11 @@ export default {
     },
 
     async getSPInfo(item) {
-      //san mo ni call yan.
       this.viewdialog = true;
       this.progressbar = true;
       await axios("/api/sales_report/info", {
         params: { reference_no: item.reference_no },
       }).then((result) => {
-        //lagay mo table mo table2
         this.table2 = result.data;
         this.sales_var = numeral(
           this.table2.reduce((a, b) => a + b.sub_total_discounted, 0)
@@ -491,46 +517,70 @@ export default {
     },
 
     async get(type) {
-      switch (type) {
-        case "pdf":
-          await axios({
-            url: "/api/sales_report",
-            method: "GET",
-            responseType: "blob",
-            params: { category: this.category, type: type },
-          }).then((response) => {
-            let blob = new Blob([response.data], { type: "application/pdf" });
-            let link = document.createElement("a");
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "data.pdf";
-            link.click();
-          });
-          break;
-        case "excel":
-          await axios
-            .get("/api/sales_report", {
+      if (
+        this.branch == "" ||
+        this.dateFromSP == null ||
+        this.dateUntilSP == null
+      ) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Error! Please complete the fields first.",
+        };
+      } else {
+        switch (type) {
+          case "pdf":
+            await axios({
+              url: "/api/reports/sales/get",
               method: "GET",
-              responseType: "arraybuffer",
+              responseType: "blob",
               params: {
-                category: this.category,
+                branch: this.branch,
+                from: this.dateFromSP,
+                to: this.dateUntilSP,
                 type: type,
               },
-            })
-            .then((response) => {
-              let blob = new Blob([response.data], {
-                type: "application/excel",
-              });
+            }).then((response) => {
+              // console.log(response.data);
+              // return;
+              let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
-              link.download = "masterlist.xlsx";
+              link.download = "Sales Report.pdf";
               link.click();
             });
-
-          break;
-        default:
-          break;
+            break;
+          case "excel":
+            await axios
+              .get("/api/reports/sales/get", {
+                method: "GET",
+                responseType: "arraybuffer",
+                params: {
+                  branch: this.branch,
+                  from: this.dateFromSP,
+                  to: this.dateUntilSP,
+                  type: type,
+                },
+              })
+              .then((response) => {
+                // console.log(respone.data);
+                // return;
+                let blob = new Blob([response.data], {
+                  type: "application/excel",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Sales Report.xlsx";
+                link.click();
+              });
+            break;
+          default:
+            break;
+        }
       }
     },
+
     itemperpage() {
       this.page = 1;
       this.getSalesReport();

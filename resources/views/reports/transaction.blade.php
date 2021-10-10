@@ -33,9 +33,9 @@
     <body>
     <div style="text-align: center">   
             <img src="{{ public_path(). '/img/logo.jpg' }}" 
-                style=" display: block;  margin-left: auto; margin-right: auto;  width: 120px;"></img>
+                style="display: block;  margin-left: auto; margin-right: auto;  width: 150px;"></img>
     </div>
-    <p class="header">Purchase Order Report</p>
+    <p class="header">Transaction Report</p>
     <p class="date">Date exported:
             {{ date("Y-m-d") }}
     </p>
@@ -44,19 +44,21 @@
         <table style="width: 100%">
             <!-- Header -->
             <tr>
-                <th><h6>SUPPLIER NAME</h6></th>
-                <th><h6>INVOICE NUMBER</h6></th> 
-                <th><h6>AMT</h6></th> 
-                <th><h6>DATE</h6></th>  
+                <th><h6>BRANCH</h6></th>
+                <th><h6>DATE</h6></th> 
+                <th><h6>REFERENCE NO</h6></th> 
+                <th><h6>TOTAL PRODUCT(S)</h6></th>  
+                <th><h6>TOTAL AMT</h6></th>
             </tr>
             <!-- Rows -->
-            @foreach ($data as $items)
+            @foreach ($data as $items)  
             <tr>
-                <td style="width: auto"> {{ $items['supplier_name_details']['supplier_name'] }} </td>
-                <td style="width: auto"> {{ $items['invoice_number'] }} </td>
-                <td style="width: auto"> {{ $items['total_amount'] }} </td>
-                <td style="width: auto"> {{ $items['incoming_date'] }} </td>
-            </tr>
+                <td style="width: auto"> {{ $items['branch_name_details']['branch_name'] }} </td>
+                <td style="width: auto"> {{ date("Y-m-d", strtotime($items['created_at'])) }} </td>
+                <td style="width: auto"> {{ $items['reference_no'] }} </td>  
+                <td style="width: auto"> {{ $items['quantity'] }} </td>
+                <td style="width: auto"> {{ $items['total_amount'] }} </td> 
+            </tr>  
             @endforeach
         </table>
         <!-- Page Number -->

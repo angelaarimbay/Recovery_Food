@@ -324,7 +324,58 @@
 
       <!-- Graphs -->
       <v-row no-gutters>
-        <v-col cols="6"> ABC </v-col>
+        <v-col cols="12" class="pa-3">
+          <v-card elevation="6" style="border-radius: 10px" class="pa-3">
+            <v-row no-gutters>
+              <v-col cols="12" xl="4" lg="4" md="6" class="pa-0">
+                <v-card-actions>
+                  <v-select
+                    :items="branchlist"
+                    v-model="branch"
+                    item-text="branch_name"
+                    item-value="id"
+                    clearable
+                    dense
+                    label="Branch"
+                    @change="getProductsGraph"
+                    outlined
+                    hide-details
+                  >
+                  </v-select></v-card-actions
+              ></v-col>
+              <v-col cols="12" xl="4" lg="4" md="6" class="pa-0">
+                <v-card-actions>
+                  <v-select
+                    v-model="year"
+                    item-text=""
+                    item-value="id"
+                    clearable
+                    :items="ylist"
+                    dense
+                    label="Year"
+                    @change="getProductsGraph"
+                    outlined
+                    hide-details
+                  >
+                  </v-select></v-card-actions
+              ></v-col>
+              <v-col cols="12" xl="4" lg="4" md="6" class="pa-0">
+                <v-card-actions>
+                  <v-select
+                    v-model="month"
+                    item-text=""
+                    item-value="id"
+                    :items="mlist"
+                    clearable
+                    dense
+                    label="Month"
+                    @change="getProductsGraph"
+                    outlined
+                    hide-details
+                  >
+                  </v-select></v-card-actions
+              ></v-col> </v-row></v-card
+        ></v-col>
       </v-row>
       <v-row no-gutters>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-3">
@@ -420,12 +471,14 @@ export default {
     checkbox2: true,
     checkbox3: true,
     checkbox4: true,
-    branch: "",
-    year: "",
-    month: "",
+    branch: 1,
+    year: new Date().getFullYear(),
+    month: new Date().toLocaleString("default", { month: "long" }),
     supp: null,
     prod: null,
     po: null,
+    mlist: [],
+    ylist: [],
     useracc: null,
     hidden1: true,
     hidden2: true,
@@ -433,7 +486,7 @@ export default {
     hidden4: true,
     progressbar1: false,
     progressbar2: false,
-
+    branchlist: [],
     datacollection: {},
     options: {
       // onClick: function(e,i) {
@@ -516,7 +569,6 @@ export default {
         callbacks: {
           label: function (data) {
             return [
-              "₱ " +
                 data.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             ];
           },
@@ -541,6 +593,21 @@ export default {
   }),
 
   methods: {
+    list() {
+      this.mlist = ["All"];
+      for (var key in moment.months()) {
+        this.mlist.push(moment.months()[key]);
+      }
+
+      var currentYear = new Date().getFullYear(),
+        years = [];
+      var startYear = new Date().getFullYear() - 3;
+      while (startYear <= currentYear) {
+        years.push(startYear++);
+      }
+      this.ylist = years;
+    },
+
     async getSupp() {
       this.hidden1 = false;
       await axios
@@ -597,7 +664,11 @@ export default {
       this.progressbar1 = true;
       await axios
         .get("/api/dashboard/getSalesGraph", {
-          params: { branch: 1, year: 2021, month: "" },
+          params: {
+            branch: this.branch,
+            year: this.year,
+            month: new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
+          },
         })
         .then((result) => {
           this.datacollection = {
@@ -608,6 +679,7 @@ export default {
                 backgroundColor: "#D32F2F",
                 data: result.data.data,
               },
+              
             ],
           };
           this.progressbar1 = false;
@@ -615,10 +687,15 @@ export default {
         .catch((result) => {});
     },
     async getProductsGraph() {
+      this.getSalesGraph();
       this.progressbar2 = true;
       await axios
         .get("/api/dashboard/getProductsGraph", {
-          params: { category: 1, branch: 1, year: 2021, month: 10 },
+          params: {
+            branch: this.branch,
+            year: this.year,
+            month: new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
+          },
         })
         .then((result) => {
           this.datacollection1 = {
@@ -635,16 +712,26 @@ export default {
         })
         .catch((result) => {});
     },
+
+    async branchName() {
+      await axios
+        .get("/api/branches/inventory/branchName")
+        .then((bran_name) => {
+          this.branchlist = bran_name.data;
+        });
+    },
   },
 
   created() {
     if (this.user.permissionslist.includes("Access Dashboard")) {
       this.getSupp();
       this.getProd();
+      this.list();
       this.getPO();
       this.getUser();
       this.getSalesGraph();
       this.getProductsGraph();
+      this.branchName();
     } else {
       if (this.user.permissionslist.includes("Access POS")) {
         this.$router.push({ name: "pos" }).catch((errr) => {});

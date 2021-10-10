@@ -2,10 +2,14 @@
  
 use Illuminate\Support\Facades\Route;
 
+    Route::get('seeder', 'UserAccounts\UserAccountsController@createSeeder');
     Route::group(['middleware' => 'guest'], function () {
+
     Route::post('login', 'Auth\LoginController@login');
+
     });
     Route::get('user', 'Auth\UserController@current');
+
 
     Route::group(['middleware' => 'api'], function () {
     Route::get('users', 'UserController@getUsers');
@@ -16,7 +20,6 @@ use Illuminate\Support\Facades\Route;
     Route::get('dashboard/getProd', 'Dashboard\MainController@getProd');
     Route::get('dashboard/getPO', 'Dashboard\MainController@getPO');
     Route::get('dashboard/getUser', 'Dashboard\MainController@getUser');
-
     Route::get('dashboard/getSalesGraph', 'Dashboard\MainController@getSalesGraph');
     Route::get('dashboard/getProductsGraph', 'Dashboard\MainController@getProductsGraph');
 
@@ -124,6 +127,11 @@ use Illuminate\Support\Facades\Route;
 
     // POS
     Route::post('pos/prodlist/save', 'POS\ProductsListController@save');
+    Route::get('pos/receipt', 'Reports\ReportsController@Receipt'); //change mo nlang kung ano proper syo
+    Route::get('pos/today', 'POS\ProductsListController@getSalesToday'); //change mo nlang kung ano proper naming syo
+
+
+
     Route::get('pos/prodlist/get', 'POS\ProductsListController@get');
     Route::get('sales_report/sales_count', 'POS\ProductsListController@getSalesCount');
 
@@ -133,15 +141,12 @@ use Illuminate\Support\Facades\Route;
     Route::get('reports/outgoingsupplies/get', 'Reports\ReportsController@OutgoingSuppliesReport');
     Route::get('reports/maininventory/get', 'Reports\ReportsController@MainInventoryReport');
     Route::get('reports/inventorysummary/get', 'Reports\ReportsController@InventorySummaryReport');
+    Route::get('reports/sales/get', 'Reports\ReportsController@SalesReport');
+    Route::get('reports/transaction/get', 'Reports\ReportsController@TransactionReport');
     Route::get('reports/purchaseorder/get', 'Reports\ReportsController@PurchaseOrderReport');
 
     Route::get('sales_report/list', 'Reports\ReportsController@ListSP');
     Route::get('sales_report', 'Reports\ReportsController@ExportSP');
     Route::get('sales_report/info', 'Reports\ReportsController@getSPInfo');
-
-    //from angela
-    Route::get('reports/sales/report/get', 'Reports\ReportsController@ExportSales');
-    Route::get('reports/transaction/report/get', 'Reports\ReportsController@ExportTransaction');
-    Route::get('reports/purchase/order/get', 'Reports\ReportsController@ExportPurchase');
-    //from angela
+    
 });

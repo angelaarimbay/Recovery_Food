@@ -77,7 +77,6 @@
               item-value="id"
               v-model="category"
               class="my-0"
-              clearable
               dense
               label="Category"
             >

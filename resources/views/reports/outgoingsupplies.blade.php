@@ -65,7 +65,7 @@
                 <td  style="width: auto"> {{ $items['quantity'] }} </td>
                 <td  style="width: auto"> {{ $items['outgoing_amount']  }} </td>  
                 <td  style="width: auto"> {{ $items['requesting_branch_details']['branch_name'] }} </td> 
-                <td  style="width: auto"> {{ date("Y-m-d", strtotime( $items['outgoing_date'])) }} </td> 
+                <td  style="width: auto"> {{ date("Y-m-d", strtotime($items['outgoing_date'])) }} </td> 
             </tr>  
             @endforeach
         </table>

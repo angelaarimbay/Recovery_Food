@@ -12,9 +12,9 @@ class tbl_pos extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];  
-    public $appends = ['total_amount'];
+    public $appends = ['total_amount','branch_name_details'];
   
-    public function  branch()
+    public function branch()
     {
         return $this->hasOne(tbl_branches::class, 'id', 'branch');
     }
@@ -30,5 +30,10 @@ class tbl_pos extends Model
 
     public function getTotalAmountAttribute() {
         return number_format($this->sub_total_discounted, 2, ".", ",");
+    }
+
+    public function getBranchNameDetailsAttribute()
+    {
+        return tbl_branches::where("id", $this->branch)->first();
     }
 }

@@ -44,11 +44,10 @@ class MainController extends Controller
 
     public function getSalesGraph(Request $t)
     {
-        $return = [];   $months = [];  
-
+        $return = [];   $months = [];   
         //return  tbl_pos::whereMonth('created_at',7)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted');
-
-        $return['month'] = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        if($t->month =='All'){
+            $return['month'] = ['January','February','March','April','May','June','July','August','September','October','November','December'];
             array_push($months, tbl_pos::whereMonth('created_at',1)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at',2)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at',3)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted'));
@@ -61,7 +60,13 @@ class MainController extends Controller
             array_push($months, tbl_pos::whereMonth('created_at',10)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at',11)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at',12)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted'));
-        $return['data'] = $months;
+            $return['data'] = $months;
+        }else{
+            $return['month'] = [date("F",strtotime($t->month.'/01/2020'))] ;
+            array_push($months, tbl_pos::whereMonth('created_at',$t->month)->whereYear('created_at', $t->year)->where('branch',$t->branch)->sum('sub_total_discounted'));
+            $return['data'] = $months;
+        }
+       
 
         return $return;
  

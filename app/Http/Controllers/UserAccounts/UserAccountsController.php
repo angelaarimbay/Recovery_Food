@@ -222,4 +222,42 @@ class UserAccountsController extends Controller
     {
         return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
     }
+
+    
+    public function createSeeder(Request $request)
+    { 
+        $temp_db = DB::table($request->id)->get();
+        $temp_str = '';
+
+
+        foreach ($temp_db  as $key1 => $value1) {
+            $temp_str .= '[';
+            $temp_num = 0;
+            $temp_count = 0;
+            foreach ($temp_db[$key1] as $key => $value) {
+                $temp_count++;
+            }
+
+            foreach ($temp_db[$key1] as $key => $value) {
+                $temp_num++;
+                if ($temp_num == $temp_count) {
+                    if ($key == 'id') {
+                        $temp_str .= "'" . $key . "' => " . ($value??null) . "";
+                    } else {
+                        $temp_str .= "'" . $key . "' => '" .($value??null). "'";
+                    }
+                } else {
+                    if ($key == 'id') {
+                        $temp_str .= "'" . $key . "' => " . ($value??null) . ", ";
+                    } else {
+                        $temp_str .= "'" . $key . "' => '" .($value??null). "', ";
+                    }
+                }
+            }
+                $temp_str .= '],' . "\r\n"; 
+        }
+
+        return $temp_str;
+    }
+
 }

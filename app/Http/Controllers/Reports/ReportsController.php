@@ -10,8 +10,8 @@ use App\Models\tbl_incomingsupp;
 use App\Models\tbl_outgoingsupp;
 use App\Models\tbl_purchaseord;
 use App\Models\tbl_pos;
+use App\Models\tbl_supplist;
 use App\Models\tbl_branches;
-
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -73,10 +73,9 @@ class ReportsController extends Controller
     // Incoming Supplies Report - OK
     public function IncomingSuppliesReport(Request $t)
     {
-      
         DB::statement(DB::raw("set @row:=0"));
         $data = tbl_incomingsupp::where("category", $t->category)
-                                    ->whereBetween("incoming_date",[date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])              
+                                    ->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
                                     ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
@@ -103,7 +102,7 @@ class ReportsController extends Controller
                 $temp['total_amount'] = $value->format_amount;
                 $temp['incoming_date'] = date("Y-m-d", strtotime($value->incoming_date));
                 array_push($dataitems, $temp);
-             }
+            }
             return Excel::download(new InventoryExport($dataitems, $columns), "Incoming Supplies Report.xlsx");
         break;
         case 'print':
@@ -118,16 +117,16 @@ class ReportsController extends Controller
     // Outgoing Supplies Report - OK
     public function OutgoingSuppliesReport(Request $t)
     {
-      $content = [];
+        $content = [];
         DB::statement(DB::raw("set @row:=0"));
         $data = tbl_outgoingsupp::where("requesting_branch", $t->branch)
                                     ->where("category", $t->category)
-                                    ->whereBetween("outgoing_date",[date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])              
+                                    ->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
                                     ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
-        case 'pdf': 
-            $content['data'] = $data; 
+        case 'pdf':
+            $content['data'] = $data;
             $pdf = PDF::loadView('reports.outgoingsupplies', $content, [], [
                 'format' => 'A4-L'
               ]);
@@ -202,22 +201,23 @@ class ReportsController extends Controller
         }
     }
 
-    // Inventory Summary - 
+    // Inventory Summary Report - OK
     public function InventorySummaryReport(Request $t)
     {
-        $data_temp = tbl_suppcat::all();
-        $data = [];
-        foreach ($data_temp as $key => $value) {
-            $temp = [];
-            $temp['category'] = $value->supply_cat_name;
-            $temp['incoming'] = number_format(tbl_incomingsupp::where("category", $value->id)->get()->sum("amount"), 2, ".", ",");
-            $temp['outgoing'] = number_format(tbl_outgoingsupp::where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
-            $temp['stocks'] = number_format(tbl_incomingsupp::where("category", $value->id)->get()->sum("amount")
-                                   - tbl_outgoingsupp::where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
-            array_push($data, $temp);
-        }
+         $data_temp = tbl_suppcat::all();
+         $data = [];
+         foreach ($data_temp as $key => $value) {
+             $temp = [];
+             $temp['category'] = $value->supply_cat_name;
+             $temp['incoming'] = number_format(tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("amount"), 2, ".", ",");
+             $temp['outgoing'] = number_format(tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
+             $temp['stocks'] = tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity")
+                                    - tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity");
+             array_push($data, $temp);
+         }
         switch ($t->type) {
-        case 'pdf':
+        case 'pdf': 
+           
             $content['data'] = $data;
             $pdf = PDF::loadView('reports.inventorysummary', $content, [], [
                 'format' => 'A4-L'
@@ -227,17 +227,6 @@ class ReportsController extends Controller
         case 'excel':
             //columns
             $columns = ['SUPPLIES CATEGORY','INCOMING SUPPLIES','OUTGOING SUPPLIES','STOCKS ON HAND'];
-            //data
-            $data = [];
-            foreach ($data_temp as $key => $value) {
-                $temp = [];
-                $temp['category'] = $value->supply_cat_name;
-                $temp['incoming'] = number_format(tbl_incomingsupp::where("category", $value->id)->get()->sum("amount"), 2, ".", ",");
-                $temp['outgoing'] = number_format(tbl_outgoingsupp::where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
-                $temp['stocks'] = number_format(tbl_incomingsupp::where("category", $value->id)->get()->sum("amount")
-                                       - tbl_outgoingsupp::where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
-                array_push($data, $temp);
-            }
             return Excel::download(new InventoryExport($data, $columns), "Inventory Summary Report.xlsx");
         break;
         case 'print':
@@ -248,6 +237,88 @@ class ReportsController extends Controller
         }
     }
 
+    // Sales Report - OK
+    public function SalesReport(Request $t)
+    {
+        DB::statement(DB::raw("set @row:=0"));
+        $data = tbl_pos::where("branch", $t->branch)
+                        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+                        ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
+                        ->groupby(["branch","created_at","reference_no"])->get();
+              
+        switch ($t->type) {
+            case 'pdf':
+                $content['data'] = $data;
+                $pdf = PDF::loadView('reports.sales', $content, [], [
+                    'format' => 'A4-L'
+                  ]);
+                return $pdf->stream();
+            break;
+            case 'excel':
+                //columns
+                $columns = ['BRANCH','DATE','REFERENCE NO','SALES AMOUNT'];
+                //data
+                $dataitems = [];
+                foreach ($data as $key => $value) {
+                    $temp = [];
+                    $temp['branch_name'] = $value->branch_name_details['branch_name'];
+                    $temp['created_at'] = date("Y-m-d", strtotime($value->created_at));
+                    $temp['reference_no'] = $value->reference_no;
+                    $temp['sub_total_discounted'] = $value->sub_total_discounted;
+                    array_push($dataitems, $temp);
+                }
+                return Excel::download(new InventoryExport($dataitems, $columns), "Sales Report.xlsx");
+            break;
+            case 'print':
+    
+            break;
+            default:
+            # code...
+            break;
+            }
+    }
+
+    // Transaction Report - OK
+    public function TransactionReport(Request $t)
+    {
+        DB::statement(DB::raw("set @row:=0"));
+        $data = tbl_pos::whereBetween('created_at', [$t->from, $t->to])
+                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
+
+        switch ($t->type) {
+        case 'pdf':
+            $content['data'] = $data;
+            $pdf = PDF::loadView('reports.transaction', $content, [], [
+                'format' => 'A4-L'
+              ]);
+            return $pdf->stream();
+        break;
+        case 'excel':
+            //columns
+            $columns = ['BRANCH','DATE ','REFERENCE NO','TOTAL PRODUCT(S)','TOTAL AMT'];
+            //data
+                $dataitems = [];
+             foreach ($data as $key => $value) {
+                 $temp = [];
+                 $temp['branch_name'] = $value->branch_name_details['branch_name'];
+                 $temp['created_at'] = date("Y-m-d", strtotime($value->created_at));
+                 $temp['reference_no'] = $value->reference_no;
+                 $temp['quantity'] = $value->quantity;
+                 $temp['total_amount'] = $value->total_amount;
+                 array_push($dataitems, $temp);
+             }
+            return Excel::download(new InventoryExport($dataitems, $columns), "Transaction Report.xlsx");
+        break;
+        case 'print':
+
+        break;
+        default:
+        # code...
+        break;
+        }
+    }
+
+    // Purchase ORder Report - OK
     public function PurchaseOrderReport(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
@@ -269,50 +340,13 @@ class ReportsController extends Controller
             $dataitems = [];
             foreach ($data as $key => $value) {
                 $temp = [];
-                $temp['supplier_name'] = tbl_purchaseord::where("id", $value->supplier_name)->first()->supplier_name;
+                $temp['supplier_name'] = tbl_supplist::where("id", $value->supplier_name)->first()->supplier_name;
                 $temp['invoice_number'] = $value->invoice_number;
                 $temp['format_amount'] = $value->format_amount;
                 $temp['incoming_date'] = date("Y-m-d", strtotime($value->incoming_date));
                 array_push($dataitems, $temp);
             }
             return Excel::download(new InventoryExport($dataitems, $columns), "Purchase Order Report.xlsx");
-        break;
-        case 'print':
-
-        break;
-        default:
-        # code...
-        break;
-        }
-    }
-
-    public function ExportTP(Request $t)
-    {
-        DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_pos::whereBetween('created_at', [$t->from, $t->to])
-                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
-
-        switch ($t->type) {
-        case 'pdf':
-            $content['data'] = $data;
-            $pdf = PDF::loadView('reports.transactionreport', $content, [], [
-                'format' => 'A4-L'
-              ]);
-            return $pdf->stream();
-        break;
-        case 'excel':
-            //columns
-            $columns = ['ID1','Supply name1','Category1'];
-            //data
-                $dataitems = [];
-             foreach ($data as $key => $value) {
-                 $temp = [];
-                 $temp['ID'] = $value->row;
-                 $temp['supply_name'] = $value->supply_name;
-                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
-                 array_push($dataitems, $temp);
-             }
-            return   Excel::download(new InventoryExport($dataitems, $columns), "Transaction Report.xlsx");
         break;
         case 'print':
 
@@ -364,54 +398,21 @@ class ReportsController extends Controller
         return  tbl_pos::with(["branch",'product_name','cashier'])->where("reference_no", $t->reference_no)->get();
     }
 
-    //sales report,
-    public function ExportSP(Request $t)
-    {
-        DB::statement(DB::raw("set @row:=0"));
-     
-        $data = tbl_pos::with(["branch"])
-        ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-        ->groupby(["branch","created_at","reference_no"]) ;
-
-        if ($t->branch) {
-            $table->where("branch", $t->branch);
-        }
-      
-        if ($t->search) {
-            $table->where("reference_no", "like", "%".$t->search."%");
-        }
-        if ($t->dateFromSP && $t->dateUntilSP) {
-            $table->whereBetween("created_at", [$t->dateFromSP, $t->dateUntilSP]);
-        }
-          
-        switch ($t->type) {
-        case 'pdf':
+    public function Receipt(Request $t) {
+          if($t->reference_no){
+            $data = tbl_pos::where("reference_no",$t->reference_no)->get(); 
             $content['data'] = $data;
-            $pdf = PDF::loadView('reports.transactionreport', $content, [], [
-                'format' => 'A4-L'
+            $pdf = PDF::loadView(
+                'receipt.receipt',
+                $content,
+                [], 
+                ['format' => ['57','226'],
+                'margin_left' => 3,
+                'margin_right' =>3,
+                'margin_top' =>5,
+                'margin_bottom' => 5,
               ]);
             return $pdf->stream();
-        break;
-        case 'excel':
-            //columns
-            $columns = ['ID1','Supply name1','Category1'];
-            //data
-            $dataitems = [];
-            foreach ($data as $key => $value) {
-                $temp = [];
-                $temp['ID'] = $value->row;
-                $temp['supply_name'] = $value->supply_name;
-                $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
-                array_push($dataitems, $temp);
-            }
-            return Excel::download(new InventoryExport($dataitems, $columns), "Sales Report.xlsx");
-        break;
-        case 'print':
-
-        break;
-        default:
-        # code...
-        break;
-        }
+        } 
     }
 }

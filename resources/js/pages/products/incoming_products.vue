@@ -270,6 +270,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.product_full`]="{ item }"
+              >{{ item.product_name.product_name }}
+              {{ item.product_name.description }}</template
+            >
             <template v-slot:[`item.incoming_date`]="{ item }">
               {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
             >
@@ -575,7 +579,11 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      { text: "PRODUCT NAME", value: "product_name.product_name", class: "black--text", },
+      {
+        text: "PRODUCT NAME",
+        value: "product_full",
+        class: "black--text",
+      },
       {
         text: "QTY",
         value: "quantity",
