@@ -347,6 +347,29 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.supplier"
+                        outlined
+                        dense
+                        :items="supplierlist"
+                        item-text="supplier_name"
+                        item-value="id" 
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Suppliers *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
                     <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
@@ -393,18 +416,17 @@
                       sm="12"
                       md="12"
                     >
-                      <v-text-field
+                      <v-text-field 
                         :rules="formRules"
                         v-model="form.supply_name"
                         outlined
                         clearable
-                        @blur="validateItem"
                         dense
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
                         </template>
-                      </v-text-field>
+                      </v-text-field >
                     </v-col>
 
                     <v-col
@@ -622,6 +644,7 @@ export default {
     table: [],
     category: "",
     suppcatlist: [],
+    suppnamelist: [],
     dayslist: [],
     date: null,
     menu: false,
@@ -638,8 +661,9 @@ export default {
     // Form Data
     form: {
       id: null,
-      status: null,
+      status: 1,
       supply_name: null,
+      supplier: null,
       category: null,
       description: null,
       unit: null,
@@ -651,6 +675,7 @@ export default {
     },
     temp_vat: 1.12, //form.vat = this.
     vat: false,
+    supplierlist: [],
 
     // For comparing data
     currentdata: {},
@@ -661,6 +686,12 @@ export default {
         text: "#",
         value: "count",
         align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUPPLIER",
+        value: "supplier.supplier_name",
         filterable: false,
         class: "black--text",
       },
@@ -736,6 +767,7 @@ export default {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.get();
       this.suppCat();
+      this.suppliers();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
@@ -743,6 +775,17 @@ export default {
   },
 
   methods: {
+    async suppName() {
+      this.form.supply_name = null;
+      await axios
+        .get("/api/msupp/suppName", {
+          params: { supplier: this.form.supplier },
+        })
+        .then((supp_name) => {
+          this.suppnamelist = supp_name.data;
+        });
+    },
+
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
@@ -823,6 +866,7 @@ export default {
           await axios
             .post("/api/msupp/save", this.form)
             .then((result) => {
+              console.log(result.data);
               //if the value is true then save to database
               switch (result.data) {
                 case 0:
@@ -874,6 +918,11 @@ export default {
         .catch((result) => {
           // If false or error when saving
         });
+    },
+    async suppliers() {
+      await axios.get("/api/isupp/suppliers", {}).then((result) => {
+        this.supplierlist = result.data;
+      });
     },
 
     async sum() {
@@ -942,11 +991,12 @@ export default {
 
     // Editing/updating of row
     edit(row) {
+      this.form.supplier = row.supplier.id;
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.status = row.status;
       this.form.category = row.category.id;
-      this.form.supply_name = row.supply_name;
+      this.form.supply_name = row.supply_name ;
       this.form.description = row.description;
       this.form.unit = row.unit;
       this.form.net_price = row.net_price;

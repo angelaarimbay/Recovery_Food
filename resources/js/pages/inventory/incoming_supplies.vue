@@ -319,6 +319,32 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-autocomplete
+                        :rules="formRules"
+                        v-model="form.supplier"
+                        outlined 
+                        dense
+                        :items="supplierlist"
+                        item-text="supplier_name"
+                        item-value="id"
+                        @change="suppName"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Suppliers *</div>
+                        </template>
+                      </v-autocomplete>
+                    </v-col>
+
+
                     <v-col
                       class="py-0"
                       cols="12"
@@ -517,6 +543,7 @@ export default {
     table: [],
     suppcatlist: [],
     suppnamelist: [],
+    supplierlist: [],
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
@@ -531,6 +558,7 @@ export default {
     form: {
       category: null,
       supply_name: null,
+      supplier: null,
       quantity: null,
       amount: null,
       incoming_date: null,
@@ -545,6 +573,12 @@ export default {
         text: "#",
         value: "count",
         align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUPPLIER",
+        value: "supplier.supplier_name",
         filterable: false,
         class: "black--text",
       },
@@ -624,6 +658,7 @@ export default {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.get();
       this.suppCat();
+      this.suppliers();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
@@ -665,6 +700,12 @@ export default {
                 found += 1;
               }
             }
+         } else if (key == "supplier") {
+            if (this.currentdata.supplier) {
+              if (this.currentdata.supplier.id != this.form.supplier) {
+                found += 1;
+              }
+            }
           } else if (key == "incoming_date") {
             if (
               this.getFormatDate(
@@ -702,6 +743,7 @@ export default {
           await axios
             .post("/api/isupp/save", this.form)
             .then((result) => {
+              console.log(result.data)
               //if the value is true then save to database
               this.snackbar = {
                 active: true,
@@ -733,7 +775,8 @@ export default {
             dateUntil: this.dateUntil,
           },
         })
-        .then((result) => {
+        .then((result) => { 
+          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -753,18 +796,29 @@ export default {
       this.form.supply_name = null;
       await axios
         .get("/api/isupp/suppName", {
-          params: { category: this.form.category },
+          params: { supplier: this.form.supplier, category: this.form.category },
         })
         .then((supp_name) => {
           this.suppnamelist = supp_name.data;
         });
     },
 
+    async suppliers() {  
+      await axios
+        .get("/api/isupp/suppliers", { 
+        })
+        .then((result) => {
+          this.supplierlist = result.data;
+        });
+    },
+
+
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.category = row.category.id;
+      this.form.supplier = row.supplier.id;  
       this.suppName();
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;

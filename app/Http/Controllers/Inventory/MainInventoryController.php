@@ -18,14 +18,26 @@ class MainInventoryController extends Controller
     }
     public function get(Request $t)
     {
-        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
-        $table = tbl_incomingsupp::with(["category","supply_name"])
-                                    ->whereRaw($where)->whereHas('supply_name', function ($q) use ($t) {
-                                        $q->where('supply_name', 'like', "%".$t->search."%");
-                                    })
-                                    ->groupby(["category","supply_name"])
-                                    ->selectRaw("category,supply_name")
-                                    ->get();
+        $where = ($t->category? "tbl_masterlistsupps.category !=0  and tbl_masterlistsupps.category=".$t->category:"tbl_masterlistsupps.category != 0");
+        // $table = tbl_incomingsupp::query()
+        // ->with(["category","supply_name"])
+        // ->whereRaw($where)->whereHas('supply_name', function ($q) use ($t) {
+        //     $q->where('supply_name', 'like', "%".$t->search."%");
+        // })
+        // ->selectRaw("
+        // tbl_masterlistsupps.group, 
+        // max(net_price),
+        // sum(amount) as amount, 
+        // sum(quantity) as quantity, 
+        //  max(tbl_masterlistsupps.category) as category, 
+        //  max(tbl_masterlistsupps.supply_name) as supply_name")
+        // ->leftJoin('tbl_masterlistsupps', 'tbl_masterlistsupps.id', '=', 'tbl_incomingsupps.supply_name') 
+        // ->groupby(['tbl_masterlistsupps.group'  ])
+        // ->get();
+
+     return   $table = DB::selectRaw('SELECT sum(a.quantity) as quantity, sum(a.amount) as amount, b.group, max(b.supply_name) as supply_name, max(b.category) as category FROM `tbl_incomingsupps` a left join tbl_masterlistsupps b on a.supply_name = b.id GROUP by b.group;')->get();
+
+
         $return = [];
         $row = 1;
         foreach ($table as $key => $value) {

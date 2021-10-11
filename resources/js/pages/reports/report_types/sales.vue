@@ -26,7 +26,7 @@
         </template>
       </v-snackbar>
 
-      <v-card-actions class="px-0 justify-center">
+      <v-card-actions class="px-0 justify-center" v-if="!this.user.permissionslist.includes('Access POS')">
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -123,9 +123,9 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
+      <v-row no-gutters v-if="!this.user.permissionslist.includes('Access POS')">
         <!-- Branch Field -->
-        <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
+        <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto"  >
           <v-card-actions class="py-0">
             <v-select
               :items="branchlist"
@@ -365,7 +365,8 @@
   </v-container>
 </template>
 
-<script>
+<script> 
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
@@ -470,6 +471,12 @@ export default {
     this.getSalesReport();
     this.branchName();
   },
+
+    computed: {
+      ...mapGetters({
+        user: "auth/user",
+      }),
+    },
   methods: {
     async getSalesReport() {
       this.progressbar = true;

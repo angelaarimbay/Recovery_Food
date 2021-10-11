@@ -241,10 +241,11 @@ class ReportsController extends Controller
     public function SalesReport(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_pos::where("branch", $t->branch)
-                        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
-                        ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-                        ->groupby(["branch","created_at","reference_no"])->get();
+       
+            $data = tbl_pos::where("branch", $t->branch)
+            ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+            ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
+            ->groupby(["branch","created_at","reference_no"])->get(); 
               
         switch ($t->type) {
             case 'pdf':
@@ -359,10 +360,21 @@ class ReportsController extends Controller
 
     public function ListSP(Request $t)
     {
-        $table = tbl_pos::with(["branch"])
-                        ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-                        ->groupby(["branch","created_at","reference_no"])
-                         ;
+
+        if(auth()->user()->can('Access POS')){
+            $table = tbl_pos::with(["branch"])
+            ->where('branch',auth()->user()->branch)
+            ->where('cashier',auth()->user()->id)
+            ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
+            ->groupby(["branch","created_at","reference_no"])
+             ;
+        }else{
+            $table = tbl_pos::with(["branch"])
+            ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
+            ->groupby(["branch","created_at","reference_no"])
+             ;
+        }
+   
  
         if ($t->branch) {
             $table->where("branch", $t->branch);

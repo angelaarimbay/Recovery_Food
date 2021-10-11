@@ -27,7 +27,8 @@ class ProductsListController extends Controller
             $q->where("id", auth()->user()->branch);
         })->whereHas("product_name", function ($q1) use ($t) {
             $q1->where("product_name", "like", "%".$t->search."%");
-        }) ;
+        })->selectRaw('  @row:=@row+1 as row,   product_name, category, sub_category, sum(quantity) as quantity')
+        ->groupBy(['category','sub_category','product_name']) ;
 
 
         $return = [];
@@ -57,7 +58,7 @@ class ProductsListController extends Controller
         foreach ($t->all() as $key => $value) {
             $data =    tbl_pos::create(['category' => $value['category'],
                              'sub_category'=> $value['sub_category'],
-                             'product_name'=> $value['product_name'],
+                             'product_name'=> $value['product'] ,
                              'quantity'=> $value['quantity'],
                              'sub_total'=> $value['sub_total'],
                              'sub_total_discounted'=> $value['sub_total_discounted'],

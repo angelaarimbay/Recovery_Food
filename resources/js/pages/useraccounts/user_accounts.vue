@@ -74,7 +74,7 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="dialog = true"
+              @click="addnew"
             >
               Add User
             </v-btn>
@@ -310,7 +310,15 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="6"
+                      md="6"
+                      v-if="passwords"
+                    >
                       <v-text-field
                         :rules="formRules"
                         v-model="form.password"
@@ -327,7 +335,15 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="6"
+                      md="6"
+                      v-if="passwords"
+                    >
                       <v-text-field
                         :rules="formRules"
                         v-model="form.confirmPass"
@@ -355,7 +371,6 @@
                       <v-combobox
                         class="d-none"
                         :rules="formRulesNumber"
-                        v-model="form.user_role"
                         :items="userrolelist"
                         outlined
                         dense
@@ -491,7 +506,6 @@ export default {
       phone_number: null,
       password: null,
       confirmPass: null,
-      user_role: [],
       branch: [],
     },
 
@@ -536,6 +550,7 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
+    passwords: true,
   }),
 
   // Onload
@@ -550,6 +565,11 @@ export default {
   },
 
   methods: {
+    addnew() {
+      this.passwords = true;
+      this.dialog = true;
+    },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -660,6 +680,7 @@ export default {
 
     // Editing/updating of row
     edit(row) {
+      this.passwords = false;
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.first_name = row.first_name;

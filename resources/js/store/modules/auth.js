@@ -70,7 +70,7 @@ export const actions = {
         if(result.data){ 
            commit(types.FETCH_USER_SUCCESS, { user: result.data }) 
         }else{
-          this.$store.dispatch('auth/logout')
+          this.$store.dispatch('auth/logout').catch((errr) => {});
         }
       })
      
@@ -84,10 +84,10 @@ export const actions = {
   },
 
   async logout({ commit }) {
-    try {
+  
       // this.$auth.logout()
-      await axios.post('/api/logout') 
-    } catch (e) { }
+      await axios.post('/api/logout') .catch((errr) => {});
+ 
 
     commit(types.LOGOUT)
   },

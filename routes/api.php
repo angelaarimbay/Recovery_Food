@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
     });
     Route::get('user', 'Auth\UserController@current');
+    Route::post('logout', 'Auth\LoginController@logout');
 
 
     Route::group(['middleware' => 'api'], function () {
@@ -51,6 +52,8 @@ use Illuminate\Support\Facades\Route;
 
     // Masterlist Supplies
     Route::post('msupp/save', 'Inventory\MasterlistSuppliesController@save');
+    
+    Route::get('msupp/suppName', 'Inventory\MasterlistSuppliesController@suppName');
     Route::get('msupp/get', 'Inventory\MasterlistSuppliesController@get');
     Route::get('msupp/suppCat', 'Inventory\MasterlistSuppliesController@suppCat');
     Route::get('msupp/validateItem', 'Inventory\MasterlistSuppliesController@validateItem');
@@ -59,6 +62,7 @@ use Illuminate\Support\Facades\Route;
     // Incoming Supplies
     Route::post('isupp/save', 'Inventory\IncomingSuppliesController@save');
     Route::get('isupp/get', 'Inventory\IncomingSuppliesController@get');
+    Route::get('isupp/suppliers', 'Inventory\IncomingSuppliesController@suppliers');
     Route::get('isupp/suppCat', 'Inventory\IncomingSuppliesController@suppCat');
     Route::get('isupp/suppName', 'Inventory\IncomingSuppliesController@suppName');
     Route::get('isupp/getTotalCurrentMonth', 'Inventory\IncomingSuppliesController@getTotalCurrentMonth');

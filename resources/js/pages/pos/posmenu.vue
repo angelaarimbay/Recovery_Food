@@ -140,13 +140,14 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.product_full`]="{ item }"
-              >{{ item.product_name.product_name }}
+            <template v-slot:[`item.product_full`]="{ item }">
+              {{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
+
             <template v-slot:[`item.id`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -155,7 +156,7 @@
                     v-on="data.on"
                     icon
                     color="red darken-2"
-                    @click="selectItem(item)"
+                    @click="selectItem(item, 'add')"
                     :small="$vuetify.breakpoint.smAndDown"
                   >
                     <v-icon>mdi-cart</v-icon>
@@ -221,7 +222,9 @@
               <span>Close</span>
             </v-tooltip>
           </v-toolbar>
-          <iframe :src="pdfview1" width="500" height="500"></iframe>
+          <v-card height="900"> <salesreport v-if="renderComponent" /></v-card>
+
+          <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
         </v-dialog>
       </v-col>
 
@@ -242,9 +245,9 @@
                   <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
                       >Item Selected:
-                      <strong>{{
-                        selectedrow.product_name.product_name
-                      }}</strong></span
+                      <strong
+                        >{{ selectedrow.product_name.product_name }}
+                      </strong></span
                     >
                   </v-col>
                 </v-row>
@@ -362,6 +365,12 @@
               indeterminate
               rounded
             ></v-progress-linear>
+
+            <template v-slot:[`item.product_name.product_name`]="{ item }">
+              {{ item.product_name.product_name }}
+              {{ item.description }}
+            </template>
+
             <template v-slot:[`item.row`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -370,7 +379,7 @@
                     v-on="data.on"
                     icon
                     color="red darken-2"
-                    @click="deleteItem(item)"
+                    @click="selectItem(item, 'remove')"
                     :small="$vuetify.breakpoint.smAndDown"
                   >
                     <v-icon>mdi-delete</v-icon>
@@ -584,8 +593,12 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
+import salesreport from "../reports/report_types/sales.vue";
 export default {
   middleware: "auth",
+  components: {
+    salesreport,
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -633,6 +646,7 @@ export default {
     prodsubcatlist: [],
     dialog1: false,
     dialog2: false,
+    type: "",
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
     formRulesNumberRange: [
@@ -659,18 +673,7 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      {
-        text: "CATEGORY",
-        value: "category.product_cat_name",
-        filterable: false,
-        class: "black--text",
-      },
-      {
-        text: "SUB-CATEGORY",
-        value: "sub_category.prod_sub_cat_name",
-        filterable: false,
-        class: "black--text",
-      },
+
       {
         text: "PRODUCT NAME",
         value: "product_full",
@@ -702,7 +705,7 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
-
+    renderComponent: true,
     // Table Headers
     headers2: [
       {
@@ -714,7 +717,7 @@ export default {
       },
       {
         text: "PRODUCT NAME",
-        value: "product",
+        value: "product_name.product_name",
         filterable: false,
         class: "black--text",
       },
@@ -814,14 +817,11 @@ export default {
     },
 
     async getSalesToday() {
-      await axios({
-        url: "/api/pos/today",
-        method: "GET",
-        responseType: "blob",
-      }).then((response) => {
-        let blob = new Blob([response.data], { type: "application/pdf" });
-        this.pdfview1 = window.URL.createObjectURL(blob);
-        this.dialog2 = true;
+      this.dialog2 = true;
+      this.$forceUpdate();
+      this.renderComponent = false;
+      this.$nextTick(() => {
+        this.renderComponent = true;
       });
     },
 
@@ -893,10 +893,11 @@ export default {
       });
     },
 
-    selectItem(item) {
+    selectItem(item, type) {
       if (this.mode) {
         this.dialog = true;
         this.selectedrow = item;
+        this.type = type;
       } else {
         this.snackbar = {
           active: true,
@@ -908,63 +909,96 @@ export default {
     },
 
     validateQty() {
-      var quantity = 0;
-      if (this.table2.length > 0) {
-        for (var key in this.table2) {
-          if (
-            this.table2[key].product ===
-            this.selectedrow.product_name.product_name
-          ) {
-            quantity += parseInt(this.table2[key].quantity);
+      if (this.type == "add") {
+        var quantity = 0;
+        if (this.table2.length > 0) {
+          for (let i = 0; i < this.table2.length; i++) {
+            if (
+              this.selectedrow.product_name.id == this.table2[i].product_name
+            ) {
+              quantity =
+                parseInt(this.table2[i].quantity) + parseInt(this.quantity);
+            }
+          }
+
+          if (parseInt(this.selectedrow.quantity) <= quantity) {
+            this.snackbar = {
+              active: true,
+              iconText: "alert",
+              iconColor: "error",
+              message: "Error! Please input correct quantity.",
+            };
+          } else {
+            this.appendItem();
+          }
+        } else {
+          if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
+            this.appendItem("add");
+          } else {
+            this.snackbar = {
+              active: true,
+              iconText: "alert",
+              iconColor: "error",
+              message: "Error! Please input correct quantity.",
+            };
           }
         }
-        if (parseInt(this.selectedrow.quantity_diff) <= quantity) {
-          this.snackbar = {
-            active: true,
-            iconText: "alert",
-            iconColor: "error",
-            message: "Error! Please input correct quantity.",
-          };
-        } else {
-          this.addItem();
-        }
       } else {
-        if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
-          this.addItem();
-        } else {
-          this.snackbar = {
-            active: true,
-            iconText: "alert",
-            iconColor: "error",
-            message: "Error! Please input correct quantity.",
-          };
-        }
+        this.deleteItem(this.selectedrow);
       }
     },
 
-    addItem() {
-      this.table2.push({
-        id: this.table2.length + 1,
-        category: this.selectedrow.category.id,
-        sub_category: this.selectedrow.sub_category.id,
-        product: this.selectedrow.product_name.product_name.concat(" " + this.selectedrow.product_name.description),
-        product_name: this.selectedrow.product_name.id,
-        unit_price: this.selectedrow.product_name.format_unit_price,
+    appendItem() {
+      if (this.type == "add") {
+        //find item in recently added.
+        var check_exsiting = 0;
+        for (let i = 0; i < this.table2.length; i++) {
+          if (this.selectedrow.product_name.id == this.table2[i].product) {
+            check_exsiting++;
+          }
+        }
+        if (check_exsiting > 0) {
+          for (let i = 0; i < this.table2.length; i++) {
+            if (this.selectedrow.product_name.id == this.table2[i].product) {
+              this.table2[i].quantity =
+                parseInt(this.table2[i].quantity) + parseInt(this.quantity);
+            }
+          }
+        } else {
+          this.table2.push({
+            id: this.table2.length + 1,
+            category: this.selectedrow.category.id,
+            sub_category: this.selectedrow.sub_category.id,
+            product_name: {
+              product_name: this.selectedrow.product_name.product_name,
+            },
+            description: this.selectedrow.product_name.description,
+            product: this.selectedrow.product_name.id,
+            unit_price: this.selectedrow.product_name.format_unit_price,
 
-        quantity: this.quantity,
-        sub_total: numeral(
-          this.quantity * this.selectedrow.product_name.price
-        ).format("0,0.00"),
-        temp_sub_total: this.quantity * this.selectedrow.product_name.price,
+            quantity: this.quantity,
+            sub_total: numeral(
+              this.quantity * this.selectedrow.product_name.price
+            ).format("0,0.00"),
+            temp_sub_total: this.quantity * this.selectedrow.product_name.price,
 
-        mode: this.mode,
-      });
-      this.snackbar = {
-        active: true,
-        iconText: "check",
-        iconColor: "success",
-        message: "Successfully added.",
-      };
+            mode: this.mode,
+          });
+        }
+        this.snackbar = {
+          active: true,
+          iconText: "check",
+          iconColor: "success",
+          message: "Successfully added.",
+        };
+      } else {
+        this.table2[this.editedIndex].quantity =
+          this.table2[this.editedIndex].quantity - this.quantity;
+        if (this.table2[this.editedIndex].quantity < 1) {
+          this.table2.splice(this.editedIndex, 1);
+        }
+      }
+
       this.getTotal();
       this.getChange();
       this.cancel();
@@ -972,15 +1006,16 @@ export default {
 
     deleteItem(item) {
       this.editedIndex = this.table2.indexOf(item);
-      this.table2.splice(this.editedIndex, 1);
-      this.snackbar = {
-        active: true,
-        iconText: "check",
-        iconColor: "success",
-        message: "Successfully removed.",
-      };
-      this.getTotal();
-      this.getChange();
+      this.appendItem(item);
+
+      // this.snackbar = {
+      //   active: true,
+      //   iconText: "check",
+      //   iconColor: "success",
+      //   message: "Successfully removed.",
+      // };
+      // this.getTotal();
+      // this.getChange();
     },
 
     getChange() {

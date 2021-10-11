@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\tbl_suppcat;
+use App\Models\tbl_supplist;
 use App\Models\tbl_incomingsupp;
 
 class tbl_masterlistsupp extends Model
@@ -17,7 +18,10 @@ class tbl_masterlistsupp extends Model
     {
         return $this->hasOne(tbl_suppcat::class, 'id', 'category');
     }
-
+    public function supplier()
+    {
+        return $this->hasOne(tbl_supplist::class, 'id', 'supplier');
+    }
     public function getWithVatAttribute()
     {
         $date1 =  date("Y-m-d h:i:s", strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
