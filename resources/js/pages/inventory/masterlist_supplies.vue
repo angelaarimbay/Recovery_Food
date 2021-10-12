@@ -362,10 +362,10 @@
                         dense
                         :items="supplierlist"
                         item-text="supplier_name"
-                        item-value="id" 
+                        item-value="id"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Suppliers *</div>
+                          <div style="font-size: 14px">Supplier *</div>
                         </template>
                       </v-select>
                     </v-col>
@@ -416,7 +416,7 @@
                       sm="12"
                       md="12"
                     >
-                      <v-text-field 
+                      <v-text-field
                         :rules="formRules"
                         v-model="form.supply_name"
                         outlined
@@ -426,7 +426,7 @@
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
                         </template>
-                      </v-text-field >
+                      </v-text-field>
                     </v-col>
 
                     <v-col
@@ -661,7 +661,10 @@ export default {
     // Form Data
     form: {
       id: null,
-      status: 1,
+      status: [
+        { name: "Active", id: 1 },
+        { name: "Inactive", id: 0 },
+      ],
       supply_name: null,
       supplier: null,
       category: null,
@@ -996,7 +999,7 @@ export default {
       this.form.id = row.id;
       this.form.status = row.status;
       this.form.category = row.category.id;
-      this.form.supply_name = row.supply_name ;
+      this.form.supply_name = row.supply_name;
       this.form.description = row.description;
       this.form.unit = row.unit;
       this.form.net_price = row.net_price;

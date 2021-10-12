@@ -447,7 +447,7 @@
                           dense
                         >
                           <template slot="label">
-                            <div style="font-size: 14px">Total Amount *</div>
+                            <div style="font-size: 14px">Amount *</div>
                           </template>
                         </v-text-field>
                       </v-layout>

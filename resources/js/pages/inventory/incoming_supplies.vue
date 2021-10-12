@@ -339,7 +339,7 @@
                         @change="suppName"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Suppliers *</div>
+                          <div style="font-size: 14px">Supplier *</div>
                         </template>
                       </v-autocomplete>
                     </v-col>
@@ -463,7 +463,7 @@
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Total Amount *</div>
+                          <div style="font-size: 14px">Amount *</div>
                         </template>
                       </v-text-field>
                     </v-col>

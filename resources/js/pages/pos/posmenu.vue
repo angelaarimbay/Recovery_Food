@@ -69,7 +69,7 @@
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
-            <span>Products List</span>
+            <span class="text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 mb-0 mb-0">Products List</span>
           </v-card>
 
           <v-row no-gutters class="mt-2">
@@ -207,7 +207,7 @@
             dark
             class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
           >
-            View Sales History
+            Sales History
             <v-spacer></v-spacer>
             <v-tooltip bottom>
               <template #activator="data">
@@ -256,11 +256,11 @@
                     <v-text-field
                       v-model="quantity"
                       outlined
-                      clearable
                       dense
                       @focus="clearQ"
                       @blur="resetQ"
                       autocomplete="off"
+                      type="number"
                     >
                       <template slot="label">
                         <div style="font-size: 14px">Quantity *</div>
@@ -311,7 +311,7 @@
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
-            <span>Order Details</span>
+            <span class="text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 mb-0">Order Details</span>
           </v-card>
 
           <v-row no-gutters class="mt-2">
@@ -320,7 +320,7 @@
               <v-card-actions>
                 <span
                   style="color: #616161"
-                  :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+                  class="text-body-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6 mb-0"
                   >Sales Count: {{ salescount }}</span
                 >
               </v-card-actions>
@@ -337,7 +337,7 @@
                   v-model="mode"
                   :items="['Walk-In', 'Take-Out']"
                   hide-details
-                  class="mb-0 mb-xl-5 mb-lg-5 mb-md-5 mb-sm-2"
+                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-4 mb-sm-2"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Mode</div>
@@ -404,14 +404,14 @@
         <v-col cols="12" xl="12" lg="12" md="12" sm="12" class="pa-0 mt-2">
           <v-card height="95" class="pa-3" style="border-radius: 10px">
             <v-card-actions class="p-0 m-0">
-              <strong style="color: #616161; font-size: 14px">Total: </strong>
+              <strong style="color: #616161" class="text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6 my-auto">Total:</strong>
               <v-spacer></v-spacer>
-              <strong style="font-size: 22px">{{ totalamount }}</strong>
+              <strong class="text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6 my-auto">{{ totalamount }}</strong>
             </v-card-actions>
             <v-card-actions class="p-0 m-0">
-              <strong style="color: #616161">Grand Total: </strong>
+              <strong style="color: #616161" class="text-h5 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 my-auto">Grand Total: </strong>
               <v-spacer></v-spacer>
-              <strong style="font-size: 27px">{{ discountedamount }}</strong>
+              <strong class="text-h5 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 my-auto">{{ discountedamount }}</strong>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -435,6 +435,7 @@
                   persistent-placeholder
                   autocomplete="off"
                   :disabled="!disabled"
+                  type="number"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Payment</div>
@@ -456,6 +457,7 @@
                   @blur="resetD"
                   autocomplete="off"
                   :disabled="!disabled"
+                  type="number"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Discount</div>
@@ -492,7 +494,7 @@
                           color="orange darken-3"
                           style="text-transform: none; color: white"
                         >
-                          <v-icon>mdi-history</v-icon>
+                          <v-icon large>mdi-history</v-icon>
                         </v-btn>
                       </template>
                       <span>Sales History</span>
@@ -509,7 +511,7 @@
                           style="text-transform: none; color: white"
                           :disabled="!disabled"
                         >
-                          <v-icon>mdi-printer</v-icon>
+                          <v-icon large>mdi-printer</v-icon>
                         </v-btn>
                       </template>
                       <span>Print</span>
@@ -522,11 +524,11 @@
                           v-on="data.on"
                           block
                           color="red darken-3"
-                          style="text-transform: none; color: white"
+                          style="text-transform: none; color: white; font-size: 17px"
                           :disabled="!disabled"
                           @click="validate('void')"
                         >
-                          Void
+                          <v-icon large>mdi-do-not-disturb</v-icon>
                         </v-btn>
                       </template>
                       <span>Void Order(s)</span>
@@ -543,7 +545,7 @@
                           :disabled="!disabled"
                           @click="validate('new')"
                         >
-                          New
+                          <v-icon large>mdi-cart-plus</v-icon>
                         </v-btn>
                       </template>
                       <span>New Order</span>
@@ -559,15 +561,21 @@
                 sm="12"
                 class="pt-0 pt-xl-3 pt-lg-3 pt-md-3 pt-sm-0"
               >
+                    <v-tooltip bottom>
+                      <template #activator="data">
                 <v-btn
+                  v-on="data.on"
                   block
                   color="green darken-3"
                   style="text-transform: none; color: white"
                   :disabled="!disabled"
                   @click="validate('save')"
                 >
-                  Pay
+                  <v-icon large>mdi-coin</v-icon>
                 </v-btn>
+                </template>
+                                      <span>Save</span>
+                    </v-tooltip>
               </v-col>
             </v-row>
           </v-card>
@@ -587,6 +595,22 @@
 }
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+@media only screen and (min-width: 768px) {
+  .v-data-table-header th {
+    font-size: 12px !important;
+  }
+  .v-data-table td {
+    font-size: 15px !important;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  .v-data-table-header th {
+    font-size: 15px !important;
+  }
+  .v-data-table td {
+    font-size: 17px !important;
+  }
 }
 </style>
 
