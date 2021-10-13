@@ -130,11 +130,11 @@ use Illuminate\Support\Facades\Route;
         // POS
         Route::post('pos/prodlist/save', 'POS\ProductsListController@save');
         Route::get('pos/receipt', 'Reports\ReportsController@Receipt'); //change mo nlang kung ano proper syo
-    Route::get('pos/today', 'POS\ProductsListController@getSalesToday'); //change mo nlang kung ano proper naming syo
+        Route::get('pos/today', 'POS\ProductsListController@getSalesToday'); //change mo nlang kung ano proper naming syo
 
 
 
-    Route::get('pos/prodlist/get', 'POS\ProductsListController@get');
+        Route::get('pos/prodlist/get', 'POS\ProductsListController@get');
         Route::get('sales_report/sales_count', 'POS\ProductsListController@getSalesCount');
 
         // Reports

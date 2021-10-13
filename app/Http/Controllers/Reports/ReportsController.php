@@ -204,19 +204,19 @@ class ReportsController extends Controller
     // Inventory Summary Report - OK
     public function InventorySummaryReport(Request $t)
     {
-         $data_temp = tbl_suppcat::all();
-         $data = [];
-         foreach ($data_temp as $key => $value) {
-             $temp = [];
-             $temp['category'] = $value->supply_cat_name;
-             $temp['incoming'] = number_format(tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("amount"), 2, ".", ",");
-             $temp['outgoing'] = number_format(tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
-             $temp['stocks'] = tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity")
+        $data_temp = tbl_suppcat::all();
+        $data = [];
+        foreach ($data_temp as $key => $value) {
+            $temp = [];
+            $temp['category'] = $value->supply_cat_name;
+            $temp['incoming'] = number_format(tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("amount"), 2, ".", ",");
+            $temp['outgoing'] = number_format(tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
+            $temp['stocks'] = tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity")
                                     - tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity");
-             array_push($data, $temp);
-         }
+            array_push($data, $temp);
+        }
         switch ($t->type) {
-        case 'pdf': 
+        case 'pdf':
            
             $content['data'] = $data;
             $pdf = PDF::loadView('reports.inventorysummary', $content, [], [
@@ -242,10 +242,10 @@ class ReportsController extends Controller
     {
         DB::statement(DB::raw("set @row:=0"));
        
-            $data = tbl_pos::where("branch", $t->branch)
+        $data = tbl_pos::where("branch", $t->branch)
             ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-            ->groupby(["branch","created_at","reference_no"])->get(); 
+            ->groupby(["branch","created_at","reference_no"])->get();
               
         switch ($t->type) {
             case 'pdf':
@@ -360,15 +360,14 @@ class ReportsController extends Controller
 
     public function ListSP(Request $t)
     {
-
-        if(auth()->user()->can('Access POS')){
+        if (auth()->user()->can('Access POS')) {
             $table = tbl_pos::with(["branch"])
-            ->where('branch',auth()->user()->branch)
-            ->where('cashier',auth()->user()->id)
+            ->where('branch', auth()->user()->branch)
+            ->where('cashier', auth()->user()->id)
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
             ->groupby(["branch","created_at","reference_no"])
              ;
-        }else{
+        } else {
             $table = tbl_pos::with(["branch"])
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
             ->groupby(["branch","created_at","reference_no"])
@@ -410,21 +409,23 @@ class ReportsController extends Controller
         return  tbl_pos::with(["branch",'product_name','cashier'])->where("reference_no", $t->reference_no)->get();
     }
 
-    public function Receipt(Request $t) {
-          if($t->reference_no){
-            $data = tbl_pos::where("reference_no",$t->reference_no)->get(); 
+    public function Receipt(Request $t)
+    {
+        if ($t->reference_no) {
+            $data = tbl_pos::where("reference_no", $t->reference_no)->get();
             $content['data'] = $data;
             $pdf = PDF::loadView(
                 'receipt.receipt',
                 $content,
-                [], 
-                ['format' => ['57','226'],
+                [],
+                ['format' => ['57','76'],
                 'margin_left' => 3,
-                'margin_right' =>3,
-                'margin_top' =>5,
+                'margin_right' => 3,
+                'margin_top' => 5,
                 'margin_bottom' => 5,
-              ]);
+              ]
+            );
             return $pdf->stream();
-        } 
+        }
     }
 }

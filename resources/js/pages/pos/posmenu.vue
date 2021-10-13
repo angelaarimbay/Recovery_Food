@@ -69,7 +69,13 @@
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
-            <span class="text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 mb-0 mb-0">Products List</span>
+            <span
+              class="
+                text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5
+                mb-0 mb-0
+              "
+              >Products List</span
+            >
           </v-card>
 
           <v-row no-gutters class="mt-2">
@@ -123,6 +129,7 @@
 
           <!-- Products List Table -->
           <v-data-table
+            class="prod_table"
             :headers="headers1"
             :items="table1.data"
             :loading="progressbar1"
@@ -222,8 +229,7 @@
               <span>Close</span>
             </v-tooltip>
           </v-toolbar>
-          <v-card height="900"> <salesreport v-if="renderComponent" /></v-card>
-
+          <v-card tile> <salesreport v-if="renderComponent" /></v-card>
           <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
         </v-dialog>
       </v-col>
@@ -311,7 +317,10 @@
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
-            <span class="text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 mb-0">Order Details</span>
+            <span
+              class="text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 mb-0"
+              >Order Details</span
+            >
           </v-card>
 
           <v-row no-gutters class="mt-2">
@@ -320,7 +329,10 @@
               <v-card-actions>
                 <span
                   style="color: #616161"
-                  class="text-body-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6 mb-0"
+                  class="
+                    text-body-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                    mb-0
+                  "
                   >Sales Count: {{ salescount }}</span
                 >
               </v-card-actions>
@@ -349,6 +361,7 @@
 
           <!-- Order List Table -->
           <v-data-table
+            class="ord_table"
             :headers="headers2"
             :items="table2"
             height="230"
@@ -404,14 +417,44 @@
         <v-col cols="12" xl="12" lg="12" md="12" sm="12" class="pa-0 mt-2">
           <v-card height="95" class="pa-3" style="border-radius: 10px">
             <v-card-actions class="p-0 m-0">
-              <strong style="color: #616161" class="text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6 my-auto">Total:</strong>
+              <span
+                style="color: #616161"
+                class="
+                  text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  font-weight-bold
+                  my-auto
+                "
+                >Total:</span
+              >
               <v-spacer></v-spacer>
-              <strong class="text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6 my-auto">{{ totalamount }}</strong>
+              <span
+                class="
+                  text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  font-weight-bold
+                  my-auto
+                "
+                >{{ totalamount }}</span
+              >
             </v-card-actions>
             <v-card-actions class="p-0 m-0">
-              <strong style="color: #616161" class="text-h5 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 my-auto">Grand Total: </strong>
+              <span
+                style="color: #616161"
+                class="
+                  text-h5 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5
+                  font-weight-bold
+                  my-auto
+                "
+                >Grand Total:
+              </span>
               <v-spacer></v-spacer>
-              <strong class="text-h5 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 my-auto">{{ discountedamount }}</strong>
+              <span
+                class="
+                  text-h5 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5
+                  font-weight-bold
+                  my-auto
+                "
+                >{{ discountedamount }}</span
+              >
             </v-card-actions>
           </v-card>
         </v-col>
@@ -524,7 +567,11 @@
                           v-on="data.on"
                           block
                           color="red darken-3"
-                          style="text-transform: none; color: white; font-size: 17px"
+                          style="
+                            text-transform: none;
+                            color: white;
+                            font-size: 17px;
+                          "
                           :disabled="!disabled"
                           @click="validate('void')"
                         >
@@ -540,12 +587,12 @@
                         <v-btn
                           v-on="data.on"
                           block
-                          color="green darken-3"
+                          color="amber darken-1"
                           style="text-transform: none; color: white"
                           :disabled="!disabled"
                           @click="validate('new')"
                         >
-                          <v-icon large>mdi-cart-plus</v-icon>
+                          <v-icon large>mdi-new-box</v-icon>
                         </v-btn>
                       </template>
                       <span>New Order</span>
@@ -561,21 +608,21 @@
                 sm="12"
                 class="pt-0 pt-xl-3 pt-lg-3 pt-md-3 pt-sm-0"
               >
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                <v-btn
-                  v-on="data.on"
-                  block
-                  color="green darken-3"
-                  style="text-transform: none; color: white"
-                  :disabled="!disabled"
-                  @click="validate('save')"
-                >
-                  <v-icon large>mdi-coin</v-icon>
-                </v-btn>
-                </template>
-                                      <span>Save</span>
-                    </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      v-on="data.on"
+                      block
+                      color="green darken-3"
+                      style="text-transform: none; color: white"
+                      :disabled="!disabled"
+                      @click="validate('save')"
+                    >
+                      <v-icon large>mdi-cart</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Checkout</span>
+                </v-tooltip>
               </v-col>
             </v-row>
           </v-card>
@@ -605,10 +652,12 @@
   }
 }
 @media only screen and (min-width: 1024px) {
-  .v-data-table-header th {
+  .prod_table .v-data-table-header th,
+  .ord_table .v-data-table-header th {
     font-size: 15px !important;
   }
-  .v-data-table td {
+  .prod_table td,
+  .ord_table td {
     font-size: 17px !important;
   }
 }
@@ -834,6 +883,8 @@ export default {
         responseType: "blob",
         params: { reference_no: this.reference_no },
       }).then((response) => {
+        // console.log(response.data);
+        // return;
         let blob = new Blob([response.data], { type: "application/pdf" });
         this.pdfview = window.URL.createObjectURL(blob);
         this.dialog1 = true;
@@ -1045,9 +1096,10 @@ export default {
     getChange() {
       if (this.payment > 0) {
         if (this.discount > 0) {
-          this.change =
+          this.change = numeral(
             this.payment -
-            (this.totalamount - (this.discount / 100) * this.totalamount);
+              (this.totalamount - (this.discount / 100) * this.totalamount)
+          ).format("0,0.00");
           this.getTotal();
         } else if (this.discount == null || this.discount == 0) {
           this.change = this.payment - this.totalamount;
