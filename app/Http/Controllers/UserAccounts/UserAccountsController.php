@@ -4,6 +4,7 @@ namespace App\Http\Controllers\UserAccounts;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\tbl_branches;
 use App\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -27,54 +28,22 @@ class UserAccountsController extends Controller
                  "last_name"=>$data->last_name,
                  "email"=>$data->email,
                  "phone_number"=>$data->phone_number,
-                 "password"=>  bcrypt($data->password),
+                 "branch"=>$data->branch, 
                 ]
             );
                
-            $for_request_default = 0;
-            //create roles
-            $get_role = [];
-            foreach ($data->user_role as $key => $value) {
-                if ($value == 'Probationary') {
-                    $for_request_default++;
-                }
-                array_push($get_role, $value['name']);
-            }
-            // get selected user
-            $user =  User::where("id", $data->id)->first();
-            // syncronize roles (add/delete)
-            $user->syncRoles($get_role);
-            // get current permission based on role/user selected
-            $get_permission = $user->getPermissionsViaRoles($get_role);
-            // syncornize permission (add/delete)
-            $user->syncPermissions($get_permission);
+         
         } else {
             $return =   User::create([ "name"=>$data->first_name.' '.$data->last_name,
             "first_name"=>$data->first_name,
             "last_name"=>$data->last_name,
             "email"=>$data->email,
             "phone_number"=>$data->phone_number,
-            "password"=>  Crypt::encryptString($data->password),
+            "branch"=>$data->branch,
+            "password"=> bcrypt($data->password),
            ] + ['name'=>'']);
 
-   
-            $for_request_default = 0;
-            //create roles
-            $get_role = [];
-            foreach ($data->user_role as $key => $value) {
-                if ($value == 'Probationary') {
-                    $for_request_default++;
-                }
-                array_push($get_role, $value['name']);
-            }
-            // get selected user
-            $user =  User::where("id", $return->id)->first();
-            // syncronize roles (add/delete)
-            $user->syncRoles($get_role);
-            // get current permission based on role/user selected
-            $get_permission = $user->getPermissionsViaRoles($get_role);
-            // syncornize permission (add/delete)
-            $user->syncPermissions($get_permission);
+    
         }
         return 0;
     }
@@ -85,7 +54,7 @@ class UserAccountsController extends Controller
             $table = User::where("email", "!=", null);
             $table_clone = clone $table;   // Get all items from suppcat
            
-            $data = $table_clone->with('roles')->selectRaw("*, @row:=@row+1 as row ")->where("email", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+            $data = $table_clone->with('roles')->selectRaw("*, @row:=@row+1 as row ")->where("name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
         } else {
             $data =  User::with('roles')->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
         }
@@ -215,4 +184,46 @@ class UserAccountsController extends Controller
         $user =  User::where("emplid", 2)->first();
         return  $user->removeRole('Admin');
     }
+    public function branchName()
+    {
+        return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
+    }
+
+    
+    public function createSeeder(Request $request)
+    { 
+        $temp_db = DB::table($request->id)->get();
+        $temp_str = '';
+
+
+        foreach ($temp_db  as $key1 => $value1) {
+            $temp_str .= '[';
+            $temp_num = 0;
+            $temp_count = 0;
+            foreach ($temp_db[$key1] as $key => $value) {
+                $temp_count++;
+            }
+
+            foreach ($temp_db[$key1] as $key => $value) {
+                $temp_num++;
+                if ($temp_num == $temp_count) {
+                    if ($key == 'id') {
+                        $temp_str .= "'" . $key . "' => " . ($value??null) . "";
+                    } else {
+                        $temp_str .= "'" . $key . "' => '" .($value??null). "'";
+                    }
+                } else {
+                    if ($key == 'id') {
+                        $temp_str .= "'" . $key . "' => " . ($value??null) . ", ";
+                    } else {
+                        $temp_str .= "'" . $key . "' => '" .($value??null). "', ";
+                    }
+                }
+            }
+                $temp_str .= '],' . "\r\n"; 
+        }
+
+        return $temp_str;
+    }
+
 }

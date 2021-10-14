@@ -74,7 +74,7 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="dialog = true"
+              @click="addnew"
             >
               Add User
             </v-btn>
@@ -310,7 +310,15 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="6"
+                      md="6"
+                      v-if="passwords"
+                    >
                       <v-text-field
                         :rules="formRules"
                         v-model="form.password"
@@ -327,7 +335,15 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="6"
+                      md="6"
+                      v-if="passwords"
+                    >
                       <v-text-field
                         :rules="formRules"
                         v-model="form.confirmPass"
@@ -353,8 +369,8 @@
                       md="12"
                     >
                       <v-combobox
-                        :rules="formRules"
-                        v-model="form.user_role"
+                        class="d-none"
+                        :rules="formRulesNumber"
                         :items="userrolelist"
                         outlined
                         dense
@@ -366,6 +382,30 @@
                           <div style="font-size: 14px">User Role *</div>
                         </template>
                       </v-combobox>
+                    </v-col>
+
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-select
+                        :rules="formRulesNumberRange"
+                        v-model="form.branch"
+                        :items="branchlist"
+                        item-text="branch_name"
+                        item-value="id"
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Branch *</div>
+                        </template>
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -444,13 +484,16 @@ export default {
     password: "",
     confirmPass: "",
     table: [],
+    branchlist: [],
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
+    ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
@@ -463,7 +506,7 @@ export default {
       phone_number: null,
       password: null,
       confirmPass: null,
-      user_role: [],
+      branch: [],
     },
 
     // For comparing data
@@ -471,45 +514,62 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Name",
-        value: "name",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
       },
       {
-        text: "User Name",
+        text: "NAME",
+        value: "name",
+        class: "black--text",
+      },
+      {
+        text: "EMAIL",
         value: "email",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "User Role",
-        value: "roles",
+        text: "BRANCH",
+        value: "branch_details.branch_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Actions",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
+    passwords: true,
   }),
 
   // Onload
   created() {
     if (this.user.permissionslist.includes("Access User Accounts")) {
       this.get();
-      this.getUserRoles();
+      // this.getUserRoles();
+      this.branchName();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
   },
 
   methods: {
+    addnew() {
+      this.passwords = true;
+      this.dialog = true;
+    },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -518,6 +578,12 @@ export default {
     async getUserRoles() {
       await axios.get("/api/useracc/getRoles").then((result) => {
         this.userrolelist = result.data.data;
+      });
+    },
+
+    async branchName() {
+      await axios.get("api/useracc/branchName").then((bran_name) => {
+        this.branchlist = bran_name.data;
       });
     },
 
@@ -614,18 +680,14 @@ export default {
 
     // Editing/updating of row
     edit(row) {
-      console.log(row);
+      this.passwords = false;
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.first_name = row.first_name;
       this.form.last_name = row.last_name;
       this.form.email = row.email;
       this.form.phone_number = row.phone_number;
-      this.form.password = row.password;
-      for (var key in row.roles) {
-        this.form.user_role.push(row.roles[key]);
-      }
-
+      this.form.branch = row.branch_details.id;
       this.dialog = true;
     },
 

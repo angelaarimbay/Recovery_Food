@@ -162,7 +162,9 @@
                         class="my-0"
                         clearable
                         dense
+                        v-model="category"
                         label="Category"
+                        @change="get"
                       >
                       </v-select>
                     </v-card-actions>
@@ -202,6 +204,7 @@
                           no-title
                           color="red darken-2"
                           dark
+                          @change="get"
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -238,6 +241,7 @@
                           no-title
                           color="red darken-2"
                           dark
+                          @change="get"
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -266,6 +270,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supply_full`]="{ item }"
+              >{{ item.supply_name.supply_name }}
+              {{ item.supply_name.description }}</template
+            >
             <template v-slot:[`item.incoming_date`]="{ item }">
               {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
             >
@@ -311,6 +319,32 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-autocomplete
+                        :rules="formRules"
+                        v-model="form.supplier"
+                        outlined 
+                        dense
+                        :items="supplierlist"
+                        item-text="supplier_name"
+                        item-value="id"
+                        @change="suppName"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Supplier *</div>
+                        </template>
+                      </v-autocomplete>
+                    </v-col>
+
+
                     <v-col
                       class="py-0"
                       cols="12"
@@ -337,6 +371,7 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
+                            :rules="formRules"
                             v-model="form.incoming_date"
                             label="Incoming Date"
                             readonly
@@ -367,7 +402,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.category"
                         outlined
                         dense
@@ -391,7 +426,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.supply_name"
                         outlined
                         dense
@@ -500,29 +535,30 @@ export default {
       message: "",
     },
     search: "",
-    editedIndex: -1,
     button: false,
     dialog: false,
     deleteid: "",
     tempfile: "",
+    category: "",
     table: [],
     suppcatlist: [],
     suppnamelist: [],
+    supplierlist: [],
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
     ],
 
     // Form Data
     form: {
       category: null,
       supply_name: null,
+      supplier: null,
       quantity: null,
       amount: null,
       incoming_date: null,
@@ -533,37 +569,77 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUPPLIER",
+        value: "supplier.supplier_name",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
+        class: "black--text",
       },
-      { text: "Supply Name", value: "supply_name.supply_name" },
       {
-        text: "Quantity",
+        text: "SUPPLY NAME",
+        value: "supply_full",
+        class: "black--text",
+      },
+      {
+        text: "UNIT",
+        value: "supply_name.unit",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "NET PRICE",
+        value: "supply_name.format_net_price",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "WITH VAT",
+        value: "supply_name.format_with_vat",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "QTY",
         value: "quantity",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Amount",
+        text: "AMT",
         value: "format_amount",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Date",
+        text: "DATE",
         value: "incoming_date",
-        align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Actions",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -582,6 +658,7 @@ export default {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.get();
       this.suppCat();
+      this.suppliers();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
@@ -623,6 +700,12 @@ export default {
                 found += 1;
               }
             }
+         } else if (key == "supplier") {
+            if (this.currentdata.supplier) {
+              if (this.currentdata.supplier.id != this.form.supplier) {
+                found += 1;
+              }
+            }
           } else if (key == "incoming_date") {
             if (
               this.getFormatDate(
@@ -658,32 +741,18 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/isupp/save", this.form)
-
+            .post("/api/isupp/save", this.form)
             .then((result) => {
+              console.log(result.data)
               //if the value is true then save to database
-              switch (result.data) {
-                case 0:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "check",
-                    iconColor: "success",
-                    message: "Successfully saved.",
-                  };
-                  this.get();
-                  this.cancel();
-                  break;
-                case 1:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "The supply name already exists.",
-                  };
-                  break;
-                default:
-                  break;
-              }
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully saved.",
+              };
+              this.get();
+              this.cancel();
             })
             .catch((result) => {
               // If false or error when saving
@@ -696,14 +765,18 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/isupp/get", {
+        .get("/api/isupp/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            category: this.category,
+            dateFrom: this.dateFrom,
+            dateUntil: this.dateUntil,
           },
         })
-        .then((result) => {
+        .then((result) => { 
+          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -714,24 +787,38 @@ export default {
     },
 
     async suppCat() {
-      await axios.get("api/isupp/suppCat").then((supp_cat) => {
+      await axios.get("/api/isupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
     async suppName() {
+      this.form.supply_name = null;
       await axios
-        .get("api/isupp/suppName", { params: { category: this.form.category } })
+        .get("/api/isupp/suppName", {
+          params: { supplier: this.form.supplier, category: this.form.category },
+        })
         .then((supp_name) => {
           this.suppnamelist = supp_name.data;
         });
     },
+
+    async suppliers() {  
+      await axios
+        .get("/api/isupp/suppliers", { 
+        })
+        .then((result) => {
+          this.supplierlist = result.data;
+        });
+    },
+
 
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.category = row.category.id;
+      this.form.supplier = row.supplier.id;  
       this.suppName();
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
@@ -740,7 +827,6 @@ export default {
         row.incoming_date,
         "YYYY-MM-DD"
       );
-
       this.dialog = true;
     },
 

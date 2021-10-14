@@ -1,22 +1,26 @@
 <template>
   <div class="main-layout">
-    <navbar /> 
-    <div class="container">
+    <navbar />  
+    <div :class="(this.$router.history['_startLocation'] == '/posmenu'?'':'container')"> 
       <child />
-    </div>
+    </div> 
+     
   </div>
 </template>
 
 <script>
-import Navbar from '~/components/Nav'
-
+import Navbar from '~/components/Nav' 
+import { mapGetters } from "vuex";  
 export default {
   
   middleware: "auth",
   name: 'MainLayout',
 
   components: {
-    Navbar
-  }
+    Navbar 
+  },
+   computed: mapGetters({
+    user: "auth/user",
+  }), 
 }
 </script>

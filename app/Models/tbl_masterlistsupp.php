@@ -4,22 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\tbl_suppcat;
+use App\Models\tbl_supplist;
 use App\Models\tbl_incomingsupp;
 
 class tbl_masterlistsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['category_name','with_vat','without_vat','format_net_price','format_with_vat','format_without_vat','format_net_price'];
+    public $appends = ['with_vat','without_vat','format_net_price','format_with_vat','format_without_vat','category_name'];
 
     
     public function category()
     {
         return $this->hasOne(tbl_suppcat::class, 'id', 'category');
     }
-
-    public function getCategoryNameAttribute(){
-      return  $this->hasOne(tbl_suppcat::class, 'id', 'category')->first()->supply_cat_name;
+    public function supplier()
+    {
+        return $this->hasOne(tbl_supplist::class, 'id', 'supplier');
     }
     public function getWithVatAttribute()
     {
@@ -28,8 +29,6 @@ class tbl_masterlistsupp extends Model
         $date2 = date("Y-m-d h:i:s", strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
         $incoming = 0;
 
-        //sice we check incoming via total, so if vatable = 0  kukunin nya un, else netprice
-        // tama to. kasi in total for the month ung kinukuha natin from incoming..
         try {
             $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('amount');
             $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('quantity');
@@ -73,5 +72,8 @@ class tbl_masterlistsupp extends Model
     {
         return number_format($this->without_vat, 2, ".", ",");
     }
-    
+
+    public function getCategoryNameAttribute() {
+        return $this->hasOne(tbl_suppcat::class, "id", "category")->first()->supply_cat_name;
+    }
 }

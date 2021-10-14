@@ -14,18 +14,10 @@ class CategoriesSeeder extends Seeder
     public function run()
     {
         tbl_suppcat::insert([ 
-            [
-                'status' => 1,
-                'supply_cat_name'=> 'SCat 1',
-            ],
-            [
-                'status' => 1,
-                'supply_cat_name'=> 'SCat 2',
-            ],
-            [
-                'status' => 0,
-                'supply_cat_name'=> 'SCat 3',
-            ]
+            ['id' => 1, 'supply_cat_name' => 'SCat 1', 'status' => '1'],
+            ['id' => 2, 'supply_cat_name' => 'SCat 2', 'status' => '1'],
+            ['id' => 3, 'supply_cat_name' => 'SCat 3', 'status' => '0' ],
+            
         ]);
     }
 }

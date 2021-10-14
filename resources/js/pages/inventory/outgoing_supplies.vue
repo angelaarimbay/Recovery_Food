@@ -156,6 +156,7 @@
                   <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-select
+                        v-model="branch"
                         :items="branchlist"
                         item-text="branch_name"
                         item-value="id"
@@ -163,6 +164,7 @@
                         clearable
                         dense
                         label="Branch"
+                        @change="get"
                       >
                       </v-select>
                     </v-card-actions>
@@ -172,6 +174,7 @@
                   <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-select
+                        v-model="category"
                         :items="suppcatlist"
                         item-text="supply_cat_name"
                         item-value="id"
@@ -179,6 +182,7 @@
                         clearable
                         dense
                         label="Category"
+                        @change="get"
                       >
                       </v-select>
                     </v-card-actions>
@@ -218,6 +222,7 @@
                           no-title
                           color="red darken-2"
                           dark
+                          @change="get"
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -254,6 +259,7 @@
                           no-title
                           color="red darken-2"
                           dark
+                          @change="get"
                         ></v-date-picker>
                       </v-menu>
                     </v-card-actions>
@@ -282,6 +288,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supply_full`]="{ item }"
+              >{{ item.supply_name.supply_name }}
+              {{ item.supply_name.description }}</template
+            >
             <template v-slot:[`item.outgoing_date`]="{ item }">
               {{ getFormatDate(item.outgoing_date, "YYYY-MM-DD") }}</template
             >
@@ -352,6 +362,7 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
+                            :rules="formRules"
                             v-model="form.outgoing_date"
                             label="Outgoing Date"
                             readonly
@@ -382,7 +393,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.requesting_branch"
                         :items="branchlist"
                         outlined
@@ -405,7 +416,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.category"
                         :items="suppcatlist"
                         outlined
@@ -429,7 +440,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.supply_name"
                         :items="suppnamelist"
                         outlined
@@ -534,6 +545,8 @@ export default {
     search: "",
     button: false,
     dialog: false,
+    category: "",
+    branch: "",
     table: [],
     suppcatlist: [],
     suppnamelist: [],
@@ -541,12 +554,11 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
     ],
 
     // Form Data
@@ -563,42 +575,77 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
+        class: "black--text",
       },
-      { text: "Supply Name", value: "supply_name.supply_name" },
       {
-        text: "Quantity",
+        text: "SUPPLY NAME",
+        value: "supply_full",
+        class: "black--text",
+      },
+      {
+        text: "UNIT",
+        value: "supply_name.unit",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "NET PRICE",
+        value: "supply_name.format_net_price",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "WITH VAT",
+        value: "supply_name.format_with_vat",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "QTY",
         value: "quantity",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Amount",
+        text: "AMT",
         value: "outgoing_amount",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Branch",
+        text: "BRANCH",
         value: "requesting_branch.branch_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Date",
+        text: "DATE",
         value: "outgoing_date",
-        align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Actions",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -702,31 +749,17 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/osupp/save", this.form)
+            .post("/api/osupp/save", this.form)
             .then((result) => {
               //if the value is true then save to database
-              switch (result.data) {
-                case 0:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "check",
-                    iconColor: "success",
-                    message: "Successfully saved.",
-                  };
-                  this.get();
-                  this.cancel();
-                  break;
-                case 1:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "The supply name already exists.",
-                  };
-                  break;
-                default:
-                  break;
-              }
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully saved.",
+              };
+              this.get();
+              this.cancel();
             })
             .catch((result) => {
               // If false or error when saving
@@ -739,11 +772,15 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/osupp/get", {
+        .get("/api/osupp/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            branch: this.branch,
+            category: this.category,
+            dateFrom: this.dateFrom,
+            dateUntil: this.dateUntil,
           },
         })
         .then((result) => {
@@ -757,21 +794,24 @@ export default {
     },
 
     async suppCat() {
-      await axios.get("api/osupp/suppCat").then((supp_cat) => {
+      await axios.get("/api/osupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
     async suppName() {
+      this.form.supply_name = null;
       await axios
-        .get("api/osupp/suppName", { params: { category: this.form.category } })
+        .get("/api/osupp/suppName", {
+          params: { category: this.form.category },
+        })
         .then((supp_name) => {
           this.suppnamelist = supp_name.data;
         });
     },
 
     async branchName() {
-      await axios.get("api/osupp/branchName").then((bran_name) => {
+      await axios.get("/api/osupp/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },

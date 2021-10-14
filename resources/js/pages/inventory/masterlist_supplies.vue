@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Inventory
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -212,8 +215,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -234,6 +237,7 @@
                   <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
                     <v-card-actions class="py-0">
                       <v-select
+                        v-model="category"
                         :items="suppcatlist"
                         item-text="supply_cat_name"
                         item-value="id"
@@ -241,6 +245,7 @@
                         clearable
                         dense
                         label="Category"
+                        @change="get"
                       >
                       </v-select>
                     </v-card-actions>
@@ -269,6 +274,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supply_full`]="{ item }"
+              >{{ item.supply_name }} {{ item.description }}</template
+            >
             <template v-slot:[`item.exp_date`]="{ item }">
               {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
             >
@@ -305,14 +313,21 @@
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -336,12 +351,48 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Supply
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-select
+                        :rules="formRules"
+                        v-model="form.supplier"
+                        outlined
+                        dense
+                        :items="supplierlist"
+                        item-text="supplier_name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Supplier *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
                     <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
@@ -350,7 +401,7 @@
                       </v-text-field>
 
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.status"
                         outlined
                         dense
@@ -366,7 +417,7 @@
 
                     <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-select
-                        :rules="formRulesNumber"
+                        :rules="formRulesNumberRange"
                         v-model="form.category"
                         outlined
                         :items="suppcatlist"
@@ -393,7 +444,6 @@
                         v-model="form.supply_name"
                         outlined
                         clearable
-                        @blur="validateItem"
                         dense
                       >
                         <template slot="label">
@@ -445,11 +495,14 @@
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesNetPrice"
                         v-model="form.net_price"
                         outlined
                         clearable
                         dense
+                        type="number"
+                        min="0"
+                        @keydown="net_priceKeydown($event)"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Net Price *</div>
@@ -465,6 +518,9 @@
                           outlined
                           clearable
                           dense
+                          type="number"
+                          min="0"
+                          @keydown="temp_vatKeydown($event)"
                         >
                           <template slot="label">
                             <div style="font-size: 14px">VAT</div>
@@ -615,26 +671,35 @@ export default {
     supply_id: "",
     disable: "",
     table: [],
+    category: "",
     suppcatlist: [],
+    suppnamelist: [],
     dayslist: [],
     date: null,
     menu: false,
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    formRulesNetPrice: [
+      (v) => !!v || "This is required",
+      (v) => /[+-]?[0-9]+\.?[0-9]*/.test(v) || "Net Price must be valid",
+    ],
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
     ],
 
     // Form Data
     form: {
       id: null,
-      status: null,
+      status: [
+        { name: "Active", id: 1 },
+        { name: "Inactive", id: 0 },
+      ],
       supply_name: null,
+      supplier: null,
       category: null,
       description: null,
       unit: null,
@@ -646,49 +711,69 @@ export default {
     },
     temp_vat: 1.12, //form.vat = this.
     vat: false,
+    supplierlist: [],
 
     // For comparing data
     currentdata: {},
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUPPLIER",
+        value: "supplier.supplier_name",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
+        class: "black--text",
       },
-      { text: "Supply Name", value: "supply_name" },
+      { text: "SUPPLY NAME", value: "supply_full", class: "black--text" },
+      { text: "UNIT", value: "unit", filterable: false, class: "black--text" },
       {
-        text: "Net Price",
+        text: "NET PRICE",
         value: "format_net_price",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "With Vat",
+        text: "WITH VAT",
         value: "format_with_vat",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Without Vat",
+        text: "WITHOUT VAT",
         value: "format_without_vat",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Status",
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Actions",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -718,6 +803,7 @@ export default {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.get();
       this.suppCat();
+      this.suppliers();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
@@ -725,6 +811,27 @@ export default {
   },
 
   methods: {
+    net_priceKeydown(e) {
+      if (/[+-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    temp_vatKeydown(e) {
+      if (/[+-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    async suppName() {
+      this.form.supply_name = null;
+      await axios
+        .get("/api/msupp/suppName", {
+          params: { supplier: this.form.supplier },
+        })
+        .then((supp_name) => {
+          this.suppnamelist = supp_name.data;
+        });
+    },
+
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
@@ -762,7 +869,10 @@ export default {
         if (this.currentdata[key] != this.form[key]) {
           if (key == "category") {
             if (this.currentdata.category) {
-              if (this.currentdata.category.id == this.form.category) {
+              if (
+                parseInt(this.currentdata.category.id) !=
+                parseInt(this.form.category)
+              ) {
                 found += 1;
               }
             }
@@ -800,8 +910,9 @@ export default {
         if (this.compare()) {
           // Save or update data in the table
           await axios
-            .post("api/msupp/save", this.form)
+            .post("/api/msupp/save", this.form)
             .then((result) => {
+              console.log(result.data);
               //if the value is true then save to database
               switch (result.data) {
                 case 0:
@@ -837,11 +948,12 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
-        .get("api/msupp/get", {
+        .get("/api/msupp/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            category: this.category,
           },
         })
         .then((result) => {
@@ -853,10 +965,15 @@ export default {
           // If false or error when saving
         });
     },
+    async suppliers() {
+      await axios.get("/api/isupp/suppliers", {}).then((result) => {
+        this.supplierlist = result.data;
+      });
+    },
 
     async sum() {
       await axios
-        .get("api/msupp/sum", {
+        .get("/api/msupp/sum", {
           params: {
             id: this.supply_id,
           },
@@ -871,7 +988,7 @@ export default {
 
     async validateItem() {
       await axios
-        .get("api/msupp/validateItem", {
+        .get("/api/msupp/validateItem", {
           params: {
             name: this.form.supply_name,
           },
@@ -887,7 +1004,7 @@ export default {
     },
 
     async suppCat() {
-      await axios.get("api/msupp/suppCat").then((supp_cat) => {
+      await axios.get("/api/msupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
@@ -920,6 +1037,7 @@ export default {
 
     // Editing/updating of row
     edit(row) {
+      this.form.supplier = row.supplier.id;
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.status = row.status;

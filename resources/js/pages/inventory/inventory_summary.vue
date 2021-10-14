@@ -167,28 +167,32 @@ export default {
     table: [],
     headers: [
       {
-        text: "Supplies Category",
+        text: "SUPPLIES CATEGORY",
         value: "category",
         align: "start",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Incoming Supplies",
+        text: "INCOMING SUPPLIES",
         value: "incoming",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Outgoing Supplies",
+        text: "OUTGOING SUPPLIES",
         value: "outgoing",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Stocks On Hand",
+        text: "STOCKS ON HAND",
         value: "stocks",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
     ],
     dateFrom: null,
@@ -210,7 +214,7 @@ export default {
     async get() {
       this.progressbar = true;
       await axios
-        .get("api/invsumm/get", {
+        .get("/api/invsumm/get", {
           params: { from: this.dateFrom, to: this.dateUntil },
         })
         .then((result) => {

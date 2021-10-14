@@ -7,13 +7,16 @@ use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
 use App\Models\tbl_masterlistprod;
 use App\Models\tbl_branches;
+use App\Models\tbl_pos;
 
 class tbl_outgoingprod extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['outgoing_amount'];
+    public $appends = ['outgoing_amount','quantity_diff'];
+   
 
+  
     public function category()
     {
         return $this->hasOne(tbl_prodcat::class, 'id', 'category');
@@ -27,6 +30,12 @@ class tbl_outgoingprod extends Model
     public function product_name()
     {
         return $this->hasOne(tbl_masterlistprod::class, 'id', 'product_name');
+    }
+
+    
+    public function getQuantityDiffAttribute()
+    {
+        return  $this->quantity - tbl_pos::where(["product_name" => $this->product_name])->sum('quantity');
     }
 
     

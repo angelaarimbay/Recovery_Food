@@ -14,8 +14,11 @@ class tbl_purchaseord extends Model
     public function supplier_name()
     {
         return $this->hasOne(tbl_supplist::class, 'id', 'supplier_name');
+    }   
+    public function supplier_name_details()
+    {
+        return $this->hasOne(tbl_supplist::class, 'id', 'supplier_name');
     }
-
     public function getFormatAmountAttribute()
     {
         return number_format($this->amount, 2, ".", ",");

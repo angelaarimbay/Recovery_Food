@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\tbl_branches;
 use Auth;
 
 class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
@@ -40,7 +41,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
      * @var array
      */
     protected $appends = [
-        'photo_url','permissionslist'
+        'photo_url','permissionslist','branch_details'
     ];
 
     /**
@@ -108,6 +109,11 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     {
         return   Auth::user()->getDirectPermissions()->pluck('name');
     }
+    public function getBranchDetailsAttribute()
+    {
+        return    tbl_branches::where("id",$this->branch)->first();
+    }
+
 
     public static function getUserPermissions($user)
     {
