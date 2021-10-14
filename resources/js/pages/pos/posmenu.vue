@@ -260,6 +260,7 @@
                 <v-row>
                   <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                     <v-text-field
+                      :rules="formRules"
                       v-model="quantity"
                       outlined
                       dense
@@ -267,6 +268,8 @@
                       @blur="resetQ"
                       autocomplete="off"
                       type="number"
+                      min="1"
+                      @keydown="quantityKeydown($event)"
                     >
                       <template slot="label">
                         <div style="font-size: 14px">Quantity *</div>
@@ -479,6 +482,8 @@
                   autocomplete="off"
                   :disabled="!disabled"
                   type="number"
+                  min="0"
+                  @keydown="paymentKeydown($event)"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Payment</div>
@@ -501,9 +506,11 @@
                   autocomplete="off"
                   :disabled="!disabled"
                   type="number"
+                  min="0"
+                  @keydown="discountKeydown($event)"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Discount</div>
+                    <div style="font-size: 14px">Discount(%)</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -703,7 +710,7 @@ export default {
     search: "",
     button: false,
     mode: "",
-    quantity: 0,
+    quantity: 1,
     dialog: false,
     selectedrow: { product_name: "" },
     totalamount: 0,
@@ -734,7 +741,7 @@ export default {
 
     form: {
       id: null,
-      quantity: null,
+      quantity: 1,
     },
 
     // Table Headers
@@ -829,6 +836,21 @@ export default {
   }),
 
   methods: {
+    quantityKeydown(e) {
+      if (/[+-.]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    paymentKeydown(e) {
+      if (/[+-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    discountKeydown(e) {
+      if (/[+-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     getTotal() {
       this.totalamount = numeral(
         this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
@@ -851,6 +873,7 @@ export default {
         this.table2[i].change = this.change;
       }
     },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -1050,13 +1073,11 @@ export default {
             description: this.selectedrow.product_name.description,
             product: this.selectedrow.product_name.id,
             unit_price: this.selectedrow.product_name.format_unit_price,
-
             quantity: this.quantity,
             sub_total: numeral(
               this.quantity * this.selectedrow.product_name.price
             ).format("0,0.00"),
             temp_sub_total: this.quantity * this.selectedrow.product_name.price,
-
             mode: this.mode,
           });
         }
@@ -1073,7 +1094,6 @@ export default {
           this.table2.splice(this.editedIndex, 1);
         }
       }
-
       this.getTotal();
       this.getChange();
       this.cancel();
@@ -1083,12 +1103,12 @@ export default {
       this.editedIndex = this.table2.indexOf(item);
       this.appendItem(item);
 
-      // this.snackbar = {
-      //   active: true,
-      //   iconText: "check",
-      //   iconColor: "success",
-      //   message: "Successfully removed.",
-      // };
+      this.snackbar = {
+        active: true,
+        iconText: "check",
+        iconColor: "success",
+        message: "Successfully removed.",
+      };
       // this.getTotal();
       // this.getChange();
     },
@@ -1102,7 +1122,9 @@ export default {
           ).format("0,0.00");
           this.getTotal();
         } else if (this.discount == null || this.discount == 0) {
-          this.change = this.payment - this.totalamount;
+          this.change = numeral(this.payment - this.totalamount).format(
+            "0,0.00"
+          );
           this.getTotal();
         }
       }
@@ -1110,20 +1132,20 @@ export default {
 
     // Reset Form
     cancel() {
-      this.quantity = 0;
+      this.quantity = 1;
       this.dialog = false;
     },
 
     // Reset Value of Quantity text-field
     resetQ() {
       if (this.quantity == null) {
-        this.quantity = 0;
+        this.quantity = 1;
       }
     },
 
     // Clear Value of Quantity text-field
     clearQ() {
-      if (this.quantity == 0) {
+      if (this.quantity == 1) {
         this.quantity = null;
       }
     },

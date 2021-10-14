@@ -5,12 +5,15 @@
   >
     <v-container class="py-2">
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Dashboard
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Cards Settings -->
@@ -334,7 +337,6 @@
                     v-model="branch"
                     item-text="branch_name"
                     item-value="id"
-                    clearable
                     dense
                     label="Branch"
                     @change="getProductsGraph"
@@ -349,7 +351,6 @@
                     v-model="year"
                     item-text=""
                     item-value="id"
-                    clearable
                     :items="ylist"
                     dense
                     label="Year"
@@ -366,7 +367,6 @@
                     item-text=""
                     item-value="id"
                     :items="mlist"
-                    clearable
                     dense
                     label="Month"
                     @change="getProductsGraph"
@@ -569,7 +569,7 @@ export default {
         callbacks: {
           label: function (data) {
             return [
-                data.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              data.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             ];
           },
           title: function (data) {
@@ -679,7 +679,6 @@ export default {
                 backgroundColor: "#D32F2F",
                 data: result.data.data,
               },
-              
             ],
           };
           this.progressbar1 = false;
