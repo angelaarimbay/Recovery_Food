@@ -19,8 +19,6 @@ class tbl_purchaseord extends Model
     {
         return $this->hasOne(tbl_supplist::class, 'id', 'supplier_name');
     }
-
-
     public function getFormatAmountAttribute()
     {
         return number_format($this->amount, 2, ".", ",");

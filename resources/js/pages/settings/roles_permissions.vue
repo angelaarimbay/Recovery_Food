@@ -371,6 +371,12 @@
           >
             User Roles
           </v-tab>
+         <v-tab
+            :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+            style="text-transform: none" 
+          >
+           Dev
+          </v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tab">
@@ -561,6 +567,38 @@
               </v-container>
             </v-container>
           </v-tab-item>
+              <v-card-text>
+                <v-text-field
+                  class=""
+                  v-model="seederTablename"
+                  label="Table name"
+                ></v-text-field>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="#00794b"
+                    small
+                    depressed
+                    dark
+                    @click="getSeeder"
+                  >
+                    Extract
+                  </v-btn>
+                </v-card-actions>
+                <v-textarea
+                  outlined
+                  v-model="seederColumns"
+                  label="OUTPUT"
+                  row="10"
+                ></v-textarea>
+              </v-card-text>
+          <v-tab-item>
+            
+            <!-- wla pong closing tag? -->
+
+
+
+          </v-tab-item>
         </v-tabs-items>
       </v-card>
     </v-form>
@@ -579,7 +617,9 @@
 import { mapGetters } from "vuex";
 import axios from "axios";
 import Swal from "sweetalert2";
+import template from '../template.vue';
 export default {
+  components: { template },
   middleware: "auth",
   // declarations
   data: () => ({
@@ -587,7 +627,8 @@ export default {
       active: false,
       message: "",
     },
-    
+    seederColumns:'',
+    seederTablename:'', 
     tab: null,
     formRules: [(v) => !!v || "This is required"],
     progressBar: false,
@@ -596,9 +637,14 @@ export default {
     dialogRoles: false,
     tableRoles: [],
     headersRoles: [
-      { text: "Role name", align: "start", value: "name" },
-      { text: "Role description", value: "description" },
-      { text: "Actions", value: "id", sortable: false },
+      {
+        text: "ROLE NAME",
+        align: "start",
+        value: "name",
+        class: "black--text",
+      },
+      { text: "ROLE DESCRIPTION", value: "description", class: "black--text" },
+      { text: "ACTION(S)", value: "id", sortable: false, class: "black--text" },
     ],
     role: { name: "", id: "" },
 
@@ -608,12 +654,13 @@ export default {
     tablePermissions: [],
     headersPermissions: [
       {
-        text: "Permission name",
+        text: "PERMISSION NAME",
         align: "start",
         value: "name",
+        class: "black--text",
       },
-      { text: "Description", value: "description" },
-      { text: "Actions", value: "id" },
+      { text: "DESCRIPTION", value: "description", class: "black--text" },
+      { text: "ACTION(S)", value: "id", class: "black--text" },
     ],
     permission: { name: "", description: "", id: "" },
     // --------------------------------------------------user role
@@ -621,20 +668,26 @@ export default {
     tableUserrole: [],
     headersUserrole: [
       {
-        text: "User",
+        text: "USER",
         align: "start",
         value: "name",
+        class: "black--text"
       },
-      { text: "Current Role/s", value: "roles.name" },
-      { text: "Actions", value: "id" },
+      { text: "CURRENT ROLE(S)", value: "roles.name", class: "black--text" },
+      { text: "ACTION(S)", value: "id", class: "black--text" },
     ],
 
     // --------------------------------------------------set role permission
     dialogAddPermissions: false,
     selectedAddPermission: [],
     headersAddPermissions: [
-      { text: "Permission", align: "start", value: "name" },
-      { text: "Description", value: "description" },
+      {
+        text: "PERMISSION",
+        align: "start",
+        value: "name",
+        class: "black--text",
+      },
+      { text: "DESCRIPTION", value: "description", class: "black--text" },
     ],
     rolename: "",
 
@@ -645,8 +698,8 @@ export default {
     username: "",
     userid: "",
     headersAddRoles: [
-      { text: "Role", align: "start", value: "name" },
-      { text: "Description", value: "description" },
+      { text: "ROLE", align: "start", value: "name", class: "black--text" },
+      { text: "DESCRIPTION", value: "description", class: "black--text" },
     ],
   }),
 
@@ -663,6 +716,14 @@ export default {
 
   // functions
   methods: {
+  async  getSeeder(){
+      const { data } = await axios.get("/api/seeder", {
+        params: { id: this.seederTablename },
+      }); 
+      this.seederColumns = data;
+    },
+
+
     // role
     // get roles
     async getRoles() {

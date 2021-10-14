@@ -69,7 +69,7 @@
       >
       <!-- Branch Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="6" xl="2" lg="3" md="3" sm="12" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-select
               v-model="branch"
@@ -77,7 +77,6 @@
               item-text="branch_name"
               item-value="id"
               class="my-0"
-              clearable
               dense
               label="Branch"
             >
@@ -86,7 +85,7 @@
         </v-col>
 
         <!-- Category Field -->
-        <v-col cols="6" xl="2" lg="3" md="3" sm="12" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-select
               v-model="category"
@@ -94,7 +93,6 @@
               item-text="supply_cat_name"
               item-value="id"
               class="my-0"
-              clearable
               dense
               label="Category"
             >
@@ -103,7 +101,7 @@
         </v-col>
 
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-menu
               v-model="date1"
@@ -122,7 +120,6 @@
                   v-on="on"
                   class="py-0"
                   dense
-                  clearable
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -137,7 +134,7 @@
           </v-card-actions>
         </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
+        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-menu
               v-model="date2"
@@ -156,7 +153,6 @@
                   v-on="on"
                   class="py-0"
                   dense
-                  clearable
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -200,53 +196,68 @@ export default {
 
   methods: {
     async get(type) {
-      switch (type) {
-        case "pdf":
-          await axios({
-            url: "/api/reports/outgoingsupplies/get",
-            method: "GET",
-            responseType: "blob",
-            params: {
-              type: type,
-              branch: this.outgoing_branch,
-              category: this.outgoing_category,
-              from: this.outgoing_from,
-              to: this.outgoing_to,
-            },
-          }).then((response) => {
-            let blob = new Blob([response.data], { type: "application/pdf" });
-            let link = document.createElement("a");
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "Outgoing Supplies Report.pdf";
-            link.click();
-          });
-          break;
-        case "excel":
-          await axios
-            .get("/api/reports/outgoingsupplies/get", {
+      if (
+        this.branch == "" ||
+        this.category == "" ||
+        this.outgoing_from == null ||
+        this.outgoing_to == null
+      ) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Error! Please complete the fields first.",
+        };
+      } else {
+        switch (type) {
+          case "pdf":
+            await axios({
+              url: "/api/reports/outgoingsupplies/get",
               method: "GET",
-              responseType: "arraybuffer",
+              responseType: "blob",
               params: {
                 type: type,
-                branch: this.outgoing_branch,
-                category: this.outgoing_category,
+                branch: this.branch,
+                category: this.category,
                 from: this.outgoing_from,
                 to: this.outgoing_to,
               },
-            })
-            .then((response) => {
-              let blob = new Blob([response.data], {
-                type: "application/excel",
-              });
+            }).then((response) => {
+              // console.log(response.data);
+              // return;
+              let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
-              link.download = "Outgoing Supplies Report.xlsx";
+              link.download = "Outgoing Supplies Report.pdf";
               link.click();
             });
-
-          break;
-        default:
-          break;
+            break;
+          case "excel":
+            await axios
+              .get("/api/reports/outgoingsupplies/get", {
+                method: "GET",
+                responseType: "arraybuffer",
+                params: {
+                  type: type,
+                  branch: this.branch,
+                  category: this.category,
+                  from: this.outgoing_from,
+                  to: this.outgoing_to,
+                },
+              })
+              .then((response) => {
+                let blob = new Blob([response.data], {
+                  type: "application/excel",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Outgoing Supplies Report.xlsx";
+                link.click();
+              });
+            break;
+          default:
+            break;
+        }
       }
     },
 

@@ -69,7 +69,13 @@
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
-            <span>Products List</span>
+            <span
+              class="
+                text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5
+                mb-0 mb-0
+              "
+              >Products List</span
+            >
           </v-card>
 
           <v-row no-gutters class="mt-2">
@@ -123,6 +129,7 @@
 
           <!-- Products List Table -->
           <v-data-table
+            class="prod_table"
             :headers="headers1"
             :items="table1.data"
             :loading="progressbar1"
@@ -140,9 +147,14 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.product_full`]="{ item }">
+              {{ item.product_name.product_name }}
+              {{ item.product_name.description }}</template
+            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
+
             <template v-slot:[`item.id`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -151,7 +163,7 @@
                     v-on="data.on"
                     icon
                     color="red darken-2"
-                    @click="selectItem(item)"
+                    @click="selectItem(item, 'add')"
                     :small="$vuetify.breakpoint.smAndDown"
                   >
                     <v-icon>mdi-cart</v-icon>
@@ -172,6 +184,54 @@
             ></v-pagination>
           </div>
         </v-card>
+
+        <v-dialog v-model="dialog1">
+          <v-toolbar
+            dense
+            dark
+            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+          >
+            Preview Receipt
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="dialog1 = false"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
+          </v-toolbar>
+          <iframe :src="pdfview" width="500" height="500"></iframe>
+        </v-dialog>
+        <v-dialog v-model="dialog2">
+          <v-toolbar
+            dense
+            dark
+            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+          >
+            Sales History
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="dialog2 = false"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
+          </v-toolbar>
+          <v-card tile> <salesreport v-if="renderComponent" /></v-card>
+          <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
+        </v-dialog>
       </v-col>
 
       <!-- Quantity Dialog Form -->
@@ -191,22 +251,25 @@
                   <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
                       >Item Selected:
-                      <strong>{{
-                        selectedrow.product_name.product_name
-                      }}</strong></span
+                      <strong
+                        >{{ selectedrow.product_name.product_name }}
+                      </strong></span
                     >
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                     <v-text-field
+                      :rules="formRules"
                       v-model="quantity"
                       outlined
-                      clearable
                       dense
                       @focus="clearQ"
                       @blur="resetQ"
                       autocomplete="off"
+                      type="number"
+                      min="1"
+                      @keydown="quantityKeydown($event)"
                     >
                       <template slot="label">
                         <div style="font-size: 14px">Quantity *</div>
@@ -257,7 +320,10 @@
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
-            <span>Order Details</span>
+            <span
+              class="text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 mb-0"
+              >Order Details</span
+            >
           </v-card>
 
           <v-row no-gutters class="mt-2">
@@ -266,7 +332,10 @@
               <v-card-actions>
                 <span
                   style="color: #616161"
-                  :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+                  class="
+                    text-body-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                    mb-0
+                  "
                   >Sales Count: {{ salescount }}</span
                 >
               </v-card-actions>
@@ -283,7 +352,7 @@
                   v-model="mode"
                   :items="['Walk-In', 'Take-Out']"
                   hide-details
-                  class="mb-0 mb-xl-5 mb-lg-5 mb-md-5 mb-sm-2"
+                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-4 mb-sm-2"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Mode</div>
@@ -295,6 +364,7 @@
 
           <!-- Order List Table -->
           <v-data-table
+            class="ord_table"
             :headers="headers2"
             :items="table2"
             height="230"
@@ -312,6 +382,11 @@
               rounded
             ></v-progress-linear>
 
+            <template v-slot:[`item.product_name.product_name`]="{ item }">
+              {{ item.product_name.product_name }}
+              {{ item.description }}
+            </template>
+
             <template v-slot:[`item.row`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -320,7 +395,7 @@
                     v-on="data.on"
                     icon
                     color="red darken-2"
-                    @click="deleteItem(item)"
+                    @click="selectItem(item, 'remove')"
                     :small="$vuetify.breakpoint.smAndDown"
                   >
                     <v-icon>mdi-delete</v-icon>
@@ -345,14 +420,44 @@
         <v-col cols="12" xl="12" lg="12" md="12" sm="12" class="pa-0 mt-2">
           <v-card height="95" class="pa-3" style="border-radius: 10px">
             <v-card-actions class="p-0 m-0">
-              <strong style="color: #616161; font-size: 14px">Total: </strong>
+              <span
+                style="color: #616161"
+                class="
+                  text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  font-weight-bold
+                  my-auto
+                "
+                >Total:</span
+              >
               <v-spacer></v-spacer>
-              <strong style="font-size: 22px">{{ totalamount }}</strong>
+              <span
+                class="
+                  text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  font-weight-bold
+                  my-auto
+                "
+                >{{ totalamount }}</span
+              >
             </v-card-actions>
             <v-card-actions class="p-0 m-0">
-              <strong style="color: #616161">Grand Total: </strong>
+              <span
+                style="color: #616161"
+                class="
+                  text-h5 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5
+                  font-weight-bold
+                  my-auto
+                "
+                >Grand Total:
+              </span>
               <v-spacer></v-spacer>
-              <strong style="font-size: 27px">{{ discountedamount }}</strong>
+              <span
+                class="
+                  text-h5 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5
+                  font-weight-bold
+                  my-auto
+                "
+                >{{ discountedamount }}</span
+              >
             </v-card-actions>
           </v-card>
         </v-col>
@@ -362,6 +467,7 @@
             <v-row align="center" justify="center">
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  :rules="formRulesNumberRange"
                   ref="payment"
                   v-model="payment"
                   @input="getChange($event)"
@@ -375,6 +481,9 @@
                   persistent-placeholder
                   autocomplete="off"
                   :disabled="!disabled"
+                  type="number"
+                  min="0"
+                  @keydown="paymentKeydown($event)"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Payment</div>
@@ -384,6 +493,7 @@
 
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  :rules="formRulesNumberRange"
                   v-model="discount"
                   @input="getChange($event)"
                   outlined
@@ -395,9 +505,12 @@
                   @blur="resetD"
                   autocomplete="off"
                   :disabled="!disabled"
+                  type="number"
+                  min="0"
+                  @keydown="discountKeydown($event)"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Discount</div>
+                    <div style="font-size: 14px">Discount(%)</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -419,40 +532,89 @@
             </v-row>
 
             <v-row class="mt-2">
-              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      v-on="data.on"
-                      block
-                      color="light-blue darken-3"
-                      style="text-transform: none; color: white"
-                      :disabled="!disabled"
-                    >
-                      <v-icon>mdi-printer</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Print Receipt</span>
-                </v-tooltip>
+              <v-col cols="12" xl="8" lg="8" md="12" sm="12">
+                <v-row no-gutters>
+                  <v-col cols="3">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          @click="getSalesToday"
+                          color="orange darken-3"
+                          style="text-transform: none; color: white"
+                        >
+                          <v-icon large>mdi-history</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Sales History</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          @click="getReceipt"
+                          color="light-blue darken-3"
+                          style="text-transform: none; color: white"
+                          :disabled="!disabled"
+                        >
+                          <v-icon large>mdi-printer</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Print</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          color="red darken-3"
+                          style="
+                            text-transform: none;
+                            color: white;
+                            font-size: 17px;
+                          "
+                          :disabled="!disabled"
+                          @click="validate('void')"
+                        >
+                          <v-icon large>mdi-do-not-disturb</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Void Order(s)</span>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          color="amber darken-1"
+                          style="text-transform: none; color: white"
+                          :disabled="!disabled"
+                          @click="validate('new')"
+                        >
+                          <v-icon large>mdi-new-box</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>New Order</span>
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
               </v-col>
-              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      v-on="data.on"
-                      block
-                      color="red darken-3"
-                      style="text-transform: none; color: white"
-                      :disabled="!disabled"
-                      @click="validate('void')"
-                    >
-                      Void
-                    </v-btn>
-                  </template>
-                  <span>Void Order(s)</span>
-                </v-tooltip>
-              </v-col>
-              <v-col cols="4" xl="2" lg="2" md="4" sm="4">
+              <v-col
+                cols="12"
+                xl="4"
+                lg="4"
+                md="12"
+                sm="12"
+                class="pt-0 pt-xl-3 pt-lg-3 pt-md-3 pt-sm-0"
+              >
                 <v-tooltip bottom>
                   <template #activator="data">
                     <v-btn
@@ -461,24 +623,13 @@
                       color="green darken-3"
                       style="text-transform: none; color: white"
                       :disabled="!disabled"
-                      @click="validate('new')"
+                      @click="validate('save')"
                     >
-                      New
+                      <v-icon large>mdi-cart</v-icon>
                     </v-btn>
                   </template>
-                  <span>New Order</span>
+                  <span>Checkout</span>
                 </v-tooltip>
-              </v-col>
-              <v-col cols="12" xl="6" lg="6" md="12" sm="12">
-                <v-btn
-                  block
-                  color="green darken-3"
-                  style="text-transform: none; color: white"
-                  :disabled="!disabled"
-                  @click="validate('save')"
-                >
-                  Pay
-                </v-btn>
               </v-col>
             </v-row>
           </v-card>
@@ -499,13 +650,35 @@
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
+@media only screen and (min-width: 768px) {
+  .v-data-table-header th {
+    font-size: 12px !important;
+  }
+  .v-data-table td {
+    font-size: 15px !important;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  .prod_table .v-data-table-header th,
+  .ord_table .v-data-table-header th {
+    font-size: 15px !important;
+  }
+  .prod_table td,
+  .ord_table td {
+    font-size: 17px !important;
+  }
+}
 </style>
 
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
+import salesreport from "../reports/report_types/sales.vue";
 export default {
   middleware: "auth",
+  components: {
+    salesreport,
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -522,6 +695,8 @@ export default {
     },
   },
   data: () => ({
+    pdfview: "",
+    pdfview1: "",
     progressbar1: false,
     progressbar2: false,
     snackbar: {
@@ -535,7 +710,7 @@ export default {
     search: "",
     button: false,
     mode: "",
-    quantity: 0,
+    quantity: 1,
     dialog: false,
     selectedrow: { product_name: "" },
     totalamount: 0,
@@ -544,55 +719,60 @@ export default {
     discount: 0,
     change: 0,
     salescount: 0,
-        table1: [],
+    table1: [],
     table2: [],
     prodcatlist: [],
+    reference_no: "",
     prodsubcatlist: [],
-
+    dialog1: false,
+    dialog2: false,
+    type: "",
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: (v) => {
-      if (!isNaN(parseFloat(v)) && v >= 1 && v <= 100) return true;
-      return "Number has to be between 1% and 100%";
-    },
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
+    ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
 
     form: {
       id: null,
-      quantity: null,
+      quantity: 1,
     },
 
     // Table Headers
     headers1: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
-        value: "category.product_cat_name",
+        text: "#",
+        value: "count",
+        align: "start",
         filterable: false,
+        class: "black--text",
+      },
+
+      {
+        text: "PRODUCT NAME",
+        value: "product_full",
+        class: "black--text",
+        class: "black--text",
       },
       {
-        text: "Sub Category",
-        value: "sub_category.prod_sub_cat_name",
-        filterable: false,
-      },
-      {
-        text: "Product Name",
-        value: "product_name.product_name",
-        align: "right",
-      },
-      {
-        text: "Unit Price",
+        text: "UNIT PRICE",
         value: "product_name.format_unit_price",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity_diff",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
         text: "",
@@ -605,32 +785,42 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
-
+    renderComponent: true,
     // Table Headers
     headers2: [
-      { text: "#", value: "id", align: "start", filterable: false },
       {
-        text: "Product Name",
-        value: "product",
+        text: "#",
+        value: "id",
+        align: "start",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Unit Price",
+        text: "PRODUCT NAME",
+        value: "product_name.product_name",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "UNIT PRICE",
         value: "unit_price",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Sub-Total",
+        text: "SUB-TOTAL",
         value: "sub_total",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
         text: "",
@@ -646,10 +836,22 @@ export default {
   }),
 
   methods: {
+    quantityKeydown(e) {
+      if (/[+-.]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    paymentKeydown(e) {
+      if (/[+-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    discountKeydown(e) {
+      if (/[+-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     getTotal() {
-      // for (var key in this.table2.sub_total) {
-      //       arrayshit.push( this.table2[key].sub_total);
-      // }
       this.totalamount = numeral(
         this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
       ).format("0,0.00");
@@ -671,6 +873,7 @@ export default {
         this.table2[i].change = this.change;
       }
     },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -688,13 +891,36 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
           this.table1 = result.data;
           this.progressbar1 = false;
         })
         .catch((result) => {
           // If false or error when saving
         });
+    },
+
+    async getReceipt() {
+      await axios({
+        url: "/api/pos/receipt",
+        method: "GET",
+        responseType: "blob",
+        params: { reference_no: this.reference_no },
+      }).then((response) => {
+        // console.log(response.data);
+        // return;
+        let blob = new Blob([response.data], { type: "application/pdf" });
+        this.pdfview = window.URL.createObjectURL(blob);
+        this.dialog1 = true;
+      });
+    },
+
+    async getSalesToday() {
+      this.dialog2 = true;
+      this.$forceUpdate();
+      this.renderComponent = false;
+      this.$nextTick(() => {
+        this.renderComponent = true;
+      });
     },
 
     validate(type) {
@@ -738,7 +964,8 @@ export default {
         await axios
           .post("/api/pos/prodlist/save", this.table2)
           .then((result) => {
-            this.newOrder();
+            this.reference_no = result.data.reference_no;
+
             this.get();
             this.getSalesCount();
             this.snackbar = {
@@ -759,17 +986,16 @@ export default {
     },
 
     async getSalesCount() {
-      await axios
-        .get("/api/sales_report/sales_count")
-        .then((result) => { 
-            this.salescount = result.data;
-        });
+      await axios.get("/api/sales_report/sales_count").then((result) => {
+        this.salescount = result.data;
+      });
     },
 
-    selectItem(item) {
+    selectItem(item, type) {
       if (this.mode) {
         this.dialog = true;
         this.selectedrow = item;
+        this.type = type;
       } else {
         this.snackbar = {
           active: true,
@@ -781,64 +1007,93 @@ export default {
     },
 
     validateQty() {
-      var quantity = 0;
-      if (this.table2.length > 0) {
-        for (var key in this.table2) {
-          if (
-            this.table2[key].product ===
-            this.selectedrow.product_name.product_name
-          ) {
-            quantity += parseInt(this.table2[key].quantity);
+      if (this.type == "add") {
+        var quantity = 0;
+        if (this.table2.length > 0) {
+          for (let i = 0; i < this.table2.length; i++) {
+            if (
+              this.selectedrow.product_name.id == this.table2[i].product_name
+            ) {
+              quantity =
+                parseInt(this.table2[i].quantity) + parseInt(this.quantity);
+            }
+          }
+
+          if (parseInt(this.selectedrow.quantity) <= quantity) {
+            this.snackbar = {
+              active: true,
+              iconText: "alert",
+              iconColor: "error",
+              message: "Error! Please input correct quantity.",
+            };
+          } else {
+            this.appendItem();
+          }
+        } else {
+          if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
+            this.appendItem("add");
+          } else {
+            this.snackbar = {
+              active: true,
+              iconText: "alert",
+              iconColor: "error",
+              message: "Error! Please input correct quantity.",
+            };
           }
         }
-        if ( parseInt( this.selectedrow.quantity_diff) <= quantity) {
-          this.snackbar = {
-            active: true,
-            iconText: "alert",
-            iconColor: "error",
-            message: "Error! Please input correct quantity.",
-          };
-        } else {
-          this.addItem();
-        }
-      } else { 
-        if (parseInt(this.selectedrow.quantity_diff) >=  this.quantity) {
-         
-          this.addItem();
-        } else {
-           this.snackbar = {
-            active: true,
-            iconText: "alert",
-            iconColor: "error",
-            message: "Error! Please input correct quantity.",
-          };
-        }
+      } else {
+        this.deleteItem(this.selectedrow);
       }
     },
 
-    addItem() {
-      this.table2.push({
-        id: this.table2.length + 1,
-        category: this.selectedrow.category.id,
-        sub_category: this.selectedrow.sub_category.id,
-        product: this.selectedrow.product_name.product_name,
-        product_name: this.selectedrow.product_name.id,
-        unit_price: this.selectedrow.product_name.format_unit_price,
-
-        quantity: this.quantity,
-        sub_total: numeral(
-          this.quantity * this.selectedrow.product_name.price
-        ).format("0,0.00"),
-        temp_sub_total: this.quantity * this.selectedrow.product_name.price,
-
-        mode: this.mode,
-      });
-      this.snackbar = {
-        active: true,
-        iconText: "check",
-        iconColor: "success",
-        message: "Successfully added.",
-      };
+    appendItem() {
+      if (this.type == "add") {
+        //find item in recently added.
+        var check_exsiting = 0;
+        for (let i = 0; i < this.table2.length; i++) {
+          if (this.selectedrow.product_name.id == this.table2[i].product) {
+            check_exsiting++;
+          }
+        }
+        if (check_exsiting > 0) {
+          for (let i = 0; i < this.table2.length; i++) {
+            if (this.selectedrow.product_name.id == this.table2[i].product) {
+              this.table2[i].quantity =
+                parseInt(this.table2[i].quantity) + parseInt(this.quantity);
+            }
+          }
+        } else {
+          this.table2.push({
+            id: this.table2.length + 1,
+            category: this.selectedrow.category.id,
+            sub_category: this.selectedrow.sub_category.id,
+            product_name: {
+              product_name: this.selectedrow.product_name.product_name,
+            },
+            description: this.selectedrow.product_name.description,
+            product: this.selectedrow.product_name.id,
+            unit_price: this.selectedrow.product_name.format_unit_price,
+            quantity: this.quantity,
+            sub_total: numeral(
+              this.quantity * this.selectedrow.product_name.price
+            ).format("0,0.00"),
+            temp_sub_total: this.quantity * this.selectedrow.product_name.price,
+            mode: this.mode,
+          });
+        }
+        this.snackbar = {
+          active: true,
+          iconText: "check",
+          iconColor: "success",
+          message: "Successfully added.",
+        };
+      } else {
+        this.table2[this.editedIndex].quantity =
+          this.table2[this.editedIndex].quantity - this.quantity;
+        if (this.table2[this.editedIndex].quantity < 1) {
+          this.table2.splice(this.editedIndex, 1);
+        }
+      }
       this.getTotal();
       this.getChange();
       this.cancel();
@@ -846,26 +1101,30 @@ export default {
 
     deleteItem(item) {
       this.editedIndex = this.table2.indexOf(item);
-      this.table2.splice(this.editedIndex, 1);
+      this.appendItem(item);
+
       this.snackbar = {
         active: true,
         iconText: "check",
         iconColor: "success",
         message: "Successfully removed.",
       };
-      this.getTotal();
-      this.getChange();
+      // this.getTotal();
+      // this.getChange();
     },
 
     getChange() {
       if (this.payment > 0) {
         if (this.discount > 0) {
-          this.change =
+          this.change = numeral(
             this.payment -
-            (this.totalamount - (this.discount / 100) * this.totalamount);
+              (this.totalamount - (this.discount / 100) * this.totalamount)
+          ).format("0,0.00");
           this.getTotal();
         } else if (this.discount == null || this.discount == 0) {
-          this.change = this.payment - this.totalamount;
+          this.change = numeral(this.payment - this.totalamount).format(
+            "0,0.00"
+          );
           this.getTotal();
         }
       }
@@ -873,20 +1132,20 @@ export default {
 
     // Reset Form
     cancel() {
-      this.quantity = 0;
+      this.quantity = 1;
       this.dialog = false;
     },
 
     // Reset Value of Quantity text-field
     resetQ() {
       if (this.quantity == null) {
-        this.quantity = 0;
+        this.quantity = 1;
       }
     },
 
     // Clear Value of Quantity text-field
     clearQ() {
-      if (this.quantity == 0) {
+      if (this.quantity == 1) {
         this.quantity = null;
       }
     },
@@ -950,6 +1209,7 @@ export default {
 
     newOrder() {
       this.table2 = [];
+      this.reference_no = "";
       this.getTotal();
       this.mode = null;
       this.snackbar = {

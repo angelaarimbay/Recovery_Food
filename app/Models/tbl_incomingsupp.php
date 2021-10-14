@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\tbl_suppcat;
+use App\Models\tbl_supplist;
 use App\Models\tbl_masterlistsupp;
 use Illuminate\Support\Facades\DB;
 
@@ -22,7 +23,10 @@ class tbl_incomingsupp extends Model
     {
         return $this->hasOne(tbl_masterlistsupp::class, 'id', 'supply_name');
     }
-
+    public function supplier()
+    {
+        return $this->hasOne(tbl_supplist::class, 'id', 'supplier');
+    }
     public function getQuantityDifferenceAttribute()
     {
         $incoming =  DB::table("tbl_incomingsupps")->where("supply_name", $this->supply_name)->sum("quantity");
@@ -35,6 +39,7 @@ class tbl_incomingsupp extends Model
     {
         return tbl_suppcat::where("id", $this->category)->first();
     }
+    
     public function getSupplyNameDetailsAttribute()
     {
         return tbl_masterlistsupp::where("id", $this->supply_name)->first();
@@ -43,10 +48,14 @@ class tbl_incomingsupp extends Model
     // For Main Inventory
     public function getQuantityAmountAttribute()
     {
+        try {
         $incoming = DB::table("tbl_incomingsupps")->where("supply_name", $this->supply_name)->sum("amount");
-        $outgoing = DB::table("tbl_masterlistsupps")->where("id", $this->supply_name)->first()->net_price * DB::table("tbl_outgoingsupps")->where("supply_name", $this->supply_name)->sum("quantity") ;
-
+        $outgoing = DB::table("tbl_masterlistsupps")->where("id", $this->supply_name)->first()->net_price  * DB::table("tbl_outgoingsupps")->where("supply_name", $this->supply_name)->sum("quantity");
         return ceil($incoming - $outgoing);
+            } catch (\Throwable $th) {
+               return 0;
+            }
+    
     }
 
     public function getFormatAmountAttribute()

@@ -2,12 +2,15 @@
   <div style="min-width: 280px">
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Branches
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -47,12 +50,24 @@
       >
         <v-tabs-slider style="display: none"></v-tabs-slider>
         <v-tab
-          :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+          class="
+            text-body-2
+            text-xl-subtitle-1
+            text-lg-subtitle-1
+            text-md-subtitle-2
+            text-sm-body-1
+          "
           style="text-transform: none"
           >Supplies Inventory</v-tab
         >
         <v-tab
-          :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
+          class="
+            text-body-2
+            text-xl-subtitle-1
+            text-lg-subtitle-1
+            text-md-subtitle-2
+            text-sm-body-1
+          "
           style="text-transform: none"
           >Products List</v-tab
         >
@@ -125,8 +140,8 @@
                           <v-tooltip bottom>
                             <template #activator="data">
                               <v-btn
+                                large
                                 :small="$vuetify.breakpoint.smAndDown"
-                                :large="$vuetify.breakpoint.mdAndUp"
                                 color="red darken-2"
                                 icon
                                 v-on="data.on"
@@ -219,16 +234,6 @@
                 <template v-slot:[`item.count`]="{ item }">
                   {{ item.row }}</template
                 >
-                <template v-slot:[`item.id`]="{ item }">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    @click="edit(item)"
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                  >
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                </template>
               </v-data-table>
 
               <!-- Paginate -->
@@ -310,8 +315,8 @@
                           <v-tooltip bottom>
                             <template #activator="data">
                               <v-btn
+                                large
                                 :small="$vuetify.breakpoint.smAndDown"
-                                :large="$vuetify.breakpoint.mdAndUp"
                                 color="red darken-2"
                                 icon
                                 v-on="data.on"
@@ -404,16 +409,6 @@
                 <template v-slot:[`item.count`]="{ item }">
                   {{ item.row }}</template
                 >
-                <template v-slot:[`item.id`]="{ item }">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    @click="edit(item)"
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                  >
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                </template>
               </v-data-table>
 
               <!-- Paginate -->
@@ -483,64 +478,87 @@ export default {
     branchlist: [],
     // Table Headers 1
     headers1: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Branch",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "BRANCH",
         value: "requesting_branch.branch_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Category",
+        text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Supply Name",
+        text: "SUPPLY NAME",
         value: "supply_name.supply_name",
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity",
         align: "right",
+        class: "black--text",
       },
       {
-        text: "Total Amount",
+        text: "TOTAL AMT",
         value: "outgoing_amount",
         align: "right",
+        class: "black--text",
       },
     ],
 
     // Table Headers 2
     headers2: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Branch",
-        value: "requesting_branch.branch_name",
+        text: "#",
+        value: "count",
+        align: "start",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Category",
+        text: "BRANCH",
+        value: "requesting_branch.branch_name",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.product_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
         text: "Sub-Category",
         value: "sub_category.prod_sub_cat_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Product Name",
+        text: "PRODUCT NAME",
         value: "product_name.product_name",
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity",
         align: "right",
+        class: "black--text",
       },
       {
-        text: "Total Amount",
+        text: "TOTAL AMT",
         value: "outgoing_amount",
         align: "right",
+        class: "black--text",
       },
     ],
     page1: 1,
@@ -619,9 +637,11 @@ export default {
     },
 
     async branchName() {
-      await axios.get("/api/branches/inventory/branchName").then((bran_name) => {
-        this.branchlist = bran_name.data;
-      });
+      await axios
+        .get("/api/branches/inventory/branchName")
+        .then((bran_name) => {
+          this.branchlist = bran_name.data;
+        });
     },
 
     async prodCat() {

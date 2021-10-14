@@ -77,7 +77,6 @@
               item-value="id"
               v-model="category"
               class="my-0"
-              clearable
               dense
               label="Category"
             >
@@ -149,6 +148,9 @@ export default {
                 link.download = "Masterlist Supplies Report.xlsx";
                 link.click();
               });
+            break;
+          case "print":
+
             break;
           default:
             break;

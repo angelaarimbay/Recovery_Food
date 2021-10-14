@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\tbl_incomingsupp;
 use App\Models\tbl_suppcat;
+use App\Models\tbl_supplist;
 use App\Models\tbl_masterlistsupp;
 use Illuminate\Support\Facades\DB;
 
@@ -32,7 +33,7 @@ class IncomingSuppliesController extends Controller
                 "incoming_date"=>$data->incoming_date,
                 ]
             );
-        } else {
+        } else { 
             tbl_incomingsupp::create($data->all());
         }
         return 0;
@@ -42,7 +43,9 @@ class IncomingSuppliesController extends Controller
     {
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
         DB::statement(DB::raw("set @row:=0")); 
-        $table = tbl_incomingsupp::with(["category","supply_name"])->selectRaw("*, @row:=@row+1 as row ")->whereRaw($where);
+         $table = tbl_incomingsupp::
+        with(["category","supply_name",'supplier'])
+        ->selectRaw("*, @row:=@row+1 as row ")->whereRaw($where) ;
       
         if ($t->search) { // If has value
             $table_clone = clone $table;   // Get all items from incomingsupp  
@@ -66,9 +69,23 @@ class IncomingSuppliesController extends Controller
     }
 
     public function suppName(Request $t)
-    {
-        return tbl_masterlistsupp::select(["supply_name","id"])->where("category", $t->category)->where("status", 1)->get();
+    { 
+        return tbl_masterlistsupp::query()
+        ->where("supplier", $t->supplier)
+        ->where("category", $t->category)
+        ->where("status", 1)->get();
     }
+
+
+    public function suppliers()
+    { 
+        return tbl_supplist::get();
+    }
+
+
+
+
+
 
     public function getTotalCurrentMonth(Request $t){ 
         $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));

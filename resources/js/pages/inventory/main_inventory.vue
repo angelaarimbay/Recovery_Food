@@ -179,7 +179,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
-
+            <template v-slot:[`item.supply_full`]="{ item }"
+              >{{ item.supply_name.supply_name }}
+              {{ item.supply_name.description }}</template
+            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -262,19 +265,50 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
-        value: "category.supply_cat_name",
+        text: "#",
+        value: "count",
+        align: "start",
         filterable: false,
+        class: "black--text",
       },
-      { text: "Supply Name", value: "supply_name.supply_name" },
-      { text: "Stocks On Hand", value: "quantity_difference", align: "right" },
       {
-        text: "Total Amount",
-        value: "quantity_amount",
+        text: "CATEGORY",
+        value: "category",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUPPLY NAME",
+        value: "supply_name",
+        class: "black--text",
+      },
+      {
+        text: "UNIT",
+        value: "unit",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "NET PRICE",
+        value: "net_price",
         align: "right",
         filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "STOCKS ON HAND",
+        value: "quantity_diff",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "TOTAL AMT",
+        value: "amount",
+        align: "right",
+        filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -308,10 +342,11 @@ export default {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
-            category: this.category
+            category: this.category,
           },
         })
         .then((result) => {
+          console.log(result.data)
           //if the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -336,7 +371,6 @@ export default {
       this.form.min_order_qty = row.min_order_qty;
       this.form.order_frequency = row.order_frequency;
       this.form.ending_inv_qty = row.ending_inv_qty;
-
       this.dialog = true;
     },
 

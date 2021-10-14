@@ -195,14 +195,21 @@
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -226,6 +233,19 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Supply Category
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -354,10 +374,12 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: [(v) => {
-      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
-      return "This is required";
-    }],
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
+        return "This is required";
+      },
+    ],
 
     // Form Data
     form: {
@@ -371,20 +393,32 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Supply Category", value: "supply_cat_name" },
       {
-        text: "Status",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUPPLY CATEGORY",
+        value: "supply_cat_name",
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Action(s)",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,

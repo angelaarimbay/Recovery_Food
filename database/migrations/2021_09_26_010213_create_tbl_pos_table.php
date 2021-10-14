@@ -28,7 +28,6 @@ class CreateTblPosTable extends Migration
             $table->string('reference_no');
             $table->integer('branch')->references('id')->on('tbl_branches');
             $table->integer('cashier')->references('id')->on('create_users');
-
             $table->timestamps();
         });
     }

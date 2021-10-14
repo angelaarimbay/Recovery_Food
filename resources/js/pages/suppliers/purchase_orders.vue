@@ -508,32 +508,45 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Supplier Name", value: "supplier_name.supplier_name" },
       {
-        text: "Invoice Number",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUPPLIER NAME",
+        value: "supplier_name.supplier_name",
+        class: "black--text",
+      },
+      {
+        text: "INVOICE NO.",
         value: "invoice_number",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Total Amount",
+        text: "AMT",
         value: "format_amount",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Date",
+        text: "DATE",
         value: "incoming_date",
-        align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Actions",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -655,7 +668,6 @@ export default {
             search: this.search,
             dateFrom: this.dateFrom,
             dateUntil: this.dateUntil,
-            
           },
         })
         .then((result) => {

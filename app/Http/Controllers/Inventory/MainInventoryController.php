@@ -18,29 +18,61 @@ class MainInventoryController extends Controller
     }
     public function get(Request $t)
     {
-        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
-        $table = tbl_incomingsupp::with(["category","supply_name"])
-                                    ->whereRaw($where)->whereHas('supply_name', function ($q) use ($t) {
-                                        $q->where('supply_name', 'like', "'%".$t->search."%");
-                                    })
-                                    ->groupby(["category","supply_name"])
-                                    ->selectRaw("category,supply_name")
-                                    ->get();
+        $where = ($t->category? "tbl_masterlistsupps.category !=0  and tbl_masterlistsupps.category=".$t->category:"tbl_masterlistsupps.category != 0");
+        //   return  $table = tbl_incomingsupp::with(["category","supply_name"])
+        //     // ->whereRaw($where)->whereHas('supply_name', function ($q) use ($t) {
+        //     //     $q->where('supply_name', 'like', "%".$t->search."%");
+        //     // })
+        //     ->selectRaw(" sum(tbl_incomingsupps.quantity) as quantity ")
+        //     ->leftJoin('tbl_masterlistsupps', 'tbl_masterlistsupps.id', '=', 'tbl_incomingsupps.supply_name')
+        //     ->groupby(['tbl_masterlistsupps.group'  ])
+        //     ->get();
+
+        
+
+        $table =   DB::select(' SELECT  
+        (select sum(d.quantity) from tbl_incomingsupps d where d.supply_name in (
+         (select id from tbl_masterlistsupps x where x.group = b.group)
+        )) as quantity, 
+        COALESCE(
+        (select sum(d.quantity) from tbl_incomingsupps d where d.supply_name in (
+         (select id from tbl_masterlistsupps x where x.group = b.group)
+        ))- (select sum(d.quantity) from tbl_outgoingsupps d where d.supply_name in (
+         (select id from tbl_masterlistsupps x where x.group = b.group)
+        )),0)  as quantity_diff, 
+        
+        
+                                sum(a.amount) as amount,
+                                b.group, 
+                                max(b.supply_name) as supply_name,  
+                                b.net_price,
+                                b.unit,
+                                (select supply_cat_name from tbl_suppcats x where  x.id = b.category) as category 
+        
+        
+                            FROM tbl_incomingsupps a 
+                            left join 
+                            tbl_masterlistsupps b 
+                            on a.supply_name = b.id 
+                            GROUP by b.group, b.net_price, b.category, b.unit;');
+
+
         $return = [];
         $row = 1;
         foreach ($table as $key => $value) {
             $temp=[];
             $temp['row'] = $row++ ;
-            $temp['category'] =  $value->category_details;
-            $temp['supply_name'] =  $value->supply_name_details ;
-            $temp['quantity_amount'] =  number_format($value->quantity_amount, 2, ".", ",");
-            $temp['quantity_difference'] =  ($value->quantity_difference??0) ;
+            $temp['category'] =  $value->category;
+            $temp['supply_name'] =  $value->supply_name ;
+            $temp['net_price'] =  $value->net_price ;
+            $temp['quantity_diff'] =  $value->quantity_diff ;
+            $temp['unit'] =  $value->unit ;
+            $temp['amount'] =  number_format($value->amount, 2, ".", ",");
             array_push($return, $temp);
         }
 
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), 5, $t->page, []);
-      
     }
     public function suppCat()
     {

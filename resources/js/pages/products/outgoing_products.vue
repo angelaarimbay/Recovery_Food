@@ -288,6 +288,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.product_full`]="{ item }"
+              >{{ item.product_name.product_name }}
+              {{ item.product_name.description }}</template
+            >
             <template v-slot:[`item.outgoing_date`]="{ item }">
               {{ getFormatDate(item.outgoing_date, "YYYY-MM-DD") }}</template
             >
@@ -587,47 +591,63 @@ export default {
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
       {
-        text: "Category",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "CATEGORY",
         value: "category.product_cat_name",
         filterable: false,
+        class: "black--text",
       },
-      { text: "Sub-Category", value: "sub_category.prod_sub_cat_name" },
       {
-        text: "Product Name",
-        value: "product_name.product_name",
+        text: "SUB-CATEGORY",
+        value: "sub_category.prod_sub_cat_name",
+        class: "black--text",
+      },
+      {
+        text: "PRODUCT NAME",
+        value: "product_full",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Qty",
+        text: "QTY",
         value: "quantity",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Total Amount",
+        text: "TOTAL AMT",
         value: "outgoing_amount",
         align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Branch",
+        text: "BRANCH",
         value: "requesting_branch.branch_name",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Date",
+        text: "DATE",
         value: "outgoing_date",
-        align: "right",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Action(s)",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,

@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Branches
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -134,8 +137,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -201,6 +204,7 @@
                   <v-btn
                     icon
                     color="red darken-2"
+                    small
                     :x-small="$vuetify.breakpoint.smAndDown"
                     v-on="data.on"
                     @click="openViewDialog(item)"
@@ -216,6 +220,7 @@
                     icon
                     color="red darken-2"
                     @click="edit(item)"
+                    small
                     :x-small="$vuetify.breakpoint.smAndDown"
                     v-on="data.on"
                   >
@@ -262,19 +267,15 @@
               </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
-              <v-container class="px-xl-9 px-lg-9 px-md-9 px-sm-8 px-5">
+              <v-container class="pt-0 px-xl-9 px-lg-9 px-md-9 px-sm-8 px-5">
                 <v-card-title
                   class="
+                    text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
                     font-weight-bold
                     justify-center
                     py-xl-3 py-lg-3 py-md-2 py-sm-2 py-1
                     my-0
                   "
-                  :class="{
-                    'body-2': $vuetify.breakpoint.xsOnly,
-                    h6: $vuetify.breakpoint.smOnly,
-                    h5: $vuetify.breakpoint.mdAndUp,
-                  }"
                   style="color: #827717"
                 >
                   {{ form.branch_name }}
@@ -287,11 +288,16 @@
                   max-height="300px"
                 ></v-img>
                 <v-card-text
-                  class="px-0 py-1 my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1"
-                  :class="{
-                    'body-2': $vuetify.breakpoint.xsOnly,
-                    h6: $vuetify.breakpoint.smAndUp,
-                  }"
+                  class="
+                    text-body-2
+                    text-xl-subtitle-1
+                    text-lg-subtitle-1
+                    text-md-subtitle-1
+                    text-sm-subtitle-1
+                    px-0
+                    py-1
+                    my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
+                  "
                 >
                   <v-row no-gutters>
                     <v-col cols="1">
@@ -306,11 +312,16 @@
                   >
                 </v-card-text>
                 <v-card-text
-                  class="px-0 py-1 my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1"
-                  :class="{
-                    'body-2': $vuetify.breakpoint.xsOnly,
-                    h6: $vuetify.breakpoint.smAndUp,
-                  }"
+                  class="
+                    text-body-2
+                    text-xl-subtitle-1
+                    text-lg-subtitle-1
+                    text-md-subtitle-1
+                    text-sm-subtitle-1
+                    px-0
+                    py-1
+                    my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
+                  "
                 >
                   <v-row no-gutters>
                     <v-col cols="1">
@@ -325,11 +336,16 @@
                   >
                 </v-card-text>
                 <v-card-text
-                  class="px-0 py-1 my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1"
-                  :class="{
-                    'body-2': $vuetify.breakpoint.xsOnly,
-                    h6: $vuetify.breakpoint.smAndUp,
-                  }"
+                  class="
+                    text-body-2
+                    text-xl-subtitle-1
+                    text-lg-subtitle-1
+                    text-md-subtitle-1
+                    text-sm-subtitle-1
+                    px-0
+                    py-1
+                    my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
+                  "
                 >
                   <v-row no-gutters>
                     <v-col cols="1">
@@ -357,6 +373,19 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Branch
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -406,6 +435,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Branch Name *</div>
@@ -443,11 +475,12 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesNumberOnly"
                         v-model="form.phone_number"
                         outlined
                         clearable
                         dense
+                        type="text"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Contact Number *</div>
@@ -464,7 +497,7 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesEmail"
                         v-model="form.email_add"
                         outlined
                         clearable
@@ -609,6 +642,7 @@ import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
   data: () => ({
+    value: "",
     progressbar: false,
     loading: false,
     snackbar: {
@@ -627,11 +661,30 @@ export default {
     table: [],
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: [(v) => {
-      if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
-      return "This is required";
-    }],
+    formRules: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^(?:(.)(?!\1\1)(?![0-9]\1\1\1\1\1\1)){3,35}$/.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
+        return "This is required";
+      },
+    ],
+    formRulesEmail: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        "E-mail must be valid",
+    ],
+    formRulesNumberOnly: [
+      (v) => !!v || "This field is required",
+      (v) => /^\d+$/.test(v) || "This field only accepts numbers",
+      (v) => (!!v && v.length >= 8) || "Contact number must be valid",
+    ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
@@ -648,30 +701,40 @@ export default {
     },
 
     // For comparing data
-    currentdata: {id: null,
+    currentdata: {
+      id: null,
       status: null,
       branch_name: null,
       location: null,
       phone_number: null,
       email_add: null,
-      branch_image: null,},
+      branch_image: null,
+    },
 
     // Table Headers
     headers: [
-      { text: "#", value: "count", align: "start", filterable: false },
-      { text: "Branch Name", value: "branch_name" },
       {
-        text: "Status",
+        text: "#",
+        value: "count",
+        align: "start",
+        filterable: false,
+        class: "black--text",
+      },
+      { text: "BRANCH NAME", value: "branch_name", class: "black--text" },
+      {
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
+        class: "black--text",
       },
       {
-        text: "Action(s)",
+        text: "ACTION(S)",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
+        class: "black--text",
       },
     ],
     page: 1,
@@ -706,6 +769,11 @@ export default {
   },
 
   methods: {
+    valueKeydown(e) {
+      if (/[$&+,:;=?[\]@#|{}<>.^*()%!]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     itemperpage() {
       this.page = 1;
       this.get();
@@ -723,7 +791,7 @@ export default {
       // Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
-        if (this.currentdata[key] != this.form[key]) { 
+        if (this.currentdata[key] != this.form[key]) {
           found += 1;
         }
       }
@@ -816,30 +884,28 @@ export default {
       this.$refs.uploader.click();
     },
     deletefile() {
-      this.$refs.uploader.value = null; 
+      this.$refs.uploader.value = null;
       this.tempfile = null;
       this.form.branch_image = null;
- 
     },
 
     // For attachment
     async attachment(e) {
-      if( e.target.files[0]){
-      this.loading = true;
-      var dataform = new FormData(); // Can use typical jquery form data
-      dataform.append("file", e.target.files[0]);
+      if (e.target.files[0]) {
+        this.loading = true;
+        var dataform = new FormData(); // Can use typical jquery form data
+        dataform.append("file", e.target.files[0]);
 
-      await axios
-        .post("/api/branches/attachment", dataform, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((result) => {
-          this.tempfile = result.data.fakename;
-          this.form.branch_image = result.data.filename;
-          this.loading = false;
-        });
+        await axios
+          .post("/api/branches/attachment", dataform, {
+            headers: { "Content-Type": "multipart/form-data" },
+          })
+          .then((result) => {
+            this.tempfile = result.data.fakename;
+            this.form.branch_image = result.data.filename;
+            this.loading = false;
+          });
       }
-     
     },
     // For uploading
     // Editing/updating of row
