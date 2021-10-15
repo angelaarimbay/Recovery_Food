@@ -298,6 +298,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="25"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -378,7 +381,13 @@ export default {
     table: [],
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
+    formRules: [
+      (v) => (!!v && v.length >= 3) || "This is required",
+      (v) =>
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/.test(
+          v
+        ) || "This field must have a valid value",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
@@ -458,6 +467,11 @@ export default {
   },
 
   methods: {
+    valueKeydown(e) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     itemperpage() {
       this.page = 1;
       this.get();

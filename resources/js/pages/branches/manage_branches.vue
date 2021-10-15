@@ -459,6 +459,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Location *</div>
@@ -480,7 +483,10 @@
                         outlined
                         clearable
                         dense
-                        type="text"
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="15"
+                        placeholder="+639XXXXXXXXX"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Contact Number *</div>
@@ -502,6 +508,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        maxlength="64"
+                        placeholder="johndoe@gmail.com"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Email Address *</div>
@@ -521,26 +530,30 @@
                       sm="12"
                       md="12"
                     >
-                      <div style="font-size: 14px">Attachment</div>
-
+                      <div style="font-size: 14px">Image Attachment</div>
                       <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
                       <!-- Check if has image, then display the image -->
                       <div v-if="form.branch_image">
-                        Image:
-                        <a
-                          :href="'/storage/branches/' + form.branch_image"
-                          style="text-decoration: none"
-                          download
-                        >
-                          {{ tempfile }}
-                        </a>
+                        <v-row no-gutters class="align-center">
+                          <v-col cols="11">
+                            <a
+                              :href="'/storage/branches/' + form.branch_image"
+                              style="text-decoration: none"
+                              download
+                            >
+                              {{ tempfile }}
+                            </a>
+                          </v-col>
 
-                        <v-icon
-                          color="red darken-2"
-                          v-if="form.branch_image"
-                          @click="deletefile"
-                          >mdi-delete</v-icon
-                        ><br /><br />
+                          <v-col cols="1" class="text-center">
+                            <v-icon
+                              color="red darken-2"
+                              v-if="form.branch_image"
+                              @click="deletefile"
+                              >mdi-delete</v-icon
+                            >
+                          </v-col>
+                        </v-row>
                       </div>
 
                       <!-- Progressbar for uploading -->
@@ -662,9 +675,9 @@ export default {
 
     // Form Rules
     formRules: [
-      (v) => !!v || "This is required",
+      (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
-        /^(?:(.)(?!\1\1)(?![0-9]\1\1\1\1\1\1)){3,35}$/.test(
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
           v
         ) || "This field must have a valid value",
     ],
@@ -682,8 +695,10 @@ export default {
     ],
     formRulesNumberOnly: [
       (v) => !!v || "This field is required",
-      (v) => /^\d+$/.test(v) || "This field only accepts numbers",
-      (v) => (!!v && v.length >= 8) || "Contact number must be valid",
+      (v) =>
+        /\+?\(?\d{2,4}\)?[\d\s-]{3,}/.test(v) ||
+        "This field only accepts valid contact number",
+      (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
@@ -770,7 +785,7 @@ export default {
 
   methods: {
     valueKeydown(e) {
-      if (/[$&+,:;=?[\]@#|{}<>.^*()%!]/.test(e.key)) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
       }
     },

@@ -75,7 +75,7 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="dialog = true"
+              @click="openDialog"
             >
               Add Supply
             </v-btn>
@@ -445,6 +445,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
@@ -452,19 +455,16 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
+                        :rules="formRulesDesc"
                         v-model="form.description"
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="descKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Description</div>
@@ -472,37 +472,32 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-select
+                        :items="unit"
                         :rules="formRules"
                         v-model="form.unit"
                         outlined
-                        clearable
                         dense
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Unit *</div>
                         </template>
-                      </v-text-field>
+                      </v-select>
                     </v-col>
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
-                        :rules="formRulesNetPrice"
+                        :rules="formRulesPrice"
                         v-model="form.net_price"
                         outlined
                         clearable
                         dense
-                        type="number"
-                        min="0"
-                        @keydown="net_priceKeydown($event)"
+                        counter
+                        @keydown="numberKeydown($event)"
+                        @input="compute"
+                        @click:clear="compute"
+                        maxlength="15"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Net Price *</div>
@@ -513,14 +508,15 @@
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-layout align-center>
                         <v-text-field
+                          :rules="formRulesPrice"
                           :disabled="disable"
                           v-model="temp_vat"
                           outlined
                           clearable
                           dense
-                          type="number"
-                          min="0"
-                          @keydown="temp_vatKeydown($event)"
+                          counter
+                          @keydown="numberKeydown($event)"
+                          maxlength="15"
                         >
                           <template slot="label">
                             <div style="font-size: 14px">VAT</div>
@@ -528,6 +524,7 @@
                         </v-text-field>
 
                         <v-checkbox
+                          :disabled="!disabled"
                           v-model="vat"
                           hide-details
                           class="shrink pt-0 mt-0 mb-7 ml-3"
@@ -664,6 +661,24 @@ export default {
     button: false,
     dialog: false,
     sheet: false,
+    unit: [
+      "pack",
+      "bot",
+      "kg",
+      "gal",
+      "tin",
+      "jar",
+      "tab",
+      "pcs",
+      "cont",
+      "roll",
+      "box",
+      "pad",
+      "rim",
+      "book",
+      "set",
+      "unit",
+    ],
     status: [
       { name: "Active", id: 1 },
       { name: "Inactive", id: 0 },
@@ -679,10 +694,23 @@ export default {
     menu: false,
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
-    formRulesNetPrice: [
+    formRules: [
       (v) => !!v || "This is required",
-      (v) => /[+-]?[0-9]+\.?[0-9]*/.test(v) || "Net Price must be valid",
+      (v) =>
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesDesc: [
+      (v) =>
+        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesPrice: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -786,6 +814,13 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
+    disabled() {
+      if (this.form.net_price !== null) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     widthSize() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -811,13 +846,18 @@ export default {
   },
 
   methods: {
-    net_priceKeydown(e) {
-      if (/[+-]/.test(e.key)) {
+    valueKeydown(e) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
       }
     },
-    temp_vatKeydown(e) {
-      if (/[+-]/.test(e.key)) {
+    descKeydown(e) {
+      if (/[~`!@#$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    numberKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
@@ -883,6 +923,13 @@ export default {
             ) {
               found += 1;
             }
+          } else if (key == "supplier") {
+            if (
+              parseInt(this.currentdata.supplier.id) !=
+              parseInt(this.form.supplier)
+            ) {
+              found += 1;
+            }
           } else {
             found += 1;
           }
@@ -912,7 +959,6 @@ export default {
           await axios
             .post("/api/msupp/save", this.form)
             .then((result) => {
-              console.log(result.data);
               //if the value is true then save to database
               switch (result.data) {
                 case 0:
@@ -1037,8 +1083,8 @@ export default {
 
     // Editing/updating of row
     edit(row) {
-      this.form.supplier = row.supplier.id;
       this.currentdata = JSON.parse(JSON.stringify(row));
+      this.form.supplier = row.supplier.id;
       this.form.id = row.id;
       this.form.status = row.status;
       this.form.category = row.category.id;
@@ -1054,6 +1100,17 @@ export default {
 
       this.dialog = true;
       this.compute();
+    },
+
+    // Open Dialog Form
+    openDialog() {
+      if (this.form.temp_vat !== null) {
+        this.$refs.form.resetValidation();
+        this.dialog = true;
+      } else {
+        this.$refs.form.reset();
+        this.dialog = true;
+      }
     },
 
     // Reset Forms
