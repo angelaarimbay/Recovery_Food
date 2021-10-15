@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Suppliers
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -134,8 +137,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -197,14 +200,21 @@
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -228,6 +238,19 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Supplier
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -278,6 +301,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supplier Name *</div>
@@ -294,12 +320,15 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesDesc"
                         v-model="form.description"
                         label=""
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="descKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Description *</div>
@@ -316,12 +345,16 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesNumberOnly"
                         v-model="form.phone_number"
                         label=""
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="15"
+                        placeholder="+639XXXXXXXXX"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Contact Number *</div>
@@ -344,6 +377,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Contact Person *</div>
@@ -366,6 +402,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Address *</div>
@@ -444,15 +483,31 @@ export default {
     table: [],
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
+    formRules: [
+      (v) => (!!v && v.length >= 3) || "This is required",
+      (v) =>
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesDesc: [
+      (v) =>
+        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesNumberOnly: [
+      (v) => !!v || "This field is required",
+      (v) =>
+        /\+?\(?\d{2,4}\)?[\d\s-]{3,}/.test(v) ||
+        "This field only accepts valid contact number",
+      (v) => (!!v && v.length >= 7) || "Contact number must be valid",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
         return "This is required";
       },
-    ],
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
 
     // Form Data
@@ -545,6 +600,16 @@ export default {
   },
 
   methods: {
+    valueKeydown(e) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    descKeydown(e) {
+      if (/[~`!@#$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     itemperpage() {
       this.page = 1;
       this.get();

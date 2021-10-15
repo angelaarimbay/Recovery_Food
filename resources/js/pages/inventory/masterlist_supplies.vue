@@ -695,7 +695,7 @@ export default {
 
     // Form Rules
     formRules: [
-      (v) => !!v || "This is required",
+      (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
         /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
           v

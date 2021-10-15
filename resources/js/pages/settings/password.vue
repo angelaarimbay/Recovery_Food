@@ -66,7 +66,17 @@
               <v-card flat>
                 <v-row>
                   <v-col class="text-center">
-                    <h4>Change Password</h4>
+                    <span
+                      class="
+                        text-subtitle-1
+                        text-xl-h5
+                        text-lg-h5
+                        text-md-h6
+                        text-sm-h6
+                        font-weight-bold
+                      "
+                      >Change Password</span
+                    >
                   </v-col>
                 </v-row>
                 <br />
@@ -80,7 +90,10 @@
                     v-model="form.password"
                   ></v-text-field>
                   <v-text-field
-                    :rules="rules.passwordRules"
+                    :rules="[
+                      form.password === form.confirmation ||
+                        'Password must match',
+                    ]"
                     :append-icon="!value ? 'mdi-eye' : 'mdi-eye-off'"
                     @click:append="() => (value = !value)"
                     :type="!value ? 'password' : 'text'"
@@ -89,8 +102,16 @@
                   ></v-text-field>
 
                   <v-btn
-                    class="text-white mt-2"
+                    class="
+                      text-subtitle-1
+                      text-xl-h5
+                      text-lg-h5
+                      text-md-h6
+                      text-sm-h6text-white
+                      mt-2
+                    "
                     color="primary"
+                    style="text-transform: none"
                     block
                     @click="change"
                     >Save</v-btn

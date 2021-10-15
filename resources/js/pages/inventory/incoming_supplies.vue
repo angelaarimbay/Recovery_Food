@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Inventory
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -134,8 +137,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -282,14 +285,21 @@
             >
 
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -313,13 +323,25 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Incoming Supply
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
-
                     <v-col
                       class="py-0"
                       cols="12"
@@ -328,22 +350,22 @@
                       sm="12"
                       md="12"
                     >
-                      <v-autocomplete
+                      <v-select
                         :rules="formRules"
                         v-model="form.supplier"
-                        outlined 
+                        outlined
                         dense
                         :items="supplierlist"
                         item-text="supplier_name"
                         item-value="id"
                         @change="suppName"
+                        autocomplete
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supplier *</div>
                         </template>
-                      </v-autocomplete>
+                      </v-select>
                     </v-col>
-
 
                     <v-col
                       class="py-0"
@@ -442,11 +464,14 @@
 
                     <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesQuantity"
                         v-model="form.quantity"
                         outlined
                         clearable
                         dense
+                        @keydown="quantityKeydown($event)"
+                        counter
+                        maxlength="3"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Quantity *</div>
@@ -456,11 +481,14 @@
 
                     <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesPrice"
                         v-model="form.amount"
                         outlined
                         clearable
                         dense
+                        @keydown="numberKeydown($event)"
+                        counter
+                        maxlength="15"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Amount *</div>
@@ -547,6 +575,15 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+    ],
+    formRulesPrice: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
@@ -665,6 +702,16 @@ export default {
   },
 
   methods: {
+    quantityKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    numberKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     itemperpage() {
       this.page = 1;
       this.get();
@@ -700,7 +747,7 @@ export default {
                 found += 1;
               }
             }
-         } else if (key == "supplier") {
+          } else if (key == "supplier") {
             if (this.currentdata.supplier) {
               if (this.currentdata.supplier.id != this.form.supplier) {
                 found += 1;
@@ -743,7 +790,6 @@ export default {
           await axios
             .post("/api/isupp/save", this.form)
             .then((result) => {
-              console.log(result.data)
               //if the value is true then save to database
               this.snackbar = {
                 active: true,
@@ -775,8 +821,7 @@ export default {
             dateUntil: this.dateUntil,
           },
         })
-        .then((result) => { 
-          console.log(result.data)
+        .then((result) => {
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -796,29 +841,28 @@ export default {
       this.form.supply_name = null;
       await axios
         .get("/api/isupp/suppName", {
-          params: { supplier: this.form.supplier, category: this.form.category },
+          params: {
+            supplier: this.form.supplier,
+            category: this.form.category,
+          },
         })
         .then((supp_name) => {
           this.suppnamelist = supp_name.data;
         });
     },
 
-    async suppliers() {  
-      await axios
-        .get("/api/isupp/suppliers", { 
-        })
-        .then((result) => {
-          this.supplierlist = result.data;
-        });
+    async suppliers() {
+      await axios.get("/api/isupp/suppliers", {}).then((result) => {
+        this.supplierlist = result.data;
+      });
     },
-
 
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.form.category = row.category.id;
-      this.form.supplier = row.supplier.id;  
+      this.form.supplier = row.supplier.id;
       this.suppName();
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;

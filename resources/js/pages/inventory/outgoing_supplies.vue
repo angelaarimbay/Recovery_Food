@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Inventory
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -134,8 +137,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -299,14 +302,21 @@
               {{ item.row }}</template
             >
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -330,6 +340,19 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Outgoing Supply
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -463,11 +486,14 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesQuantity"
                         v-model="form.quantity"
                         outlined
                         clearable
                         dense
+                        @keydown="quantityKeydown($event)"
+                        counter
+                        maxlength="3"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Quantity *</div>
@@ -554,6 +580,10 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
@@ -670,6 +700,11 @@ export default {
   },
 
   methods: {
+    quantityKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     itemperpage() {
       this.page = 1;
       this.get();

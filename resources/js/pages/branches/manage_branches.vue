@@ -700,9 +700,6 @@ export default {
         "This field only accepts valid contact number",
       (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
-    ],
 
     // Form Data
     form: {

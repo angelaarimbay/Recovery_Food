@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Inventory
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -120,8 +123,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -346,7 +349,7 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
+          console.log(result.data);
           //if the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

@@ -27,14 +27,17 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           User Accounts
           <!-- {{ json_encode($auth_user)  }} -->
           <!-- <div  v-if="$can('Access Inventory')">yes</div> -->
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -136,8 +139,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -188,14 +191,21 @@
             </template>
 
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -247,6 +257,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="25"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">First Name *</div>
@@ -261,6 +274,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="25"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Last Name *</div>
@@ -277,14 +293,17 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesEmail"
                         v-model="form.email"
                         outlined
                         clearable
                         dense
+                        counter
+                        maxlength="64"
+                        placeholder="johndoe@gmail.com"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Email *</div>
+                          <div style="font-size: 14px">Email Address *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -298,11 +317,14 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesNumberOnly"
                         v-model="form.phone_number"
                         outlined
                         clearable
                         dense
+                        @keydown="valueKeydown($event)"
+                        maxlength="15"
+                        placeholder="+639XXXXXXXXX"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Phone Number *</div>
@@ -328,6 +350,8 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        maxlength="20"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Password *</div>
@@ -345,7 +369,10 @@
                       v-if="passwords"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="[
+                          form.password === form.confirmPass ||
+                            'Password must match',
+                        ]"
                         v-model="form.confirmPass"
                         :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                         :type="show2 ? 'text' : 'password'"
@@ -353,6 +380,8 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        maxlength="20"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Confirm Pass *</div>
@@ -487,7 +516,26 @@ export default {
     branchlist: [],
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
+    formRules: [
+      (v) => (!!v && v.length >= 3) || "This is required",
+      (v) =>
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesEmail: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        "E-mail must be valid",
+    ],
+    formRulesNumberOnly: [
+      (v) => !!v || "This field is required",
+      (v) =>
+        /\+?\(?\d{2,4}\)?[\d\s-]{3,}/.test(v) ||
+        "This field only accepts valid phone number",
+      (v) => (!!v && v.length >= 7) || "Phone number must be valid",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
@@ -565,6 +613,12 @@ export default {
   },
 
   methods: {
+    valueKeydown(e) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+
     addnew() {
       this.passwords = true;
       this.dialog = true;

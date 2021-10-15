@@ -1,13 +1,41 @@
 <template>
   <div style="min-width: 280px">
     <v-container>
+      <!-- Snackbar -->
+      <v-snackbar
+        :vertical="$vuetify.breakpoint.xsOnly"
+        min-width="auto"
+        v-model="snackbar.active"
+        timeout="2500"
+      >
+        <span
+          ><v-icon :color="snackbar.iconColor">{{
+            `mdi-${snackbar.iconText}`
+          }}</v-icon></span
+        >
+        {{ snackbar.message }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
+            v-bind="attrs"
+            color="primary"
+            text
+            @click="snackbar.active = false"
+            >Close</v-btn
+          >
+        </template>
+      </v-snackbar>
+
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Inventory
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -114,12 +142,12 @@
                 <v-tooltip bottom>
                   <template #activator="data">
                     <v-btn
+                      large
+                      :small="$vuetify.breakpoint.smAndDown"
                       color="red darken-2"
                       icon
                       v-on="data.on"
                       @click="get"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      :large="$vuetify.breakpoint.mdAndUp"
                       ><v-icon>mdi-magnify</v-icon></v-btn
                     >
                   </template>
@@ -164,6 +192,10 @@ export default {
   },
   data: () => ({
     progressbar: false,
+    snackbar: {
+      active: false,
+      message: "",
+    },
     table: [],
     headers: [
       {
@@ -212,15 +244,24 @@ export default {
 
   methods: {
     async get() {
-      this.progressbar = true;
-      await axios
-        .get("/api/invsumm/get", {
-          params: { from: this.dateFrom, to: this.dateUntil },
-        })
-        .then((result) => {
-          this.table = result.data;
-          this.progressbar = false;
-        });
+      if (this.dateFrom == null && this.dateUntil == null) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Error! Please select a date first.",
+        };
+      } else {
+        this.progressbar = true;
+        await axios
+          .get("/api/invsumm/get", {
+            params: { from: this.dateFrom, to: this.dateUntil },
+          })
+          .then((result) => {
+            this.table = result.data;
+            this.progressbar = false;
+          });
+      }
     },
   },
 };

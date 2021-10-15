@@ -260,16 +260,16 @@
                 <v-row>
                   <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                     <v-text-field
-                      :rules="formRules"
+                      :rules="formRulesQuantity"
                       v-model="quantity"
                       outlined
                       dense
+                      autocomplete="off"
                       @focus="clearQ"
                       @blur="resetQ"
-                      autocomplete="off"
-                      type="number"
-                      min="1"
                       @keydown="quantityKeydown($event)"
+                      counter
+                      maxlength="3"
                     >
                       <template slot="label">
                         <div style="font-size: 14px">Quantity *</div>
@@ -467,7 +467,7 @@
             <v-row align="center" justify="center">
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
-                  :rules="formRulesNumberRange"
+                  :rules="formRulesPrice"
                   ref="payment"
                   v-model="payment"
                   @input="getChange($event)"
@@ -481,8 +481,6 @@
                   persistent-placeholder
                   autocomplete="off"
                   :disabled="!disabled"
-                  type="number"
-                  min="0"
                   @keydown="paymentKeydown($event)"
                 >
                   <template slot="label">
@@ -493,7 +491,7 @@
 
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
-                  :rules="formRulesNumberRange"
+                  :rules="formRulesPrice"
                   v-model="discount"
                   @input="getChange($event)"
                   outlined
@@ -505,8 +503,6 @@
                   @blur="resetD"
                   autocomplete="off"
                   :disabled="!disabled"
-                  type="number"
-                  min="0"
                   @keydown="discountKeydown($event)"
                 >
                   <template slot="label">
@@ -729,16 +725,15 @@ export default {
     type: "",
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: [
-      (v) => {
-        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
-        return "This is required";
-      },
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
     ],
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    formRulesPrice: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
     ],
-
     form: {
       id: null,
       quantity: 1,
@@ -837,17 +832,17 @@ export default {
 
   methods: {
     quantityKeydown(e) {
-      if (/[+-.]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
     paymentKeydown(e) {
-      if (/[+-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
     discountKeydown(e) {
-      if (/[+-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
