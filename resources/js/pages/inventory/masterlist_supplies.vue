@@ -379,7 +379,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumberRange"
                         v-model="form.supplier"
                         outlined
                         dense
@@ -924,12 +924,15 @@ export default {
               found += 1;
             }
           } else if (key == "supplier") {
-            if (
-              parseInt(this.currentdata.supplier.id) !=
-              parseInt(this.form.supplier)
-            ) {
-              found += 1;
+            if (this.currentdata.supplier) {
+              if (
+                parseInt(this.currentdata.supplier.id) !=
+                parseInt(this.form.supplier)
+              ) {
+                found += 1;
+              } 
             }
+           
           } else {
             found += 1;
           }
