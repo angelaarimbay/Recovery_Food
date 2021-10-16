@@ -322,7 +322,7 @@
                         outlined
                         clearable
                         dense
-                        @keydown="valueKeydown($event)"
+                        @keydown="contactKeydown($event)"
                         maxlength="15"
                         placeholder="+639XXXXXXXXX"
                       >
@@ -532,9 +532,9 @@ export default {
     formRulesNumberOnly: [
       (v) => !!v || "This field is required",
       (v) =>
-        /\+?\(?\d{2,4}\)?[\d\s-]{3,}/.test(v) ||
-        "This field only accepts valid phone number",
-      (v) => (!!v && v.length >= 7) || "Phone number must be valid",
+        /^(?:([+])(?!\1{1}))*([0-9]{7,12})+$/.test(v) ||
+        "This field only accepts valid contact number",
+      (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -615,6 +615,11 @@ export default {
   methods: {
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    contactKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },

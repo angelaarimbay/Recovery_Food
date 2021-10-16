@@ -52,6 +52,9 @@ export default {
       titleTemplate: `%s · ${appName}`,
     };
   },
+  created(){
+     this.$store.commit("check_layout/container", 'container' );
+  },
 
   mounted() {
     this.$loading = this.$refs.loading;

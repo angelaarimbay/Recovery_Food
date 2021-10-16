@@ -352,7 +352,7 @@
                         clearable
                         dense
                         counter
-                        @keydown="valueKeydown($event)"
+                        @keydown="contactKeydown($event)"
                         maxlength="15"
                         placeholder="+639XXXXXXXXX"
                       >
@@ -503,11 +503,12 @@ export default {
         "This field only accepts valid contact number",
       (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
-    formRulesNumberRange: [
-      (v) => {
-        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
-        return "This is required";
-      },
+    formRulesNumberOnly: [
+      (v) => !!v || "This field is required",
+      (v) =>
+        /^(?:([+])(?!\1{1}))*([0-9]{7,12})+$/.test(v) ||
+        "This field only accepts valid contact number",
+      (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
 
     // Form Data
@@ -607,6 +608,11 @@ export default {
     },
     descKeydown(e) {
       if (/[~`!@#$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    contactKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },

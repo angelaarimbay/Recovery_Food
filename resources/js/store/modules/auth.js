@@ -67,8 +67,8 @@ export const actions = {
   async fetchUser({ commit }) {
     try {
       await axios.get('/api/user').then(result=>{ 
-        if(result.data){ 
-           commit(types.FETCH_USER_SUCCESS, { user: result.data }) 
+        if(result.data){  
+           commit(types.FETCH_USER_SUCCESS, { user: result.data })  
         }else{
           this.$store.dispatch('auth/logout').catch((errr) => {});
         }

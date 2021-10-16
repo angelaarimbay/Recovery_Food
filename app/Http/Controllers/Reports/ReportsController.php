@@ -12,6 +12,7 @@ use App\Models\tbl_purchaseord;
 use App\Models\tbl_pos;
 use App\Models\tbl_supplist;
 use App\Models\tbl_branches;
+use App\User;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -21,7 +22,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InventoryExport;
 
 class ReportsController extends Controller
-{
+{    
+    public function __construct()
+    {
+        $this->middleware("auth");
+    }
+
     // Masterlist Supplies Report - OK
     public function MasterlistSuppliesReport(Request $t)
     {
@@ -413,12 +419,32 @@ class ReportsController extends Controller
     {
         if ($t->reference_no) {
             $data = tbl_pos::where("reference_no", $t->reference_no)->get();
-            $content['data'] = $data;
+               
+            $temp = [];
+            $temp['data'] = $data;
+            $temp['branch'] = $data[0]->branch_name_details->branch_name  ;
+            $temp['branch_location'] = $data[0]->branch_name_details->location;
+            $temp['branch_number'] = $data[0]->branch_name_details->phone_number;
+            $temp['reference_no'] = $data[0]->reference_no;
+            $temp['mode'] = $data[0]->mode;
+            $temp['change'] = $data[0]->change;
+            $temp['discount'] = $data[0]->discount;
+            $temp['payment'] = $data[0]->payment;
+
+
+            $data_cloned = clone $data;
+            $temp['sub_total'] = $data_cloned->sum('sub_total');
+            $data_cloned = clone $data;
+            $temp['sub_total_discounted'] =$data_cloned->sum('sub_total_discounted');
+            $temp['cashier_name_details'] = User::where("id", $data[0]->cashier)->first()->name;
+            
+             
+            $data_cloned = clone $data;
             $pdf = PDF::loadView(
                 'receipt.receipt',
-                $content,
+                $temp,
                 [],
-                ['format' => ['57','76'],
+                ['format' => ['57',76 + (6 * $data_cloned->count())],
                 'margin_left' => 3,
                 'margin_right' => 3,
                 'margin_top' => 5,

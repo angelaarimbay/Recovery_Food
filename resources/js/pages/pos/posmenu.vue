@@ -261,7 +261,7 @@
                   <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                     <v-text-field
                       :rules="formRulesQuantity"
-                      v-model="quantity"
+                      v-model="quantity1"
                       outlined
                       dense
                       autocomplete="off"
@@ -352,7 +352,7 @@
                   v-model="mode"
                   :items="['Walk-In', 'Take-Out']"
                   hide-details
-                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-4 mb-sm-2"
+                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-0 mb-sm-2"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Mode</div>
@@ -491,7 +491,7 @@
 
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
-                  :rules="formRulesPrice"
+                  :rules="formRulesDiscount"
                   v-model="discount"
                   @input="getChange($event)"
                   outlined
@@ -555,7 +555,7 @@
                           @click="getReceipt"
                           color="light-blue darken-3"
                           style="text-transform: none; color: white"
-                          :disabled="!disabled"
+                          :disabled="!disabled1"
                         >
                           <v-icon large>mdi-printer</v-icon>
                         </v-btn>
@@ -706,7 +706,8 @@ export default {
     search: "",
     button: false,
     mode: "",
-    quantity: 1,
+    quantity1: 1,
+    disabled1: false,
     dialog: false,
     selectedrow: { product_name: "" },
     totalamount: 0,
@@ -733,6 +734,9 @@ export default {
       (v) => !!v || "This is required",
       (v) =>
         /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
+    ],
+    formRulesDiscount: [
+      (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Discount must be valid",
     ],
     form: {
       id: null,
@@ -805,7 +809,7 @@ export default {
       },
       {
         text: "QTY",
-        value: "quantity",
+        value: "quantity1",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -821,8 +825,6 @@ export default {
         text: "",
         value: "row",
         align: "center",
-        sortable: false,
-        filterable: false,
       },
     ],
     page: 1,
@@ -859,7 +861,7 @@ export default {
 
       for (let i = 0; i < this.table2.length; i++) {
         this.table2[i].sub_total_discounted =
-          this.table2[i].quantity *
+          this.table2[i].quantity1 *
           (this.table2[i].unit_price -
             (this.discount / 100) * this.table2[i].unit_price);
 
@@ -901,7 +903,7 @@ export default {
         responseType: "blob",
         params: { reference_no: this.reference_no },
       }).then((response) => {
-        // console.log(response.data);
+        //  console.log(response.data);
         // return;
         let blob = new Blob([response.data], { type: "application/pdf" });
         this.pdfview = window.URL.createObjectURL(blob);
@@ -937,6 +939,7 @@ export default {
             message: "Do you want to void the order?",
             type: "void",
           };
+          this.disabled1 = false;
           break;
         case "new":
           this.snackbar2 = {
@@ -946,6 +949,7 @@ export default {
             message: "Do you want to make new order?",
             type: "new",
           };
+          this.disabled1 = false;
           break;
         default:
           break;
@@ -963,6 +967,7 @@ export default {
 
             this.get();
             this.getSalesCount();
+            this.disabled1 = true;
             this.snackbar = {
               active: true,
               iconText: "check",
@@ -989,6 +994,7 @@ export default {
     selectItem(item, type) {
       if (this.mode) {
         this.dialog = true;
+        console.log(item);
         this.selectedrow = item;
         this.type = type;
       } else {
@@ -1003,29 +1009,49 @@ export default {
 
     validateQty() {
       if (this.type == "add") {
-        var quantity = 0;
+        var quantity1 = 0;
         if (this.table2.length > 0) {
+          //if table have value
           for (let i = 0; i < this.table2.length; i++) {
             if (
-              this.selectedrow.product_name.id == this.table2[i].product_name
+              parseInt(this.selectedrow.product_name.id) ===
+              parseInt(this.table2[i].product)
             ) {
-              quantity =
-                parseInt(this.table2[i].quantity) + parseInt(this.quantity);
+              //add current and input
+              quantity1 =
+                parseInt(this.table2[i].quantity1) + parseInt(this.quantity1);
+              //check if greather than stocks
+              if (parseInt(this.selectedrow.quantity_diff) < quantity1) {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "error",
+                  message: "Error! Please input correct quantity.",
+                };
+              } else {
+                //added if no condition handle
+                this.appendItem("add");
+              }
+            } else {
+              //else item is not in the current
+              // check selected quantity vs input if greather than then
+              if (
+                parseInt(this.selectedrow.quantity_diff) >=
+                parseInt(this.quantity1)
+              ) {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "error",
+                  message: "Error! Please input correct quantity.",
+                };
+              } else {
+                this.addtotable2()
+              }
             }
           }
-
-          if (parseInt(this.selectedrow.quantity) <= quantity) {
-            this.snackbar = {
-              active: true,
-              iconText: "alert",
-              iconColor: "error",
-              message: "Error! Please input correct quantity.",
-            };
-          } else {
-            this.appendItem();
-          }
         } else {
-          if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
+          if (parseInt(this.selectedrow.quantity_diff) >= this.quantity1) {
             this.appendItem("add");
           } else {
             this.snackbar = {
@@ -1041,54 +1067,115 @@ export default {
       }
     },
 
-    appendItem() {
-      if (this.type == "add") {
-        //find item in recently added.
+    checktotable2(){
         var check_exsiting = 0;
-        for (let i = 0; i < this.table2.length; i++) {
+        //table
+        for (var i in this.table2) { 
           if (this.selectedrow.product_name.id == this.table2[i].product) {
-            check_exsiting++;
-          }
+            check_exsiting =i;
+          } 
         }
         if (check_exsiting > 0) {
-          for (let i = 0; i < this.table2.length; i++) {
-            if (this.selectedrow.product_name.id == this.table2[i].product) {
-              this.table2[i].quantity =
-                parseInt(this.table2[i].quantity) + parseInt(this.quantity);
-            }
-          }
-        } else {
-          this.table2.push({
-            id: this.table2.length + 1,
-            category: this.selectedrow.category.id,
-            sub_category: this.selectedrow.sub_category.id,
-            product_name: {
-              product_name: this.selectedrow.product_name.product_name,
-            },
-            description: this.selectedrow.product_name.description,
-            product: this.selectedrow.product_name.id,
-            unit_price: this.selectedrow.product_name.format_unit_price,
-            quantity: this.quantity,
-            sub_total: numeral(
-              this.quantity * this.selectedrow.product_name.price
-            ).format("0,0.00"),
-            temp_sub_total: this.quantity * this.selectedrow.product_name.price,
-            mode: this.mode,
-          });
+          return this.updatetotable2(check_exsiting);
+        }else{ 
+          return this.addtotable2()
         }
+
+    },
+
+    addtotable2(){
+       
+      this.table2.push({
+        id:                     this.table2.length + 1,
+        category:               this.selectedrow.category.id,
+        sub_category:           this.selectedrow.sub_category.id,
+        product_name:           {product_name: this.selectedrow.product_name.product_name},
+        description:            this.selectedrow.product_name.description,
+        product:                this.selectedrow.product_name.id,
+        unit_price:               this.selectedrow.product_name.format_unit_price,
+        quantity1:                 this.quantity1,
+        sub_total:               numeral( this.quantity1 * this.selectedrow.product_name.price ).format("0,0.00"),
+        temp_sub_total:         this.quantity1 * this.selectedrow.product_name.price,
+        mode:               this.mode,
+      });
+    },
+    updatetotable2(i){ 
+        if(i == -1){ 
+           this.addtotable2()
+           return;
+        }
+        if (this.selectedrow.product_name.id == this.table2[i].product) {
+          this.table2[i].quantity1 = this.table2[i].quantity1 + parseInt(this.quantity1);
+        this.table2[i].sub_total = numeral(
+          this.table2[i].quantity1 * this.selectedrow.product_name.price
+        ).format("0,0.00");
+        this.table2[i].temp_sub_total = numeral(
+          this.table2[i].quantity1 * this.selectedrow.product_name.price
+        ).format("0,0.00"); 
+        }else{ 
+            this.addtotable2()
+        }
+    },
+
+
+
+//1st create add item
+//2. add quantity of existing item
+//3. add new item namay existing na
+//4. add quantity for each. 
+
+
+
+
+
+
+
+
+    appendItem(type) {
+      if (type == "add") {
+
+        //if
+        var check_exsiting = -1;   
+        if(this.table2.length>0){
+          for (var i in this.table2) { 
+            if (this.selectedrow.product_name.id == this.table2[i].product) {
+              check_exsiting =  this.table2.indexOf(this.table2[i]);;
+            } 
+          }  
+        }  
+        this.updatetotable2(check_exsiting)
+        
+
+
+
+       } else { //delete
+          //   this.table2.push({
+          //     id: this.table2.length + 1,
+          //     category: this.selectedrow.category.id,
+          //     sub_category: this.selectedrow.sub_category.id,
+          //     product_name: {
+          //       product_name: this.selectedrow.product_name.product_name,
+          //     },
+          //     description: this.selectedrow.product_name.description,
+          //     product: this.selectedrow.product_name.id,
+          //     unit_price: this.selectedrow.product_name.format_unit_price,
+          //     quantity: this.quantity,
+          //     sub_total: numeral(
+          //       this.quantity * this.selectedrow.product_name.price
+          //     ).format("0,0.00"),
+          //     temp_sub_total:
+          //       this.quantity * this.selectedrow.product_name.price,
+          //     mode: this.mode,
+          //   });
+          } 
+
         this.snackbar = {
           active: true,
           iconText: "check",
           iconColor: "success",
           message: "Successfully added.",
         };
-      } else {
-        this.table2[this.editedIndex].quantity =
-          this.table2[this.editedIndex].quantity - this.quantity;
-        if (this.table2[this.editedIndex].quantity < 1) {
-          this.table2.splice(this.editedIndex, 1);
-        }
-      }
+      
       this.getTotal();
       this.getChange();
       this.cancel();
@@ -1127,21 +1214,21 @@ export default {
 
     // Reset Form
     cancel() {
-      this.quantity = 1;
+      this.quantity1 = 1;
       this.dialog = false;
     },
 
     // Reset Value of Quantity text-field
     resetQ() {
-      if (this.quantity == null) {
-        this.quantity = 1;
+      if (this.quantity1 == null) {
+        this.quantity1 = 1;
       }
     },
 
     // Clear Value of Quantity text-field
     clearQ() {
-      if (this.quantity == 1) {
-        this.quantity = null;
+      if (this.quantity1 == 1) {
+        this.quantity1 = null;
       }
     },
 
@@ -1218,8 +1305,10 @@ export default {
 
   created() {
     if (this.user.permissionslist.includes("Access POS")) {
+      this.$store.commit("check_layout/container", '' );
       this.get();
       this.getSalesCount();
+       
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }

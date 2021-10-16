@@ -328,7 +328,13 @@
       <!-- Graphs -->
       <v-row no-gutters>
         <v-col cols="12" class="pa-3">
-          <v-card elevation="6" style="border-radius: 10px" class="pa-3">
+          <v-card
+            color="grey darken-4"
+            dark
+            elevation="6"
+            style="border-radius: 10px"
+            class="pa-3"
+          >
             <v-row no-gutters>
               <v-col cols="12" xl="4" lg="4" md="6" class="pa-0">
                 <v-card-actions>
@@ -697,6 +703,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           this.datacollection1 = {
             labels: result.data.name,
             datasets: [

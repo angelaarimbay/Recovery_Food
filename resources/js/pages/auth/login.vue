@@ -43,7 +43,7 @@
                 <v-row>
                   <v-col cols="12" md="12" class="py-1">
                     <v-text-field
-                      :rules="rules.formRules"
+                      :rules="rules.formRulesEmail"
                       label="Email"
                       outlined
                       dense
@@ -155,10 +155,14 @@ export default {
     token: "",
     value: false,
     rules: {
-      formRules: [(v) => !!v || "This is required"],
+      formRulesEmail: [
+        (v) => !!v || "This is required",
+        (v) =>
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "E-mail must be valid",
+      ],
       passwordRules: [
         (v) => !!v || "This is required",
-        (v) => (v && v.length <= 10) || "Password must be 10 characters",
       ],
     },
     form: new Form({
@@ -190,7 +194,7 @@ export default {
                 this.snackbar.message = "Login Successful.";
                 this.$store.dispatch("auth/fetchUser");
                 this.$store.dispatch("auth/fetchUserPermissions");
-                this.$store.dispatch("auth/fetchUserRoles");
+                this.$store.dispatch("auth/fetchUserRoles");  
                 this.$router.push({ name: "dashboard" }).catch((errr) => {});
               });
           })
