@@ -379,7 +379,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumberRange"
                         v-model="form.supplier"
                         outlined
                         dense
@@ -924,12 +924,15 @@ export default {
               found += 1;
             }
           } else if (key == "supplier") {
-            if (
-              parseInt(this.currentdata.supplier.id) !=
-              parseInt(this.form.supplier)
-            ) {
-              found += 1;
+            if (this.currentdata.supplier) {
+              if (
+                parseInt(this.currentdata.supplier.id) !=
+                parseInt(this.form.supplier)
+              ) {
+                found += 1;
+              } 
             }
+           
           } else {
             found += 1;
           }
@@ -1072,7 +1075,7 @@ export default {
           this.form.without_vat = this.form.net_price;
         }
       } else {
-        this.temp_vat = 1.12;
+        this.getVat()
         this.disable = true;
         this.form.vatable = 0;
         this.form.without_vat = this.form.net_price;
@@ -1104,20 +1107,31 @@ export default {
 
     // Open Dialog Form
     openDialog() {
+    
       if (this.form.temp_vat !== null) {
         this.$refs.form.resetValidation();
+      this.getVat();
         this.dialog = true;
       } else {
         this.$refs.form.reset();
+      this.getVat();
         this.dialog = true;
       }
+    },
+    
+    async getVat() { 
+      await axios
+        .get("/api/settings/vat/get", { params: { type: 's' } })
+        .then((result) => {
+            this.temp_vat = result.data.vat
+        });
     },
 
     // Reset Forms
     cancel() {
       for (var key in this.form) {
         if (key == "vat") {
-          this.temp_vat = 1.12;
+         this.getVat()
           this.form[key] = 1.12;
         } else {
           this.form[key] = "";
