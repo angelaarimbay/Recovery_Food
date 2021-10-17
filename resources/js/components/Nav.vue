@@ -446,7 +446,7 @@
               <v-list-item
                 style="text-decoration: none"
                 class="pl-8 mb-1"
-               :to="{ name: 'company' }"
+                to="/sett2"
               >
                 <v-list-item-icon class="me-3">
                   <v-icon size="16">mdi-circle</v-icon>
