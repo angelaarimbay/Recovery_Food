@@ -122,6 +122,7 @@ use Illuminate\Support\Facades\Route;
         // Company
         Route::post('settings/company/logo/upload', 'Settings\SettingsController@uploadLogo');
         Route::post('settings/company/logo/store', 'Settings\SettingsController@storeLogo');
+        Route::post('settings/company/logo/delete', 'Settings\SettingsController@deleteLogo');
 
         Route::get('settings/company/logo/get', 'Settings\SettingsController@getLogo');
 

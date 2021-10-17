@@ -251,7 +251,8 @@ class ReportsController extends Controller
         $data = tbl_pos::where("branch", $t->branch)
             ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-            ->groupby(["branch","created_at","reference_no"])->get();
+            ->groupby(["branch","created_at","reference_no"])
+            ->get();
               
         switch ($t->type) {
             case 'pdf':
@@ -371,7 +372,7 @@ class ReportsController extends Controller
             ->where('branch', auth()->user()->branch)
             ->where('cashier', auth()->user()->id)
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-            ->groupby(["branch","created_at","reference_no"])
+            ->orderBy('created_at',"desc") ->groupby(["branch","created_at","reference_no"])
              ;
         } else {
             $table = tbl_pos::with(["branch"])
@@ -379,8 +380,7 @@ class ReportsController extends Controller
             ->groupby(["branch","created_at","reference_no"])
              ;
         }
-   
- 
+
         if ($t->branch) {
             $table->where("branch", $t->branch);
         }
@@ -391,8 +391,7 @@ class ReportsController extends Controller
         if ($t->dateFromSP && $t->dateUntilSP) {
             $table->whereBetween("created_at", [$t->dateFromSP, $t->dateUntilSP]);
         }
- 
-        
+
         $return = [];
         $row = 1;
         foreach ($table->get() as $key => $value) {
@@ -418,7 +417,7 @@ class ReportsController extends Controller
     public function Receipt(Request $t)
     {
         if ($t->reference_no) {
-            $data = tbl_pos::where("reference_no", $t->reference_no)->get();
+             $data = tbl_pos::where("reference_no", $t->reference_no)->get();
                
             $temp = [];
             $temp['data'] = $data;
@@ -444,7 +443,7 @@ class ReportsController extends Controller
                 'receipt.receipt',
                 $temp,
                 [],
-                ['format' => ['57',76 + (6 * $data_cloned->count())],
+                ['format' => ['57',76 + (7 * $data_cloned->count())],
                 'margin_left' => 3,
                 'margin_right' => 3,
                 'margin_top' => 5,

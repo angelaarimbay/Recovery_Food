@@ -17,6 +17,7 @@
 <script>
 import ft from "./Footer";
 import Loading from "./Loading";
+import axios from "axios"; // Library for sending api request
 import { mapGetters } from "vuex";
 // Load layout components dynamically.
 const requireContext = require.context("~/layouts", false, /.*\.vue$/);

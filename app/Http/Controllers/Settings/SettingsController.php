@@ -24,12 +24,16 @@ class SettingsController extends Controller
     public function storeLogo(Request $t){ 
         tbl_company::create(['logo'=>$t->attachment]); 
     }
+    public function deleteLogo(){ 
+        tbl_company::where('active','!=',0)->update(['active'=>0]); 
+    }
+    
 
     public function getLogo(){ 
-        if(  tbl_company::orderBy('id','desc')->get()->count() > 0){ 
-            $logo = url('/storage/logo/'. tbl_company::orderBy('id','desc')->first()->logo);
-            $filename =  tbl_company::orderBy('id','desc')->first()->logo;
-            $temp = explode('~',tbl_company::orderBy('id','desc')->first()->logo)[0] ;
+        if(  tbl_company::where("active",1)->orderBy('id','desc')->get()->count() > 0){ 
+            $logo = url('/storage/logo/'. tbl_company::where("active",1)->orderBy('id','desc')->first()->logo);
+            $filename =  tbl_company::where("active",1)->orderBy('id','desc')->first()->logo;
+            $temp = explode('~',tbl_company::where("active",1)->orderBy('id','desc')->first()->logo)[0] ;
         }else{
             $logo = '';
             $filename = '';

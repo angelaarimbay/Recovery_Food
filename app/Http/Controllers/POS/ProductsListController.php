@@ -55,9 +55,6 @@ class ProductsListController extends Controller
             $data['sub_category'] =tbl_prodsubcat::where("id", $value->sub_category)->first();  
             array_push($return_data, $data );
         }
-
-       
-
         $items =   Collection::make($return_data);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), 5, $t->page, []);
     }

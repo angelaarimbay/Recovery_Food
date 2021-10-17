@@ -508,10 +508,9 @@
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-layout align-center>
                         <v-text-field
-                          :rules="formRulesPrice"
-                          :disabled="disable"
+                          :rules="formRulesPrice" 
                           v-model="temp_vat"
-                          outlined
+                          outlined disabled
                           clearable
                           dense
                           counter

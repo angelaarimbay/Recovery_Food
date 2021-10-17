@@ -16,6 +16,7 @@ class CreateTblCompaniesTable extends Migration
         Schema::create('tbl_companies', function (Blueprint $table) {
             $table->id(); ; 
             $table->text('logo')->nullable(); 
+            $table->integer('active')->default(1); 
             $table->timestamps();
         });
     }

@@ -106,7 +106,7 @@
           </v-card>
         </v-col>
         <v-col cols="12" xl="6" lg="6" md="6">
-          <v-img src="/img/Logo_NO_BG.png" class="hidden-xs-only"></v-img>
+          <v-img contain :src="logo_path" class="hidden-xs-only"></v-img>
         </v-col>
       </v-row>
     </v-container>
@@ -154,6 +154,7 @@ export default {
     snackbar: { status: false, message: "" },
     token: "",
     value: false,
+    logo_path: '/img/Logo_NO_BG.png',
     rules: {
       formRulesEmail: [
         (v) => !!v || "This is required",
@@ -171,8 +172,18 @@ export default {
     }),
     remember: false,
   }),
-
+ created(){
+   this.getLogo()
+ },
   methods: {
+     async getLogo() {
+      await axios.get("/api/settings/company/logo/get").then((result) => {
+          if(result.data.path){ 
+            this.logo_path = result.data.path
+          }
+      });
+    },
+
     async login() {
       if (this.$refs.form.validate()) {
         this.overlay = true;

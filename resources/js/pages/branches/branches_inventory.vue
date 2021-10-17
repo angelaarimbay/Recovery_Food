@@ -231,6 +231,10 @@
                   indeterminate
                   rounded
                 ></v-progress-linear>
+                <template v-slot:[`item.supply_full`]="{ item }"
+                  >{{ item.supply_name.supply_name }}
+                  {{ item.supply_name.description }}</template
+                >
                 <template v-slot:[`item.count`]="{ item }">
                   {{ item.row }}</template
                 >
@@ -406,6 +410,10 @@
                   indeterminate
                   rounded
                 ></v-progress-linear>
+                <template v-slot:[`item.product_full`]="{ item }"
+                  >{{ item.product_name.product_name }}
+                  {{ item.product_name.description }}</template
+                >
                 <template v-slot:[`item.count`]="{ item }">
                   {{ item.row }}</template
                 >
@@ -498,20 +506,34 @@ export default {
         class: "black--text",
       },
       {
+        text: "SUPPLIER",
+        value: "supply_name.supplier_name_details.supplier_name",
+        filterable: false,
+        class: "black--text",
+      },
+      {
         text: "SUPPLY NAME",
-        value: "supply_name.supply_name",
+        value: "supply_full",
+        class: "black--text",
+      },
+      {
+        text: "UNIT",
+        value: "supply_name.unit",
+        filterable: false,
         class: "black--text",
       },
       {
         text: "QTY",
         value: "quantity",
         align: "right",
+        filterable: false,
         class: "black--text",
       },
       {
         text: "TOTAL AMT",
         value: "outgoing_amount",
         align: "right",
+        filterable: false,
         class: "black--text",
       },
     ],
@@ -538,14 +560,14 @@ export default {
         class: "black--text",
       },
       {
-        text: "Sub-Category",
+        text: "SUB-CATEGORY",
         value: "sub_category.prod_sub_cat_name",
         filterable: false,
         class: "black--text",
       },
       {
         text: "PRODUCT NAME",
-        value: "product_name.product_name",
+        value: "product_full",
         class: "black--text",
       },
       {
@@ -606,6 +628,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           this.table1 = result.data;
           this.progressbar = false;
         });
@@ -625,6 +648,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           this.table2 = result.data;
           this.progressbar = false;
         });

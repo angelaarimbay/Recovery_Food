@@ -71,7 +71,7 @@
         app
       >
         <v-list-item-avatar class="my-0">
-          <v-img src="/img/Logo.jpg"></v-img>
+          <v-img :src="logo_path"></v-img>
         </v-list-item-avatar>
         <v-list-item-title class="font-weight-bold hidden-sm-and-down"
           >Point of Sale System</v-list-item-title
@@ -129,7 +129,7 @@
         <template v-slot:prepend>
           <v-list-item class="px-2 red darken-4">
             <v-list-item-avatar class="my-0">
-              <v-img src="/img/Logo.jpg"></v-img>
+              <v-img :src="logo_path"></v-img>
             </v-list-item-avatar>
             <v-list-item-title class="font-weight-bold"
               >Recovery Food
@@ -488,7 +488,8 @@
 </style>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from "vuex"; 
+import axios from "axios"; // Library for sending api request
 // import template from "../pages/template.vue";
 export default {
   // components: { template },
@@ -500,14 +501,27 @@ export default {
       roles: "auth/user_roles",
     }),
   },
+  created(){
+    this.getLogo()
+  },
   data() {
     return {
+      logo_path: '/img/Logo.jpg', //default pag wlang uploaded file.
       drawer: true,
       mini: false,
     };
   },
 
   methods: {
+   async getLogo() {
+      await axios.get("/api/settings/company/logo/get").then((result) => {
+          if(result.data.path){ 
+            this.logo_path = result.data.path
+          }
+      });
+    },
+
+
     async logout() {
       // Log out the user.
       await this.$store.dispatch("auth/logout").catch((errr) => {});

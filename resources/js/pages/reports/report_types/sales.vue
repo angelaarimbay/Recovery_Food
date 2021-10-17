@@ -26,7 +26,34 @@
         </template>
       </v-snackbar>
 
-      <v-card-actions class="px-0 justify-center" v-if="!this.user.permissionslist.includes('Access POS')">
+      <v-dialog v-model="dialog1">
+        <v-toolbar
+          dense
+          dark
+          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+        >
+          Preview Receipt
+          <v-spacer></v-spacer>
+          <v-tooltip bottom>
+            <template #activator="data">
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                v-on="data.on"
+                text
+                @click="dialog1 = false"
+                >mdi-close
+              </v-icon>
+            </template>
+            <span>Close</span>
+          </v-tooltip>
+        </v-toolbar>
+        <iframe :src="pdfview" width="100%" height="500"></iframe>
+      </v-dialog>
+
+      <v-card-actions
+        class="px-0 justify-center"
+        v-if="!this.user.permissionslist.includes('Access POS')"
+      >
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -123,9 +150,12 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters v-if="!this.user.permissionslist.includes('Access POS')">
+      <v-row
+        no-gutters
+        v-if="!this.user.permissionslist.includes('Access POS')"
+      >
         <!-- Branch Field -->
-        <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto"  >
+        <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
           <v-card-actions class="py-0">
             <v-select
               :items="branchlist"
@@ -223,7 +253,7 @@
 
     <!-- Table -->
     <v-data-table
-      :headers="headers"
+      :headers="myheaders"
       :items="table.data"
       :loading="progressbar"
       :page.sync="page"
@@ -240,6 +270,7 @@
         indeterminate
         rounded
       ></v-progress-linear>
+
       <template v-slot:[`item.outgoing_date`]="{ item }">
         {{ getFormatDate(item.outgoing_date, "YYYY-MM-DD") }}</template
       >
@@ -328,6 +359,7 @@
               <template v-slot:[`item.created_at`]="{ item }">
                 {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
               >
+
               <v-progress-linear
                 v-show="progressbar"
                 slot="progress"
@@ -350,6 +382,7 @@
               Close
             </v-btn>
             <v-btn
+              @click="getReceipt(table2[0]['reference_no'])"
               color="#00794b"
               style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
@@ -364,8 +397,16 @@
     </v-dialog>
   </v-container>
 </template>
+<style>
+iframe:focus {
+  outline: none;
+}
 
-<script> 
+iframe[seamless] {
+  display: block;
+}
+</style>
+<script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
@@ -380,6 +421,8 @@ export default {
     reference_no: "",
     prodcatlist: [],
     table: [],
+    dialog1: false,
+    pdfview: "",
     table2: [],
     branchlist: [],
     sales_var: "",
@@ -396,6 +439,7 @@ export default {
       {
         text: "#",
         value: "count",
+        sortable: true,
         align: "start",
         filterable: false,
         class: "black--text",
@@ -470,14 +514,38 @@ export default {
   created() {
     this.getSalesReport();
     this.branchName();
+
+    for (var key in this.user.permissionslist) {
+      if (this.user.permissionslist[key] == "Access POS") {
+        this.headers.splice(this.headers.indexOf(this.headers[1]), 1);
+      }
+    }
   },
 
-    computed: {
-      ...mapGetters({
-        user: "auth/user",
-      }),
+  computed: {
+    ...mapGetters({
+      user: "auth/user",
+    }),
+    myheaders() {
+      return this.headers.filter((s) => this.headers.includes(s));
     },
+  },
   methods: {
+    async getReceipt(reference_no) {
+      await axios({
+        url: "/api/pos/receipt",
+        method: "GET",
+        responseType: "blob",
+        params: { reference_no: reference_no },
+      }).then((response) => {
+        let blob = new Blob([response.data], { type: "application/pdf" });
+
+        this.pdfview = window.URL.createObjectURL(blob);
+        this.viewdialog = false;
+        this.dialog1 = true;
+      });
+    },
+
     async getSalesReport() {
       this.progressbar = true;
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;

@@ -56,7 +56,7 @@
               disabled
               class="px-0"
               style="text-transform: none"
-              >Roles/Permissions</v-btn
+              >Company</v-btn
             >
           </v-card-actions>
         </v-layout>
@@ -124,7 +124,7 @@
                     text
                     small
                     dark
-                    class="danger d-none"
+                    class="danger  "
                     style="text-transform: none"
                     @click="deletefile"
                   >
@@ -223,11 +223,21 @@ export default {
   },
 
   methods: {
-    deletefile() {
+    async deletefile() {
       this.$refs.uploader.value = null;
       this.form.attachment = null;
       this.temppath = null;
-      this.tempfile = null;
+      this.tempfile = null; 
+       await axios
+        .post("/api/settings/company/logo/delete")
+        .then((result) => {
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully removed.",
+          };
+        });
     },
     clickupload() {
       this.isSelecting = true;
