@@ -23,8 +23,9 @@ class ProductsListController extends Controller
     }
 
     public function get(Request $t)
-    { 
-           $table =  tbl_outgoingprod::with(["category","sub_category","product_name"])
+    {
+  
+          $table =  tbl_outgoingprod::with(["category","sub_category","product_name"])
         ->whereHas("requesting_branch", function ($q) {
             $q->where("id", auth()->user()->branch);
         })->whereHas("product_name", function ($q1) use ($t) {
@@ -62,13 +63,10 @@ class ProductsListController extends Controller
     }
 
     public function getSalesCount()
-    { 
-     
+    {
         return tbl_pos::where(['branch'=> auth()->user()->branch])
-        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d h:i:s", strtotime(date("Y-m-d") . ' 24:59:59')) ])
-        ->distinct('reference_no')
-        ->count()
-        ;
+        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 11:59:59')) ])
+        ->count();
     }
     
     public function save(Request $t)

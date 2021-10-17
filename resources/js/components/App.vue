@@ -38,7 +38,6 @@ export default {
 
   data: () => ({
     layout: null,
-    temppath: '',
     defaultLayout: "default",
   }),
  
@@ -54,7 +53,6 @@ export default {
     };
   },
   created(){
-    this.getLogo()
      this.$store.commit("check_layout/container", 'container' );
   },
 
@@ -63,15 +61,6 @@ export default {
   },
 
   methods: {
-    
-   async getLogo(){
-       await axios
-        .get("/api/settings/company/logo/get")
-        .then((result) => { 
-          this.temppath = result.data.path;
-        });
-    },
-
     /**
      * Set the application layout.
      *
