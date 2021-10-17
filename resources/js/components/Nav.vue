@@ -37,14 +37,18 @@
               v-bind="attrs"
               v-on="on"
               style="text-transform: none"
+              large
               :small="$vuetify.breakpoint.smAndDown"
             >
               <v-icon class="round">mdi-account</v-icon
-              ><span>{{ user.name }}</span>
+              ><span>{{ user.first_name }}</span>
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item :to="{ name: 'password' }" style="text-decoration: none">
+            <v-list-item
+              :to="{ name: 'password' }"
+              style="text-decoration: none"
+            >
               <v-list-item-title style="cursor: pointer"
                 >Password</v-list-item-title
               >
@@ -72,6 +76,9 @@
         <v-list-item-title class="font-weight-bold hidden-sm-and-down"
           >Point of Sale System</v-list-item-title
         >
+        <v-list-item class="hidden-xs-only">{{
+          user.branch_details.branch_name
+        }}</v-list-item>
         <v-spacer></v-spacer>
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
@@ -81,14 +88,18 @@
               v-bind="attrs"
               v-on="on"
               style="text-transform: none"
+              large
               :small="$vuetify.breakpoint.smAndDown"
             >
-              <v-icon class="round">mdi-account</v-icon
-              ><span>{{ user.name }}</span>
+              <v-icon class="round">mdi-account</v-icon><span></span
+              ><span>{{ user.first_name }}</span>
             </v-btn>
           </template>
           <v-list dense>
-            <v-list-item :to="{ name: 'password' }" style="text-decoration: none">
+            <v-list-item
+              :to="{ name: 'password' }"
+              style="text-decoration: none"
+            >
               <v-list-item-title style="cursor: pointer"
                 >Password</v-list-item-title
               >

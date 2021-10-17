@@ -474,6 +474,18 @@
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
                         </template>
+                        <template slot="selection" slot-scope="data"
+                          >{{ data.item.supplier_name_details.supplier_name }} -
+                          {{ data.item.supply_name }}
+                          {{ data.item.description }}
+                          {{ data.item.unit }}</template
+                        >
+                        <template slot="item" slot-scope="data"
+                          >{{ data.item.supplier_name_details.supplier_name }} -
+                          {{ data.item.supply_name }}
+                          {{ data.item.description }}
+                          {{ data.item.unit }}</template
+                        >
                       </v-select>
                     </v-col>
 
@@ -841,6 +853,7 @@ export default {
           params: { category: this.form.category },
         })
         .then((supp_name) => {
+          console.log(supp_name.data);
           this.suppnamelist = supp_name.data;
         });
     },

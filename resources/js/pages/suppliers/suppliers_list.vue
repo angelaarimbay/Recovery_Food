@@ -496,12 +496,11 @@ export default {
           v
         ) || "This field must have a valid value",
     ],
-    formRulesNumberOnly: [
-      (v) => !!v || "This field is required",
-      (v) =>
-        /\+?\(?\d{2,4}\)?[\d\s-]{3,}/.test(v) ||
-        "This field only accepts valid contact number",
-      (v) => (!!v && v.length >= 7) || "Contact number must be valid",
+    formRulesNumberRange: [
+      (v) => {
+        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
+        return "This is required";
+      },
     ],
     formRulesNumberOnly: [
       (v) => !!v || "This field is required",

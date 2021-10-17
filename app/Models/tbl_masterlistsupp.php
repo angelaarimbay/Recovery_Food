@@ -11,7 +11,7 @@ class tbl_masterlistsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['with_vat','without_vat','format_net_price','format_with_vat','format_without_vat','category_name'];
+    public $appends = ['with_vat','without_vat','format_net_price','format_with_vat','format_without_vat','category_name','supplier_name_details'];
 
     
     public function category()
@@ -73,7 +73,13 @@ class tbl_masterlistsupp extends Model
         return number_format($this->without_vat, 2, ".", ",");
     }
 
-    public function getCategoryNameAttribute() {
+    public function getCategoryNameAttribute()
+    {
         return $this->hasOne(tbl_suppcat::class, "id", "category")->first()->supply_cat_name;
+    }
+
+    public function getSupplierNameDetailsAttribute()
+    {
+        return tbl_supplist::where("id", $this->supplier)->first();
     }
 }

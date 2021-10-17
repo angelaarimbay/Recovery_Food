@@ -34,9 +34,9 @@ class tbl_outgoingsupp extends Model
         return tbl_masterlistsupp::where("id", $this->supply_name)->first();
     }
 
-    public function  getRequestingBranchDetailsAttribute()
+    public function getRequestingBranchDetailsAttribute()
     {
-        return tbl_branches::where('id',$this->requesting_branch)->First();
+        return tbl_branches::where('id', $this->requesting_branch)->First();
     }
 
     public function requesting_branch()
@@ -46,6 +46,6 @@ class tbl_outgoingsupp extends Model
 
     public function getOutgoingAmountAttribute()
     {
-        return number_format(tbl_masterlistsupp::where("id",$this->supply_name)->first()->with_vat * $this->quantity, 2, ".", ",");
+        return number_format(tbl_masterlistsupp::where("id", $this->supply_name)->first()->with_vat * $this->quantity, 2, ".", ",");
     }
 }

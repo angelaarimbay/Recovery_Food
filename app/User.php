@@ -111,7 +111,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     }
     public function getBranchDetailsAttribute()
     {
-        return    tbl_branches::where("id",$this->branch)->first();
+        return    tbl_branches::where("id", $this->branch)->first();
     }
 
 

@@ -459,6 +459,16 @@
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
                         </template>
+                        <template slot="selection" slot-scope="data"
+                          >{{ data.item.supply_name }}
+                          {{ data.item.description }}
+                          {{ data.item.unit }}</template
+                        >
+                        <template slot="item" slot-scope="data"
+                          >{{ data.item.supply_name }}
+                          {{ data.item.description }}
+                          {{ data.item.unit }}</template
+                        >
                       </v-select>
                     </v-col>
 
