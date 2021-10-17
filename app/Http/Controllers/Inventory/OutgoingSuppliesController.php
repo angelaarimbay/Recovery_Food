@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\tbl_outgoingsupp;
 use App\Models\tbl_suppcat;
 use App\Models\tbl_masterlistsupp;
-use App\Models\tbl_branches;
-use Illuminate\Support\Facades\DB;
+use App\Models\tbl_branches; 
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+ 
 
 class OutgoingSuppliesController extends Controller
 {
@@ -42,27 +44,39 @@ class OutgoingSuppliesController extends Controller
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
                 ($t->branch? " and requesting_branch=".$t->branch:"");
  
-        DB::statement(DB::raw("set @row:=0"));
-        $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])
-        ->selectRaw("*, @row:=@row+1 as row ")
+        
+        $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"]) 
         ->whereRaw($where)
         ->where("supply_name", "!=", null);
- 
-        if ($t->search) { // If has value
-            $table_clone = clone $table;   // Get all items from outgoingsupp
 
-            if ($t->dateFrom && $t->dateUntil) {
-                $table_clone->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
-            }
-            return $table_clone->whereHas('supply_name', function ($q) use ($t) {
-                $q->where('supply_name', 'like', "%".$t->search."%");
-            }) ->paginate($t->itemsPerPage, "*", "page", 1);
-        }
-        // Else
         if ($t->dateFrom && $t->dateUntil) {
-            $table->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
-        }
-        return  $table->paginate($t->itemsPerPage, "*", "page", $t->page);
+            $table =  $table->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+         }
+ 
+        if ($t->search) { // If has value 
+            $table  = $table->whereHas('supply_name', function ($q) use ($t) {
+                $q->where('supply_name', 'like', "%".$t->search."%");
+            });
+        } 
+        
+        $return = [];
+        foreach ($table->get() as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id; 
+            $temp['status'] = $value->status;  
+            $temp['category'] = $value->category_details;  
+            $temp['outgoing_amount'] = $value->outgoing_amount;  
+            $temp['outgoing_date'] = $value->outgoing_date;  
+            $temp['quantity'] = $value->quantity;  
+            $temp['requesting_branch'] = $value->requesting_branch_details;  
+            $temp['supply_name'] = $value->supply_name_details;  
+           array_push($return,$temp);
+        }   
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+  
+ 
     }
 
     public function suppCat()

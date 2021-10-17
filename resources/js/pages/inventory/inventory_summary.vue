@@ -258,6 +258,7 @@ export default {
             params: { from: this.dateFrom, to: this.dateUntil },
           })
           .then((result) => {
+            console.log(result.data)
             this.table = result.data;
             this.progressbar = false;
           });

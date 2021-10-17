@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_suppcat;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MasterlistSuppliesController extends Controller
 {
@@ -81,12 +83,39 @@ class MasterlistSuppliesController extends Controller
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
                  ($t->search?" and supply_name like '%".$t->search."%'":'');
         
-        // return $where;
-        DB::statement(DB::raw("set @row:=0"));
-        return $table = tbl_masterlistsupp::with("category",'supplier')
+        // return $where; 
+         $table = tbl_masterlistsupp::with("category",'supplier')
         ->whereRaw($where)
         ->selectRaw("*, @row:=@row+1 as row ")
-        ->paginate($t->itemsPerPage, "*", "page", $t->page);
+        ->get();
+
+
+        $return = [];
+        foreach ($table as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id; 
+            $temp['status'] = $value->status;  
+            $temp['supplier'] = $value->supplier_name_details;  
+            $temp['category'] = $value->category_details;  
+            $temp['unit'] = $value->unit;  
+            $temp['vat'] = $value->vat;  
+            $temp['vatable'] = $value->vatable;  
+            $temp['supply_name'] = $value->supply_name;  
+            $temp['description'] = $value->description;  
+            $temp['format_net_price'] = $value->format_net_price;  
+            $temp['net_price'] = $value->net_price;   
+            $temp['format_with_vat'] = $value->format_with_vat;  
+            $temp['format_without_vat'] = $value->format_without_vat;  
+            array_push($return,$temp);
+        }   
+
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+  
+
+
+
     }
     public function suppCat()
     {

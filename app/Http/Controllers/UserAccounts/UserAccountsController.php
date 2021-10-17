@@ -5,9 +5,9 @@ namespace App\Http\Controllers\UserAccounts;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\tbl_branches;
-use App\User;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
+use App\User; 
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserAccountsController extends Controller
 {
@@ -48,19 +48,33 @@ class UserAccountsController extends Controller
         return 0;
     }
     public function get(Request $t)
-    {
-        DB::statement(DB::raw("set @row:=0"));
-        if ($t->search) { // If has value
-            $table = User::where("email", "!=", null);
-            $table_clone = clone $table;   // Get all items from suppcat
-           
-            $data = $table_clone->with('roles')->selectRaw("*, @row:=@row+1 as row ")->where("name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
-        } else {
-            $data =  User::with('roles')->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
-        }
+    { 
+         $table = User::where("email", "!=", null) ;
+        
+        if ($t->search) { // If has value 
+            $table = $table->with('roles')->where("name", "like", "%".$t->search."%");
+        } 
     
-      
-        return $data;
+       
+        $return = [];
+        foreach ($table->get() as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id;  
+            $temp['branch'] = $value->branch_details;  
+            $temp['email'] = $value->email;  
+            $temp['first_name'] = $value->first_name;  
+            $temp['last_name'] = $value->last_name;  
+            $temp['name'] = $value->name;  
+            $temp['permissionslist'] = $value->permissionslist;  
+            $temp['phone_number'] = $value->phone_number;  
+            $temp['photo_url'] = $value->photo_url;  
+            $temp['roles'] = $value->roles;  
+            array_push($return,$temp);
+        }   
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+  
     }
 
 

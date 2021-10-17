@@ -215,8 +215,8 @@ class ReportsController extends Controller
         foreach ($data_temp as $key => $value) {
             $temp = [];
             $temp['category'] = $value->supply_cat_name;
-            $temp['incoming'] = number_format(tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("amount"), 2, ".", ",");
-            $temp['outgoing'] = number_format(tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
+            $temp['incoming'] =  tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity") ;
+            $temp['outgoing'] = tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity") ;
             $temp['stocks'] = tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity")
                                     - tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity");
             array_push($data, $temp);

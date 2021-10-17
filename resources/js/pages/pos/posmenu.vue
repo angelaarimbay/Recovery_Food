@@ -903,8 +903,7 @@ export default {
             search: this.search,
           },
         })
-        .then((result) => {
-          console.log(result.data)
+        .then((result) => { 
           this.table1 = result.data;
           this.progressbar1 = false;
         })

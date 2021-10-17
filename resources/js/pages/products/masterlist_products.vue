@@ -595,7 +595,7 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      { text: "PRODUCT-NAME", value: "product_full", class: "black--text" },
+      { text: "PRODUCT-NAME", value: "product_name", class: "black--text" },
       {
         text: "PRICE",
         value: "format_price",

@@ -379,7 +379,7 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumberRange"
                         v-model="form.supplier"
                         outlined
                         dense
@@ -616,7 +616,7 @@
                   color="primary"
                   depressed
                   :disabled="button"
-                  dark
+                  dark 
                   @click="save"
                   style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
@@ -728,7 +728,7 @@ export default {
       supply_name: null,
       supplier: null,
       category: null,
-      description: null,
+      description: null, 
       unit: null,
       net_price: null,
       vat: 1.12,
@@ -764,7 +764,7 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      { text: "SUPPLY NAME", value: "supply_full", class: "black--text" },
+      { text: "SUPPLY NAME", value: "supply_name", class: "black--text" },
       { text: "UNIT", value: "unit", filterable: false, class: "black--text" },
       {
         text: "NET PRICE",
@@ -903,7 +903,7 @@ export default {
 
     // Format for everytime we call on database
     // Always add await and async
-    compare() {
+    compare() { 
       // Compare exsiting data vs edited data
       // If nothing change then no request
       if (!this.currentdata) {
@@ -931,18 +931,20 @@ export default {
               found += 1;
             }
           } else if (key == "supplier") {
+            if(this.currentdata.supplier){
             if (
               parseInt(this.currentdata.supplier.id) !=
               parseInt(this.form.supplier)
             ) {
               found += 1;
             }
+            }
+           
           } else {
             found += 1;
           }
         }
-      }
-      //if has changes
+      }  
       if (found > 0) {
         return true;
       } else {
@@ -958,6 +960,7 @@ export default {
 
     // Saving data to database
     async save() {
+
       if (this.$refs.form.validate()) {
         this.compute();
         // Validate first before compare

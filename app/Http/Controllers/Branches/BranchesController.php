@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Branches;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\tbl_branches;
-use Illuminate\Support\Facades\DB;
+use App\Models\tbl_branches; 
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BranchesController extends Controller
 {
@@ -46,16 +47,27 @@ class BranchesController extends Controller
         return 0;
     }
     public function get(Request $t)
-    {
-        DB::statement(DB::raw("set @row:=0"));
-        if ($t->search) { // If has value
-            $table = tbl_branches::where("status", "!=", null);
-            $table_clone = clone $table;   // Get all items from branches
-           
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("branch_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
-        }
-        // Else
-        return  tbl_branches::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+    {    
+        $table = tbl_branches::where("status", "!=", null);
+        if ($t->search) { // If has value 
+             $table =  $table->where("branch_name", "like", "%".$t->search."%");
+        } 
+        $return = [];
+        foreach ($table->get() as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id;
+            $temp['branch_image'] =  ($value->branch_image?'/storage/branches/'.$value->branch_image:'/img/Logo.jpg');
+            $temp['branch_name'] = $value->branch_name;
+            $temp['email_add'] = $value->email_add;
+            $temp['location'] = $value->location;
+            $temp['phone_number'] = $value->phone_number; 
+            $temp['status'] = $value->status;  
+            array_push($return,$temp);
+        }  
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+ 
     }
     public function attachment(Request $u)
     {

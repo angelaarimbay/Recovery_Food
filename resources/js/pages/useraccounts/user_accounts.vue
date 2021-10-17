@@ -582,7 +582,7 @@ export default {
       },
       {
         text: "BRANCH",
-        value: "branch_details.branch_name",
+        value: "branch.branch_name",
         filterable: false,
         class: "black--text",
       },
@@ -727,7 +727,7 @@ export default {
             search: this.search,
           },
         })
-        .then((result) => {
+        .then((result) => { 
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

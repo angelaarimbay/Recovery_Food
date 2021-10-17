@@ -11,7 +11,7 @@ class tbl_outgoingsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['outgoing_amount','category_details','supply_name_details','requesting_branch_details'];
+    public $appends = ['outgoing_amount','outgoing_amount_original','category_details','supply_name_details','requesting_branch_details'];
     
 
     public function category()
@@ -46,6 +46,12 @@ class tbl_outgoingsupp extends Model
 
     public function getOutgoingAmountAttribute()
     {
+        //used for outgoing list formatted amount
         return number_format(tbl_masterlistsupp::where("id", $this->supply_name)->first()->with_vat * $this->quantity, 2, ".", ",");
+    }
+    public function getOutgoingAmountOriginalAttribute()
+    {
+        //used for inventory summary page / report
+        return  tbl_masterlistsupp::where("id", $this->supply_name)->first()->with_vat * $this->quantity ;
     }
 }

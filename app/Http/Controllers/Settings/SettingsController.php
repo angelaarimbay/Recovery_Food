@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\tbl_company;
 use App\Models\tbl_vat;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SettingsController extends Controller
 {
@@ -35,9 +37,9 @@ class SettingsController extends Controller
             $filename =  tbl_company::where("active",1)->orderBy('id','desc')->first()->logo;
             $temp = explode('~',tbl_company::where("active",1)->orderBy('id','desc')->first()->logo)[0] ;
         }else{
-            $logo = '';
-            $filename = '';
-            $temp = '';
+            $logo = null;
+            $filename = null;
+            $temp = null;
         } 
         return ['path' => $logo, 'tempfile'=> $filename, 'filename' =>  $temp ] ; 
     }

@@ -22,17 +22,17 @@ class InventorySummaryController extends Controller
         // 1st Get all the category
         $data = tbl_suppcat::all();
         // Laravel default format of date and time, use other format will handle exemptions
-        $date1 = date("Y-m-d h:i:s", strtotime($request->from. ' 00:00:01')); // Get from date w/ first sec in time
-        $date2 = date("Y-m-d h:i:s", strtotime($request->to. ' 11:59:59')); // Get to date w/ last sec in time
+        $date1 = date("Y-m-d H:i:s", strtotime($request->from. ' 00:00:01')); // Get from date w/ first sec in time
+           $date2 = date("Y-m-d h:i:s", strtotime($request->to. ' 24:59:59')); // Get to date w/ last sec in time
         // Set array for temporary table
         $return = [];
         foreach ($data as $key => $value) {
             $temp = [];
             // Get incoming based on from, to and per category, then sum amounts
             $temp['category'] = $value->supply_cat_name;
-            $temp['incoming'] =  number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount"), 2, ".", ",");
+            $temp['incoming'] =   tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity");
             // Get outgoing based on from, to and per category, then sum outgoing_amount based on masterlist net
-            $temp['outgoing'] =  number_format(tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("outgoing_amount"), 2, ".", ",");
+            $temp['outgoing'] =   tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity") ;
             $temp['stocks'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity")
                                   - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity");
             array_push($return, $temp);

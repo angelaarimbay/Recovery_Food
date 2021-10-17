@@ -205,7 +205,7 @@ export default {
   data: () => ({
     tempfile: "",
     tab: null,
-    temppath: "",
+    temppath: "/img/Logo.jpg",
     isSelecting: false,
     progressBar: false,
     snackbar: {
@@ -226,7 +226,7 @@ export default {
     async deletefile() {
       this.$refs.uploader.value = null;
       this.form.attachment = null;
-      this.temppath = null;
+      this.temppath = '/img/Logo.jpg';
       this.tempfile = null; 
        await axios
         .post("/api/settings/company/logo/delete")
@@ -262,7 +262,7 @@ export default {
           this.progressBar = false;
           this.form.attachment = result.data.tempfile;
           this.tempfile = result.data.filename;
-          this.temppath = result.data.path;
+          this.temppath = (result.data.path??'/img/Logo.jpg');
         });
     },
     async savefile(e) {
@@ -281,8 +281,8 @@ export default {
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
         this.form.attachment = result.data.tempfile;
-        this.tempfile = result.data.filename;
-        this.temppath = result.data.path;
+        this.tempfile = result.data.filename; 
+        this.temppath = (result.data.path??'/img/Logo.jpg');
       });
     },
 
@@ -307,8 +307,7 @@ export default {
          
       await axios
         .get("/api/settings/vat/get", { params: { type: type } })
-        .then((result) => {
-            console.log(result.data)
+        .then((result) => { 
           switch (result.data.type) {
             case "s":
               this.form1 = result.data;

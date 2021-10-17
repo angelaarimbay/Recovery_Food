@@ -282,8 +282,9 @@
                 </v-card-title>
                 <v-img
                   style="border-radius: 10px"
-                  :src="'/storage/branches/' + form.branch_image"
+                  :src="form.branch_image"
                   class="mx-auto mb-4"
+                  contain
                   max-width="480px"
                   max-height="300px"
                 ></v-img>
@@ -879,6 +880,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

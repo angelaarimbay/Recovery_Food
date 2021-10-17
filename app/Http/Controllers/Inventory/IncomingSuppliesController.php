@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\tbl_incomingsupp;
 use App\Models\tbl_suppcat;
 use App\Models\tbl_supplist;
-use App\Models\tbl_masterlistsupp;
-use Illuminate\Support\Facades\DB;
+use App\Models\tbl_masterlistsupp; 
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class IncomingSuppliesController extends Controller
 {
@@ -42,25 +43,42 @@ class IncomingSuppliesController extends Controller
     public function get(Request $t)
     {
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
-        DB::statement(DB::raw("set @row:=0")); 
-         $table = tbl_incomingsupp::
-        with(["category","supply_name",'supplier'])
-        ->selectRaw("*, @row:=@row+1 as row ")->whereRaw($where) ;
       
-        if ($t->search) { // If has value
-            $table_clone = clone $table;   // Get all items from incomingsupp  
-            if($t->dateFrom && $t->dateUntil){
-                $table_clone->whereBetween("incoming_date",[date("Y-m-d",strtotime($t->dateFrom)), date("Y-m-d",strtotime($t->dateUntil))]);
-            } 
-            return $table_clone->whereHas('supply_name', function ($q) use ($t) {
+      
+        $table = tbl_incomingsupp::with(["category","supply_name",'supplier'])->whereRaw($where) ;
+      
+        if($t->dateFrom && $t->dateUntil){
+           $table = $table->whereBetween("incoming_date",[date("Y-m-d",strtotime($t->dateFrom)), date("Y-m-d",strtotime($t->dateUntil))]);
+        } 
+        
+        if ($t->search) { // If has value 
+           $table =  $table->whereHas('supply_name', function ($q) use ($t) {
                 $q->where('supply_name', 'like', "%".$t->search."%");
             }) ->paginate($t->itemsPerPage, "*", "page", 1);
         }
-        // Else 
-        if($t->dateFrom && $t->dateUntil){
-            $table->whereBetween("incoming_date",[date("Y-m-d",strtotime($t->dateFrom)), date("Y-m-d",strtotime($t->dateUntil))]);
-        } 
-        return  $table->paginate($t->itemsPerPage, "*", "page", $t->page);
+
+        $return = [];
+        foreach ($table->get() as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id; 
+            $temp['status'] = $value->status;  
+            $temp['amount'] = $value->amount;  
+            $temp['category'] = $value->category_details;   
+            $temp['format_amount'] = $value->format_amount;  
+            $temp['incoming_date'] = $value->incoming_date;  
+            $temp['quantity'] = $value->quantity;  
+            $temp['quantity_amount'] = $value->quantity_amount;  
+            $temp['quantity_difference'] = $value->quantity_difference;  
+            $temp['supply_name'] = $value->supply_name_details;  
+            $temp['supplier'] = $value->supplier_details;  
+            array_push($return,$temp);
+        }   
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+  
+ 
+    
     }
 
     public function suppCat()

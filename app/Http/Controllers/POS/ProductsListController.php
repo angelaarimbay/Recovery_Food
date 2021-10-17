@@ -56,7 +56,7 @@ class ProductsListController extends Controller
             array_push($return_data, $data );
         }
         $items =   Collection::make($return_data);
-        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), 5, $t->page, []);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
     public function getSalesCount()

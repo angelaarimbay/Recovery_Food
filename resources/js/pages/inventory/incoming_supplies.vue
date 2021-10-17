@@ -835,10 +835,7 @@ export default {
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
-        })
-        .catch((result) => {
-          // If false or error when saving
-        });
+        }) 
     },
 
     async suppCat() {
