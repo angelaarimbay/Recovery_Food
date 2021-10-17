@@ -119,6 +119,17 @@ use Illuminate\Support\Facades\Route;
         Route::get('useracc/getRoles', 'UserController@getRoles');
         Route::get('useracc/getUserRole', 'UserController@getUserRole');
 
+        // Company
+        Route::post('settings/company/logo/upload', 'Settings\SettingsController@uploadLogo');
+        Route::post('settings/company/logo/store', 'Settings\SettingsController@storeLogo');
+
+        Route::get('settings/company/logo/get', 'Settings\SettingsController@getLogo');
+
+        Route::post('settings/vat/store', 'Settings\SettingsController@storeVat'); 
+        Route::get('settings/vat/get', 'Settings\SettingsController@getVat');
+
+
+
         Route::post('useracc/storeRole', 'UserController@storeRole');
         Route::post('useracc/storePermission', 'UserController@storePermission');
         Route::post('useracc/storeRolePermission', 'UserController@storeRolePermission');

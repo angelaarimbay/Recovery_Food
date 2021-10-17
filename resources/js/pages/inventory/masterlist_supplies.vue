@@ -861,6 +861,14 @@ export default {
         e.preventDefault();
       }
     },
+
+      async getVat() { 
+      await axios
+        .get("/api/settings/vat/get", { params: { type: 's' } })
+        .then((result) => {
+            this.temp_vat = result.data.vat
+        });
+    },
     async suppName() {
       this.form.supply_name = null;
       await axios
@@ -1072,7 +1080,7 @@ export default {
           this.form.without_vat = this.form.net_price;
         }
       } else {
-        this.temp_vat = 1.12;
+      this.getVat();
         this.disable = true;
         this.form.vatable = 0;
         this.form.without_vat = this.form.net_price;
@@ -1105,10 +1113,10 @@ export default {
     // Open Dialog Form
     openDialog() {
       if (this.form.temp_vat !== null) {
-        this.$refs.form.resetValidation();
+        this.$refs.form.resetValidation(); this.getVat();
         this.dialog = true;
       } else {
-        this.$refs.form.reset();
+        this.$refs.form.reset(); this.getVat();
         this.dialog = true;
       }
     },
@@ -1117,7 +1125,7 @@ export default {
     cancel() {
       for (var key in this.form) {
         if (key == "vat") {
-          this.temp_vat = 1.12;
+          this.getVat()
           this.form[key] = 1.12;
         } else {
           this.form[key] = "";
