@@ -49,7 +49,7 @@ class MainController extends Controller
         //return  tbl_pos::whereMonth('created_at',7)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted');
         if($t->month == "NaN"){
             $return['month'] = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-            array_push($months, tbl_pos::whereMonth('created_at', 1)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
+            array_push($months,   tbl_pos::whereMonth('created_at', 1)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at', 2)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at', 3)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at', 4)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));

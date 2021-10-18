@@ -522,7 +522,7 @@ export default {
           label: function (data) {
             return [
               "₱ " +
-                data.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                data.yLabel.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             ];
           },
           title: function (data) {
