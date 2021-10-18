@@ -80,7 +80,7 @@ class MainController extends Controller
             ->groupBy(['product_name'])
             ->where('branch', $t->branch) ->get()
             ->take(5); 
-        }else{
+        }else{ 
             $data = tbl_pos::query()
             ->with(['product_name'])
             ->selectRaw(' sum(quantity) as quantity, max(product_name) as product_name  ')
@@ -93,6 +93,7 @@ class MainController extends Controller
        
         //find all id in masterlist, stack the product names.
         $name = [];$sold = []; 
+     
         foreach ($data as $key => $value) {
             array_push($name , tbl_masterlistprod::where('id', $value->product_name)->first()->product_name); 
             array_push($sold , $value->quantity);

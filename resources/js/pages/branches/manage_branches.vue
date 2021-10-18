@@ -281,9 +281,8 @@
                   {{ form.branch_name }}
                 </v-card-title>
                 <v-img
-                  style="border-radius: 10px"
                   :src="form.branch_image"
-                  class="mx-auto mb-4"
+                  class="border mx-auto mb-4"
                   contain
                   max-width="480px"
                   max-height="300px"
@@ -531,11 +530,11 @@
                       sm="12"
                       md="12"
                     >
-                      <div style="font-size: 14px">Image Attachment</div>
+                      <div style="font-size: 14px">Image Attachment:</div>
                       <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
                       <!-- Check if has image, then display the image -->
                       <div v-if="form.branch_image">
-                        <v-row no-gutters class="align-center">
+                        <v-row no-gutters>
                           <v-col cols="11">
                             <a
                               :href="'/storage/branches/' + form.branch_image"
@@ -547,12 +546,18 @@
                           </v-col>
 
                           <v-col cols="1" class="text-center">
-                            <v-icon
-                              color="red darken-2"
-                              v-if="form.branch_image"
-                              @click="deletefile"
-                              >mdi-delete</v-icon
-                            >
+                            <v-tooltip bottom>
+                              <template #activator="data">
+                                <v-icon
+                                  v-on="data.on"
+                                  color="red darken-2"
+                                  v-if="form.branch_image"
+                                  @click="deletefile"
+                                  >mdi-delete</v-icon
+                                >
+                              </template>
+                              <span>Remove Image</span>
+                            </v-tooltip>
                           </v-col>
                         </v-row>
                       </div>
@@ -880,7 +885,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

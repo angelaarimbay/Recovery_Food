@@ -89,7 +89,6 @@ class MasterlistSuppliesController extends Controller
         ->selectRaw("*, @row:=@row+1 as row ")
         ->get();
 
-
         $return = [];
         foreach ($table as $key => $value) { 
             $temp = [];
@@ -101,6 +100,8 @@ class MasterlistSuppliesController extends Controller
             $temp['unit'] = $value->unit;  
             $temp['vat'] = $value->vat;  
             $temp['vatable'] = $value->vatable;  
+            $temp['without_vat'] = $value->without_vat;  
+            
             $temp['supply_name'] = $value->supply_name;  
             $temp['description'] = $value->description;  
             $temp['format_net_price'] = $value->format_net_price;  
@@ -112,10 +113,6 @@ class MasterlistSuppliesController extends Controller
 
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
-  
-
-
-
     }
     public function suppCat()
     {
@@ -134,4 +131,5 @@ class MasterlistSuppliesController extends Controller
         //  ->where("date", date("Y-m-d", strtotime($t->date) ) )
         return tbl_masterlistsupp::where("id", $t->id)->sum("net_price");
     }
+
 }

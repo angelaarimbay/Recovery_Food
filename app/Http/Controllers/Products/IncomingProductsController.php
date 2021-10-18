@@ -49,7 +49,7 @@ class IncomingProductsController extends Controller
         $table = tbl_incomingprod::with(["category","sub_category","product_name"])->whereRaw($where);
       
         if($t->dateFrom && $t->dateUntil){
-          $table =  $table->whereBetween("incoming_date",[date("Y-m-d",strtotime($t->dateFrom)), date("Y-m-d",strtotime($t->dateUntil))]);
+          $table =  $table->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
         } 
 
         if ($t->search) { // If has value 

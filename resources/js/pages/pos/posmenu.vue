@@ -299,17 +299,18 @@
                 color="primary"
                 depressed
                 :disabled="button"
-                dark  v-if="dialog_add"
+                dark
+                v-if="dialog_add"
                 style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
-                   @click="validateQty('add')"
+                @click="validateQty('add')"
               >
                 Save
               </v-btn>
-                <v-btn
+              <v-btn
                 color="primary"
                 depressed
-               v-else 
+                v-else
                 :disabled="button"
                 dark
                 style="text-transform: none"
@@ -408,7 +409,7 @@
                     v-on="data.on"
                     icon
                     color="red darken-2"
-                     @click="validateDelete(item)"
+                    @click="validateDelete(item)"
                     :small="$vuetify.breakpoint.smAndDown"
                   >
                     <v-icon>mdi-delete</v-icon>
@@ -727,7 +728,9 @@ export default {
     discountedamount: 0,
     payment: 0,
     discount: 0,
-    change: 0, deleteindex:-1,    dialog_add: true,
+    change: 0,
+    deleteindex: -1,
+    dialog_add: true,
     salescount: 0,
     table1: [],
     table2: [],
@@ -857,7 +860,7 @@ export default {
       }
     },
     discountKeydown(e) {
-      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
@@ -869,22 +872,19 @@ export default {
       this.discountedamount = numeral(
         this.table2.reduce((a, b) => a + b.temp_sub_total, 0) -
           (this.discount / 100) *
-            this.table2.reduce((a, b) => a + b.temp_sub_total, 0) 
-        ).format("0,0.00"); 
- 
- 
-            for(var key in this.table2){
-       
-           this.table2[key].sub_total_discounted =
+            this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
+      ).format("0,0.00");
+
+      for (var key in this.table2) {
+        this.table2[key].sub_total_discounted =
           this.table2[key].quantity *
           (this.table2[key].unit_price -
             (this.discount / 100) * this.table2[key].unit_price);
 
         this.table2[key].payment = this.payment;
         this.table2[key].discount = this.discount;
-        this.table2[key].change = this.change; 
-       
-            }
+        this.table2[key].change = this.change;
+      }
     },
 
     itemperpage() {
@@ -903,7 +903,7 @@ export default {
             search: this.search,
           },
         })
-        .then((result) => { 
+        .then((result) => {
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -1008,11 +1008,11 @@ export default {
       });
     },
 
-   selectItem(item) {
+    selectItem(item) {
       if (this.mode) {
-        this.dialog_add = true
-        this.dialog = true; 
-        this.selectedrow = item; 
+        this.dialog_add = true;
+        this.dialog = true;
+        this.selectedrow = item;
       } else {
         this.snackbar = {
           active: true,
@@ -1023,143 +1023,164 @@ export default {
       }
     },
 
- validateQty(type) {
+    validateQty(type) {
       if (type == "add") {
-        var quantity = 0; 
+        var quantity = 0;
         if (this.table2.length > 0) {
-              var indexid = -1;
-            for(var key in this.table2){//if table have value
-                if(parseInt(this.selectedrow.product_name.id) === parseInt(this.table2[key].product)){
-                  indexid =  this.table2.indexOf(this.table2[key]);
-                }
-              }
+          var indexid = -1;
+          for (var key in this.table2) {
+            //if table have value
+            if (
+              parseInt(this.selectedrow.product_name.id) ===
+              parseInt(this.table2[key].product)
+            ) {
+              indexid = this.table2.indexOf(this.table2[key]);
+            }
+          }
 
-            
-              if(indexid > -1){
-                quantity = parseInt(this.table2[indexid].quantity) + parseInt(this.quantity); //add current and input
-                if (parseInt(this.selectedrow.quantity_diff) < quantity) { //check if greather than stocks
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "Error! Please input correct quantity.",
-                  };
-                } else {
-                      this.table2[indexid].quantity =  parseInt(this.table2[indexid].quantity) + parseInt(this.quantity);
-                      this.table2[indexid].sub_total = numeral( parseFloat(this.table2[indexid].quantity)  * parseFloat(this.selectedrow.product_name.price) ).format("0,0.00");
-                      this.table2[indexid].temp_sub_total =  parseFloat(this.table2[indexid].quantity)  * parseFloat(this.selectedrow.product_name.price);
-            
-                      this.snackbar = {
-                        active: true,
-                        iconText: "check",
-                        iconColor: "success",
-                        message: "Successfully added.",
-                      };
-                     
-                } 
-              }else{
-                  if ( parseInt(this.selectedrow.quantity_diff) < parseInt(this.quantity)) {
-                    this.snackbar = {
-                      active: true,
-                      iconText: "alert",
-                      iconColor: "error",
-                      message: "Error! Please input correct quantity.",
-                    };
-                  } else {
-                    this.table2.push({ id:                     this.table2.length + 1,
-                                        category:               this.selectedrow.category.id,
-                                        sub_category:           this.selectedrow.sub_category.id,
-                                        product_name:           {product_name: this.selectedrow.product_name.product_name},
-                                        description:            this.selectedrow.product_name.description,
-                                        product:                this.selectedrow.product_name.id,
-                                        unit_price:               this.selectedrow.product_name.format_unit_price,
-                                        quantity:                 this.quantity,
-                                        sub_total:               numeral( this.quantity * this.selectedrow.product_name.price ).format("0,0.00"),
-                                        temp_sub_total:         parseFloat(this.quantity) * parseFloat(this.selectedrow.product_name.price),
-                                        mode:               this.mode,
-                                      });
-                                      
-                            this.snackbar = {
-                              active: true,
-                              iconText: "check",
-                              iconColor: "success",
-                              message: "Successfully added.",
-                            };
-                           
-                  }
-              }
+          if (indexid > -1) {
+            quantity =
+              parseInt(this.table2[indexid].quantity) + parseInt(this.quantity); //add current and input
+            if (parseInt(this.selectedrow.quantity_diff) < quantity) {
+              //check if greather than stocks
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "error",
+                message: "Error! Please input correct quantity.",
+              };
+            } else {
+              this.table2[indexid].quantity =
+                parseInt(this.table2[indexid].quantity) +
+                parseInt(this.quantity);
+              this.table2[indexid].sub_total = numeral(
+                parseFloat(this.table2[indexid].quantity) *
+                  parseFloat(this.selectedrow.product_name.price)
+              ).format("0,0.00");
+              this.table2[indexid].temp_sub_total =
+                parseFloat(this.table2[indexid].quantity) *
+                parseFloat(this.selectedrow.product_name.price);
+
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully added.",
+              };
+            }
+          } else {
+            if (
+              parseInt(this.selectedrow.quantity_diff) < parseInt(this.quantity)
+            ) {
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "error",
+                message: "Error! Please input correct quantity.",
+              };
+            } else {
+              this.table2.push({
+                id: this.table2.length + 1,
+                category: this.selectedrow.category.id,
+                sub_category: this.selectedrow.sub_category.id,
+                product_name: {
+                  product_name: this.selectedrow.product_name.product_name,
+                },
+                description: this.selectedrow.product_name.description,
+                product: this.selectedrow.product_name.id,
+                unit_price: this.selectedrow.product_name.format_unit_price,
+                quantity: this.quantity,
+                sub_total: numeral(
+                  this.quantity * this.selectedrow.product_name.price
+                ).format("0,0.00"),
+                temp_sub_total:
+                  parseFloat(this.quantity) *
+                  parseFloat(this.selectedrow.product_name.price),
+                mode: this.mode,
+              });
+
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully added.",
+              };
+            }
+          }
         } else {
-           if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
-              this.table2.push({ id:                     this.table2.length + 1,
-                                    category:               this.selectedrow.category.id,
-                                    sub_category:           this.selectedrow.sub_category.id,
-                                    product_name:           {product_name: this.selectedrow.product_name.product_name},
-                                    description:            this.selectedrow.product_name.description,
-                                    product:                this.selectedrow.product_name.id,
-                                    unit_price:               this.selectedrow.product_name.format_unit_price,
-                                    quantity:                 this.quantity,
-                                    sub_total:               numeral( this.quantity * this.selectedrow.product_name.price ).format("0,0.00"),
-                                    temp_sub_total:         parseFloat(this.quantity) * parseFloat(this.selectedrow.product_name.price),
-                                    mode:               this.mode,
-                                  });
-                                  
-                        this.snackbar = {
-                          active: true,
-                          iconText: "check",
-                          iconColor: "success",
-                          message: "Successfully added.",
-                        };
-                       
+          if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
+            this.table2.push({
+              id: this.table2.length + 1,
+              category: this.selectedrow.category.id,
+              sub_category: this.selectedrow.sub_category.id,
+              product_name: {
+                product_name: this.selectedrow.product_name.product_name,
+              },
+              description: this.selectedrow.product_name.description,
+              product: this.selectedrow.product_name.id,
+              unit_price: this.selectedrow.product_name.format_unit_price,
+              quantity: this.quantity,
+              sub_total: numeral(
+                this.quantity * this.selectedrow.product_name.price
+              ).format("0,0.00"),
+              temp_sub_total:
+                parseFloat(this.quantity) *
+                parseFloat(this.selectedrow.product_name.price),
+              mode: this.mode,
+            });
+
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully added.",
+            };
           } else {
             this.snackbar = {
               active: true,
               iconText: "alert",
               iconColor: "error",
-              message: "Error! Please input correct quantity.", 
+              message: "Error! Please input correct quantity.",
             };
           }
         }
       } else {
-               
-          this.table2[this.deleteindex].quantity = this.table2[this.deleteindex].quantity - parseInt(this.quantity);  
-          this.table2[this.deleteindex].sub_total = numeral(  parseFloat( this.table2[this.deleteindex].quantity) * parseFloat( this.selectedrow.unit_price)).format("0,0.00");
-          this.table2[this.deleteindex].temp_sub_total =   parseFloat( this.table2[this.deleteindex].quantity) * parseFloat( this.selectedrow.unit_price) 
-            
-            if(this.table2[this.deleteindex].quantity <= 0 ){  
-                this.table2.splice(this.deleteindex, 1);   
-                
-                  for(var key in this.table2){
-                    this.table2[key].id = this.table2.length ;
-                  }
-            }
-         
-          
+        this.table2[this.deleteindex].quantity =
+          this.table2[this.deleteindex].quantity - parseInt(this.quantity);
+        this.table2[this.deleteindex].sub_total = numeral(
+          parseFloat(this.table2[this.deleteindex].quantity) *
+            parseFloat(this.selectedrow.unit_price)
+        ).format("0,0.00");
+        this.table2[this.deleteindex].temp_sub_total =
+          parseFloat(this.table2[this.deleteindex].quantity) *
+          parseFloat(this.selectedrow.unit_price);
 
+        if (this.table2[this.deleteindex].quantity <= 0) {
+          this.table2.splice(this.deleteindex, 1);
 
-      this.snackbar = {
-        active: true,
-        iconText: "check",
-        iconColor: "success",
-        message: "Successfully removed.",
-      };
+          for (var key in this.table2) {
+            this.table2[key].id = this.table2.length;
+          }
+        }
 
-
+        this.snackbar = {
+          active: true,
+          iconText: "check",
+          iconColor: "success",
+          message: "Successfully removed.",
+        };
       }
       this.getTotal();
       this.getChange();
-        this.cancel();
-      
-         
-              
+      this.cancel();
     },
 
-    validateDelete(item){
-      this.deleteindex = this.table2.indexOf(item)
-      this.selectedrow = item  
-      this.dialog_add = false 
-      this.dialog = true
+    validateDelete(item) {
+      this.deleteindex = this.table2.indexOf(item);
+      this.selectedrow = item;
+      this.dialog_add = false;
+      this.dialog = true;
     },
-
 
     checktotable2() {
       var check_existing = 0;

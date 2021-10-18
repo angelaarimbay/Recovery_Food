@@ -56,6 +56,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('msupp/suppCat', 'Inventory\MasterlistSuppliesController@suppCat');
         Route::get('msupp/validateItem', 'Inventory\MasterlistSuppliesController@validateItem');
         Route::get('msupp/sum', 'Inventory\MasterlistSuppliesController@sum');
+        
 
         // Incoming Supplies
         Route::post('isupp/save', 'Inventory\IncomingSuppliesController@save');

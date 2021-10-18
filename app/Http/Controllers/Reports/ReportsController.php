@@ -290,8 +290,8 @@ class ReportsController extends Controller
     public function TransactionReport(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_pos::whereBetween('created_at', [$t->from, $t->to])
-                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
+        $data = tbl_pos::whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+                       ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
         case 'pdf':
@@ -389,7 +389,7 @@ class ReportsController extends Controller
             $table->where("reference_no", "like", "%".$t->search."%");
         }
         if ($t->dateFromSP && $t->dateUntilSP) {
-            $table->whereBetween("created_at", [$t->dateFromSP, $t->dateUntilSP]);
+            $table->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->dateFromSP . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntilSP . ' 11:59:59'))]);
         }
 
         $return = [];

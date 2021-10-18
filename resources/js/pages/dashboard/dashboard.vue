@@ -24,6 +24,7 @@
               large
               icon
               dark
+              text
               color="red darken-2"
               class="mx-1"
               v-on="data.on"
@@ -702,8 +703,7 @@ export default {
             month: new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
           },
         })
-        .then((result) => {
-          console.log(result.data)
+        .then((result) => { 
           this.datacollection1 = {
             labels: result.data.name,
             datasets: [

@@ -39,6 +39,7 @@ class MasterlistProductsController extends Controller
             $table_clone->where("id", $data->id)->update(
                 ["status"=>$data->status,
                  "category"=>$data->category,
+                 "vat"=>$data->vat,
                  "sub_category"=>$data->sub_category,
                  "product_name"=>$data->product_name,
                  "description"=>$data->description,
@@ -70,7 +71,9 @@ class MasterlistProductsController extends Controller
             $temp['category'] = $value->category_details;
             $temp['description'] = $value->description;
             $temp['diff_quantity'] = $value->diff_quantity;
-            $temp['exp_date'] = $value->exp_date;
+            $temp['exp_date'] = $value->exp_date; 
+            $temp['with_vat'] = $value->format_with_vat;
+            $temp['vat'] = $value->vat;
             $temp['format_unit_price'] = $value->format_unit_price;
             $temp['format_price'] = $value->format_price;
             $temp['price'] = $value->price;  
@@ -80,11 +83,6 @@ class MasterlistProductsController extends Controller
         }   
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
-  
-        
-
-
-
     }
     public function prodCat()
     {

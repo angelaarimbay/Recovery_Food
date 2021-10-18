@@ -32,9 +32,9 @@ class InventorySummaryController extends Controller
             $temp['category'] = $value->supply_cat_name;
             $temp['incoming'] =   tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity");
             // Get outgoing based on from, to and per category, then sum outgoing_amount based on masterlist net
-            $temp['outgoing'] =   tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity") ;
+            $temp['outgoing'] =   tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity");
             $temp['stocks'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity")
-                                  - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity");
+                            - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity");
             array_push($return, $temp);
         }
 

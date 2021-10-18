@@ -656,7 +656,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           this.table2 = result.data;
           this.progressbar = false;
         });

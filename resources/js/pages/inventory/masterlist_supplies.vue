@@ -283,18 +283,6 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
-            <template v-slot:[`item.without_vat`]="{ item }">
-              <div class="text-warning" v-if="item.vatable == 1">
-                {{ Math.round(item.without_vat * 100) / 100 }}
-              </div>
-              <div v-else>{{ Math.round(item.without_vat * 100) / 100 }}</div>
-            </template>
-            <template v-slot:[`item.with_vat`]="{ item }">
-              <div class="text-warning" v-if="item.vatable == 1">
-                {{ Math.round(item.with_vat * 100) / 100 }}
-              </div>
-              <div v-else>{{ Math.round(item.with_vat * 100) / 100 }}</div>
-            </template>
             <template v-slot:[`item.status`]="{ item }">
               <v-chip
                 style="justify-content: center"
@@ -508,14 +496,15 @@
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-layout align-center>
                         <v-text-field
-                          :rules="formRulesPrice" 
+                          :rules="formRulesVAT"
                           v-model="temp_vat"
-                          outlined disabled
+                          outlined
+                          disabled
                           clearable
                           dense
                           counter
                           @keydown="numberKeydown($event)"
-                          maxlength="15"
+                          maxlength="6"
                         >
                           <template slot="label">
                             <div style="font-size: 14px">VAT</div>
@@ -616,7 +605,7 @@
                   color="primary"
                   depressed
                   :disabled="button"
-                  dark 
+                  dark
                   @click="save"
                   style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
@@ -711,6 +700,11 @@ export default {
       (v) =>
         /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
     ],
+    formRulesVAT: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
@@ -728,15 +722,15 @@ export default {
       supply_name: null,
       supplier: null,
       category: null,
-      description: null, 
+      description: null,
       unit: null,
       net_price: null,
-      vat: 1.12,
+      vat: null,
       without_vat: null,
       exp_date: null,
       vatable: null,
     },
-    temp_vat: 1.12, //form.vat = this.
+    temp_vat: null, //form.vat = this.
     vat: false,
     supplierlist: [],
 
@@ -764,7 +758,7 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      { text: "SUPPLY NAME", value: "supply_name", class: "black--text" },
+      { text: "SUPPLY NAME", value: "supply_full", class: "black--text" },
       { text: "UNIT", value: "unit", filterable: false, class: "black--text" },
       {
         text: "NET PRICE",
@@ -860,12 +854,11 @@ export default {
         e.preventDefault();
       }
     },
-
-      async getVat() { 
+    async getVat() {
       await axios
-        .get("/api/settings/vat/get", { params: { type: 's' } })
+        .get("/api/settings/vat/get", { params: { type: "s" } })
         .then((result) => {
-            this.temp_vat = result.data.vat
+          this.temp_vat = result.data.vat;
         });
     },
     async suppName() {
@@ -903,7 +896,7 @@ export default {
 
     // Format for everytime we call on database
     // Always add await and async
-    compare() { 
+    compare() {
       // Compare exsiting data vs edited data
       // If nothing change then no request
       if (!this.currentdata) {
@@ -914,6 +907,7 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
+          console.log(key)
           if (key == "category") {
             if (this.currentdata.category) {
               if (
@@ -931,20 +925,19 @@ export default {
               found += 1;
             }
           } else if (key == "supplier") {
-            if(this.currentdata.supplier){
-            if (
-              parseInt(this.currentdata.supplier.id) !=
-              parseInt(this.form.supplier)
-            ) {
-              found += 1;
+            if (this.currentdata.supplier) {
+              if (
+                parseInt(this.currentdata.supplier.id) !=
+                parseInt(this.form.supplier)
+              ) {
+                found += 1;
+              }
             }
-            }
-           
           } else {
             found += 1;
           }
         }
-      }  
+      }
       if (found > 0) {
         return true;
       } else {
@@ -960,7 +953,6 @@ export default {
 
     // Saving data to database
     async save() {
-
       if (this.$refs.form.validate()) {
         this.compute();
         // Validate first before compare
@@ -980,14 +972,6 @@ export default {
                   };
                   this.get();
                   this.cancel();
-                  break;
-                case 1:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "The supply name already exists.",
-                  };
                   break;
                 default:
                   break;
@@ -1066,12 +1050,11 @@ export default {
     },
 
     // 1. get specific item info ,eg total amount, total quantity
-    // 2. check if true then total / tem_vat 1.12
+    // 2. check if true then total / tem_vat
     // 3. else wo/vat = total (total amt / quantity)
     async compute() {
       //check if vatable or not
       if (this.vat) {
-        this.disable = false;
         if (this.temp_vat) {
           this.form.vatable = 1;
           this.form.without_vat = (this.form.net_price / this.temp_vat).toFixed(
@@ -1082,8 +1065,7 @@ export default {
           this.form.without_vat = this.form.net_price;
         }
       } else {
-      this.getVat();
-        this.disable = true;
+        this.getVat();
         this.form.vatable = 0;
         this.form.without_vat = this.form.net_price;
       }
@@ -1115,10 +1097,12 @@ export default {
     // Open Dialog Form
     openDialog() {
       if (this.form.temp_vat !== null) {
-        this.$refs.form.resetValidation(); this.getVat();
+        this.$refs.form.resetValidation();
+        this.getVat();
         this.dialog = true;
       } else {
-        this.$refs.form.reset(); this.getVat();
+        this.$refs.form.reset();
+        this.getVat();
         this.dialog = true;
       }
     },
@@ -1127,8 +1111,7 @@ export default {
     cancel() {
       for (var key in this.form) {
         if (key == "vat") {
-          this.getVat()
-          this.form[key] = 1.12;
+          this.getVat();
         } else {
           this.form[key] = "";
           this.vat = false;

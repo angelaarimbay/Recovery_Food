@@ -30,8 +30,8 @@ class tbl_masterlistsupp extends Model
         $incoming = 0;
 
         try {
-            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('amount');
-            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('quantity');
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($date1 . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($date2 . ' 11:59:59'))]);
+            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($date1 . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($date2 . ' 11:59:59'))]);
     
             $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 6, ".", ",");
             ;
@@ -48,8 +48,8 @@ class tbl_masterlistsupp extends Model
         $date2 = date("Y-m-d h:i:s", strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
         $incoming = 0;
         try {
-            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('amount');
-            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [$date1,$date2])->sum('quantity');
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($date1 . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($date2 . ' 11:59:59'))]);
+            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($date1 . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($date2 . ' 11:59:59'))]);
     
             $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 2, ".", ",");
         } catch (\Throwable $th) {
@@ -67,7 +67,7 @@ class tbl_masterlistsupp extends Model
     {
         return number_format($this->with_vat, 2, ".", ",");
     }
-
+    
     public function getFormatWithoutVatAttribute()
     {
         return number_format($this->without_vat, 2, ".", ",");
@@ -77,14 +77,11 @@ class tbl_masterlistsupp extends Model
     {
         return $this->hasOne(tbl_suppcat::class, "id", "category")->first()->supply_cat_name;
     }
-
-
     
     public function getCategoryDetailsAttribute()
     {
         return tbl_suppcat::where("id", $this->category)->first();
     }
- 
    
     public function getSupplierNameDetailsAttribute()
     {

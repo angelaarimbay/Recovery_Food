@@ -45,24 +45,34 @@ class SettingsController extends Controller
     }
     public function storeVat(Request $t){ 
 
+
+
         if(tbl_vat::where(["type"=>$t->type])->get()->count() > 0){
-            tbl_vat::where(["type"=>$t->type])
-            ->update(['vat'=>$t->vat,
-            'type'=>$t->type,
-            'cashier'=>auth()->user()->id]) ; 
+
+            if(tbl_vat::where(["type"=>$t->type,'vat'=>$t->vat])->get()->count() > 0){
+                return 0;
+            }else{
+                tbl_vat::where(["type"=>$t->type])
+                ->update(['vat'=>$t->vat,
+                'type'=>$t->type,
+                'cashier'=>auth()->user()->id]) ; 
+                return 1;
+            }
+
+           
+
+
 
         }else{
             tbl_vat::create(['vat'=>$t->vat,
             'type'=>$t->type,
             'cashier'=>auth()->user()->id]) ; 
+            return 1;
         }
 
      
     }
-
     public function getVat(Request $t){ 
         return tbl_vat::where("type", $t->type)->orderby("created_at",'desc')->first();
     }
-
-
 }

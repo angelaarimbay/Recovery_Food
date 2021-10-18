@@ -75,7 +75,7 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="dialog = true"
+              @click="openDialog"
             >
               Add Product
             </v-btn>
@@ -389,6 +389,53 @@
                       </v-text-field>
                     </v-col>
 
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        :rules="formRulesPrice"
+                        v-model="form.price"
+                        outlined
+                        clearable
+                        dense
+                        counter
+                        @keydown="numberKeydown($event)"
+                        @input="compute"
+                        @click:clear="compute"
+                        maxlength="15"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Price *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-layout align-center>
+                        <v-text-field
+                          v-model="temp_vat"
+                          outlined
+                          disabled
+                          clearable
+                          dense
+                          counter
+                          @keydown="numberKeydown($event)"
+                          maxlength="6"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 14px">VAT</div>
+                          </template>
+                        </v-text-field>
+
+                        <v-checkbox
+                          :disabled="!disabled"
+                          v-model="vat"
+                          hide-details
+                          class="shrink pt-0 mt-0 mb-7 ml-3 d-none"
+                          color="red darken-3"
+                          @change="compute"
+                        ></v-checkbox>
+                      </v-layout>
+                    </v-col>
+
                     <v-col
                       class="py-0"
                       cols="12"
@@ -398,17 +445,14 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRulesPrice"
-                        v-model="form.price"
+                        disabled
+                        v-model="form.with_vat"
                         outlined
                         clearable
                         dense
-                        counter
-                        @keydown="numberKeydown($event)"
-                        maxlength="15"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Price *</div>
+                          <div style="font-size: 14px">Price w/ VAT</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -552,8 +596,7 @@ export default {
     ],
     formRulesPrice: [
       (v) => !!v || "This is required",
-      (v) =>
-        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
+      (v) => /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Price must be valid",
     ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
@@ -568,8 +611,12 @@ export default {
       product_name: null,
       description: null,
       price: null,
+      vat: null,
+      with_vat: null,
       exp_date: null,
     },
+    temp_vat: null,
+    vat: true,
 
     // For comparing data
     currentdata: {},
@@ -595,10 +642,17 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      { text: "PRODUCT-NAME", value: "product_name", class: "black--text" },
+      { text: "PRODUCT-NAME", value: "product_full", class: "black--text" },
       {
         text: "PRICE",
         value: "format_price",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "WITH VAT",
+        value: "with_vat",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -628,6 +682,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
+    disabled: true,
     itemsPerPage: 5,
   }),
 
@@ -675,6 +730,7 @@ export default {
         e.preventDefault();
       }
     },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -733,6 +789,7 @@ export default {
 
     // Saving data to database
     async save() {
+      this.compute();
       if (this.$refs.form.validate()) {
         // Validate first before compare
         if (this.compare()) {
@@ -810,6 +867,15 @@ export default {
       return date.format(format);
     },
 
+    // 1. get specific item info ,eg total amount, total quantity
+    // 2. check if true then total / tem_vat
+    // 3. else wo/vat = total (total amt / quantity)
+    async compute() {
+      this.form.with_vat = (this.form.price / this.temp_vat).toFixed(2);
+      this.getVat();
+      this.form.vat = this.temp_vat;
+    },
+
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
@@ -820,14 +886,45 @@ export default {
       this.form.product_name = row.product_name;
       this.form.description = row.description;
       this.form.price = row.price;
+      this.form.vat = row.vat;
+      this.vat = true;
+      this.temp_vat = row.vat;
+      this.form.with_vat = row.with_vat;
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;
+      this.compute();
+    },
+
+    // Open Dialog Form
+    openDialog() {
+      if (this.form.temp_vat !== null) {
+        this.$refs.form.resetValidation();
+        this.getVat();
+        this.dialog = true;
+      } else {
+        this.$refs.form.reset();
+        this.getVat();
+        this.dialog = true;
+      }
+    },
+    async getVat() {
+      await axios
+        .get("/api/settings/vat/get", { params: { type: "p" } })
+        .then((result) => {
+          this.temp_vat = result.data.vat;
+        });
     },
 
     // Reset Forms
     cancel() {
-      this.$refs.form.reset();
+      for (var key in this.form) {
+        if (key == "vat") {
+          this.getVat();
+        } else {
+          this.form[key] = "";
+        }
+      }
       this.dialog = false;
     },
   },
@@ -835,6 +932,9 @@ export default {
   watch: {
     dialog(val) {
       val || this.cancel();
+    },
+    temp_vat() {
+      this.compute();
     },
     page(val) {
       this.page = val;

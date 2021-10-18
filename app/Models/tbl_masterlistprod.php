@@ -8,7 +8,7 @@ class tbl_masterlistprod extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['diff_quantity','format_price','format_unit_price','category_details','sub_category_details'];
+    public $appends = ['diff_quantity','format_price','format_with_vat','format_unit_price','category_details','sub_category_details'];
  
     public function getFormatUnitPriceAttribute()
     {
@@ -32,13 +32,19 @@ class tbl_masterlistprod extends Model
     {
         return   number_format($this->price, 2, ".", ",");
     }
-  
+
     public function getCategoryDetailsAttribute()
     {
         return tbl_prodcat::where("id", $this->category)->first();
-    }  
+    }
+
     public function getSubCategoryDetailsAttribute()
     {
         return tbl_prodsubcat::where("id", $this->sub_category)->first();
-    }  
+    }
+
+    public function getFormatWithVatAttribute()
+    {
+        return number_format($this->price / $this->vat, 2, ".", ",");
+    }
 }
