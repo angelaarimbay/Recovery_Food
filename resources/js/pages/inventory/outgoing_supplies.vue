@@ -497,6 +497,7 @@
                       sm="12"
                       md="12"
                     >
+                    <small> Available quantity {{ getQuantity }} </small>
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
@@ -698,6 +699,8 @@ export default {
     date1: false,
     date2: false,
     date3: false,
+    getID: 0,
+    getQuantity: 0,
   }),
 
   // Onload
@@ -793,6 +796,16 @@ export default {
     async save() {
       if (this.$refs.form.validate()) {
         // Validate first before compare
+      if(this.getQuantity < this.form.quantity){
+          this.snackbar = {
+                active: true,
+                iconText: "close",
+                iconColor: "danger",
+                message: "Insufficient Quantity in Incoming stock.",
+              };
+        return;
+      }
+
         if (this.compare()) {
           // Save or update data in the table
           await axios
@@ -846,6 +859,15 @@ export default {
       });
     },
 
+    async suppValidate() { 
+      await axios.get("/api/osupp/suppValidate",{params:{id: this.getID}}).then((result) => {
+        console.log(result.data)
+        this.getQuantity = result.data
+      });
+    },
+
+
+
     async suppName() {
       this.form.supply_name = null;
       await axios
@@ -853,7 +875,6 @@ export default {
           params: { category: this.form.category },
         })
         .then((supp_name) => {
-          console.log(supp_name.data);
           this.suppnamelist = supp_name.data;
         });
     },
@@ -873,10 +894,12 @@ export default {
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
       this.form.requesting_branch = row.requesting_branch.id;
+      this.getID = row.id
       this.form.outgoing_date = this.getFormatDate(
         row.outgoing_date,
         "YYYY-MM-DD"
-      );
+      ); 
+          this.suppValidate() 
 
       this.dialog = true;
     },

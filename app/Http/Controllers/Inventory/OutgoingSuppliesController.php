@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\tbl_outgoingsupp;
 use App\Models\tbl_suppcat;
 use App\Models\tbl_masterlistsupp;
-use App\Models\tbl_branches; 
+use App\Models\tbl_branches;
+use App\Models\tbl_incomingsupp;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
  
@@ -93,4 +94,15 @@ class OutgoingSuppliesController extends Controller
     {
         return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
     }
+
+    public function validateQuantity(Request $request)
+    {
+        return $request->id;
+        $get_group = tbl_masterlistsupp::where("id",$request->id)->first()->group; 
+        $get_group = tbl_masterlistsupp::where("group",$get_group)->pluck('id'); 
+        return tbl_incomingsupp::wherein('supply_name',$get_group )->sum('quantity');
+    }
+
+
+
 }
