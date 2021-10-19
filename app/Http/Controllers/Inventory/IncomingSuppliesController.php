@@ -100,13 +100,27 @@ class IncomingSuppliesController extends Controller
     }
 
     public function getTotalCurrentMonth(Request $t){ 
+        //get 1 - number of days for the month
         $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
         $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
         $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
-        
+         
         try {
-            $get_specific_item_amount = tbl_incomingsupp::where("supply_name",$t->item)->whereBetween("incoming_date",[$date1,$date2])->sum('amount');
-            $get_specific_item_quantity =tbl_incomingsupp::where("supply_name",$t->item)->whereBetween("incoming_date",[$date1,$date2])->sum('quantity');
+               //get the group id's
+            $id_group = tbl_masterlistsupp::where("id",$t->item)->first()->group;
+            $id_array = tbl_masterlistsupp::where("group",$valid_group)->pluck('id');
+            $get_specific_item_amount = tbl_incomingsupp::query()
+            ->wherein("supply_name",$id_array)
+            ->whereBetween("incoming_date",[$date1,$date2])
+            ->sum('amount');
+            $get_specific_item_quantity =tbl_incomingsupp::query()
+            ->wherein("supply_name",$id_array)
+            ->whereBetween("incoming_date",[$date1,$date2])
+            ->sum('quantity');
+
+            // mali parin pla to. bakit po? w8 rewrite kopoba yung formula ulit from excel?
+
+
            return  $get_specific_item_amount . ' '. $get_specific_item_quantity;
         } catch (\Throwable $th) {
             return false;

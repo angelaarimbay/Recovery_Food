@@ -70,8 +70,8 @@
                 <tr>
                     <td class="body" style="width: 5%"> {{ $items['quantity'] }}  </td>
                     <td class="body" style="width: 55%"> {{ $items['product_name_details']['product_name'] }} {{ $items['product_name_details']['description'] }}</td>
-                    <td class="body" style="width: 20%; text-align: right"> {{ $items['product_name_details']['format_unit_price'] }}  </td>
-                    <td class="body" style="width: 20%; text-align: right"> {{ number_format($items['product_name_details']['format_unit_price'] * $items['quantity'], 2, ".", ",") }} </td>
+                    <td class="body" style="width: 20%; text-align: right"> {{ $items['product_name_details']['format_with_vat'] }}  </td>
+                    <td class="body" style="width: 20%; text-align: right"> {{ number_format($items['product_name_details']['format_with_vat'] * $items['quantity'], 2, ".", ",") }} </td>
                 </tr>
             </table> 
         @endforeach

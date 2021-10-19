@@ -45,29 +45,11 @@ class MasterlistSuppliesController extends Controller
             }else{
                 $supply = $data->supply_name;
             }
- 
-
-            //check supply if exsiting
-            $table_clone = clone $table; 
-            if( $table_clone->where(['supply_name'=>$supply, 'unit'=>$data->unit, 'description'=>$data->description])->get()->count()>0){
-                $table_clone = clone $table;
-                //get the group 
-                $group = $table_clone->where(['supply_name'=>$supply, 'unit'=>$data->unit, 'description'=>$data->description])->first()->group;
-            }else{
-                $table_clone = clone $table;
-                //get the last row and add 1 for a new group
-                try {
-                     
-                $group = $table_clone->orderBy('group')->first()->group + 1;
-                } catch (\Throwable $th) {
-                    $group =   0;
-                }
-         
-            }            
+  
             // return  $data->except('supply_name') ;
             tbl_masterlistsupp::create(
                 $data->except('supply_name') + 
-                ['group' => $group,
+                [ 
                  'supply_name'=>$supply] //purpose is when same item sum quantity
             );
         }

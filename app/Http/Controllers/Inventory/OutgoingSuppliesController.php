@@ -23,6 +23,12 @@ class OutgoingSuppliesController extends Controller
     {
         $table = tbl_outgoingsupp::where("supply_name", "!=", null);
 
+        //get supply id group via id 
+           $id_group = tbl_masterlistsupp::where("id",$data->supply_name)->first()->group;
+        $id_array = tbl_masterlistsupp::where("group",$id_group)->pluck('id'); //set of id's
+        $get_amounts_average = tbl_incomingsupp::wherein("supply_name",$id_array)->avg("amount"); //avg amount of all via id's
+
+ 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
             // Update
@@ -31,11 +37,12 @@ class OutgoingSuppliesController extends Controller
                 ["category"=>$data->category,
                  "supply_name"=>$data->supply_name,
                  "quantity"=>$data->quantity,
+                 "amount" => $get_amounts_average,
                  "requesting_branch"=>$data->requesting_branch,
                 ]
             );
         } else {
-            tbl_outgoingsupp::create($data->all());
+            tbl_outgoingsupp::create($data->all() + ['amount' => $get_amounts_average]);
         }
         return 0;
     }
@@ -66,12 +73,12 @@ class OutgoingSuppliesController extends Controller
             $temp['row']  = $key+1;
             $temp['id'] = $value->id; 
             $temp['status'] = $value->status;  
-            $temp['category'] = $value->category_details;  
-            $temp['outgoing_amount'] = $value->outgoing_amount;  
+            $temp['category'] = $value->category_details;   
             $temp['outgoing_date'] = $value->outgoing_date;  
             $temp['quantity'] = $value->quantity;  
             $temp['requesting_branch'] = $value->requesting_branch_details;  
             $temp['supply_name'] = $value->supply_name_details;  
+            $temp['outgoing_amount'] = $value->amount * $value->quantity;  
            array_push($return,$temp);
         }   
         $items =   Collection::make($return);

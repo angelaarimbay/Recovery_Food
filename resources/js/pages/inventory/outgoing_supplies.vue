@@ -470,6 +470,7 @@
                         dense
                         item-text="supply_name"
                         item-value="id"
+                        @change="suppValidate"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
@@ -702,7 +703,6 @@ export default {
     date1: false,
     date2: false,
     date3: false,
-    getID: 0,
     getQuantity: 0,
   }),
 
@@ -814,6 +814,7 @@ export default {
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
+              console.log(result.data)
               //if the value is true then save to database
               this.snackbar = {
                 active: true,
@@ -863,9 +864,10 @@ export default {
       });
     },
 
-    async suppValidate() {
+    async suppValidate(id) {
+      console.log(id)
       await axios
-        .get("/api/osupp/suppValidate", { params: { id: this.getID } })
+        .get("/api/osupp/suppValidate", { params: { id: id } })
         .then((result) => {
           this.getQuantity = result.data;
         });
@@ -896,13 +898,12 @@ export default {
       this.suppName();
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
-      this.form.requesting_branch = row.requesting_branch.id;
-      this.getID = row.id;
+      this.form.requesting_branch = row.requesting_branch.id; 
       this.form.outgoing_date = this.getFormatDate(
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-      this.suppValidate();
+      this.suppValidate(row.id);
 
       this.dialog = true;
     },

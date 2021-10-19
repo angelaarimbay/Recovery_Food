@@ -15,8 +15,7 @@ class CreateTblMasterlistsuppsTable extends Migration
     {
         Schema::create('tbl_masterlistsupps', function (Blueprint $table) {
             $table->id();
-            $table->integer('category')->references('id')->on('tbl_suppcat');   
-            $table->string('group'); //if belong w/same supply name
+            $table->integer('category')->references('id')->on('tbl_suppcat');    
             $table->string('supply_name');
             $table->string('description')->nullable();
             $table->string('unit');

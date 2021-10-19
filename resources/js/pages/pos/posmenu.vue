@@ -780,7 +780,7 @@ export default {
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.format_unit_price",
+        value: "product_name.format_with_vat",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -821,7 +821,7 @@ export default {
       },
       {
         text: "UNIT PRICE",
-        value: "unit_price",
+        value: "with_vat",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -881,8 +881,8 @@ export default {
       for (var key in this.table2) {
         this.table2[key].sub_total_discounted =
           this.table2[key].quantity *
-          (this.table2[key].unit_price -
-            (this.discount / 100) * this.table2[key].unit_price);
+          (this.table2[key].with_vat -
+            (this.discount / 100) * this.table2[key].with_vat);
 
         this.table2[key].payment = this.payment;
         this.table2[key].discount = this.discount;
@@ -907,6 +907,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -978,7 +979,6 @@ export default {
 
     async save() {
       this.snackbar2.active = false;
-
       if (parseInt(this.payment) >= parseInt(this.totalamount)) {
         await axios
           .post("/api/pos/prodlist/save", this.table2)
@@ -1058,11 +1058,11 @@ export default {
                 parseInt(this.quantity);
               this.table2[indexid].sub_total = numeral(
                 parseFloat(this.table2[indexid].quantity) *
-                  parseFloat(this.selectedrow.product_name.price)
+                  parseFloat(this.selectedrow.product_name.format_with_vat)
               ).format("0,0.00");
               this.table2[indexid].temp_sub_total =
                 parseFloat(this.table2[indexid].quantity) *
-                parseFloat(this.selectedrow.product_name.price);
+                parseFloat(this.selectedrow.product_name.format_with_vat);
 
               this.snackbar = {
                 active: true,
@@ -1091,14 +1091,14 @@ export default {
                 },
                 description: this.selectedrow.product_name.description,
                 product: this.selectedrow.product_name.id,
-                unit_price: this.selectedrow.product_name.format_unit_price,
+                with_vat: this.selectedrow.product_name.format_with_vat,
                 quantity: this.quantity,
                 sub_total: numeral(
-                  this.quantity * this.selectedrow.product_name.price
+                  this.quantity * this.selectedrow.product_name.format_with_vat
                 ).format("0,0.00"),
                 temp_sub_total:
                   parseFloat(this.quantity) *
-                  parseFloat(this.selectedrow.product_name.price),
+                  parseFloat(this.selectedrow.product_name.format_with_vat),
                 mode: this.mode,
               });
 
@@ -1121,14 +1121,14 @@ export default {
               },
               description: this.selectedrow.product_name.description,
               product: this.selectedrow.product_name.id,
-              unit_price: this.selectedrow.product_name.format_unit_price,
+              with_vat: this.selectedrow.product_name.format_with_vat,
               quantity: this.quantity,
               sub_total: numeral(
-                this.quantity * this.selectedrow.product_name.price
+                this.quantity * this.selectedrow.product_name.format_with_vat
               ).format("0,0.00"),
               temp_sub_total:
                 parseFloat(this.quantity) *
-                parseFloat(this.selectedrow.product_name.price),
+                parseFloat(this.selectedrow.product_name.format_with_vat),
               mode: this.mode,
             });
 
@@ -1152,11 +1152,11 @@ export default {
           this.table2[this.deleteindex].quantity - parseInt(this.quantity);
         this.table2[this.deleteindex].sub_total = numeral(
           parseFloat(this.table2[this.deleteindex].quantity) *
-            parseFloat(this.selectedrow.unit_price)
+            parseFloat(this.selectedrow.format_with_vat)
         ).format("0,0.00");
         this.table2[this.deleteindex].temp_sub_total =
           parseFloat(this.table2[this.deleteindex].quantity) *
-          parseFloat(this.selectedrow.unit_price);
+          parseFloat(this.selectedrow.format_with_vat);
 
         if (this.table2[this.deleteindex].quantity <= 0) {
           this.table2.splice(this.deleteindex, 1);
@@ -1210,12 +1210,12 @@ export default {
         },
         description: this.selectedrow.product_name.description,
         product: this.selectedrow.product_name.id,
-        unit_price: this.selectedrow.product_name.format_unit_price,
+        with_vat: this.selectedrow.product_name.format_with_vat,
         quantity: this.quantity,
         sub_total: numeral(
-          this.quantity * this.selectedrow.product_name.price
+          this.quantity * this.selectedrow.product_name.format_with_vat
         ).format("0,0.00"),
-        temp_sub_total: this.quantity * this.selectedrow.product_name.price,
+        temp_sub_total: this.quantity * this.selectedrow.product_name.format_with_vat,
         mode: this.mode,
       });
     },
@@ -1228,10 +1228,10 @@ export default {
         this.table2[i].quantity =
           this.table2[i].quantity + parseInt(this.quantity);
         this.table2[i].sub_total = numeral(
-          this.table2[i].quantity * this.selectedrow.product_name.price
+          this.table2[i].quantity * this.selectedrow.product_name.format_with_vat
         ).format("0,0.00");
         this.table2[i].temp_sub_total = numeral(
-          this.table2[i].quantity * this.selectedrow.product_name.price
+          this.table2[i].quantity * this.selectedrow.product_name.format_with_vat
         ).format("0,0.00");
       } else {
         this.addtotable2();

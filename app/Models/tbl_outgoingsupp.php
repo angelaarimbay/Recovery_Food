@@ -21,6 +21,8 @@ class tbl_outgoingsupp extends Model
 
     public function supply_name()
     {
+
+        //kinukuha lang natin ung presyo e
         return $this->hasOne(tbl_masterlistsupp::class, 'id', 'supply_name');
     }
 
@@ -54,4 +56,8 @@ class tbl_outgoingsupp extends Model
         //used for inventory summary page / report
         return  tbl_masterlistsupp::where("id", $this->supply_name)->first()->with_vat * $this->quantity ;
     }
+
+
+
+    
 }

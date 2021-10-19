@@ -62,8 +62,8 @@ class ProductsListController extends Controller
     public function getSalesCount()
     {
         return tbl_pos::where(['branch'=> auth()->user()->branch])
-        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 11:59:59')) ])
-        ->count();
+        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 23:59:59')) ])
+                       ->count();
     }
     
     public function save(Request $t)
@@ -77,7 +77,7 @@ class ProductsListController extends Controller
                              'sub_total'=> $value['sub_total'],
                              'sub_total_discounted'=> $value['sub_total_discounted'],
                              'payment'=> $value['payment'],
-                             'discount'=> $value['discount'],
+                             'discount'=> ($value['discount']??0),
                              'change'=> $value['change'],
                              'mode'=> $value['mode'],
                              'reference_no'=>$refno,
@@ -90,7 +90,7 @@ class ProductsListController extends Controller
     public function getSalesToday()
     {
         $data = tbl_pos::where(['cashier'=> auth()->user()->id])
-                        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 11:59:59')) ])
+                        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 23:59:59')) ])
                         ->get();
 
         $content['data'] = $data;
