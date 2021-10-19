@@ -185,6 +185,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Inventory" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -258,7 +261,7 @@ export default {
             params: { from: this.dateFrom, to: this.dateUntil },
           })
           .then((result) => {
-            console.log(result.data)
+            console.log(result.data);
             this.table = result.data;
             this.progressbar = false;
           });

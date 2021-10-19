@@ -74,8 +74,6 @@ use Illuminate\Support\Facades\Route;
         Route::get('osupp/branchName', 'Inventory\OutgoingSuppliesController@branchName'); 
         Route::get('osupp/suppValidate', 'Inventory\OutgoingSuppliesController@validateQuantity');
 
-        
-
         // Main Inventory
         Route::post('misupp/save', 'Inventory\MainInventoryController@save');
         Route::get('misupp/get', 'Inventory\MainInventoryController@get');
@@ -104,6 +102,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('outprod/prodSubCat', 'Products\OutgoingProductsController@prodSubCat');
         Route::get('outprod/prodName', 'Products\OutgoingProductsController@prodName');
         Route::get('outprod/branchName', 'Products\OutgoingProductsController@branchName');
+        Route::get('outprod/prodValidate', 'Inventory\OutgoingProductsController@validateQuantity');
 
         // Suppliers List
         Route::post('supplist/save', 'Suppliers\SuppliersListController@save');

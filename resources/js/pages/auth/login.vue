@@ -21,11 +21,7 @@
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
-            <v-form
-              ref="form"
-              @submit.prevent="login"
-              @keydown="form.onKeydown($event)"
-            >
+            <v-form ref="form" @submit.prevent="submitHandler">
               <v-card-text class="pa-4 pa-xl-7 pa-lg-7 pa-md-5 pa-sm-5">
                 <v-row>
                   <v-col cols="12" class="text-center">
@@ -43,10 +39,11 @@
                 <v-row>
                   <v-col cols="12" md="12" class="py-1">
                     <v-text-field
-                      :rules="rules.formRulesEmail"
+                      :rules="formRulesEmail"
                       label="Email"
                       outlined
                       dense
+                      clearable
                       persistent-placeholder
                       v-model="form.email"
                       :error-messages="
@@ -63,8 +60,9 @@
                       label="Password"
                       outlined
                       persistent-placeholder
-                      :rules="rules.passwordRules"
+                      :rules="passwordRules"
                       dense
+                      clearable
                       v-model="form.password"
                       :error-messages="
                         form.errors.has('password')
@@ -141,9 +139,8 @@ import Form from "vform";
 import axios from "axios";
 export default {
   middleware: "guest",
-
   metaInfo() {
-    return { title: "login" };
+    return { title: "Login" };
   },
   data: () => ({
     user: true,
@@ -154,33 +151,44 @@ export default {
     snackbar: { status: false, message: "" },
     token: "",
     value: false,
-    logo_path: '/img/Logo_NO_BG.png',
-    rules: {
-      formRulesEmail: [
-        (v) => !!v || "This is required",
-        (v) =>
-          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "E-mail must be valid",
-      ],
-      passwordRules: [
-        (v) => !!v || "This is required",
-      ],
-    },
+    logo_path: "/img/Logo_NO_BG.png",
     form: new Form({
       email: "",
       password: "",
     }),
     remember: false,
+    formRulesEmail: [],
+    passwordRules: [],
   }),
- created(){
-   this.getLogo()
- },
+  created() {
+    this.getLogo();
+  },
+
+  watch: {
+    "form.email"(val) {
+      this.formRulesEmail = [];
+    },
+    "form.password"(val) {
+      this.passwordRules = [];
+    },
+  },
+
   methods: {
-     async getLogo() {
+    submitHandler() {
+      (this.formRulesEmail = [
+        (v) => !!v || "This is required",
+        (v) =>
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "E-mail must be valid",
+      ]),
+        (this.passwordRules = [(v) => !!v || "This is required"]);
+      this.login();
+    },
+    async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
-          if(result.data.path){ 
-            this.logo_path = result.data.path
-          }
+        if (result.data.path) {
+          this.logo_path = result.data.path;
+        }
       });
     },
 
@@ -205,7 +213,7 @@ export default {
                 this.snackbar.message = "Login Successful.";
                 this.$store.dispatch("auth/fetchUser");
                 this.$store.dispatch("auth/fetchUserPermissions");
-                this.$store.dispatch("auth/fetchUserRoles");  
+                this.$store.dispatch("auth/fetchUserRoles");
                 this.$router.push({ name: "dashboard" }).catch((errr) => {});
               });
           })

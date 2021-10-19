@@ -639,6 +639,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Inventory" };
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -907,7 +910,7 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          console.log(key)
+          console.log(key);
           if (key == "category") {
             if (this.currentdata.category) {
               if (

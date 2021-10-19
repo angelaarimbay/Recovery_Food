@@ -497,7 +497,7 @@
                       sm="12"
                       md="12"
                     >
-                    <small> Available quantity {{ getQuantity }} </small>
+                      <small> Available quantity {{ getQuantity }} </small>
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
@@ -569,6 +569,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Inventory" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -796,15 +799,15 @@ export default {
     async save() {
       if (this.$refs.form.validate()) {
         // Validate first before compare
-      if(this.getQuantity < this.form.quantity){
+        if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
-                active: true,
-                iconText: "close",
-                iconColor: "danger",
-                message: "Insufficient Quantity in Incoming stock.",
-              };
-        return;
-      }
+            active: true,
+            iconText: "close",
+            iconColor: "danger",
+            message: "Insufficient Quantity in Incoming stock.",
+          };
+          return;
+        }
 
         if (this.compare()) {
           // Save or update data in the table
@@ -845,6 +848,7 @@ export default {
         })
         .then((result) => {
           // If the value is true then get the data
+          console.log(result.data);
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
@@ -859,14 +863,13 @@ export default {
       });
     },
 
-    async suppValidate() { 
-      await axios.get("/api/osupp/suppValidate",{params:{id: this.getID}}).then((result) => {
-        console.log(result.data)
-        this.getQuantity = result.data
-      });
+    async suppValidate() {
+      await axios
+        .get("/api/osupp/suppValidate", { params: { id: this.getID } })
+        .then((result) => {
+          this.getQuantity = result.data;
+        });
     },
-
-
 
     async suppName() {
       this.form.supply_name = null;
@@ -894,12 +897,12 @@ export default {
       this.form.supply_name = row.supply_name.id;
       this.form.quantity = row.quantity;
       this.form.requesting_branch = row.requesting_branch.id;
-      this.getID = row.id
+      this.getID = row.id;
       this.form.outgoing_date = this.getFormatDate(
         row.outgoing_date,
         "YYYY-MM-DD"
-      ); 
-          this.suppValidate() 
+      );
+      this.suppValidate();
 
       this.dialog = true;
     },

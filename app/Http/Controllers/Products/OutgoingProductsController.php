@@ -8,6 +8,7 @@ use App\Models\tbl_outgoingprod;
 use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
 use App\Models\tbl_masterlistprod;
+use App\Models\tbl_incomingprod;
 use App\Models\tbl_branches;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -45,7 +46,7 @@ class OutgoingProductsController extends Controller
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
                 ($t->branch? " and requesting_branch=".$t->branch:"");
   
-        $table = tbl_outgoingprod::with(["category","sub_category","product_name","requesting_branch"]) 
+        $table = tbl_outgoingprod::with(["category","sub_category","product_name","requesting_branch"])
                 ->whereRaw($where)
                 ->where("product_name", "!=", null);
  
@@ -54,31 +55,30 @@ class OutgoingProductsController extends Controller
         }
 
         if ($t->search) { // If has value
-              $table =  $table->whereHas('product_name', function ($q) use ($t) {
+            $table =  $table->whereHas('product_name', function ($q) use ($t) {
                 $q->where('product_name', 'like', "%".$t->search."%");
             }) ->paginate($t->itemsPerPage, "*", "page", 1);
         }
          
         
         $return = [];
-        foreach ($table->get() as $key => $value) { 
+        foreach ($table->get() as $key => $value) {
             $temp = [];
             $temp['row']  = $key+1;
-            $temp['id'] = $value->id; 
-            $temp['status'] = $value->status;  
-            $temp['category'] = $value->category_details;  
-            $temp['outgoing_amount'] = $value->outgoing_amount;  
-            $temp['outgoing_date'] = $value->outgoing_date;  
-            $temp['product_name'] = $value->product_name_details;  
-            $temp['quantity'] = $value->quantity;  
-            $temp['quantity_diff'] = $value->quantity_diff;  
-            $temp['requesting_branch'] = $value->requesting_branch_details;  
-            $temp['sub_category'] = $value->sub_category_details;  
-            array_push($return,$temp);
-        }   
+            $temp['id'] = $value->id;
+            $temp['status'] = $value->status;
+            $temp['category'] = $value->category_details;
+            $temp['outgoing_amount'] = $value->outgoing_amount;
+            $temp['outgoing_date'] = $value->outgoing_date;
+            $temp['product_name'] = $value->product_name_details;
+            $temp['quantity'] = $value->quantity;
+            $temp['quantity_diff'] = $value->quantity_diff;
+            $temp['requesting_branch'] = $value->requesting_branch_details;
+            $temp['sub_category'] = $value->sub_category_details;
+            array_push($return, $temp);
+        }
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
-  
     }
 
     public function prodCat()
@@ -99,5 +99,13 @@ class OutgoingProductsController extends Controller
     public function branchName()
     {
         return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
+    }
+
+    public function validateQuantity(Request $request)
+    {
+        return $request->id;
+        $get_group = tbl_masterlistprod::where("id", $request->id)->first()->group;
+        $get_group = tbl_masterlistprod::where("group", $get_group)->pluck('id');
+        return tbl_incomingprod::wherein('product_name', $get_group)->sum('quantity');
     }
 }

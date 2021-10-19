@@ -537,6 +537,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Products" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -577,7 +580,6 @@ export default {
         return "This is required";
       },
     ],
-    
 
     // Form Data
     form: {

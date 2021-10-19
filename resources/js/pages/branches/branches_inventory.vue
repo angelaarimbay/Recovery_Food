@@ -243,7 +243,7 @@
               <!-- Paginate -->
               <div class="text-center pt-2">
                 <v-pagination
-                  v-model="page1" 
+                  v-model="page1"
                   :length="table1.last_page"
                   color="red darken-2"
                 ></v-pagination>
@@ -453,6 +453,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Branches" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -589,16 +592,16 @@ export default {
     itemsPerPage2: 5,
   }),
 
-    watch:{
-      page1(val) {
-          this.page1 = val;
-          this.getSupplies();
-        },
-         page2(val) {
-          this.page1 = val;
-          this.getProducts();
-        },
+  watch: {
+    page1(val) {
+      this.page1 = val;
+      this.getSupplies();
     },
+    page2(val) {
+      this.page1 = val;
+      this.getProducts();
+    },
+  },
   // Onload
   created() {
     if (this.user.permissionslist.includes("Access Branches")) {
@@ -636,7 +639,7 @@ export default {
             search: this.search1,
           },
         })
-        .then((result) => { 
+        .then((result) => {
           this.table1 = result.data;
           this.progressbar = false;
         });

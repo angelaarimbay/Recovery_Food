@@ -566,6 +566,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Products" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -829,6 +832,14 @@ export default {
         })
         .catch((result) => {
           // If false or error when saving
+        });
+    },
+
+    async prodValidate() {
+      await axios
+        .get("/api/outprod/prodValidate", { params: { id: this.getID } })
+        .then((result) => {
+          this.getQuantity = result.data;
         });
     },
 

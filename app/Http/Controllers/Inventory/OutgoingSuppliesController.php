@@ -76,8 +76,6 @@ class OutgoingSuppliesController extends Controller
         }   
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
-  
- 
     }
 
     public function suppCat()
@@ -102,7 +100,4 @@ class OutgoingSuppliesController extends Controller
         $get_group = tbl_masterlistsupp::where("group",$get_group)->pluck('id'); 
         return tbl_incomingsupp::wherein('supply_name',$get_group )->sum('quantity');
     }
-
-
-
 }

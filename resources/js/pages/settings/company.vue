@@ -258,6 +258,9 @@ import { mapGetters } from "vuex";
 import axios from "axios";
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Settings" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",

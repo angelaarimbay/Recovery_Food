@@ -189,7 +189,6 @@
                 </v-chip>
               </span>
             </template>
-
             <template v-slot:[`item.id`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -335,10 +334,10 @@
                     <v-col
                       class="py-0"
                       cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
                       v-if="passwords"
                     >
                       <v-text-field
@@ -347,6 +346,7 @@
                         :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                         :type="show1 ? 'text' : 'password'"
                         @click:append="show1 = !show1"
+                        @input="inputPass"
                         outlined
                         clearable
                         dense
@@ -362,11 +362,15 @@
                     <v-col
                       class="py-0"
                       cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
-                      v-if="passwords"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                      v-if="
+                        passwords &&
+                        this.form.password !== null &&
+                        this.form.password.length !== 0
+                      "
                     >
                       <v-text-field
                         :rules="[
@@ -428,7 +432,6 @@
                         item-text="branch_name"
                         item-value="id"
                         outlined
-                        clearable
                         dense
                       >
                         <template slot="label">
@@ -492,10 +495,18 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "User Accounts" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
+    inputPass() {
+      if (this.form.password == null || this.form.password.length == 0) {
+        this.form.confirmPass = null;
+      }
+    },
   },
   data: () => ({
     progressbar: false,
@@ -548,6 +559,7 @@ export default {
 
     // Form Data
     form: {
+      id: null,
       first_name: null,
       last_name: null,
       email: null,
@@ -659,7 +671,15 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          found += 1;
+          if (key == "branch") {
+            if (this.currentdata.branch) {
+              if (this.currentdata.branch.id != this.form.branch) {
+                found += 1;
+              }
+            }
+          } else {
+            found += 1;
+          }
         }
       }
       //if has changes
@@ -727,7 +747,7 @@ export default {
             search: this.search,
           },
         })
-        .then((result) => { 
+        .then((result) => {
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -746,7 +766,8 @@ export default {
       this.form.last_name = row.last_name;
       this.form.email = row.email;
       this.form.phone_number = row.phone_number;
-      this.form.branch = row.branch_details.id;
+      this.form.branch = row.branch.id;
+
       this.dialog = true;
     },
 

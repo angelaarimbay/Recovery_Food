@@ -416,9 +416,7 @@
                           disabled
                           clearable
                           dense
-                          counter
                           @keydown="numberKeydown($event)"
-                          maxlength="6"
                         >
                           <template slot="label">
                             <div style="font-size: 14px">VAT</div>
@@ -553,6 +551,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Products" };
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -872,8 +873,8 @@ export default {
     // 3. else wo/vat = total (total amt / quantity)
     async compute() {
       this.form.with_vat = (this.form.price / this.temp_vat).toFixed(2);
-      this.getVat();
       this.form.vat = this.temp_vat;
+      this.getVat();
     },
 
     // Editing/updating of row

@@ -365,6 +365,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Categories" };
+  },
   data: () => ({
     progressbar: false,
     snackbar: {

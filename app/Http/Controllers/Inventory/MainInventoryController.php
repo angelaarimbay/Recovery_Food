@@ -32,7 +32,6 @@ class MainInventoryController extends Controller
                 where ".$where."
                 group by supply_name, unit, category ");
 
- 
         $return = [];
         $row = 1;
         foreach ($table as $key => $value) {

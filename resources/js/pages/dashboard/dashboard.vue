@@ -435,6 +435,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Dashboard" };
+  },
   components: {
     BarChart,
     BarChart1,
@@ -523,7 +526,10 @@ export default {
           label: function (data) {
             return [
               "₱ " +
-                data.yLabel.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                data.yLabel
+                  .toFixed(2)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             ];
           },
           title: function (data) {
@@ -703,7 +709,7 @@ export default {
             month: new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
           },
         })
-        .then((result) => { 
+        .then((result) => {
           this.datacollection1 = {
             labels: result.data.name,
             datasets: [

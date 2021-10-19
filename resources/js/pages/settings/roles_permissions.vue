@@ -371,11 +371,11 @@
           >
             User Roles
           </v-tab>
-         <v-tab
+          <v-tab
             :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
-            style="text-transform: none" 
+            style="text-transform: none"
           >
-           Dev
+            Dev
           </v-tab>
         </v-tabs>
 
@@ -567,37 +567,27 @@
               </v-container>
             </v-container>
           </v-tab-item>
-              <v-card-text>
-                <v-text-field
-                  class=""
-                  v-model="seederTablename"
-                  label="Table name"
-                ></v-text-field>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="#00794b"
-                    small
-                    depressed
-                    dark
-                    @click="getSeeder"
-                  >
-                    Extract
-                  </v-btn>
-                </v-card-actions>
-                <v-textarea
-                  outlined
-                  v-model="seederColumns"
-                  label="OUTPUT"
-                  row="10"
-                ></v-textarea>
-              </v-card-text>
+          <v-card-text>
+            <v-text-field
+              class=""
+              v-model="seederTablename"
+              label="Table name"
+            ></v-text-field>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="#00794b" small depressed dark @click="getSeeder">
+                Extract
+              </v-btn>
+            </v-card-actions>
+            <v-textarea
+              outlined
+              v-model="seederColumns"
+              label="OUTPUT"
+              row="10"
+            ></v-textarea>
+          </v-card-text>
           <v-tab-item>
-            
             <!-- wla pong closing tag? -->
-
-
-
           </v-tab-item>
         </v-tabs-items>
       </v-card>
@@ -617,18 +607,21 @@
 import { mapGetters } from "vuex";
 import axios from "axios";
 import Swal from "sweetalert2";
-import template from '../template.vue';
+import template from "../template.vue";
 export default {
   components: { template },
   middleware: "auth",
+  metaInfo() {
+    return { title: "Settings" };
+  },
   // declarations
   data: () => ({
     snackbar: {
       active: false,
       message: "",
     },
-    seederColumns:'',
-    seederTablename:'', 
+    seederColumns: "",
+    seederTablename: "",
     tab: null,
     formRules: [(v) => !!v || "This is required"],
     progressBar: false,
@@ -671,7 +664,7 @@ export default {
         text: "USER",
         align: "start",
         value: "name",
-        class: "black--text"
+        class: "black--text",
       },
       { text: "CURRENT ROLE(S)", value: "roles.name", class: "black--text" },
       { text: "ACTION(S)", value: "id", class: "black--text" },
@@ -716,13 +709,12 @@ export default {
 
   // functions
   methods: {
-  async  getSeeder(){
+    async getSeeder() {
       const { data } = await axios.get("/api/seeder", {
         params: { id: this.seederTablename },
-      }); 
+      });
       this.seederColumns = data;
     },
-
 
     // role
     // get roles

@@ -149,6 +149,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Password" };
+  },
   data: () => ({
     snackbar: {
       active: false,

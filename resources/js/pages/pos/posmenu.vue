@@ -686,6 +686,9 @@ import axios from "axios"; // Library for sending api request
 import salesreport from "../reports/report_types/sales.vue";
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "POS" };
+  },
   components: {
     salesreport,
   },

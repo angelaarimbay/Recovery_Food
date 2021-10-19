@@ -234,6 +234,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Inventory" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -349,7 +352,7 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
+          console.log(result.data);
           //if the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

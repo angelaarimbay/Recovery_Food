@@ -94,16 +94,10 @@ class IncomingSuppliesController extends Controller
         ->where("status", 1)->get();
     }
 
-
     public function suppliers()
     { 
         return tbl_supplist::get();
     }
-
-
-
-
-
 
     public function getTotalCurrentMonth(Request $t){ 
         $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
@@ -117,6 +111,5 @@ class IncomingSuppliesController extends Controller
         } catch (\Throwable $th) {
             return false;
         }
-       
     }
 }
