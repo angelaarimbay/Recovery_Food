@@ -283,7 +283,10 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
-
+              <template v-slot:[`item.category.supply_cat_name`]="{ item }">
+              {{ item.category.supply_cat_name }}<br>
+              <small style="font-size: 10px;">Supplier: {{ item.supplier.supplier_name }}</small>   </template
+            >
             <template v-slot:[`item.id`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -316,7 +319,7 @@
 
         <!--Dialog Form-->
         <v-form ref="form">
-          <v-dialog v-model="dialog" max-width="450px">
+          <v-dialog v-model="dialog" max-width="650px">
             <v-toolbar
               dense
               dark
@@ -342,10 +345,61 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+                    
                     <v-col
                       class="py-0"
                       cols="12"
-                      xl="12"
+                      xl="4"
+                      lg="4"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field v-model="form.id" class="d-none" dense>
+                        <template slot="label">
+                          <div style="font-size: 14px">ID</div>
+                        </template>
+                      </v-text-field>
+                        
+                      <v-menu
+                        v-model="date3"
+                        :close-on-content-click="false"
+                        :nudge-right="35"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            :rules="formRules"
+                            v-model="form.incoming_date"
+                            label="Incoming Date"
+                            readonly
+                            v-on="on"
+                            class="py-0"
+                            dense
+                            clearable
+                            outlined
+                          ></v-text-field>
+                        </template> 
+                        <v-date-picker
+                          v-model="form.incoming_date"
+                          @input="date3 = false"
+                          scrollable
+                          no-title
+                          color="red darken-2"
+                          dark
+                        ></v-date-picker> 
+                      </v-menu>
+
+
+                    </v-col>
+
+                    <v-col
+                      class="py-0"
+                      cols="8"
+                      xl="8"
                       lg="12"
                       sm="12"
                       md="12"
@@ -375,58 +429,10 @@
                       sm="12"
                       md="12"
                     >
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 14px">ID</div>
-                        </template>
-                      </v-text-field>
-
-                      <v-menu
-                        v-model="date3"
-                        :close-on-content-click="false"
-                        :nudge-right="35"
-                        lazy
-                        transition="scale-transition"
-                        offset-y
-                        full-width
-                        min-width="290px"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <v-text-field
-                            :rules="formRules"
-                            v-model="form.incoming_date"
-                            label="Incoming Date"
-                            readonly
-                            v-on="on"
-                            class="py-0"
-                            dense
-                            clearable
-                            outlined
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker
-                          v-model="form.incoming_date"
-                          @input="date3 = false"
-                          scrollable
-                          no-title
-                          color="red darken-2"
-                          dark
-                        ></v-date-picker>
-                      </v-menu>
-                    </v-col>
-
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.category"
-                        outlined
+                        outlined :disabled="!form.supplier"
                         dense
                         :items="suppcatlist"
                         item-text="supply_cat_name"
@@ -440,48 +446,48 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="pt-0 pb-6"
                       cols="12"
                       xl="12"
                       lg="12"
                       sm="12"
                       md="12"
                     >
-                      <v-select
-                        :rules="formRulesNumberRange"
+                      <v-autocomplete
+                        :rules="formRules"
                         v-model="form.supply_name"
-                        outlined
+                        outlined :disabled="!form.supplier"
                         dense
+                        hide-details=""
                         :items="suppnamelist"
-                        item-text="supply_name"
-                        item-value="id"
+                        return-object
+                        item-text="supply_name" 
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
                         </template>
-                        <template slot="selection" slot-scope="data"
-                          >{{ data.item.supply_name }}
-                          {{ data.item.description }}
-                          {{ data.item.unit }}</template
-                        >
-                        <template slot="item" slot-scope="data"
-                          >{{ data.item.supply_name }}
-                          {{ data.item.description }}
-                          {{ data.item.unit }}</template
-                        >
-                      </v-select>
-                    </v-col>
+                       
+                      </v-autocomplete>
+
+                      <v-card color="white" flat class="px-4  border" v-if="form.supply_name"> 
+                          <table style="width: 50%; font-size: 10px">
+                                  <tr> <th class="text-left pr-2" style="width: 50px;"><b>Description:</b></th><th> {{ form.supply_name.description  }} </th></tr>
+                                  <tr> <th class="text-left pr-2"><b>Net Price:</b></th><th> {{  getFormatCurrency(form.supply_name.net_price,'0,0.00') }} </th></tr>
+                                  <tr> <th class="text-left pr-2"><b>Unit:</b></th><th> {{ form.supply_name.unit }} </th></tr> 
+                             </table>     
+                      </v-card> 
+                    </v-col> 
 
                     <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
-                        outlined
+                        outlined :disabled="!form.supplier"
                         clearable
                         dense
                         @keydown="quantityKeydown($event)"
                         counter
-                        maxlength="3"
+                        maxlength="4"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Quantity *</div>
@@ -493,7 +499,7 @@
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.amount"
-                        outlined
+                        outlined :disabled="!form.supplier"
                         clearable
                         dense
                         @keydown="numberKeydown($event)"
@@ -625,13 +631,7 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
-      },
-      {
-        text: "SUPPLIER",
-        value: "supplier.supplier_name",
-        filterable: false,
-        class: "black--text",
-      },
+      }, 
       {
         text: "CATEGORY",
         value: "category.supply_cat_name",
@@ -640,7 +640,7 @@ export default {
       },
       {
         text: "SUPPLY NAME",
-        value: "supply_full",
+        value: "supply_name.supply_name",
         class: "black--text",
       },
       {
@@ -658,7 +658,7 @@ export default {
       },
       {
         text: "WITH VAT",
-        value: "supply_name.format_with_vat",
+        value: "with_vat_price",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -672,7 +672,14 @@ export default {
       },
       {
         text: "AMT",
-        value: "format_amount",
+        value: "amount",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "FLUCTIATION",
+        value: "fluctiation",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -734,6 +741,10 @@ export default {
       const date = moment(e);
       return date.format(format);
     },
+   getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
+    },
 
     // Format for everytime we call on database
     // Always add await and async
@@ -756,7 +767,7 @@ export default {
             }
           } else if (key == "supply_name") {
             if (this.currentdata.supply_name) {
-              if (this.currentdata.supply_name.id != this.form.supply_name) {
+              if (this.currentdata.supply_name.id != this.form.supply_name.id) {
                 found += 1;
               }
             }
@@ -874,7 +885,7 @@ export default {
       this.form.category = row.category.id;
       this.form.supplier = row.supplier.id;
       this.suppName();
-      this.form.supply_name = row.supply_name.id;
+      this.form.supply_name = row.supply_name;
       this.form.quantity = row.quantity;
       this.form.amount = row.amount;
       this.form.incoming_date = this.getFormatDate(

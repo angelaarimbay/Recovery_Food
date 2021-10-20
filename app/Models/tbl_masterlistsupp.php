@@ -11,7 +11,7 @@ class tbl_masterlistsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['with_vat','without_vat','format_net_price','format_with_vat','format_without_vat','category_name','category_details','supplier_name_details'];
+    public $appends = ['with_vat','without_vat','format_net_price','category_name','category_details','supplier_name_details','without_vat_price','with_vat_price'];
 
     
     public function category()
@@ -68,10 +68,7 @@ class tbl_masterlistsupp extends Model
         return number_format($this->with_vat, 2, ".", ",");
     }
     
-    public function getFormatWithoutVatAttribute()
-    {
-        return number_format($this->without_vat, 2, ".", ",");
-    }
+   
 
     public function getCategoryNameAttribute()
     {
@@ -87,4 +84,54 @@ class tbl_masterlistsupp extends Model
     {
         return tbl_supplist::where("id", $this->supplier)->first();
     }
+
+    public function getWithoutVatPriceAttribute()
+    {
+        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
+        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+        $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 23:59:59'));
+
+        //get the amount from incoming
+        $get_amount = tbl_incomingsupp::where("supply_name",$this->id)
+        ->whereBetween('incoming_date',[$date1,$date2]);  
+        $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name",$this->id)
+        ->whereBetween('incoming_date',[$date1,$date2]);
+        //get average amount
+        if($get_quantity->sum('quantity') > 0){
+            $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity'); 
+        }else{  
+            $get_wov = 0;
+        }
+        //get vat
+        if($this->vatable == 1){
+            if($get_wov > 0){
+                $get_wov = $get_wov / $this->vat; 
+            }else{
+                $get_wov =$this->net_price / $this->vat;
+            }
+        }
+
+        return $get_wov;
+    } 
+    public function getWithVatPriceAttribute()
+    {
+        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
+        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+        $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 23:59:59'));
+
+        //get the amount from incoming
+        $get_amount = tbl_incomingsupp::where("supply_name",$this->id)
+        ->whereBetween('incoming_date',[$date1,$date2]);  
+        $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name",$this->id)
+        ->whereBetween('incoming_date',[$date1,$date2]);
+        //get average amount
+        if($get_quantity->sum('quantity') > 0){
+            $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity'); 
+        }else{  
+            $get_wov = $this->net_price ;
+        } 
+        return $get_wov;
+    }
+   
+
 }

@@ -28,14 +28,14 @@ class IncomingSuppliesController extends Controller
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
                 ["category"=>$data->category,
-                "supply_name"=>$data->supply_name,
+                "supply_name"=>$data->supply_name['id'],
                 "quantity"=>$data->quantity,
                 "amount"=>$data->amount,
                 "incoming_date"=>$data->incoming_date,
                 ]
             );
         } else { 
-            tbl_incomingsupp::create($data->all());
+            tbl_incomingsupp::create($data->except('supply_name') + ['supply_name'=>$data->supply_name['id']]);
         }
         return 0;
     }
@@ -65,13 +65,15 @@ class IncomingSuppliesController extends Controller
             $temp['status'] = $value->status;  
             $temp['amount'] = $value->amount;  
             $temp['category'] = $value->category_details;   
-            $temp['format_amount'] = $value->format_amount;  
             $temp['incoming_date'] = $value->incoming_date;  
             $temp['quantity'] = $value->quantity;  
             $temp['quantity_amount'] = $value->quantity_amount;  
             $temp['quantity_difference'] = $value->quantity_difference;  
             $temp['supply_name'] = $value->supply_name_details;  
-            $temp['supplier'] = $value->supplier_details;  
+            $temp['supplier'] = $value->supplier_details;   
+            $temp['amount'] = number_format($value->amount,2);  
+            $temp['with_vat_price'] = number_format($value->with_vat_price,2);   
+            $temp['fluctiation'] = number_format($value->fluctiation,2);  
             array_push($return,$temp);
         }   
         $items =   Collection::make($return);
@@ -99,31 +101,31 @@ class IncomingSuppliesController extends Controller
         return tbl_supplist::get();
     }
 
-    public function getTotalCurrentMonth(Request $t){ 
-        //get 1 - number of days for the month
-        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
+    // public function getTotalCurrentMonth(Request $t){ 
+    //     //get 1 - number of days for the month
+    //     $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
+    //     $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+    //     $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
          
-        try {
-               //get the group id's
-            $id_group = tbl_masterlistsupp::where("id",$t->item)->first()->group;
-            $id_array = tbl_masterlistsupp::where("group",$valid_group)->pluck('id');
-            $get_specific_item_amount = tbl_incomingsupp::query()
-            ->wherein("supply_name",$id_array)
-            ->whereBetween("incoming_date",[$date1,$date2])
-            ->sum('amount');
-            $get_specific_item_quantity =tbl_incomingsupp::query()
-            ->wherein("supply_name",$id_array)
-            ->whereBetween("incoming_date",[$date1,$date2])
-            ->sum('quantity');
+    //     try {
+    //            //get the group id's
+    //         $id_group = tbl_masterlistsupp::where("id",$t->item)->first()->group;
+    //         $id_array = tbl_masterlistsupp::where("group",$valid_group)->pluck('id');
+    //         $get_specific_item_amount = tbl_incomingsupp::query()
+    //         ->wherein("supply_name",$id_array)
+    //         ->whereBetween("incoming_date",[$date1,$date2])
+    //         ->sum('amount');
+    //         $get_specific_item_quantity =tbl_incomingsupp::query()
+    //         ->wherein("supply_name",$id_array)
+    //         ->whereBetween("incoming_date",[$date1,$date2])
+    //         ->sum('quantity');
 
-            // mali parin pla to. bakit po? w8 rewrite kopoba yung formula ulit from excel?
+    //         // mali parin pla to. bakit po? w8 rewrite kopoba yung formula ulit from excel?
 
 
-           return  $get_specific_item_amount . ' '. $get_specific_item_quantity;
-        } catch (\Throwable $th) {
-            return false;
-        }
-    }
+    //        return  $get_specific_item_amount . ' '. $get_specific_item_quantity;
+    //     } catch (\Throwable $th) {
+    //         return false;
+    //     }
+    // }
 }

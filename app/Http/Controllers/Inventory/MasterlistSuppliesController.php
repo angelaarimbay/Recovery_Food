@@ -36,8 +36,13 @@ class MasterlistSuppliesController extends Controller
                  "vat"=>$data->vat,
                  "vatable"=>$data->vatable,
                  "exp_date"=>$data->exp_date,
+                 "lead_time"=>$data->lead_time,
+                 "order_frequency"=>$data->order_frequency,
+                 "maximum_order_quantity"=>$data->maximum_order_quantity,
                 ]
             );
+
+             
         } else {
             $supply='';
             if(is_array($data->supply_name)){
@@ -81,15 +86,17 @@ class MasterlistSuppliesController extends Controller
             $temp['category'] = $value->category_details;  
             $temp['unit'] = $value->unit;  
             $temp['vat'] = $value->vat;  
-            $temp['vatable'] = $value->vatable;  
-            $temp['without_vat'] = $value->without_vat;  
-            
+            $temp['vatable'] = $value->vatable;   
             $temp['supply_name'] = $value->supply_name;  
             $temp['description'] = $value->description;  
             $temp['format_net_price'] = $value->format_net_price;  
-            $temp['net_price'] = $value->net_price;   
-            $temp['format_with_vat'] = $value->format_with_vat;  
-            $temp['format_without_vat'] = $value->format_without_vat;  
+            $temp['net_price'] = $value->net_price;    
+            $temp['lead_time'] = $value->lead_time;  
+            $temp['order_frequency'] = $value->order_frequency;  
+            $temp['maximum_order_quantity'] = $value->maximum_order_quantity;   
+
+            $temp['without_vat_price'] = number_format($value->without_vat_price,2);   
+            $temp['with_vat_price'] = number_format($value->with_vat_price,2);   
             array_push($return,$temp);
         }   
 
@@ -104,9 +111,10 @@ class MasterlistSuppliesController extends Controller
     {
         try {
             return tbl_masterlistsupp::where("supply_name", $t->name)->get();
-        } catch (Throwable $th) {
+        } catch (\Throwable $th) {
             return false;
         }
+       
     }
     public function sum(Request $t)
     {

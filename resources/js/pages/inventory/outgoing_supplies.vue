@@ -455,39 +455,38 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="pt-0 pb-6"
                       cols="12"
                       xl="12"
                       lg="12"
                       sm="12"
                       md="12"
                     >
-                      <v-select
-                        :rules="formRulesNumberRange"
+                      <v-autocomplete
+                        :rules="formRules"
                         v-model="form.supply_name"
-                        :items="suppnamelist"
+                        :items="suppnamelist" :disabled="!form.category"
                         outlined
                         dense
+                        hide-details=""
                         item-text="supply_name"
-                        item-value="id"
+                        return-object
                         @change="suppValidate"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
-                        </template>
-                        <template slot="selection" slot-scope="data"
-                          >{{ data.item.supplier_name_details.supplier_name }} -
-                          {{ data.item.supply_name }}
-                          {{ data.item.description }}
-                          {{ data.item.unit }}</template
-                        >
-                        <template slot="item" slot-scope="data"
-                          >{{ data.item.supplier_name_details.supplier_name }} -
-                          {{ data.item.supply_name }}
-                          {{ data.item.description }}
-                          {{ data.item.unit }}</template
-                        >
-                      </v-select>
+                        </template> 
+                        </v-autocomplete>
+
+                      <v-card color="white" flat class="px-4  border" v-if="form.supply_name"> 
+                          <table style="width: 70%; font-size: 10px">
+                                  <tr> <th class="text-left pr-2" style="width:130px;"><b>Description :</b></th><th> {{ form.supply_name.description  }} </th></tr>
+                                  <tr> <th class="text-left pr-2"><b>Net Price :</b></th><th> {{  getFormatCurrency(form.supply_name.net_price,'0,0.00') }} </th></tr>
+                                  <tr> <th class="text-left pr-2"><b>Unit :</b></th><th> {{ form.supply_name.unit }} </th></tr> 
+                                  <tr> <th class="text-left pr-2"><b>Available Quantity :</b></th><th> {{ getQuantity }} </th></tr> 
+    
+                          </table>     
+                      </v-card> 
                     </v-col>
 
                     <v-col
@@ -497,8 +496,7 @@
                       lg="12"
                       sm="12"
                       md="12"
-                    >
-                      <small> Available quantity {{ getQuantity }} </small>
+                    > 
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
@@ -648,14 +646,14 @@ export default {
       },
       {
         text: "NET PRICE",
-        value: "supply_name.format_net_price",
+        value: "supply_name.net_price",
         align: "right",
         filterable: false,
         class: "black--text",
       },
       {
         text: "WITH VAT",
-        value: "supply_name.format_with_vat",
+        value: "with_vat_price",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -683,6 +681,12 @@ export default {
       {
         text: "DATE",
         value: "outgoing_date",
+        filterable: false,
+        class: "black--text",
+      },   {
+        text: "FLUCTIATION",
+        value: "fluctiation",
+        align: "right",
         filterable: false,
         class: "black--text",
       },
@@ -731,6 +735,10 @@ export default {
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
+    },
+       getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
     },
 
     // Format for everytime we call on database
@@ -864,10 +872,10 @@ export default {
       });
     },
 
-    async suppValidate(id) {
-      console.log(id)
+    async suppValidate(item) {
+      
       await axios
-        .get("/api/osupp/suppValidate", { params: { id: id } })
+        .get("/api/osupp/suppValidate", { params: { id: item.id } })
         .then((result) => {
           this.getQuantity = result.data;
         });
@@ -896,15 +904,14 @@ export default {
       this.form.id = row.id;
       this.form.category = row.category.id;
       this.suppName();
-      this.form.supply_name = row.supply_name.id;
+      this.form.supply_name = row.supply_name ;
       this.form.quantity = row.quantity;
       this.form.requesting_branch = row.requesting_branch.id; 
       this.form.outgoing_date = this.getFormatDate(
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-      this.suppValidate(row.id);
-
+      this.suppValidate(row.supply_name); 
       this.dialog = true;
     },
 

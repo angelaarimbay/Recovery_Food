@@ -11,7 +11,7 @@ class tbl_incomingprod extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['format_amount','product_name_details','category_details','sub_category_details'];
+    public $appends = ['format_amount','product_name_details','category_details','sub_category_details' ];
 
     public function category()
     {
@@ -47,5 +47,5 @@ class tbl_incomingprod extends Model
         return tbl_prodsubcat::where("id", $this->sub_category)->first();
     }  
 
-
+  
 }

@@ -22,27 +22,32 @@ class OutgoingSuppliesController extends Controller
     public function save(Request $data)
     {
         $table = tbl_outgoingsupp::where("supply_name", "!=", null);
+        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
+        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+        $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
 
-        //get supply id group via id 
-           $id_group = tbl_masterlistsupp::where("id",$data->supply_name)->first()->group;
-        $id_array = tbl_masterlistsupp::where("group",$id_group)->pluck('id'); //set of id's
-        $get_amounts_average = tbl_incomingsupp::wherein("supply_name",$id_array)->avg("amount"); //avg amount of all via id's
+        $get_amount = tbl_incomingsupp::where("supply_name",$data->supply_name['id'])
+        ->whereBetween('incoming_date',[$date1,$date2]);  
+        $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name",$data->supply_name['id'])
+        ->whereBetween('incoming_date',[$date1,$date2]); 
+      
+            $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity'); 
 
- 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
             // Update
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
                 ["category"=>$data->category,
-                 "supply_name"=>$data->supply_name,
+                 "supply_name"=>$data->supply_name['id'],
                  "quantity"=>$data->quantity,
-                 "amount" => $get_amounts_average,
+                 "amount" =>  $get_wov * $data->quantity,
                  "requesting_branch"=>$data->requesting_branch,
+                 "outgoing_date"=> date('Y-m-d', strtotime($data->outgoing_date)),
                 ]
             );
         } else {
-            tbl_outgoingsupp::create($data->all() + ['amount' => $get_amounts_average]);
+            tbl_outgoingsupp::create($data->except(['supply_name','amount']) + ['supply_name'=>$data->supply_name['id'], 'amount' => $get_wov  * $data->quantity]);
         }
         return 0;
     }
@@ -78,7 +83,10 @@ class OutgoingSuppliesController extends Controller
             $temp['quantity'] = $value->quantity;  
             $temp['requesting_branch'] = $value->requesting_branch_details;  
             $temp['supply_name'] = $value->supply_name_details;  
-            $temp['outgoing_amount'] = $value->amount * $value->quantity;  
+            $temp['outgoing_amount'] = number_format($value->with_vat_price * $value->quantity,2) ;  
+            $temp['with_vat_price'] = number_format($value->with_vat_price,2) ;  
+            $temp['without_vat_price'] = number_format($value->without_vat_price,2) ;  
+            $temp['fluctiation'] = number_format($value->fluctiation,2) ;  
            array_push($return,$temp);
         }   
         $items =   Collection::make($return);
@@ -101,10 +109,7 @@ class OutgoingSuppliesController extends Controller
     }
 
     public function validateQuantity(Request $request)
-    {
-        return $request->id;
-        $get_group = tbl_masterlistsupp::where("id",$request->id)->first()->group; 
-        $get_group = tbl_masterlistsupp::where("group",$get_group)->pluck('id'); 
-        return tbl_incomingsupp::wherein('supply_name',$get_group )->sum('quantity');
+    { 
+        return tbl_incomingsupp::where('supply_name',$request->id )->sum('quantity') -  tbl_outgoingsupp::where('supply_name',$request->id )->sum('quantity') ;
     }
 }

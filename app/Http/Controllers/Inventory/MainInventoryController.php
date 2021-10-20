@@ -21,20 +21,53 @@ class MainInventoryController extends Controller
     public function get(Request $t)
     {
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
-       return $table = tbl_masterlistsupp::whereRaw($where)->get();
+         $table = tbl_masterlistsupp::whereRaw($where)->get();
 
         $return = [];
         $row = 1;
         foreach ($table as $key => $value) {
             $temp=[];
             $temp['row'] = $row++ ;
-            $temp['category'] =  $value->category;
+            $temp['category'] =  tbl_suppcat::where("id",$value->category)->first()->supply_cat_name ;
             $temp['supply_name'] =  $value->supply_name ;
-            $temp['net_price'] =  $value->net_price ;  
-            $temp['quantity_diff'] =  tbl_incomingsupp::wherein('supply_name', $value->id)->sum('quantity') - tbl_outgoingsupp::wherein('supply_name', $value->id)->sum('quantity');
             $temp['unit'] =  $value->unit ;
-            $temp['amount'] = ($in_data - $out_data) * $value->net_price ;
-            array_push($return, $temp);
+            $temp['net_price'] =  $value->net_price ;  
+
+            $temp['incoming_q'] =  tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity');
+            $temp['incoming_a']    = number_format( tbl_incomingsupp::where('supply_name', $value->id)->sum('amount'),2);
+            $temp['outgoing_q'] =  tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity');
+            $temp['outgoing_a']    =   number_format(tbl_outgoingsupp::where('supply_name', $value->id)->sum('amount'),2);
+         
+            $temp['onhand_q'] =  tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') - tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity');
+            $temp['onhand_a'] =  number_format((tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') > 0 ? tbl_incomingsupp::where('supply_name', $value->id)->sum('amount') / tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity'):0),2);
+         
+
+            $temp['average_q'] =  tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d');
+            $temp['average_a'] = number_format((tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') > 0? (tbl_incomingsupp::where('supply_name', $value->id)->sum('amount') / tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity')) * (tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d')):0),2) ;
+
+            $temp['orderpoint'] = number_format( ( $value->lead_time * (tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d')) + ((tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d')) * 2)),2);
+            $orderqty = $value->order_frequency * (tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d'));
+            if($orderqty < $value->maximum_order_quantity  ){
+                $temp['ordr'] = number_format($value->maximum_order_quantity,2) ;
+            }else{
+                $temp['ordr'] = number_format($orderqty,2);
+            }
+            if(tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') - tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') <  $value->lead_time * (tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d'))){
+                $temp['triggerpoint'] = "ORDER";
+            }else{
+                $temp['triggerpoint'] = "MANAGE";
+            }
+           
+
+
+            $temp['variance_q'] =  tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') -   tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity');
+            $temp['variance_a']    =  number_format(tbl_incomingsupp::where('supply_name', $value->id)->sum('amount') - tbl_outgoingsupp::where('supply_name', $value->id)->sum('amount'),2);
+         
+          
+
+
+
+             array_push($return, $temp);
         }
 
         $items =   Collection::make($return);

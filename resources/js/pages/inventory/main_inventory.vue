@@ -189,6 +189,25 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
+                <template v-slot:[`item.incoming_a`]="{ item }" style="text-align: right">
+              <small> Qty: {{ item.incoming_q }} <br>   {{ item.incoming_a }} </small> </template
+              >
+              <template v-slot:[`item.outgoing_a`]="{ item }" style="text-align: right">
+              <small> Qty: {{ item.outgoing_q }} <br>   {{ item.outgoing_a }} </small> </template
+              >
+              <template v-slot:[`item.onhand_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.onhand_q }} <br>  {{ item.onhand_a }} </small> </template
+              >
+
+
+            <template v-slot:[`item.average_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.average_q }} <br>  {{ item.average_a }} </small> </template
+              >
+
+            <template v-slot:[`item.variance_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.variance_q }} <br>  {{ item.variance_a }} </small> </template
+              >
+
             <template v-slot:[`item.id`]="{ item }">
               <v-btn
                 icon
@@ -303,15 +322,60 @@ export default {
         class: "black--text",
       },
       {
-        text: "STOCKS ON HAND",
-        value: "quantity_diff",
+        text: "INCOMING",
+        value: "incoming_a",
         align: "right",
         filterable: false,
         class: "black--text",
       },
+   {
+        text: "OUTGOING",
+        value: "outgoing_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+
+
       {
-        text: "TOTAL AMT",
-        value: "amount",
+        text: "STOCKS ON HAND",
+        value: "onhand_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+
+      {
+        text: "AVERAGE",
+        value: "average_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+
+         {
+        text: "ORDER POINT",
+        value: "orderpoint",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+          {
+        text: "ORDR QTY",
+        value: "ordr",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+          {
+        text: "TRIGGER POINT",
+        value: "triggerpoint",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },   {
+        text: "VARIANCE",
+        value: "variance_a",
         align: "right",
         filterable: false,
         class: "black--text",
