@@ -465,7 +465,7 @@
                       <v-autocomplete
                         :rules="formRules"
                         v-model="form.supply_name"
-                        :items="suppnamelist" :disabled="!form.category"
+                        :items="suppnamelist"
                         outlined
                         dense
                         hide-details=""
@@ -475,18 +475,45 @@
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
-                        </template> 
-                        </v-autocomplete>
+                        </template>
+                      </v-autocomplete>
 
-                      <v-card color="white" flat class="px-4  border" v-if="form.supply_name"> 
-                          <table style="width: 70%; font-size: 10px">
-                                  <tr> <th class="text-left pr-2" style="width:130px;"><b>Description :</b></th><th> {{ form.supply_name.description  }} </th></tr>
-                                  <tr> <th class="text-left pr-2"><b>Net Price :</b></th><th> {{  getFormatCurrency(form.supply_name.net_price,'0,0.00') }} </th></tr>
-                                  <tr> <th class="text-left pr-2"><b>Unit :</b></th><th> {{ form.supply_name.unit }} </th></tr> 
-                                  <tr> <th class="text-left pr-2"><b>Available Quantity :</b></th><th> {{ getQuantity }} </th></tr> 
-    
-                          </table>     
-                      </v-card> 
+                      <v-card
+                        color="white"
+                        flat
+                        class="px-4 border"
+                        v-if="form.supply_name"
+                      >
+                        <table style="width: 70%; font-size: 10px">
+                          <tr>
+                            <th class="text-left pr-2" style="width: 130px">
+                              <b>Description :</b>
+                            </th>
+                            <th>{{ form.supply_name.description }}</th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2"><b>Net Price :</b></th>
+                            <th>
+                              {{
+                                getFormatCurrency(
+                                  form.supply_name.net_price,
+                                  "0,0.00"
+                                )
+                              }}
+                            </th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2"><b>Unit :</b></th>
+                            <th>{{ form.supply_name.unit }}</th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2">
+                              <b>Available Quantity :</b>
+                            </th>
+                            <th>{{ getQuantity }}</th>
+                          </tr>
+                        </table>
+                      </v-card>
                     </v-col>
 
                     <v-col
@@ -496,7 +523,7 @@
                       lg="12"
                       sm="12"
                       md="12"
-                    > 
+                    >
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
@@ -683,7 +710,8 @@ export default {
         value: "outgoing_date",
         filterable: false,
         class: "black--text",
-      },   {
+      },
+      {
         text: "FLUCTIATION",
         value: "fluctiation",
         align: "right",
@@ -736,7 +764,7 @@ export default {
       const date = moment(e);
       return date.format(format);
     },
-       getFormatCurrency(e, format) {
+    getFormatCurrency(e, format) {
       const numbr = numeral(e);
       return numbr.format(format);
     },
@@ -822,7 +850,7 @@ export default {
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
-              console.log(result.data)
+              console.log(result.data);
               //if the value is true then save to database
               this.snackbar = {
                 active: true,
@@ -873,7 +901,6 @@ export default {
     },
 
     async suppValidate(item) {
-      
       await axios
         .get("/api/osupp/suppValidate", { params: { id: item.id } })
         .then((result) => {
@@ -904,14 +931,14 @@ export default {
       this.form.id = row.id;
       this.form.category = row.category.id;
       this.suppName();
-      this.form.supply_name = row.supply_name ;
+      this.form.supply_name = row.supply_name;
       this.form.quantity = row.quantity;
-      this.form.requesting_branch = row.requesting_branch.id; 
+      this.form.requesting_branch = row.requesting_branch.id;
       this.form.outgoing_date = this.getFormatDate(
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-      this.suppValidate(row.supply_name); 
+      this.suppValidate(row.supply_name);
       this.dialog = true;
     },
 

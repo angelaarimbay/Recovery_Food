@@ -260,7 +260,7 @@
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
-            :page.sync="page" 
+            :page.sync="page"
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -282,12 +282,12 @@
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
-            >  
+            >
             <template v-slot:[`item.status`]="{ item }">
-                  <!-- <small> Lead time: {{ item.lead_time }} /
-              Max order: {{ item.maximum_order_quantity }} /
+              <!-- <small> Lead time: {{ item.lead_time }} /
+              Max order: {{ item.minimum_order_quantity }} /
               Frequency:  {{ item.order_frequency }}<br> </small> -->
-              
+
               <v-chip
                 style="justify-content: center"
                 x-small
@@ -337,7 +337,7 @@
 
         <!--Dialog Form-->
         <v-form ref="form">
-          <v-dialog v-model="dialog" max-width="550px">
+          <v-dialog v-model="dialog" persistent max-width="450px">
             <v-toolbar
               dense
               dark
@@ -363,9 +363,8 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
-                    
-                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="12" md="12">
-                      <v-text-field v-model="form.id" class="d-none" dense >
+                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="4" md="4">
+                      <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
                           <div style="font-size: 14px">ID</div>
                         </template>
@@ -375,7 +374,7 @@
                         :rules="formRulesNumberRange"
                         v-model="form.status"
                         outlined
-                        dense  
+                        dense
                         :items="status"
                         item-text="name"
                         item-value="id"
@@ -386,14 +385,7 @@
                       </v-select>
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="8"
-                      lg="8"
-                      sm="12"
-                      md="12"
-                    >
+                    <v-col class="py-0" cols="12" xl="8" lg="8" sm="8" md="8">
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.supplier"
@@ -409,11 +401,18 @@
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.category"
-                        outlined :disabled="!form.supplier"
+                        outlined
                         :items="suppcatlist"
                         dense
                         item-text="supply_cat_name"
@@ -436,7 +435,7 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.supply_name"
-                        outlined :disabled="!form.supplier"
+                        outlined
                         clearable
                         dense
                         counter
@@ -449,7 +448,7 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <v-col class="py-0" cols="12" xl="8" lg="8" sm="8" md="8">
                       <v-text-field
                         :rules="formRulesDesc"
                         v-model="form.description"
@@ -466,7 +465,7 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="3" lg="3" sm="12" md="12">
+                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="4" md="4">
                       <v-select
                         :items="unit"
                         :rules="formRules"
@@ -480,7 +479,7 @@
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="5" lg="5" sm="12" md="12">
+                    <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.net_price"
@@ -499,7 +498,7 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="12" md="12">
+                    <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-layout align-center>
                         <v-text-field
                           :rules="formRulesVAT"
@@ -507,8 +506,8 @@
                           outlined
                           disabled
                           clearable
-                          dense 
-                          @keydown="numberKeydown($event)" 
+                          dense
+                          @keydown="numberKeydown($event)"
                         >
                           <template slot="label">
                             <div style="font-size: 14px">VAT</div>
@@ -531,29 +530,17 @@
                       cols="8"
                       xl="8"
                       lg="8"
-                      sm="12" 
+                      sm="12"
                       md="12"
                     >
-                      <v-text-field
-                        disabled 
-                        outlined
-                        clearable
-                        dense
-                      >
+                      <v-text-field disabled outlined clearable dense>
                         <template slot="label">
                           <div style="font-size: 14px">Price w/o VAT</div>
                         </template>
                       </v-text-field>
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="6"
-                      xl="6"
-                      lg="6"
-                      sm="12"
-                      md="12"
-                    >
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-menu
                         v-model="menu"
                         :close-on-content-click="false"
@@ -586,28 +573,24 @@
                         ></v-date-picker>
                       </v-menu>
                     </v-col>
-                      <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field 
-                        v-model="form.maximum_order_quantity"
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        v-model="form.minimum_order_quantity"
                         outlined
                         clearable
                         dense
+                        counter
+                        maxlength="10"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Max Order Quantity</div>
+                          <div style="font-size: 14px">Min Order Quantity</div>
                         </template>
                       </v-text-field>
                     </v-col>
-                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
                         v-model="form.lead_time"
+                        :rules="formRulesQuantity"
                         outlined
                         clearable
                         dense
@@ -615,14 +598,14 @@
                         @keydown="numberKeydown($event)"
                         @input="compute"
                         @click:clear="compute"
-                        maxlength="2"
+                        maxlength="4"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Lead Time</div>
                         </template>
                       </v-text-field>
                     </v-col>
-                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.order_frequency"
@@ -633,7 +616,7 @@
                         @keydown="numberKeydown($event)"
                         @input="compute"
                         @click:clear="compute"
-                        maxlength="5"
+                        maxlength="4"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Order Frequency *</div>
@@ -711,6 +694,7 @@ export default {
     sheet: false,
     unit: [
       "pack",
+      "can",
       "bot",
       "kg",
       "gal",
@@ -742,7 +726,7 @@ export default {
     menu: false,
 
     // Form Rules
-    formRules: [(v) => !!v || "This field must have a valid value"], 
+    formRules: [(v) => !!v || "This is required"],
     formRulesDesc: [
       (v) =>
         /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
@@ -765,6 +749,10 @@ export default {
         return "This is required";
       },
     ],
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+    ],
 
     // Form Data
     form: {
@@ -779,12 +767,12 @@ export default {
       description: null,
       unit: null,
       net_price: null,
-      vat: null, 
+      vat: null,
       exp_date: null,
       vatable: null,
-      lead_time: 0,
-      order_frequency: 7,
-      maximum_order_quantity: 0
+      lead_time: null,
+      order_frequency: null,
+      minimum_order_quantity: null,
     },
     temp_vat: null, //form.vat = this.
     vat: false,
@@ -838,12 +826,12 @@ export default {
         class: "black--text",
       },
       {
-        text: "OTHER",
+        text: "STATUS",
         value: "status",
         align: "center",
         filterable: false,
         class: "black--text",
-      }, 
+      },
       {
         text: "ACTION(S)",
         value: "id",
@@ -1112,13 +1100,13 @@ export default {
       //check if vatable or not
       if (this.vat) {
         if (this.temp_vat) {
-          this.form.vatable = 1; 
+          this.form.vatable = 1;
         } else {
-          this.form.vatable = 0; 
+          this.form.vatable = 0;
         }
       } else {
         this.getVat();
-        this.form.vatable = 0; 
+        this.form.vatable = 0;
       }
       this.form.vat = this.temp_vat;
       this.sum();
@@ -1137,12 +1125,11 @@ export default {
       this.form.net_price = row.net_price;
       this.form.vat = row.vat;
       this.vat = row.vatable == 0 ? false : true;
-      this.temp_vat = row.vat; 
-       this.form.lead_time = row.lead_time;  
-      this.form.order_frequency = row.order_frequency; 
-      this.form.maximum_order_quantity = row.maximum_order_quantity;
-      
-      
+      this.temp_vat = row.vat;
+      this.form.lead_time = row.lead_time;
+      this.form.order_frequency = row.order_frequency;
+      this.form.minimum_order_quantity = row.minimum_order_quantity;
+
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;

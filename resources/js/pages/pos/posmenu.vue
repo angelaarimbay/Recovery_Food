@@ -1215,7 +1215,8 @@ export default {
         sub_total: numeral(
           this.quantity * this.selectedrow.product_name.format_with_vat
         ).format("0,0.00"),
-        temp_sub_total: this.quantity * this.selectedrow.product_name.format_with_vat,
+        temp_sub_total:
+          this.quantity * this.selectedrow.product_name.format_with_vat,
         mode: this.mode,
       });
     },
@@ -1228,10 +1229,12 @@ export default {
         this.table2[i].quantity =
           this.table2[i].quantity + parseInt(this.quantity);
         this.table2[i].sub_total = numeral(
-          this.table2[i].quantity * this.selectedrow.product_name.format_with_vat
+          this.table2[i].quantity *
+            this.selectedrow.product_name.format_with_vat
         ).format("0,0.00");
         this.table2[i].temp_sub_total = numeral(
-          this.table2[i].quantity * this.selectedrow.product_name.format_with_vat
+          this.table2[i].quantity *
+            this.selectedrow.product_name.format_with_vat
         ).format("0,0.00");
       } else {
         this.addtotable2();

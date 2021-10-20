@@ -20,7 +20,6 @@ class MasterlistSuppliesController extends Controller
     {
         $table = tbl_masterlistsupp::where("status", "!=", null);
         
-      
         $table_clone = clone $table;
         if ($table_clone->where("id",$data->id)->count()>0) {
             // Update
@@ -41,7 +40,6 @@ class MasterlistSuppliesController extends Controller
                  "maximum_order_quantity"=>$data->maximum_order_quantity,
                 ]
             );
-
              
         } else {
             $supply='';
