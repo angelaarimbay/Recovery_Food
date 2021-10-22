@@ -169,6 +169,7 @@
             :items="table.data"
             :loading="progressbar"
             :page.sync="page"
+            
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -192,6 +193,14 @@
                 <template v-slot:[`item.incoming_a`]="{ item }" style="text-align: right">
               <small> Qty: {{ item.incoming_q }} <br>   {{ item.incoming_a }} </small> </template
               >
+
+
+            <template v-slot:[`item.total_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.total_q }} <br>  {{ item.total_a }} </small> </template
+              >
+
+
+
               <template v-slot:[`item.outgoing_a`]="{ item }" style="text-align: right">
               <small> Qty: {{ item.outgoing_q }} <br>   {{ item.outgoing_a }} </small> </template
               >
@@ -327,6 +336,13 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+      }, 
+   {
+        text: "TOTAL",
+        value: "total_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
       },
    {
         text: "OUTGOING",
@@ -338,7 +354,7 @@ export default {
 
 
       {
-        text: "STOCKS ON HAND",
+        text: "ON HAND",
         value: "onhand_a",
         align: "right",
         filterable: false,

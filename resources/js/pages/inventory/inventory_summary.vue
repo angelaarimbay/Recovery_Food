@@ -209,8 +209,13 @@ export default {
         class: "black--text",
       },
       {
+<<<<<<< Updated upstream
         text: "INCOMING SUPPLIES",
         value: "incoming",
+=======
+        text: "BEGINING INVENTORY",
+        value: "begining",
+>>>>>>> Stashed changes
         align: "right",
         filterable: false,
         class: "black--text",
