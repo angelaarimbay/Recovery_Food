@@ -162,7 +162,7 @@ export default {
       },
       {
         text: "BEGINING INVENTORY",
-        value: "incoming",
+        value: "begining",
         align: "right",
         filterable: false,
         class: "black--text",

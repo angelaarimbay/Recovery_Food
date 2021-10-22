@@ -82,6 +82,11 @@ use Illuminate\Support\Facades\Route;
         // Inventory Summary
         Route::get('invsumm/get', 'Inventory\InventorySummaryController@get');
 
+        // Supplies Inventory (Branch)
+        Route::post('suppinven/save', 'Inventory\SuppliesInventoryController@store');
+        Route::get('suppinven/get', 'Inventory\SuppliesInventoryController@get');
+        Route::get('deductedsupp/get', 'Inventory\DeductedSuppliesController@get');
+
         // Masterlist Products
         Route::post('mprod/save', 'Products\MasterlistProductsController@save');
         Route::get('mprod/get', 'Products\MasterlistProductsController@get');

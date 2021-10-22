@@ -28,6 +28,8 @@ export default [
   { path: '/outgoing_supplies', name: 'outgoing-supplies', component: page('inventory/outgoing_supplies.vue') },
   { path: '/main_inventory', name: 'main-inventory', component: page('inventory/main_inventory.vue') },
   { path: '/inventory_summary', name: 'inventory-summary', component: page('inventory/inventory_summary.vue') },
+  { path: '/supplies_inventory', name: 'supplies-inventory', component: page('inventory/supplies_inventory.vue') },
+  { path: '/deducted_supplies', name: 'deducted-supplies', component: page('inventory/deducted_supplies.vue') },
 
   //Products
   { path: '/masterlist_products', name: 'masterlist-products', component: page('products/masterlist_products.vue') },

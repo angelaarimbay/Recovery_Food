@@ -57,7 +57,15 @@
             disabled
             class="px-0"
             style="text-transform: none"
-            >Outgoing Supplies</v-btn
+            >
+            
+              <template  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'> 
+            Outgoing Supplies
+              </template>
+                      <template  v-else> 
+              Supplies Inventory
+              </template>
+            </v-btn
           >
         </v-card-actions>
       </v-layout>
@@ -77,8 +85,9 @@
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
               @click="openDialog"
             >
-              Add Outgoing Supply
-            </v-btn>
+            <template  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'> Add Outgoing Supply </template> 
+            <template  v-else> Add Supply </template> 
+         </v-btn>
           </v-card-actions>
 
           <!-- Search Filters -->
@@ -156,7 +165,7 @@
 
                 <v-row no-gutters>
                   <!-- Branch Field -->
-                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
+                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto"  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'>
                     <v-card-actions class="py-0">
                       <v-select
                         v-model="branch"
@@ -274,7 +283,7 @@
 
           <!-- Table -->
           <v-data-table
-            :headers="headers"
+            :headers="myheaders"
             :items="table.data"
             :loading="progressbar"
             :page.sync="page"
@@ -566,7 +575,9 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
+import template from '../template.vue';
 export default {
+  components: { template },
   middleware: "auth",
   metaInfo() {
     return { title: "Inventory" };
@@ -575,6 +586,9 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
+       myheaders() {
+      return this.headers.filter((s) => this.headers.includes(s));
+    },
   },
   data: () => ({
     progressbar: false,
@@ -712,8 +726,16 @@ export default {
 
   // Onload
   created() {
-    if (this.user.permissionslist.includes("Access Inventory")) {
-      this.get();
+    if (this.user.permissionslist.includes("Access Inventory") || this.user.permissionslist.includes("Access Reports - Outgoing Supplies")) {
+      for (var key in this.user.permissionslist) {
+      if (this.user.permissionslist[key] == "Access Reports - Outgoing Supplies") {
+        this.headers.splice(this.headers.indexOf(this.headers[8]), 1);
+        this.headers.splice(this.headers.indexOf(this.headers[9]), 1); 
+        this.headers.splice(this.headers.indexOf(this.headers[8]), 1); 
+      }
+    }
+     
+     this.get();
       this.suppCat();
       this.branchName();
     } else {
@@ -843,6 +865,12 @@ export default {
       this.progressbar = true; // Show the progress bar
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+
+    if(this.user.permissionslist.includes("Access Reports - Outgoing Supplies") ){
+      this.branch = this.user.branch;
+    }
+
+
       await axios
         .get("/api/osupp/get", {
           params: {
