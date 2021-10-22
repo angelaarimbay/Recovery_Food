@@ -65,11 +65,10 @@ class tbl_outgoingsupp extends Model
         $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name",$this->supply_name)
         ->whereBetween('incoming_date',[$date1,$date2]);
         //get average amount
-       
-        if($get_quantity->sum('amount') > 0){
+        if($get_quantity->sum('quantity') > 0){
             $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity'); 
         }else{  
-            $get_wov = tbl_masterlistsupp::where("id",$this->supply_name)->first()->net_price ;
+            $get_wov = $this->net_price ;
         } 
         return $get_wov;
     }

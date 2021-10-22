@@ -179,7 +179,7 @@
                     <v-row no-gutters>
                       <v-col cols="10">
                         <v-text-field
-                          :rules="formRulesSVAT"
+                          :rules="formRulesVAT"
                           v-model="form1.vat"
                           label="Supplies VAT"
                           dense
@@ -190,7 +190,6 @@
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetSV"
-                          @focus="clearSV"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -214,7 +213,7 @@
                     <v-row no-gutters>
                       <v-col cols="10">
                         <v-text-field
-                          :rules="formRulesPVAT"
+                          :rules="formRulesVAT"
                           v-model="form2.vat"
                           label="Products VAT"
                           dense
@@ -225,7 +224,6 @@
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetPV"
-                          @focus="clearPV"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -283,11 +281,7 @@ export default {
     form2: { vat: 0, type: "" },
 
     // Form Rules
-    formRulesSVAT: [
-      (v) => !!v || "This is required",
-      (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
-    ],
-    formRulesPVAT: [
+    formRulesVAT: [
       (v) => !!v || "This is required",
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
     ],
@@ -305,37 +299,15 @@ export default {
       }
     },
 
-    clearSV() {
-      if (this.form1.vat == 0) {
-        this.form1.vat = null;
-      }
-    },
-
     resetSV() {
       if (this.form1.vat == null) {
-        if (this.form1.vat) {
-          this.form1 = this.getVat("s");
-        } else {
-          this.form1.vat = 0;
-          this.$refs.mainForm.resetValidation();
-        }
-      }
-    },
-
-    clearPV() {
-      if (this.form2.vat == 0) {
-        this.form2.vat = null;
+        this.form1 = this.getVat("s");
       }
     },
 
     resetPV() {
       if (this.form2.vat == null) {
-        if (this.form2.vat) {
-          this.form2 = this.getVat("p");
-        } else {
-          this.form2.vat = 0;
-          this.$refs.mainForm.resetValidation();
-        }
+        this.form2 = this.getVat("p");
       }
     },
 

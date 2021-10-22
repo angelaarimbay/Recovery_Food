@@ -189,9 +189,6 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
-                  <template v-slot:[`item.begining_a`]="{ item }" style="text-align: right">
-              <small> Qty: {{ item.begining_q }} <br>   {{ item.begining_a }} </small> </template
-              >
                 <template v-slot:[`item.incoming_a`]="{ item }" style="text-align: right">
               <small> Qty: {{ item.incoming_q }} <br>   {{ item.incoming_a }} </small> </template
               >
@@ -206,21 +203,6 @@
             <template v-slot:[`item.average_a`]="{ item }" style="text-align: right">
               <small> Qty : {{ item.average_q }} <br>  {{ item.average_a }} </small> </template
               >
-
- <template v-slot:[`item.ending_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.ending_q }} <br>  {{ item.ending_a }} </small> </template
-              >
-
- <template v-slot:[`item.consumption_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.consumption_q }} <br>  {{ item.consumption_a }} </small> </template
-              >
-
- <template v-slot:[`item.ideal_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.ideal_q }} <br>  {{ item.ideal_a }} </small> </template
-              >
-
-
-
 
             <template v-slot:[`item.variance_a`]="{ item }" style="text-align: right">
               <small> Qty : {{ item.variance_q }} <br>  {{ item.variance_a }} </small> </template
@@ -338,12 +320,6 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
-      },{
-        text: "BEGINING",
-        value: "begining_a",
-        align: "right",
-        filterable: false,
-        class: "black--text",
       },
       {
         text: "INCOMING",
@@ -397,29 +373,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
-      },   
-      {
-        text: "ENDING",
-        value: "ending_a",
-        align: "right",
-        filterable: false,
-        class: "black--text",
-      },  
-      {
-        text: "CONSUMPTION",
-        value: "consumption_a",
-        align: "right",
-        filterable: false,
-        class: "black--text",
-      },  
-      {
-        text: "IDEAL",
-        value: "ideal_a",
-        align: "right",
-        filterable: false,
-        class: "black--text",
-      },  
-      {
+      },   {
         text: "VARIANCE",
         value: "variance_a",
         align: "right",
