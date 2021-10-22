@@ -69,90 +69,38 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <!-- Date Picker -->
           <v-row no-gutters>
-            <v-col cols="5" xl="3" lg="3" md="4" sm="6" class="my-auto">
+            <v-col cols="12" xl="4" lg="4" md="4" sm="4" class="my-auto pa-1">
               <v-card-actions class="py-0">
-                <v-menu
-                  v-model="date1"
-                  :close-on-content-click="false"
-                  :nudge-right="35"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  min-width="290px"
+                <v-select
+                  v-model="year"
+                  item-text=""
+                  item-value="id"
+                  :items="ylist"
+                  dense
+                  label="Year"
+                  @change="get"
+                  outlined
+                  hide-details
                 >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      v-model="dateFrom"
-                      label="Date From"
-                      prepend-icon="mdi-calendar-range"
-                      readonly
-                      v-on="on"
-                      hide-details=""
-                      dense
-                      clearable
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="dateFrom"
-                    @input="date1 = false"
-                    scrollable
-                    no-title
-                    color="red darken-2"
-                    dark
-                  ></v-date-picker>
-                </v-menu>
+                </v-select>
               </v-card-actions>
             </v-col>
 
             <!-- Date Picker -->
-            <v-col cols="6" xl="4" lg="4" md="5" sm="7" class="my-auto">
+            <v-col cols="12" xl="4" lg="4" md="4" sm="4" class="my-auto pa-1">
               <v-card-actions class="py-0">
-                <v-menu
-                  v-model="date2"
-                  :close-on-content-click="false"
-                  :nudge-right="35"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  min-width="290px"
+                <v-select
+                  v-model="month"
+                  item-text=""
+                  item-value="id"
+                  :items="mlist"
+                  dense
+                  label="Month"
+                  @change="get"
+                  outlined
+                  hide-details
                 >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      v-model="dateUntil"
-                      label="Date Until"
-                      prepend-icon="mdi-calendar-range"
-                      readonly
-                      v-on="on"
-                      hide-details=""
-                      dense
-                      clearable
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    v-model="dateUntil"
-                    @input="date2 = false"
-                    scrollable
-                    no-title
-                    color="red darken-2"
-                    dark
-                  ></v-date-picker>
-                </v-menu>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      large
-                      :small="$vuetify.breakpoint.smAndDown"
-                      color="red darken-2"
-                      icon
-                      v-on="data.on"
-                      @click="get"
-                      ><v-icon>mdi-magnify</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Search</span>
-                </v-tooltip>
+                </v-select>
               </v-card-actions>
             </v-col>
           </v-row>
@@ -199,6 +147,10 @@ export default {
       active: false,
       message: "",
     },
+    year: new Date().getFullYear(),
+    month: new Date().toLocaleString("default", { month: "long" }),
+    mlist: [],
+    ylist: [],
     table: [],
     headers: [
       {
@@ -209,19 +161,29 @@ export default {
         class: "black--text",
       },
       {
-<<<<<<< Updated upstream
-        text: "INCOMING SUPPLIES",
-        value: "incoming",
-=======
         text: "BEGINING INVENTORY",
-        value: "begining",
->>>>>>> Stashed changes
+        value: "incoming",
         align: "right",
         filterable: false,
         class: "black--text",
       },
       {
-        text: "OUTGOING SUPPLIES",
+        text: "PURCHASES",
+        value: "incoming",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "TOTAL INVENTORY",
+        value: "total",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+
+      {
+        text: "OUTGOING ",
         value: "outgoing",
         align: "right",
         filterable: false,
@@ -234,43 +196,68 @@ export default {
         filterable: false,
         class: "black--text",
       },
+      {
+        text: "ENDING",
+        value: "ending",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "VARIANCE",
+        value: "variance",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "FLUCTUATION",
+        value: "fluctuation",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
     ],
-    dateFrom: null,
-    dateUntil: null,
-    incomingDate: null,
-    date1: false,
-    date2: false,
   }),
 
   //On Load
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
+      this.list();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
   },
 
   methods: {
-    async get() {
-      if (this.dateFrom == null && this.dateUntil == null) {
-        this.snackbar = {
-          active: true,
-          iconText: "alert",
-          iconColor: "error",
-          message: "Error! Please select a date first.",
-        };
-      } else {
-        this.progressbar = true;
-        await axios
-          .get("/api/invsumm/get", {
-            params: { from: this.dateFrom, to: this.dateUntil },
-          })
-          .then((result) => {
-            console.log(result.data);
-            this.table = result.data;
-            this.progressbar = false;
-          });
+    list() {
+      for (var key in moment.months()) {
+        this.mlist.push(moment.months()[key]);
       }
+
+      var currentYear = new Date().getFullYear(),
+        years = [];
+      var startYear = new Date().getFullYear() - 3;
+      while (startYear <= currentYear) {
+        years.push(startYear++);
+      }
+      this.ylist = years;
+    },
+
+    async get() {
+      this.progressbar = true;
+      await axios
+        .get("/api/invsumm/get", {
+          params: {
+            year: this.year,
+            month: new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
+          },
+        })
+        .then((result) => {
+          console.log(result.data);
+          this.table = result.data;
+          this.progressbar = false;
+        });
     },
   },
 };

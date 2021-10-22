@@ -23,8 +23,6 @@ class MainInventoryController extends Controller
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
          $table = tbl_masterlistsupp::whereRaw($where)->get();
 
-<<<<<<< Updated upstream
-=======
     
         $date11 =  date("Y-m-d H:i:s",   strtotime("-1 month", strtotime( date("Y")."-".date("m")."-01". ' 00:00:00'))) ;
         $date22 = cal_days_in_month(CAL_GREGORIAN, (date("m")-1), date("Y"));
@@ -36,7 +34,6 @@ class MainInventoryController extends Controller
         $date2 = date("Y-m-d H:i:s", strtotime(date("Y").'-'.date("m").'-'.$date2.' 23:59:59'));
         
        
->>>>>>> Stashed changes
         $return = [];
         $row = 1;
         foreach ($table as $key => $value) {
@@ -45,30 +42,6 @@ class MainInventoryController extends Controller
             $temp['category'] =  tbl_suppcat::where("id",$value->category)->first()->supply_cat_name ;
             $temp['supply_name'] =  $value->supply_name ;
             $temp['unit'] =  $value->unit ;
-<<<<<<< Updated upstream
-            $temp['net_price'] =  $value->net_price ;  
-
-            $temp['incoming_q'] =  tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity');
-            $temp['incoming_a']    = number_format( tbl_incomingsupp::where('supply_name', $value->id)->sum('amount'),2);
-            $temp['outgoing_q'] =  tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity');
-            $temp['outgoing_a']    =   number_format(tbl_outgoingsupp::where('supply_name', $value->id)->sum('amount'),2);
-         
-            $temp['onhand_q'] =  tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') - tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity');
-            $temp['onhand_a'] =  number_format((tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') > 0 ? tbl_incomingsupp::where('supply_name', $value->id)->sum('amount') / tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity'):0),2);
-         
-
-            $temp['average_q'] =  tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d');
-            $temp['average_a'] = number_format((tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') > 0? (tbl_incomingsupp::where('supply_name', $value->id)->sum('amount') / tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity')) * (tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d')):0),2) ;
-
-            $temp['orderpoint'] = number_format( ( $value->lead_time * (tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d')) + ((tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d')) * 2)),2);
-            $orderqty = $value->order_frequency * (tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d'));
-            if($orderqty < $value->maximum_order_quantity  ){
-                $temp['ordr'] = number_format($value->maximum_order_quantity,2) ;
-            }else{
-                $temp['ordr'] = number_format($orderqty,2);
-            }
-            if(tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') - tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') <  $value->lead_time * (tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity') / date('d'))){
-=======
             $temp['net_price'] =  $value->net_price ;
 
             $incoming = tbl_incomingsupp::where('supply_name', $value->id) ->whereBetween('incoming_date',[$date1,$date2]);
@@ -135,7 +108,6 @@ class MainInventoryController extends Controller
             //trigger point  (lead time of item * total quantity / day today) + outgoing quantity / day today  
             $a = clone $incoming_and_past; $b = clone $outgoing;
             if (($a->sum('quantity') - $b->sum('quantity')) <  $value->lead_time * ($b->sum('quantity') / date('d'))) {
->>>>>>> Stashed changes
                 $temp['triggerpoint'] = "ORDER";
             }else{
                 $temp['triggerpoint'] = "MANAGE";
@@ -146,16 +118,6 @@ class MainInventoryController extends Controller
             $aa = clone $incoming; 
             $temp['ending_q'] =  ($a->sum('quantity') - $b->sum('quantity'));
 
-<<<<<<< Updated upstream
-            $temp['variance_q'] =  tbl_incomingsupp::where('supply_name', $value->id)->sum('quantity') -   tbl_outgoingsupp::where('supply_name', $value->id)->sum('quantity');
-            $temp['variance_a']    =  number_format(tbl_incomingsupp::where('supply_name', $value->id)->sum('amount') - tbl_outgoingsupp::where('supply_name', $value->id)->sum('amount'),2);
-         
-          
-
-
-
-             array_push($return, $temp);
-=======
             if($temp['begining_q'] > 0 ){ 
                 $temp['ending_a'] =  number_format($temp['ending_q'] * ( $aa->sum('amount') / $aa->sum('quantity')),2);
             }else{
@@ -194,7 +156,6 @@ class MainInventoryController extends Controller
                 $temp['variance_a'] = 0;
             } 
             array_push($return, $temp);
->>>>>>> Stashed changes
         }
 
         $items =   Collection::make($return);
