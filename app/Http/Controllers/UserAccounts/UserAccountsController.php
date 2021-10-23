@@ -8,6 +8,7 @@ use App\Models\tbl_branches;
 use App\User; 
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class UserAccountsController extends Controller
 {
@@ -219,20 +220,25 @@ class UserAccountsController extends Controller
             }
 
             foreach ($temp_db[$key1] as $key => $value) {
-                $temp_num++;
-                if ($temp_num == $temp_count) {
-                    if ($key == 'id') {
-                        $temp_str .= "'" . $key . "' => " . ($value??null) . "";
+                if($key == 'created_at' || $key =='updated_at'){
+
+                }else{
+                    $temp_num++;
+                    if ($temp_num == $temp_count) {
+                        if ($key == 'id') {
+                            $temp_str .= "'" . $key . "' => " . ($value??null) . "";
+                        } else {
+                            $temp_str .= "'" . $key . "' => '" .($value??null). "'";
+                        }
                     } else {
-                        $temp_str .= "'" . $key . "' => '" .($value??null). "'";
-                    }
-                } else {
-                    if ($key == 'id') {
-                        $temp_str .= "'" . $key . "' => " . ($value??null) . ", ";
-                    } else {
-                        $temp_str .= "'" . $key . "' => '" .($value??null). "', ";
+                        if ($key == 'id') {
+                            $temp_str .= "'" . $key . "' => " . ($value??null) . ", ";
+                        } else {
+                            $temp_str .= "'" . $key . "' => '" .($value??null). "', ";
+                        }
                     }
                 }
+              
             }
                 $temp_str .= '],' . "\r\n"; 
         }

@@ -41,7 +41,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
      * @var array
      */
     protected $appends = [
-        'photo_url','permissionslist','branch_details'
+        'photo_url','permissionslist','branch_details','roleslist'
     ];
 
     /**
@@ -108,6 +108,10 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
     public function getPermissionslistAttribute()
     {
         return   Auth::user()->getDirectPermissions()->pluck('name');
+    }
+    public function getRoleslistAttribute()
+    {
+        return   Auth::user()->roles;
     }
     public function getBranchDetailsAttribute()
     {

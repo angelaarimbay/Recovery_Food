@@ -748,7 +748,21 @@ export default {
       if (this.user.permissionslist.includes("Access POS")) {
         this.$router.push({ name: "pos" }).catch((errr) => {});
       } else {
-        this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+        if (this.user.roles[0].name == "Stockman") {
+          this.$router
+            .push({ name: "masterlist-supplies" })
+            .catch((errr) => {});
+        }
+        if (this.user.roles[0].name == "Production Assistant") {
+          this.$router
+            .push({ name: "masterlist-products" })
+            .catch((errr) => {});
+        }
+        if (this.user.roles[0].name == "Supervisor") {
+          this.$router
+            .push({ name: "supplies-inventory" })
+            .catch((errr) => {});
+        }
       }
     }
   },

@@ -749,7 +749,7 @@ export default {
     // Format for everytime we call on database
     // Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
+      // Compare existing data vs edited data
       // If nothing change then no request
       if (!this.currentdata) {
         return true;

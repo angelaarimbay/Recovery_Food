@@ -34,7 +34,7 @@ class SuppliesInventoryController extends Controller
          $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])  
         ->selectRaw("max(id) as id, category, supply_name, requesting_branch, sum(quantity) as quantity")
         ->groupby(["category","supply_name","requesting_branch"]) 
-        ->whereRaw($where)  ->where("supply_name", "!=", null);
+        ->whereRaw($where)->where("requesting_branch",auth()->user()->branch)  ->where("supply_name", "!=", null);
    
 
         if ($t->dateFrom && $t->dateUntil) {
@@ -50,13 +50,13 @@ class SuppliesInventoryController extends Controller
         $return = [];
         foreach ($table->get() as $key => $value) { 
             $temp = [];
-               $temp['row']  = $key+1;  
-               $temp['id'] = $value->id;    
-               $temp['category'] = $value->category_details;    
-            $temp['quantity'] = $value->quantity -  tbl_suppliesinventory::where(["user"=>auth()->user()->id, 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity') ;  
+            $temp['row']  = $key+1;  
+            $temp['id'] = $value->id;    
+            $temp['category'] = $value->category_details;    
+            $temp['quantity'] = $value->quantity -  tbl_suppliesinventory::where([ 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity') ;  
             $temp['requesting_branch'] = $value->requesting_branch_details;  
             $temp['supply_name'] = $value->supply_name_details;  
-            $temp['outgoing_amount'] = number_format($value->with_vat_price * $value->quantity,2) ;  
+            $temp['outgoing_amount'] = number_format($value->with_vat_price *  ($value->quantity -  tbl_suppliesinventory::where([ 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity') ),2) ;  
             $temp['with_vat_price'] = number_format($value->with_vat_price,2) ;  
             $temp['without_vat_price'] = number_format($value->without_vat_price,2) ;  
             $temp['fluctiation'] = number_format($value->fluctiation,2) ;  

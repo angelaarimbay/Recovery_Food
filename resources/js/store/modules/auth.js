@@ -72,7 +72,7 @@ export const actions = {
         }else{
           this.$store.dispatch('auth/logout').catch((errr) => {});
         }
-      })
+      }).catch(res=>{})
      
     } catch (e) {
       commit(types.FETCH_USER_FAILURE)

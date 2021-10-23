@@ -381,14 +381,14 @@ export default {
       },
       {
         text: "AMT",
-        value: "outgoing_amount",
+        value: "amount",
         align: "right",
         filterable: false,
         class: "black--text",
       },
       {
         text: "DATE",
-        value: "",
+        value: "outgoing_date",
         align: "center",
         sortable: false,
         filterable: false,
@@ -450,6 +450,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

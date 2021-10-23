@@ -1149,6 +1149,7 @@ export default {
       this.compute();
     },
 
+
     // Open Dialog Form
     openDialog() {
       if (this.form.temp_vat !== null) {

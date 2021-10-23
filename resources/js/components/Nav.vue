@@ -42,6 +42,7 @@
             >
               <v-icon class="round">mdi-account</v-icon
               ><span>{{ user.first_name }}</span>
+              <v-icon>mdi-menu-down</v-icon>
             </v-btn>
           </template>
           <v-list dense>
@@ -93,6 +94,7 @@
             >
               <v-icon class="round">mdi-account</v-icon><span></span
               ><span>{{ user.first_name }}</span>
+              <v-icon>mdi-menu-down</v-icon>
             </v-btn>
           </template>
           <v-list dense>
@@ -166,7 +168,7 @@
             </template>
 
             <v-list class="p-0" flat>
-              <v-list-item  
+              <v-list-item
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'manage-branches' }"
@@ -177,7 +179,7 @@
                 <v-list-item-title>Manage Branches</v-list-item-title>
               </v-list-item>
 
-              <v-list-item   
+              <v-list-item
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'branches-inventory' }"
@@ -187,7 +189,6 @@
                 </v-list-item-icon>
                 <v-list-item-title>Branches Inventory</v-list-item-title>
               </v-list-item>
-      
             </v-list>
           </v-list-group>
 
@@ -207,6 +208,7 @@
 
             <v-list class="p-0" flat>
               <v-list-item
+                v-if="user.roles[0].name != 'Production Assistant'"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'supplies-category' }"
@@ -218,6 +220,7 @@
               </v-list-item>
 
               <v-list-item
+                v-if="user.roles[0].name != 'Stockman'"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'products-category' }"
@@ -229,6 +232,7 @@
               </v-list-item>
 
               <v-list-item
+                v-if="user.roles[0].name != 'Stockman'"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'products-sub-category' }"
@@ -242,7 +246,10 @@
           </v-list-group>
 
           <v-list-group
-            v-if="user.permissionslist.includes('Access Inventory') || user.permissionslist.includes('Access Branch Inventory')"
+            v-if="
+              user.permissionslist.includes('Access Inventory') ||
+              user.permissionslist.includes('Access Branch Inventory')
+            "
             no-action
             color="#FFFFFF"
             active-class="bg-grey"
@@ -256,7 +263,8 @@
             </template>
 
             <v-list class="p-0" flat>
-              <v-list-item  v-if="!user.permissionslist.includes('Access Branch Inventory')"
+              <v-list-item
+                v-if="!user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'masterlist-supplies' }"
@@ -267,7 +275,8 @@
                 <v-list-item-title>Masterlist Supplies</v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-if="!user.permissionslist.includes('Access Branch Inventory')"
+              <v-list-item
+                v-if="!user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'incoming-supplies' }"
@@ -278,7 +287,8 @@
                 <v-list-item-title>Incoming Supplies</v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-if="!user.permissionslist.includes('Access Branch Inventory')"
+              <v-list-item
+                v-if="!user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'outgoing-supplies' }"
@@ -289,7 +299,8 @@
                 <v-list-item-title>Outgoing Supplies</v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-if="!user.permissionslist.includes('Access Branch Inventory')"
+              <v-list-item
+                v-if="!user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'main-inventory' }"
@@ -300,7 +311,8 @@
                 <v-list-item-title>Main Inventory</v-list-item-title>
               </v-list-item>
 
-              <v-list-item  v-if="!user.permissionslist.includes('Access Branch Inventory')"
+              <v-list-item
+                v-if="!user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'inventory-summary' }"
@@ -311,8 +323,8 @@
                 <v-list-item-title>Inventory Summary</v-list-item-title>
               </v-list-item>
 
-              
-             <v-list-item   v-if="user.permissionslist.includes('Access Branch Inventory')"
+              <v-list-item
+                v-if="user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'supplies-inventory' }"
@@ -321,9 +333,10 @@
                   <v-icon size="16">mdi-circle</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>Supplies Inventory</v-list-item-title>
-              </v-list-item>       
-   
-             <v-list-item   v-if="user.permissionslist.includes('Access Branch Inventory')"
+              </v-list-item>
+
+              <v-list-item
+                v-if="user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
                 :to="{ name: 'deducted-supplies' }"
@@ -332,8 +345,8 @@
                   <v-icon size="16">mdi-circle</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>Deducted Supplies</v-list-item-title>
-              </v-list-item>    
-              </v-list> 
+              </v-list-item>
+            </v-list>
           </v-list-group>
 
           <v-list-group
@@ -425,22 +438,27 @@
             </v-list>
           </v-list-group>
 
-          <v-list-item v-if="
-          !user.permissionslist.includes('Access POS') 
-          &&
-          !user.permissionslist.includes('Access Branch Inventory') 
-          " style="text-decoration: none" :to="{ name: 'reports' }">
+          <v-list-item
+            v-if="
+              user.permissionslist.includes('Access Reports') &&
+              !user.permissionslist.includes('Access POS') &&
+              !user.permissionslist.includes('Access Branch Inventory')
+            "
+            style="text-decoration: none"
+            :to="{ name: 'reports' }"
+          >
             <v-list-item-icon>
               <v-icon size="23">mdi-account-multiple</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Reports</v-list-item-title>
           </v-list-item>
 
-          <v-list-item v-if="
-          !user.permissionslist.includes('Access POS') 
-          &&
-          !user.permissionslist.includes('Access Branch Inventory') 
-          "
+          <v-list-item
+            v-if="
+              user.permissionslist.includes('Access User Accounts') &&
+              !user.permissionslist.includes('Access POS') &&
+              !user.permissionslist.includes('Access Branch Inventory')
+            "
             style="text-decoration: none"
             :to="{ name: 'user-accounts' }"
           >
@@ -450,11 +468,12 @@
             <v-list-item-title>User Accounts</v-list-item-title>
           </v-list-item>
 
-          <v-list-group v-if="
-          !user.permissionslist.includes('Access POS') 
-          &&
-          !user.permissionslist.includes('Access Branch Inventory') 
-          "
+          <v-list-group
+            v-if="
+              user.permissionslist.includes('Access Settings') &&
+              !user.permissionslist.includes('Access POS') &&
+              !user.permissionslist.includes('Access Branch Inventory')
+            "
             no-action
             color="#FFFFFF"
             active-class="bg-grey"
@@ -482,7 +501,7 @@
               <v-list-item
                 style="text-decoration: none"
                 class="pl-8 mb-1"
-                   :to="{ name: 'company' }"
+                :to="{ name: 'company' }"
               >
                 <v-list-item-icon class="me-3">
                   <v-icon size="16">mdi-circle</v-icon>
@@ -524,7 +543,7 @@
 </style>
 
 <script>
-import { mapGetters } from "vuex"; 
+import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 // import template from "../pages/template.vue";
 export default {
@@ -537,26 +556,25 @@ export default {
       roles: "auth/user_roles",
     }),
   },
-  created(){
-    this.getLogo()
+  created() {
+    this.getLogo();
   },
   data() {
     return {
-      logo_path: '/img/Logo.jpg', //default pag wlang uploaded file.
+      logo_path: "/img/Logo.jpg", //default pag wlang uploaded file.
       drawer: true,
       mini: false,
     };
   },
 
   methods: {
-   async getLogo() {
+    async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
-          if(result.data.path){ 
-            this.logo_path = result.data.path
-          }
+        if (result.data.path) {
+          this.logo_path = result.data.path;
+        }
       });
     },
-
 
     async logout() {
       // Log out the user.

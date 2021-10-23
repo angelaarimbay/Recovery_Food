@@ -10,6 +10,7 @@ use App\Models\tbl_suppcat;
 use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
 use App\Models\tbl_branches;
+use App\Models\tbl_suppliesinventory;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB; 
@@ -28,11 +29,12 @@ class BranchesInventoryController extends Controller
             $where = ($t->branch? "requesting_branch=".$t->branch:"").
                  ($t->category? ($t->branch?" and ":"")." category=".$t->category:"") ;
  
-     
-            $table= tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])
-            ->selectRaw('category,supply_name,requesting_branch,  sum(quantity) as quantity  ')
-            ->groupbyRaw("category,supply_name,requesting_branch")->whereRaw($where); 
-           
+       
+                 $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])  
+                 ->selectRaw("max(id) as id, category, supply_name, requesting_branch, sum(quantity) as quantity")
+                 ->groupby(["category","supply_name","requesting_branch"])
+                 ->whereRaw($where)->where("supply_name", "!=", null);
+            
 
             if ($t->search) {
                 $table =  $table ->whereHas('supply_name', function ($q) use ($t) {
@@ -46,8 +48,9 @@ class BranchesInventoryController extends Controller
                 $temp['category'] = $value->category_details;
                 $temp['supply_name'] = $value->supply_name_details;
                 $temp['requesting_branch'] = $value->requesting_branch_details;
-                $temp['outgoing_amount'] = $value->outgoing_amount;
-                $temp['quantity'] = $value->quantity; 
+                $temp['outgoing_amount']  =  number_format($value->with_vat_price *  ($value->quantity -  tbl_suppliesinventory::where([ 'branch'=>$t->branch, 'ref'=>$value->id ])->sum('quantity') ),2) ;
+                $temp['quantity'] = $value->quantity -  tbl_suppliesinventory::where([  'branch'=>$t->branch, 'ref'=>$value->id ])->sum('quantity') ;
+            
                 array_push($return,$temp);
             } 
             $items =   Collection::make($return);
