@@ -31,9 +31,11 @@ class SuppliesInventoryController extends Controller
                 ($t->branch? " and requesting_branch=".$t->branch:"");
  
         
-        $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"]) 
-        ->whereRaw($where)
-        ->where("supply_name", "!=", null);
+         $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])  
+        ->selectRaw("max(id) as id, category, supply_name, requesting_branch, sum(quantity) as quantity")
+        ->groupby(["category","supply_name","requesting_branch"]) 
+        ->whereRaw($where)  ->where("supply_name", "!=", null);
+   
 
         if ($t->dateFrom && $t->dateUntil) {
             $table =  $table->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
@@ -44,16 +46,14 @@ class SuppliesInventoryController extends Controller
                 $q->where('supply_name', 'like', "%".$t->search."%");
             });
         } 
-        
+       
         $return = [];
         foreach ($table->get() as $key => $value) { 
             $temp = [];
-            $temp['row']  = $key+1;
-            $temp['id'] = $value->id; 
-            $temp['status'] = $value->status;  
-            $temp['category'] = $value->category_details;   
-            $temp['outgoing_date'] = $value->outgoing_date;  
-            $temp['quantity'] =$value->quantity -  tbl_suppliesinventory::where(["user"=>auth()->user()->id, 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity') ;  
+               $temp['row']  = $key+1;  
+               $temp['id'] = $value->id;    
+               $temp['category'] = $value->category_details;    
+            $temp['quantity'] = $value->quantity -  tbl_suppliesinventory::where(["user"=>auth()->user()->id, 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity') ;  
             $temp['requesting_branch'] = $value->requesting_branch_details;  
             $temp['supply_name'] = $value->supply_name_details;  
             $temp['outgoing_amount'] = number_format($value->with_vat_price * $value->quantity,2) ;  

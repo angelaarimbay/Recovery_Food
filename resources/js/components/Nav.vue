@@ -242,7 +242,7 @@
           </v-list-group>
 
           <v-list-group
-            v-if="user.permissionslist.includes('Access Inventory') && user.permissionslist.includes('Access Branch Inventory')"
+            v-if="user.permissionslist.includes('Access Inventory') || user.permissionslist.includes('Access Branch Inventory')"
             no-action
             color="#FFFFFF"
             active-class="bg-grey"

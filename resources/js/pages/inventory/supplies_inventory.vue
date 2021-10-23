@@ -516,7 +516,7 @@ export default {
   // Onload
   created() {
     if (
-      this.user.permissionslist.includes("Access Reports - Outgoing Supplies")
+      this.user.permissionslist.includes("Access Branch Inventory")
     ) {
       this.get();
       this.suppCat();

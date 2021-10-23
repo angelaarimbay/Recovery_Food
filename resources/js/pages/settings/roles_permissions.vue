@@ -247,7 +247,7 @@
             dark
             class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
           >
-            Add Role Permission(s)
+            Add User Role(s)
             <v-spacer></v-spacer>
             <v-tooltip bottom>
               <template #activator="data">
@@ -566,8 +566,10 @@
                 </v-data-table>
               </v-container>
             </v-container>
-          </v-tab-item>
+          </v-tab-item> 
+          <v-tab-item>
           <v-card-text>
+         
             <v-text-field
               class=""
               v-model="seederTablename"
@@ -585,9 +587,7 @@
               label="OUTPUT"
               row="10"
             ></v-textarea>
-          </v-card-text>
-          <v-tab-item>
-            <!-- wla pong closing tag? -->
+          </v-card-text> 
           </v-tab-item>
         </v-tabs-items>
       </v-card>
@@ -606,10 +606,8 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios";
-import Swal from "sweetalert2";
-import template from "../template.vue";
-export default {
-  components: { template },
+import Swal from "sweetalert2"; 
+export default { 
   middleware: "auth",
   metaInfo() {
     return { title: "Settings" };
@@ -839,7 +837,7 @@ export default {
             iconText: "check",
             iconColor: "success",
             message: "Successfully saved.",
-          };
+          }; 
         })
         .catch((result) => {
           this.snackbar = {
@@ -859,6 +857,8 @@ export default {
       this.permission.id = item.id;
       this.dialogPermissions = true;
     },
+
+
     // user role
     async getUserRoles() {
       let self = this;
@@ -879,7 +879,6 @@ export default {
           };
         });
     },
-
     // add role permission
     async getRolePermissions(item) {
       let self = this;
@@ -936,7 +935,7 @@ export default {
             iconColor: "success",
             message: "Successfully saved.",
           };
-          this.getRoles();
+          this.getUserRoles();
         })
         .catch((result) => {
           this.snackbar = {
@@ -1006,7 +1005,7 @@ export default {
             iconColor: "success",
             message: "Successfully saved.",
           };
-          this.getRoles();
+          this.getAddUserRoles();
         })
         .catch((result) => {
           this.snackbar = {
