@@ -1,6 +1,6 @@
 <template>
   <v-card  >
-    <v-card-title>Full TSI / Our TSI</v-card-title> 
+    <v-card-title>23123</v-card-title> 
     <v-card-text><bar-chart :options="options" :height="chartHeight" :chart-data="datacollection"></bar-chart>  
      <v-card-actions><v-spacer></v-spacer> Cresta zone<v-spacer></v-spacer></v-card-actions></v-card-text> 
      

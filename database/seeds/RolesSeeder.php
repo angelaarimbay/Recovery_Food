@@ -18,6 +18,8 @@ class RolesSeeder extends Seeder
             ['id' => 3, 'name' => 'Stockman', 'description' => '', 'guard_name' => 'api', ],
             ['id' => 4, 'name' => 'Production Assistant', 'description' => '', 'guard_name' => 'api', ],
             ['id' => 5, 'name' => 'Supervisor', 'description' => '', 'guard_name' => 'api', ],
+            ['id' => 6, 'name' => 'Access Reports', 'description' => 'test', 'guard_name' => 'api', ],
+            
             
         ]);
     }

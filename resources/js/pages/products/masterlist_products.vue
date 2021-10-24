@@ -612,7 +612,7 @@ export default {
       product_name: null,
       description: null,
       price: null,
-      vat: null,
+      vat: null, 
       with_vat: null,
       exp_date: null,
     },
