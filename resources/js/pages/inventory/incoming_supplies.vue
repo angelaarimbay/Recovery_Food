@@ -739,7 +739,7 @@ export default {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
-      this.form.amount = (this.form.quantity * this.form.supply_name.net_price)
+  
     },
     numberKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {

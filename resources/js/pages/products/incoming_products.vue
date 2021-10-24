@@ -431,19 +431,19 @@
                       sm="12"
                       md="12"
                     >
-                      <v-select
+                      <v-autocomplete
                         :rules="formRulesNumberRange"
                         v-model="form.product_name"
                         :items="prodnamelist"
-                        item-text="product_name"
-                        item-value="id"
+                        item-text="product_name" 
+                        return-object
                         outlined
                         dense
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Name *</div>
                         </template>
-                      </v-select>
+                      </v-autocomplete>
                     </v-col>
 
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
@@ -453,7 +453,7 @@
                         outlined
                         clearable
                         dense
-                        @keydown="quantityKeydown($event)"
+                        @keyup="quantityKeydown($event)"
                         counter
                         maxlength="3"
                       >
@@ -462,7 +462,7 @@
                         </template>
                       </v-text-field>
                     </v-col>
-
+                    
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-layout align-center>
                         <v-text-field
@@ -678,6 +678,7 @@ export default {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
+          this.form.price = (this.form.quantity * this.form.product_name.price)
     },
     numberKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
