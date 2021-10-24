@@ -942,9 +942,9 @@ export default {
       this.form.branch_name = row.branch_name;
       this.form.location = row.location;
       this.form.phone_number = row.phone_number;
-      this.form.email_add = row.email_add;
-      this.form.branch_image = row.branch_image;
-      this.tempfile = row.branch_image ? row.branch_image.split("-")[0] : null;
+      this.form.email_add = row.email_add; 
+      this.form.branch_image =  (row.branch_image == '/img/Logo.jpg'?null: row.branch_image);
+      this.tempfile = row.branch_image ? (row.branch_image == '/img/Logo.jpg'?null:row.branch_image.split("-")[0] ): null;
       this.dialog = true;
     },
 
@@ -962,9 +962,8 @@ export default {
       this.form.branch_name = row.branch_name;
       this.form.location = row.location;
       this.form.phone_number = row.phone_number;
-      this.form.email_add = row.email_add;
-      this.form.branch_image = row.branch_image;
-      this.tempfile = row.branch_image ? row.branch_image.split("-")[0] : null;
+      this.form.email_add = row.email_add; 
+      this.form.branch_image =   (row.branch_image == '/img/Logo.jpg'? '/img/Logo.jpg':  '/storage/branches/'+row.branch_image  ) 
       this.viewdialog = true;
     },
 

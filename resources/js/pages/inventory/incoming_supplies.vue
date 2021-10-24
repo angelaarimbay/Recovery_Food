@@ -283,10 +283,12 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
-              <template v-slot:[`item.category.supply_cat_name`]="{ item }">
-              {{ item.category.supply_cat_name }}<br>
-              <small style="font-size: 10px;">Supplier: {{ item.supplier.supplier_name }}</small>   </template
-            >
+            <template v-slot:[`item.category.supply_cat_name`]="{ item }">
+              {{ item.category.supply_cat_name }}<br />
+              <small style="font-size: 10px"
+                >Supplier: {{ item.supplier.supplier_name }}</small
+              >
+            </template>
             <template v-slot:[`item.id`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -345,21 +347,13 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
-                    
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="4"
-                      lg="4"
-                      sm="12"
-                      md="12"
-                    >
+                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="12" md="12">
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
                           <div style="font-size: 14px">ID</div>
                         </template>
                       </v-text-field>
-                        
+
                       <v-menu
                         v-model="date3"
                         :close-on-content-click="false"
@@ -382,7 +376,7 @@
                             clearable
                             outlined
                           ></v-text-field>
-                        </template> 
+                        </template>
                         <v-date-picker
                           v-model="form.incoming_date"
                           @input="date3 = false"
@@ -390,20 +384,11 @@
                           no-title
                           color="red darken-2"
                           dark
-                        ></v-date-picker> 
+                        ></v-date-picker>
                       </v-menu>
-
-
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="8"
-                      xl="8"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
+                    <v-col class="py-0" cols="8" xl="8" lg="12" sm="12" md="12">
                       <v-select
                         :rules="formRules"
                         v-model="form.supplier"
@@ -432,7 +417,8 @@
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.category"
-                        outlined :disabled="!form.supplier"
+                        outlined
+                        :disabled="!form.supplier"
                         dense
                         :items="suppcatlist"
                         item-text="supply_cat_name"
@@ -456,36 +442,59 @@
                       <v-autocomplete
                         :rules="formRules"
                         v-model="form.supply_name"
-                        outlined :disabled="!form.supplier"
+                        outlined
+                        :disabled="!form.supplier"
                         dense
                         hide-details=""
                         :items="suppnamelist"
                         return-object
-                        item-text="supply_name" 
+                        item-text="supply_name"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
                         </template>
-                       
                       </v-autocomplete>
 
-                      <v-card color="white" flat class="px-4  border" v-if="form.supply_name"> 
-                          <table style="width: 50%; font-size: 10px">
-                                  <tr> <th class="text-left pr-2" style="width: 50px;"><b>Description:</b></th><th> {{ form.supply_name.description  }} </th></tr>
-                                  <tr> <th class="text-left pr-2"><b>Net Price:</b></th><th> {{  getFormatCurrency(form.supply_name.net_price,'0,0.00') }} </th></tr>
-                                  <tr> <th class="text-left pr-2"><b>Unit:</b></th><th> {{ form.supply_name.unit }} </th></tr> 
-                             </table>     
-                      </v-card> 
-                    </v-col> 
-
-                    <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
+                      <v-card
+                        color="white"
+                        flat
+                        class="px-4 border"
+                        v-if="form.supply_name"
+                      >
+                        <table style="width: 50%; font-size: 10px">
+                          <tr>
+                            <th class="text-left pr-2" style="width: 50px">
+                              <b>Description:</b>
+                            </th>
+                            <th>{{ form.supply_name.description }}</th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2"><b>Net Price:</b></th>
+                            <th>
+                              {{
+                                getFormatCurrency(
+                                  form.supply_name.net_price,
+                                  "0,0.00"
+                                )
+                              }}
+                            </th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2"><b>Unit:</b></th>
+                            <th>{{ form.supply_name.unit }}</th>
+                          </tr>
+                        </table>
+                      </v-card>
+                    </v-col>
+                    <v-col class="py-0" cols="12" xl="3" lg="3" sm="3" md="4">
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
-                        outlined :disabled="!form.supplier"
+                        outlined
+                        :disabled="!form.supplier"
                         clearable
-                        dense
-                        @keydown="quantityKeydown($event)"
+                        dense 
+                        @keyup="quantityKeydown($event); "
                         counter
                         maxlength="4"
                       >
@@ -495,11 +504,15 @@
                       </v-text-field>
                     </v-col>
 
+                    <v-col class="py-0" cols="12" xl="2" lg="2" sm="2" md="2" v-if="form.supply_name">
+                      <v-btn class="py-0 " small @click="form.amount = (form.quantity * form.supply_name.net_price)">Compute</v-btn>
+                    </v-col>
                     <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.amount"
-                        outlined :disabled="!form.supplier"
+                        outlined
+                        :disabled="!form.supplier"
                         clearable
                         dense
                         @keydown="numberKeydown($event)"
@@ -631,7 +644,7 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
-      }, 
+      },
       {
         text: "CATEGORY",
         value: "category.supply_cat_name",
@@ -726,6 +739,7 @@ export default {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
+      this.form.amount = (this.form.quantity * this.form.supply_name.net_price)
     },
     numberKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
@@ -741,7 +755,7 @@ export default {
       const date = moment(e);
       return date.format(format);
     },
-   getFormatCurrency(e, format) {
+    getFormatCurrency(e, format) {
       const numbr = numeral(e);
       return numbr.format(format);
     },
@@ -887,7 +901,7 @@ export default {
       this.suppName();
       this.form.supply_name = row.supply_name;
       this.form.quantity = row.quantity;
-      this.form.amount = row.amount;
+      this.form.amount = row.amount.replace(",",'') ;
       this.form.incoming_date = this.getFormatDate(
         row.incoming_date,
         "YYYY-MM-DD"

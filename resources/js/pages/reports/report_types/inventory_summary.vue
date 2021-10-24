@@ -138,6 +138,7 @@
         </v-col>
       </v-row>
     </v-container>
+  <iframe id="print4" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -146,6 +147,7 @@ import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
     dateFrom: null,
+    print: '',
     dateUntil: null,
     date1: false,
     date2: false,
@@ -179,6 +181,25 @@ export default {
               link.href = window.URL.createObjectURL(blob);
               link.download = "Inventory Summary Report.pdf";
               link.click();
+            });
+            break;
+             case "print":
+            await axios({
+              url: "/api/reports/inventorysummary/get",
+              method: "GET",
+              responseType: "blob",
+              params: { type: 'pdf', from: this.dateFrom, to: this.dateUntil },
+            }).then((response) => { 
+              let blob = new Blob([response.data], { type: "application/pdf" });
+               this.print =  window.URL.createObjectURL(blob);    
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "warning",
+                  message: "Printing, Please wait.",
+                };
+              setTimeout(function(){  document.getElementById('print4').contentWindow.print() ;  }, 3000); 
+      
             });
             break;
           case "excel":

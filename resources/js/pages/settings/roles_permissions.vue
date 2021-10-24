@@ -217,7 +217,7 @@
               color="primary"
               depressed
               dark
-              @click="storePermissionsConfirmation"
+              @click="validate('permission')"
               style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
             >
@@ -257,7 +257,8 @@
               <v-data-table
                 class="px-4"
                 v-model="selectedAddPermission"
-                :items-per-page="5"
+                :items-per-page="5" 
+                dense
                 :loading="progressBar"
                 :headers="headersAddPermissions"
                 :items="tablePermissions"
@@ -270,6 +271,7 @@
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
+            
             </v-card-text>
 
             <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
@@ -321,9 +323,11 @@
                 class="px-4"
                 v-model="selectedAddRoles"
                 :items-per-page="5"
+                hide-default-footer
+                dense
                 :loading="progressBar"
                 :headers="headersAddRoles"
-                :items="tableAddRoles"
+                :items="tableAddRoles.data"
                 show-select
               >
                 <v-progress-linear
@@ -333,6 +337,14 @@
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
+               <div class="text-center pt-2">
+                    <v-pagination
+                      v-model="page3"
+                      :total-visible="5"
+                      :length="tableAddRoles.last_page"
+                      color="red darken-2"
+                    ></v-pagination>
+                  </div>
             </v-card-text>
 
             <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
@@ -476,7 +488,7 @@
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                    color="primary"
+                    color="success"
                     style="text-transform: none"
                     depressed
                     :small="$vuetify.breakpoint.smAndDown"
@@ -488,11 +500,12 @@
 
                 <!-- Roles List Table -->
                 <v-data-table
+                hide-default-footer 
                   id="table"
                   :items-per-page="5"
                   :loading="progressBar"
                   :headers="headersRoles"
-                  :items="tableRoles"
+                  :items="tableRoles.data"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -535,6 +548,14 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
+               <div class="text-center pt-2">
+                    <v-pagination
+                      v-model="page1"
+                      :total-visible="5"
+                      :length="tableRoles.last_page"
+                      color="red darken-2"
+                    ></v-pagination>
+                  </div>
               </v-container>
             </v-container>
           </v-tab-item>
@@ -556,7 +577,7 @@
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                    color="primary"
+                    color="success"
                     style="text-transform: none"
                     depressed
                     :small="$vuetify.breakpoint.smAndDown"
@@ -571,8 +592,9 @@
                   id="table"
                   :items-per-page="5"
                   :loading="progressBar"
+                  hide-default-footer
                   :headers="headersPermissions"
-                  :items="tablePermissions"
+                  :items="tablePermissions.data"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -594,6 +616,16 @@
                     </v-btn>
                   </template>
                 </v-data-table>
+
+                  <div class="text-center pt-2">
+                    <v-pagination
+                      v-model="page4"
+                      :total-visible="5"
+                      :length="tablePermissions.last_page"
+                      color="red darken-2"
+                    ></v-pagination>
+                  </div>
+
               </v-container>
             </v-container>
           </v-tab-item>
@@ -605,7 +637,7 @@
                 <v-card-actions class="px-0">
                   <v-spacer></v-spacer>
                   <v-btn
-                    color="primary"
+                    color="success"
                     style="text-transform: none"
                     depressed
                     :small="$vuetify.breakpoint.smAndDown"
@@ -619,9 +651,10 @@
                 <v-data-table
                   id="table"
                   :items-per-page="5"
+                  hide-default-footer
                   :loading="progressBar"
                   :headers="headersUserrole"
-                  :items="tableUserrole"
+                  :items="tableUserrole.data"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -660,6 +693,14 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
+                <div class="text-center pt-2">
+                    <v-pagination
+                      v-model="page2"
+                      :total-visible="5"
+                      :length="tableUserrole.last_page"
+                      color="red darken-2"
+                    ></v-pagination>
+                  </div>
               </v-container>
             </v-container>
           </v-tab-item>
@@ -743,6 +784,7 @@ export default {
     // --------------------------------------------------role
     dialogRoles: false,
     tableRoles: [],
+    page1: 1,
     headersRoles: [
       {
         text: "ROLE NAME",
@@ -765,6 +807,7 @@ export default {
     dialogPermissions: false,
     searchPermissions: "",
     tablePermissions: [],
+    page4: 1,
     headersPermissions: [
       {
         text: "PERMISSION NAME",
@@ -779,6 +822,7 @@ export default {
     // --------------------------------------------------user role
     searchUserrole: "",
     tableUserrole: [],
+    page2: 1,
     headersUserrole: [
       {
         text: "USER",
@@ -813,6 +857,7 @@ export default {
     // --------------------------------------------------set user role
     dialogAddRoles: false,
     tableAddRoles: [],
+    page3: 1,
     selectedAddRoles: [],
     username: "",
     userid: "",
@@ -843,15 +888,17 @@ export default {
 
     // Compare Roles
     compareRoles() {
+      
+        
       if (!this.currentdataRoles) {
         return true;
-      }
+      } 
 
       var found = 0;
-      for (var key in this.mainForm) {
-        if (this.currentdataRoles[key] != this.mainForm[key]) {
+      for (var key in this.role) { 
+        if (this.currentdataRoles[key] != this.role[key]) {
           found += 1;
-        }
+        } 
       }
 
       if (found > 0) {
@@ -931,8 +978,8 @@ export default {
       self.progressBar = true;
       self.tableRoles = [];
       await axios
-        .get("/api/useracc/getRoles")
-        .then((result) => {
+        .get("/api/useracc/getRoles",{params:{page: this.page1}})
+        .then((result) => {  
           self.tableRoles = result.data.data;
           self.tableUserrole = result.data.data;
           self.progressBar = false;
@@ -946,16 +993,16 @@ export default {
         if (this.compareRoles()) {
           await axios
             .post("/api/useracc/storeRole", this.role)
-            .then((result) => {
-              switch (result.data) {
+            .then((result) => { 
+              switch (result.data.type) {
                 case 0:
                   if (this.editedIndex > -1) {
                     Object.assign(
-                      this.tableRoles[this.editedIndex],
-                      result.data
+                      this.tableRoles.data[this.editedIndex],
+                      result.data.data
                     );
                   } else {
-                    this.tableRoles.push(result.data);
+                    this.tableRoles.data.push(result.data.data);
                   }
                   this.snackbar = {
                     active: true,
@@ -982,9 +1029,9 @@ export default {
     },
 
     // Edit Roles
-    editItemRoles(item) {
+    editItemRoles(item) { 
       this.currentdataRoles = JSON.parse(JSON.stringify(item));
-      this.editedIndex = this.tableRoles.indexOf(item);
+      this.editedIndex = this.tableRoles.data.indexOf(item);
       this.role.name = item.name;
       this.role.description = item.description;
       this.role.id = item.id;
@@ -1004,7 +1051,8 @@ export default {
     },
 
     // Permission
-    async getPermissions() {
+    async getPermissions() { 
+    
       let self = this;
       self.progressBar = true;
       self.tablePermissions = [];
@@ -1023,18 +1071,16 @@ export default {
           };
         });
     },
-
-    // Store Validation
-    storePermissionsConfirmation() {},
+ 
     // Save Roles
-    async storePermissions() {
+    async storePermissions() { 
       await axios
         .post("/api/useracc/storePermission", this.permission)
         .then((result) => {
           if (this.editedIndex > -1) {
-            Object.assign(this.tablePermissions[this.editedIndex], result.data);
+            Object.assign(this.tablePermissions.data[this.editedIndex], result.data);
           } else {
-            this.tablePermissions.push(result.data);
+            this.tablePermissions.data.push(result.data);
           }
           this.snackbar = {
             active: true,
@@ -1049,7 +1095,7 @@ export default {
 
     // Edit
     editItemPermissions(item) {
-      this.editedIndex = this.tablePermissions.indexOf(item);
+      this.editedIndex = this.tablePermissions.data.indexOf(item);
       this.permission.name = item.name;
       this.permission.description = item.description;
       this.permission.id = item.id;
@@ -1057,12 +1103,12 @@ export default {
     },
 
     // User Role
-    async getUserRoles() {
+    async getUserRoles() { 
       let self = this;
       self.progressBar = true;
       self.tableUserrole = [];
       await axios
-        .get("/api/useracc/getUserRole")
+        .get("/api/useracc/getUserRole",{params:{page: this.page2}})
         .then((result) => {
           self.tableUserrole = result.data;
           self.progressBar = false;
@@ -1071,14 +1117,14 @@ export default {
     },
 
     // Add Role Permission
-    async getRolePermissions(item) {
+    async getRolePermissions(item) { 
       let self = this;
       self.progressBar = true;
       self.tablePermissions = [];
       await axios
-        .get("/api/useracc/getPermission", { params: { role: item } })
+        .get("/api/useracc/getPermission", { params: { role: item, page: this.page4 } })
         .then((result) => {
-          self.tablePermissions = result.data.data;
+          self.tablePermissions = result.data.all;
           self.selectedAddPermission = result.data.selected;
           self.progressBar = false;
         })
@@ -1091,8 +1137,28 @@ export default {
       this.getRolePermissions(item.name);
     },
 
+
+    checkRolesIsValid(){
+      //if mag add ng restriction bukod dito,
+      // console this.selectedAddPermission tignan and index then get name, then gawa ka if else mo ung message   
+      // lagyan mo ng return sa loob. basta mag greater than one ndi yan prproceed. 
+      if(this.selectedAddPermission[0].name == 'Access POS' && this.selectedAddPermission[1].name == 'Access Dashboard'){
+          this.snackbar = {
+            active: true,
+            iconText: "error",
+            iconColor: "danger",
+            message: "If Access POS is checked, you must Disabled all other permissions.",
+          };
+        return 1
+      }
+    },
+
     // Save Role Permission
-    async storeAddPermissions() {
+    async storeAddPermissions() { 
+      if(this.checkRolesIsValid()> 0){ 
+        return;
+      } 
+
       await axios
         .post("/api/useracc/storeRolePermission", {
           selected: this.selectedAddPermission,
@@ -1209,6 +1275,21 @@ export default {
   watch: {
     dialogRoles(val) {
       val || this.close();
+    },
+    page1(val) {
+      this.page1 = val;
+      this.getRoles();
+    },     page4(val) {
+      this.page4 = val;
+      this.getRolePermissions();
+    },
+      page3(val) {
+      this.page3 = val;
+      this.getRoles();
+    },
+     page2(val) {
+      this.page2 = val;
+      this.getUserRoles();
     },
     dialogPermissions(val) {
       val || this.close();

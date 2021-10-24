@@ -121,6 +121,20 @@
               indeterminate
               rounded
             ></v-progress-linear>
+
+                <template slot="body.append">
+                    <tr class="green--text"  >
+                        <th class="caption" >Totals</th>
+                        <th class="caption" style="text-align: right">{{ sumField('begining_orig')}} </th>
+                        <th class="caption" style="text-align: right">{{ sumField('incoming_orig')}}  </th>
+                        <th class="caption" style="text-align: right">{{ sumField('total_orig')}}  </th>
+                        <th class="caption" style="text-align: right">{{ sumField('outgoing_orig')}}  </th>
+                        <th class="caption" style="text-align: right">{{ sumField('stock_orig')}}  </th>
+                        <th class="caption" style="text-align: right">{{ sumField('ending_orig')}}  </th>
+                        <th class="caption" style="text-align: right">{{ sumField('variance_orig')}}  </th>
+                        <th class="caption" style="text-align: right">{{ sumField('fluctuation_orig')}}  </th>
+                    </tr>
+                </template>
           </v-data-table>
         </v-container>
       </v-container>
@@ -230,6 +244,11 @@ export default {
   },
 
   methods: {
+     sumField(key) { 
+       var num = 0;
+       num =  this.table.reduce((a, b) =>  a + (  b[key]  || 0), 0)
+        return  numeral(num).format('0,0.00') ;
+    },
     list() {
       for (var key in moment.months()) {
         this.mlist.push(moment.months()[key]);

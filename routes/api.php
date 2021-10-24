@@ -2,7 +2,7 @@
  
 use Illuminate\Support\Facades\Route;
 
-    Route::get('seeder', 'UserAccounts\UserAccountsController@createSeeder');
+    Route::get('seeder', 'UserController@createSeeder');
     Route::group(['middleware' => 'guest'], function () {
         Route::post('login', 'Auth\LoginController@login');
     });
@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Route;
 
 
     Route::group(['middleware' => 'api'], function () {
-        Route::get('users', 'UserController@getUsers');
-        Route::post('/changepassword', 'UserController@change_password');
 
         // Dashboard
         Route::get('dashboard/getSupp', 'Dashboard\MainController@getSupp');
@@ -118,15 +116,6 @@ use Illuminate\Support\Facades\Route;
         Route::get('porder/get', 'Suppliers\PurchaseOrdersController@get');
         Route::get('porder/suppName', 'Suppliers\PurchaseOrdersController@suppName');
 
-        // User Accounts
-        Route::post('useracc/save', 'UserAccounts\UserAccountsController@save');
-        Route::get('useracc/get', 'UserAccounts\UserAccountsController@get');
-
-
-        Route::get('useracc/getPermission', 'UserController@getPermission');
-        Route::get('useracc/getRoles', 'UserController@getRoles');
-        Route::get('useracc/getUserRole', 'UserController@getUserRole');
-
         // Company
         Route::post('settings/company/logo/upload', 'Settings\SettingsController@uploadLogo');
         Route::post('settings/company/logo/store', 'Settings\SettingsController@storeLogo');
@@ -138,14 +127,21 @@ use Illuminate\Support\Facades\Route;
         Route::get('settings/vat/get', 'Settings\SettingsController@getVat');
 
 
+        // User Accounts 
+        Route::post('useracc/save', 'UserController@save');
+        Route::get('useracc/get', 'UserController@get'); 
+        Route::get('useracc/getPermission', 'UserController@getPermission');
+        Route::get('useracc/getRoles', 'UserController@getRoles');
 
+        Route::get('useracc/getUserRole', 'UserController@getUserRole');
+        Route::get('users', 'UserController@getUsers');
+        Route::post('/changepassword', 'UserController@change_password');
         Route::post('useracc/storeRole', 'UserController@storeRole');
         Route::post('useracc/storePermission', 'UserController@storePermission');
         Route::post('useracc/storeRolePermission', 'UserController@storeRolePermission');
         Route::post('useracc/storeUserRole', 'UserController@storeUserRole');
         Route::post('useracc/removeUserRole', 'UserController@removeUserRole');
-
-        Route::get('useracc/branchName', 'UserAccounts\UserAccountsController@branchName');
+        Route::get('useracc/branchName', 'UserController@branchName');
 
         // POS
         Route::post('pos/prodlist/save', 'POS\ProductsListController@save');

@@ -395,7 +395,8 @@
         </v-card>
       </v-card>
     </v-dialog>
-  </v-container>
+  <iframe id="print6" class="d-none" :src="print" frameborder="0"></iframe>
+ </v-container>
 </template>
 <style>
 iframe:focus {
@@ -416,6 +417,7 @@ export default {
       active: false,
       message: "",
     },
+    print:'',
     branch: "",
     search: "",
     reference_no: "",
@@ -626,6 +628,32 @@ export default {
               link.click();
             });
             break;
+          case "print":
+            await axios({
+              url: "/api/reports/sales/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                branch: this.branch,
+                from: this.dateFromSP,
+                to: this.dateUntilSP,
+                type: 'pdf',
+              },
+            }).then((response) => {
+              // console.log(response.data);
+              // return;
+              let blob = new Blob([response.data], { type: "application/pdf" });
+                this.print =  window.URL.createObjectURL(blob);    
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "warning",
+                  message: "Printing, Please wait.",
+                };
+              setTimeout(function(){  document.getElementById('print6').contentWindow.print() ;  }, 3000); 
+             });
+            break;
+                
           case "excel":
             await axios
               .get("/api/reports/sales/get", {

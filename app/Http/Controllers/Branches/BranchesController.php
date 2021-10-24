@@ -57,7 +57,7 @@ class BranchesController extends Controller
             $temp = [];
             $temp['row']  = $key+1;
             $temp['id'] = $value->id;
-            $temp['branch_image'] =  ($value->branch_image?'/storage/branches/'.$value->branch_image:'/img/Logo.jpg');
+            $temp['branch_image'] =  ($value->branch_image?$value->branch_image:'/img/Logo.jpg');
             $temp['branch_name'] = $value->branch_name;
             $temp['email_add'] = $value->email_add;
             $temp['location'] = $value->location;

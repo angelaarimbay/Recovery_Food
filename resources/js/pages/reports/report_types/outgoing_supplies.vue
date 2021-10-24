@@ -168,6 +168,7 @@
         </v-col>
       </v-row>
     </v-container>
+  <iframe id="print2" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -176,6 +177,7 @@ import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
     branch: "",
+    print: '',
     category: "",
     suppcatlist: [],
     branchlist: [],
@@ -254,6 +256,31 @@ export default {
                 link.download = "Outgoing Supplies Report.xlsx";
                 link.click();
               });
+            break;
+               case "print":
+            await axios({
+              url: "/api/reports/outgoingsupplies/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: 'pdf',
+                branch: this.branch,
+                category: this.category,
+                from: this.outgoing_from,
+                to: this.outgoing_to,
+              },
+            }).then((response) => { 
+              let blob = new Blob([response.data], { type: "application/pdf" });
+           this.print =  window.URL.createObjectURL(blob);    
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "warning",
+                  message: "Printing, Please wait.",
+                };
+              setTimeout(function(){  document.getElementById('print2').contentWindow.print() ;  }, 3000); 
+         
+            });
             break;
           default:
             break;

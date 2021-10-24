@@ -58,6 +58,7 @@
             <v-btn
               color="primary"
               class="mx-1"
+              @click="get('print')"
               v-on="data.on"
               :small="$vuetify.breakpoint.smAndDown"
               ><v-icon>mdi-printer</v-icon></v-btn
@@ -151,6 +152,7 @@
         </v-col>
       </v-row>
     </v-container>
+  <iframe id="print1" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -160,6 +162,7 @@ export default {
   data: () => ({
     category: "",
     suppcatlist: [],
+    print: '',
     snackbar: {
       active: false,
       message: "",
@@ -232,7 +235,32 @@ export default {
                 link.click();
               });
             break;
-          default:
+        
+          case "print":
+            await axios({
+              url: "/api/reports/incomingsupplies/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: 'pdf',
+                category: this.category,
+                from: this.incoming_from,
+                to: this.incoming_to,
+              },
+            }).then((response) => {
+              let blob = new Blob([response.data], { type: "application/pdf" });
+             this.print =  window.URL.createObjectURL(blob);    
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "warning",
+                  message: "Printing, Please wait.",
+                };
+              setTimeout(function(){  document.getElementById('print1').contentWindow.print() ;  }, 3000); 
+       
+            });
+            break;
+        default:
             break;
         }
       }
