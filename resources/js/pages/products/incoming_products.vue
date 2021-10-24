@@ -432,7 +432,7 @@
                       md="12"
                     >
                       <v-autocomplete
-                        :rules="formRulesNumberRange"
+                        :rules="formRules"
                         v-model="form.product_name"
                         :items="prodnamelist"
                         item-text="product_name" 
@@ -452,7 +452,7 @@
                         v-model="form.quantity"
                         outlined
                         clearable
-                        dense
+                        dense 
                         @keyup="quantityKeydown($event)"
                         counter
                         maxlength="3"
@@ -677,8 +677,9 @@ export default {
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
-      }
-          this.form.price = (this.form.quantity * this.form.product_name.price)
+       
+      }   this.form.amount = (this.form.quantity * this.form.product_name.price)
+       
     },
     numberKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {

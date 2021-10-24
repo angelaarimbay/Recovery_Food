@@ -30,14 +30,14 @@ class IncomingProductsController extends Controller
             $table_clone->where("id", $data->id)->update(
                 ["category"=>$data->category,
                 "sub_category"=>$data->sub_category,
-                "product_name"=>$data->product_name,
+                "product_name"=>$data->product_name['id'],
                 "quantity"=>$data->quantity,
                 "amount"=>$data->amount,
                 "incoming_date"=>$data->incoming_date,
                 ]
             );
         } else {
-            tbl_incomingprod::create($data->all());
+            tbl_incomingprod::create($data->except('product_name') + ['product_name'=>$data->product_name['id']]);
         }
         return 0;
     }
@@ -95,7 +95,9 @@ class IncomingProductsController extends Controller
     }
 
     public function prodName(Request $t)
-    {
-        return tbl_masterlistprod::select(["product_name","id"])->where("category", $t->category)->where("sub_category", $t->sub_category)->where("status", 1)->get();
+    { 
+        return tbl_masterlistprod::  where("category", $t->category)
+        ->where("sub_category", $t->sub_category)
+        ->where("status", 1)->get();
     }
 }
