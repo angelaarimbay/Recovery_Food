@@ -486,7 +486,7 @@
                         </table>
                       </v-card>
                     </v-col>
-                    <v-col class="py-0" cols="12" xl="3" lg="3" sm="3" md="4">
+                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="4" md="4">
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
@@ -504,9 +504,7 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="2" lg="2" sm="2" md="2" v-if="form.supply_name">
-                      <v-btn class="py-0 " small @click="form.amount = (form.quantity * form.supply_name.net_price)">Compute</v-btn>
-                    </v-col>
+                  
                     <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-text-field
                         :rules="formRulesPrice"
@@ -739,7 +737,7 @@ export default {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
-      this.form.amount = (this.form.quantity * this.form.supply_name.net_price)
+  
     },
     numberKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {

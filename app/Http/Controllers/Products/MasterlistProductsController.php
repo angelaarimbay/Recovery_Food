@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\tbl_masterlistprod;
 use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
+use App\Models\tbl_vat;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -39,7 +40,8 @@ class MasterlistProductsController extends Controller
             $table_clone->where("id", $data->id)->update(
                 ["status"=>$data->status,
                  "category"=>$data->category,
-                 "vat"=>$data->vat,
+                 "vat"=> tbl_vat::where("type","p")->first()->vat,
+                 "vatable" => 1,
                  "sub_category"=>$data->sub_category,
                  "product_name"=>$data->product_name,
                  "description"=>$data->description,
@@ -48,7 +50,7 @@ class MasterlistProductsController extends Controller
                 ]
             );
         } else {
-            tbl_masterlistprod::create($data->all());
+            tbl_masterlistprod::create($data->all() + ['vatable'=>1]);
         }
         return 0;
     }

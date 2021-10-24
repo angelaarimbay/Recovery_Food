@@ -25,7 +25,7 @@ class PermissionsSeeder extends Seeder
             ['id' => 10, 'name' => 'Access Settings', 'description' => 'manage settings', 'guard_name' => 'api', ],
             ['id' => 11, 'name' => 'Access Branch Inventory', 'description' => '( Supervisor ) - manage branch inventory', 'guard_name' => 'api', ],
             ['id' => 12, 'name' => 'Access Reports - Outgoing Supplies', 'description' => '( Supervisor )', 'guard_name' => 'api', ],
-                        
+                             
         ]);
     }
 }

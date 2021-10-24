@@ -453,20 +453,19 @@
           >
             User Roles
           </v-tab>
-          <!-- <v-tab
+          <v-tab
             class="
               text-body-2
               text-xl-subtitle-1
               text-lg-subtitle-1
               text-md-subtitle-2
-              text-sm-body-1
-              d-none
+              text-sm-body-1 
             "
             :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
             style="text-transform: none"
           >
             Dev
-          </v-tab> -->
+          </v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tab">
@@ -706,7 +705,7 @@
           </v-tab-item>
 
           <!-- Dev-->
-          <!-- <v-tab-item class="d-none">
+          <v-tab-item  >
             <v-card-text>
               <v-text-field
                 class=""
@@ -726,7 +725,7 @@
                 row="10"
               ></v-textarea>
             </v-card-text>
-          </v-tab-item> -->
+          </v-tab-item>
         </v-tabs-items>
       </v-card>
     </v-form>

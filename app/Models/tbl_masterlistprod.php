@@ -45,6 +45,6 @@ class tbl_masterlistprod extends Model
 
     public function getFormatWithVatAttribute()
     {
-        return number_format($this->price / $this->vat, 2, ".", ",");
+        return $this->price?number_format($this->price / $this->vat, 2, ".", ","):0;
     }
 }
