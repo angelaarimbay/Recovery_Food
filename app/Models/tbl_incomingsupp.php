@@ -12,7 +12,7 @@ class tbl_incomingsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['quantity_difference','quantity_amount','category_details','supply_name_details','format_amount'];
+    public $appends = ['quantity_difference','quantity_amount','category_details','supply_name_details','supplier_details',  'fluctiation'];
 
     public function category()
     {
@@ -43,6 +43,10 @@ class tbl_incomingsupp extends Model
     public function getSupplyNameDetailsAttribute()
     {
         return tbl_masterlistsupp::where("id", $this->supply_name)->first();
+    }  
+    public function getSupplierDetailsAttribute()
+    {
+        return tbl_supplist::where("id", $this->supplier)->first();
     }
 
     // For Main Inventory
@@ -57,9 +61,31 @@ class tbl_incomingsupp extends Model
             }
     
     }
-
-    public function getFormatAmountAttribute()
+    public function getNetPriceAttribute()
     {
-        return number_format($this->amount, 2, ".", ",");
+        return tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price;
+    }  
+
+    public function getFluctiationAttribute()
+    { //for list with vat column
+        
+        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
+        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+        $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 23:59:59'));
+
+        //get the amount from incoming
+        $get_amount = tbl_incomingsupp::where("supply_name",$this->supply_name)
+        ->whereBetween('incoming_date',[$date1,$date2]);  
+
+        $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name",$this->supply_name)
+        ->whereBetween('incoming_date',[$date1,$date2]);
+        //get average amount
+        if($get_quantity->sum('amount') < 1){
+            $get_wov = 0;
+        }else{  
+            $get_wov = $get_quantity->sum('quantity') * ( ( $get_amount->sum('amount') / $get_quantity->sum('quantity')  )  -   tbl_masterlistsupp::where("id",$this->supply_name)->first()->net_price  ); 
+        } 
+        return $get_wov;
     }
+ 
 }

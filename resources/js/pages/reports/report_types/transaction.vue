@@ -368,6 +368,7 @@
         </v-card>
       </v-card>
     </v-dialog>
+ <iframe id="print7" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -381,6 +382,7 @@ export default {
       message: "",
     },
     branch: "",
+    print: '',
     search: "",
     reference_no: "",
     prodcatlist: [],
@@ -561,6 +563,30 @@ export default {
               link.href = window.URL.createObjectURL(blob);
               link.download = "Transaction Report.pdf";
               link.click();
+            });
+            break;  
+             case "print":
+            await axios({
+              url: "/api/reports/transaction/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                branch: this.branch,
+                from: this.dateFromTP,
+                to: this.dateUntilTP,
+                type: 'pdf',
+              },
+            }).then((response) => {
+              let blob = new Blob([response.data], { type: "application/pdf" });
+                 this.print =  window.URL.createObjectURL(blob);    
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "warning",
+                  message: "Printing, Please wait.",
+                };
+              setTimeout(function(){  document.getElementById('print7').contentWindow.print() ;  }, 3000); 
+    
             });
             break;
           case "excel":

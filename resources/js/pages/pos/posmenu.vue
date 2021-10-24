@@ -206,8 +206,9 @@
               <span>Close</span>
             </v-tooltip>
           </v-toolbar>
-          <iframe :src="pdfview" width="500" height="500"></iframe>
+          <iframe :src="pdfview" width="100%" height="500"></iframe>
         </v-dialog>
+
         <v-dialog v-model="dialog2">
           <v-toolbar
             dense
@@ -260,16 +261,16 @@
                 <v-row>
                   <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                     <v-text-field
-                      :rules="formRules"
+                      :rules="formRulesQuantity"
                       v-model="quantity"
                       outlined
                       dense
+                      autocomplete="off"
                       @focus="clearQ"
                       @blur="resetQ"
-                      autocomplete="off"
-                      type="number"
-                      min="1"
                       @keydown="quantityKeydown($event)"
+                      counter
+                      maxlength="3"
                     >
                       <template slot="label">
                         <div style="font-size: 14px">Quantity *</div>
@@ -299,11 +300,24 @@
                 depressed
                 :disabled="button"
                 dark
+                v-if="dialog_add"
                 style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
-                @click="validateQty"
+                @click="validateQty('add')"
               >
                 Save
+              </v-btn>
+              <v-btn
+                color="primary"
+                depressed
+                v-else
+                :disabled="button"
+                dark
+                style="text-transform: none"
+                :small="$vuetify.breakpoint.smAndDown"
+                @click="validateQty('delete')"
+              >
+                Remove
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -352,7 +366,7 @@
                   v-model="mode"
                   :items="['Walk-In', 'Take-Out']"
                   hide-details
-                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-4 mb-sm-2"
+                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-0 mb-sm-2"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Mode</div>
@@ -395,7 +409,7 @@
                     v-on="data.on"
                     icon
                     color="red darken-2"
-                    @click="selectItem(item, 'remove')"
+                    @click="validateDelete(item)"
                     :small="$vuetify.breakpoint.smAndDown"
                   >
                     <v-icon>mdi-delete</v-icon>
@@ -467,7 +481,7 @@
             <v-row align="center" justify="center">
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
-                  :rules="formRulesNumberRange"
+                  :rules="formRulesPrice"
                   ref="payment"
                   v-model="payment"
                   @input="getChange($event)"
@@ -481,8 +495,6 @@
                   persistent-placeholder
                   autocomplete="off"
                   :disabled="!disabled"
-                  type="number"
-                  min="0"
                   @keydown="paymentKeydown($event)"
                 >
                   <template slot="label">
@@ -493,7 +505,7 @@
 
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
-                  :rules="formRulesNumberRange"
+                  :rules="formRulesDiscount"
                   v-model="discount"
                   @input="getChange($event)"
                   outlined
@@ -505,8 +517,6 @@
                   @blur="resetD"
                   autocomplete="off"
                   :disabled="!disabled"
-                  type="number"
-                  min="0"
                   @keydown="discountKeydown($event)"
                 >
                   <template slot="label">
@@ -557,9 +567,9 @@
                           v-on="data.on"
                           block
                           @click="getReceipt"
-                          color="light-blue darken-3"
+                          color="blue-grey lighten-2"
                           style="text-transform: none; color: white"
-                          :disabled="!disabled"
+                          :disabled="!disabled1"
                         >
                           <v-icon large>mdi-printer</v-icon>
                         </v-btn>
@@ -594,7 +604,7 @@
                         <v-btn
                           v-on="data.on"
                           block
-                          color="amber darken-1"
+                          color="blue darken-2"
                           style="text-transform: none; color: white"
                           :disabled="!disabled"
                           @click="validate('new')"
@@ -676,6 +686,9 @@ import axios from "axios"; // Library for sending api request
 import salesreport from "../reports/report_types/sales.vue";
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "POS" };
+  },
   components: {
     salesreport,
   },
@@ -711,6 +724,7 @@ export default {
     button: false,
     mode: "",
     quantity: 1,
+    disabled1: false,
     dialog: false,
     selectedrow: { product_name: "" },
     totalamount: 0,
@@ -718,6 +732,8 @@ export default {
     payment: 0,
     discount: 0,
     change: 0,
+    deleteindex: -1,
+    dialog_add: true,
     salescount: 0,
     table1: [],
     table2: [],
@@ -729,16 +745,18 @@ export default {
     type: "",
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
-    formRulesNumberRange: [
-      (v) => {
-        if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
-        return "This is required";
-      },
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
     ],
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
+    formRulesPrice: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
     ],
-
+    formRulesDiscount: [
+      (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Discount must be valid",
+    ],
     form: {
       id: null,
       quantity: 1,
@@ -762,7 +780,7 @@ export default {
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.format_unit_price",
+        value: "product_name.format_with_vat",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -803,7 +821,7 @@ export default {
       },
       {
         text: "UNIT PRICE",
-        value: "unit_price",
+        value: "with_vat",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -826,8 +844,6 @@ export default {
         text: "",
         value: "row",
         align: "center",
-        sortable: false,
-        filterable: false,
       },
     ],
     page: 1,
@@ -837,17 +853,17 @@ export default {
 
   methods: {
     quantityKeydown(e) {
-      if (/[+-.]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
     paymentKeydown(e) {
-      if (/[+-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
     discountKeydown(e) {
-      if (/[+-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
@@ -862,15 +878,15 @@ export default {
             this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
       ).format("0,0.00");
 
-      for (let i = 0; i < this.table2.length; i++) {
-        this.table2[i].sub_total_discounted =
-          this.table2[i].quantity *
-          (this.table2[i].unit_price -
-            (this.discount / 100) * this.table2[i].unit_price);
+      for (var key in this.table2) {
+        this.table2[key].sub_total_discounted =
+          this.table2[key].quantity *
+          (this.table2[key].with_vat -
+            (this.discount / 100) * this.table2[key].with_vat);
 
-        this.table2[i].payment = this.payment;
-        this.table2[i].discount = this.discount;
-        this.table2[i].change = this.change;
+        this.table2[key].payment = this.payment;
+        this.table2[key].discount = this.discount;
+        this.table2[key].change = this.change;
       }
     },
 
@@ -891,6 +907,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -906,10 +923,11 @@ export default {
         responseType: "blob",
         params: { reference_no: this.reference_no },
       }).then((response) => {
-        // console.log(response.data);
+        //  console.log(response.data);
         // return;
         let blob = new Blob([response.data], { type: "application/pdf" });
         this.pdfview = window.URL.createObjectURL(blob);
+        this.dialog2 = false;
         this.dialog1 = true;
       });
     },
@@ -942,6 +960,7 @@ export default {
             message: "Do you want to void the order?",
             type: "void",
           };
+          this.disabled1 = false;
           break;
         case "new":
           this.snackbar2 = {
@@ -951,6 +970,7 @@ export default {
             message: "Do you want to make new order?",
             type: "new",
           };
+          this.disabled1 = false;
           break;
         default:
           break;
@@ -959,7 +979,6 @@ export default {
 
     async save() {
       this.snackbar2.active = false;
-
       if (parseInt(this.payment) >= parseInt(this.totalamount)) {
         await axios
           .post("/api/pos/prodlist/save", this.table2)
@@ -968,6 +987,7 @@ export default {
 
             this.get();
             this.getSalesCount();
+            this.disabled1 = true;
             this.snackbar = {
               active: true,
               iconText: "check",
@@ -991,11 +1011,11 @@ export default {
       });
     },
 
-    selectItem(item, type) {
+    selectItem(item) {
       if (this.mode) {
+        this.dialog_add = true;
         this.dialog = true;
         this.selectedrow = item;
-        this.type = type;
       } else {
         this.snackbar = {
           active: true,
@@ -1006,32 +1026,118 @@ export default {
       }
     },
 
-    validateQty() {
-      if (this.type == "add") {
+    validateQty(type) {
+      if (type == "add") {
         var quantity = 0;
         if (this.table2.length > 0) {
-          for (let i = 0; i < this.table2.length; i++) {
+          var indexid = -1;
+          for (var key in this.table2) {
+            //if table have value
             if (
-              this.selectedrow.product_name.id == this.table2[i].product_name
+              parseInt(this.selectedrow.product_name.id) ===
+              parseInt(this.table2[key].product)
             ) {
-              quantity =
-                parseInt(this.table2[i].quantity) + parseInt(this.quantity);
+              indexid = this.table2.indexOf(this.table2[key]);
             }
           }
 
-          if (parseInt(this.selectedrow.quantity) <= quantity) {
-            this.snackbar = {
-              active: true,
-              iconText: "alert",
-              iconColor: "error",
-              message: "Error! Please input correct quantity.",
-            };
+          if (indexid > -1) {
+            quantity =
+              parseInt(this.table2[indexid].quantity) + parseInt(this.quantity); //add current and input
+            if (parseInt(this.selectedrow.quantity_diff) < quantity) {
+              //check if greather than stocks
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "error",
+                message: "Error! Please input correct quantity.",
+              };
+            } else {
+              this.table2[indexid].quantity =
+                parseInt(this.table2[indexid].quantity) +
+                parseInt(this.quantity);
+              this.table2[indexid].sub_total = numeral(
+                parseFloat(this.table2[indexid].quantity) *
+                  parseFloat(this.selectedrow.product_name.format_with_vat)
+              ).format("0,0.00");
+              this.table2[indexid].temp_sub_total =
+                parseFloat(this.table2[indexid].quantity) *
+                parseFloat(this.selectedrow.product_name.format_with_vat);
+
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully added.",
+              };
+            }
           } else {
-            this.appendItem();
+            if (
+              parseInt(this.selectedrow.quantity_diff) < parseInt(this.quantity)
+            ) {
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "error",
+                message: "Error! Please input correct quantity.",
+              };
+            } else {
+              this.table2.push({
+                id: this.table2.length + 1,
+                category: this.selectedrow.category.id,
+                sub_category: this.selectedrow.sub_category.id,
+                product_name: {
+                  product_name: this.selectedrow.product_name.product_name,
+                },
+                description: this.selectedrow.product_name.description,
+                product: this.selectedrow.product_name.id,
+                with_vat: this.selectedrow.product_name.format_with_vat,
+                quantity: this.quantity,
+                sub_total: numeral(
+                  this.quantity * this.selectedrow.product_name.format_with_vat
+                ).format("0,0.00"),
+                temp_sub_total:
+                  parseFloat(this.quantity) *
+                  parseFloat(this.selectedrow.product_name.format_with_vat),
+                mode: this.mode,
+              });
+
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully added.",
+              };
+            }
           }
         } else {
           if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
-            this.appendItem("add");
+            this.table2.push({
+              id: this.table2.length + 1,
+              category: this.selectedrow.category.id,
+              sub_category: this.selectedrow.sub_category.id,
+              product_name: {
+                product_name: this.selectedrow.product_name.product_name,
+              },
+              description: this.selectedrow.product_name.description,
+              product: this.selectedrow.product_name.id,
+              with_vat: this.selectedrow.product_name.format_with_vat,
+              quantity: this.quantity,
+              sub_total: numeral(
+                this.quantity * this.selectedrow.product_name.format_with_vat
+              ).format("0,0.00"),
+              temp_sub_total:
+                parseFloat(this.quantity) *
+                parseFloat(this.selectedrow.product_name.format_with_vat),
+              mode: this.mode,
+            });
+
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully added.",
+            };
           } else {
             this.snackbar = {
               active: true,
@@ -1042,58 +1148,142 @@ export default {
           }
         }
       } else {
-        this.deleteItem(this.selectedrow);
-      }
-    },
+        this.table2[this.deleteindex].quantity =
+          this.table2[this.deleteindex].quantity - parseInt(this.quantity);
+        this.table2[this.deleteindex].sub_total = numeral(
+          parseFloat(this.table2[this.deleteindex].quantity) *
+            parseFloat(this.selectedrow.format_with_vat)
+        ).format("0,0.00");
+        this.table2[this.deleteindex].temp_sub_total =
+          parseFloat(this.table2[this.deleteindex].quantity) *
+          parseFloat(this.selectedrow.format_with_vat);
 
-    appendItem() {
-      if (this.type == "add") {
-        //find item in recently added.
-        var check_exsiting = 0;
-        for (let i = 0; i < this.table2.length; i++) {
-          if (this.selectedrow.product_name.id == this.table2[i].product) {
-            check_exsiting++;
+        if (this.table2[this.deleteindex].quantity <= 0) {
+          this.table2.splice(this.deleteindex, 1);
+
+          for (var key in this.table2) {
+            this.table2[key].id = this.table2.length;
           }
         }
-        if (check_exsiting > 0) {
-          for (let i = 0; i < this.table2.length; i++) {
-            if (this.selectedrow.product_name.id == this.table2[i].product) {
-              this.table2[i].quantity =
-                parseInt(this.table2[i].quantity) + parseInt(this.quantity);
-            }
-          }
-        } else {
-          this.table2.push({
-            id: this.table2.length + 1,
-            category: this.selectedrow.category.id,
-            sub_category: this.selectedrow.sub_category.id,
-            product_name: {
-              product_name: this.selectedrow.product_name.product_name,
-            },
-            description: this.selectedrow.product_name.description,
-            product: this.selectedrow.product_name.id,
-            unit_price: this.selectedrow.product_name.format_unit_price,
-            quantity: this.quantity,
-            sub_total: numeral(
-              this.quantity * this.selectedrow.product_name.price
-            ).format("0,0.00"),
-            temp_sub_total: this.quantity * this.selectedrow.product_name.price,
-            mode: this.mode,
-          });
-        }
+
         this.snackbar = {
           active: true,
           iconText: "check",
           iconColor: "success",
-          message: "Successfully added.",
+          message: "Successfully removed.",
         };
-      } else {
-        this.table2[this.editedIndex].quantity =
-          this.table2[this.editedIndex].quantity - this.quantity;
-        if (this.table2[this.editedIndex].quantity < 1) {
-          this.table2.splice(this.editedIndex, 1);
+      }
+      this.getTotal();
+      this.getChange();
+      this.cancel();
+    },
+
+    validateDelete(item) {
+      this.deleteindex = this.table2.indexOf(item);
+      this.selectedrow = item;
+      this.dialog_add = false;
+      this.dialog = true;
+    },
+
+    checktotable2() {
+      var check_existing = 0;
+      //table
+      for (var i in this.table2) {
+        if (this.selectedrow.product_name.id == this.table2[i].product) {
+          check_existing = i;
         }
       }
+      if (check_existing > 0) {
+        return this.updatetotable2(check_existing);
+      } else {
+        return this.addtotable2();
+      }
+    },
+
+    addtotable2() {
+      this.table2.push({
+        id: this.table2.length + 1,
+        category: this.selectedrow.category.id,
+        sub_category: this.selectedrow.sub_category.id,
+        product_name: {
+          product_name: this.selectedrow.product_name.product_name,
+        },
+        description: this.selectedrow.product_name.description,
+        product: this.selectedrow.product_name.id,
+        with_vat: this.selectedrow.product_name.format_with_vat,
+        quantity: this.quantity,
+        sub_total: numeral(
+          this.quantity * this.selectedrow.product_name.format_with_vat
+        ).format("0,0.00"),
+        temp_sub_total: this.quantity * this.selectedrow.product_name.format_with_vat,
+        mode: this.mode,
+      });
+    },
+    updatetotable2(i) {
+      if (i == -1) {
+        this.addtotable2();
+        return;
+      }
+      if (this.selectedrow.product_name.id == this.table2[i].product) {
+        this.table2[i].quantity =
+          this.table2[i].quantity + parseInt(this.quantity);
+        this.table2[i].sub_total = numeral(
+          this.table2[i].quantity * this.selectedrow.product_name.format_with_vat
+        ).format("0,0.00");
+        this.table2[i].temp_sub_total = numeral(
+          this.table2[i].quantity * this.selectedrow.product_name.format_with_vat
+        ).format("0,0.00");
+      } else {
+        this.addtotable2();
+      }
+    },
+
+    //1st create add item
+    //2. add quantity of existing item
+    //3. add new item namay existing na
+    //4. add quantity for each.
+
+    appendItem(type) {
+      if (type == "add") {
+        //if
+        var check_existing = -1;
+        if (this.table2.length > 0) {
+          for (var i in this.table2) {
+            if (this.selectedrow.product_name.id == this.table2[i].product) {
+              check_existing = this.table2.indexOf(this.table2[i]);
+            }
+          }
+        }
+        this.updatetotable2(check_existing);
+      } else {
+        //delete
+        //   this.table2.push({
+        //     id: this.table2.length + 1,
+        //     category: this.selectedrow.category.id,
+        //     sub_category: this.selectedrow.sub_category.id,
+        //     product_name: {
+        //       product_name: this.selectedrow.product_name.product_name,
+        //     },
+        //     description: this.selectedrow.product_name.description,
+        //     product: this.selectedrow.product_name.id,
+        //     unit_price: this.selectedrow.product_name.format_unit_price,
+        //     quantity: this.quantity,
+        //     sub_total: numeral(
+        //       this.quantity * this.selectedrow.product_name.price
+        //     ).format("0,0.00"),
+        //     temp_sub_total:
+        //       this.quantity * this.selectedrow.product_name.price,
+        //     mode: this.mode,
+        //   });
+      }
+
+      this.snackbar = {
+        active: true,
+        iconText: "check",
+        iconColor: "success",
+        message: "Successfully added.",
+      };
+
       this.getTotal();
       this.getChange();
       this.cancel();
@@ -1223,6 +1413,7 @@ export default {
 
   created() {
     if (this.user.permissionslist.includes("Access POS")) {
+      this.$store.commit("check_layout/container", "");
       this.get();
       this.getSalesCount();
     } else {

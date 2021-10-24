@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Suppliers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\tbl_purchaseord;
-use App\Models\tbl_supplist;
-use Illuminate\Support\Facades\DB;
+use App\Models\tbl_supplist; 
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PurchaseOrdersController extends Controller
 {
@@ -34,24 +35,34 @@ class PurchaseOrdersController extends Controller
     }
 
     public function get(Request $t)
-    {
-        DB::statement(DB::raw("set @row:=0"));
-        if ($t->search) { // If has value
-            $table = tbl_purchaseord::with("supplier_name")->where("supplier_name", "!=", null);
-            $table_clone = clone $table;   // Get all items from purchaseord
-            if ($t->dateFrom && $t->dateUntil) {
-                $table_clone->whereBetween("incoming_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
-            }
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->whereHas('supplier_name', function ($q) use ($t) {
-                $q->where('supplier_name', 'like', "%".$t->search."%");
-            }) ->paginate($t->itemsPerPage, "*", "page", 1);
-        }
-       $table = tbl_purchaseord::with("supplier_name");
-        // Else
+    {  $table = tbl_purchaseord::with("supplier_name")->where("supplier_name", "!=", null);
+
+
         if ($t->dateFrom && $t->dateUntil) {
-            $table->whereBetween("incoming_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+            $table = $table->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
         }
-        return  $table->selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+
+        if ($t->search) { // If has value 
+            $table= $table->selectRaw("*, @row:=@row+1 as row ")->whereHas('supplier_name', function ($q) use ($t) {
+                $q->where('supplier_name', 'like', "%".$t->search."%");
+            }) ;
+        }
+         
+        $return = [];
+        foreach ($table->get() as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id; 
+            $temp['amount'] = $value->amount;  
+            $temp['format_amount'] = $value->format_amount;  
+            $temp['incoming_date'] = $value->incoming_date;  
+            $temp['invoice_number'] = $value->invoice_number;  
+            $temp['supplier_name'] = $value->supplier_name_details;    
+            array_push($return,$temp);
+        }   
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+  
     }
 
     public function suppName()

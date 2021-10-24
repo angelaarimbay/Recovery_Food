@@ -85,6 +85,7 @@
         </v-col>
       </v-row>
     </v-container>
+  <iframe id="print0" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -94,6 +95,7 @@ export default {
   data: () => ({
     category: "",
     suppcatlist: [],
+    print: '',
     snackbar: {
       active: false,
       message: "",
@@ -150,7 +152,22 @@ export default {
               });
             break;
           case "print":
-
+            await axios({
+              url: "/api/reports/masterlistsupplies/get",
+              method: "GET",
+              responseType: "blob",
+              params: { category: this.category, type: 'pdf' },
+            }).then((response) => {
+              let blob = new Blob([response.data], { type: "application/pdf" }); 
+              this.print =  window.URL.createObjectURL(blob);    
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "warning",
+                  message: "Printing, Please wait.",
+                };
+              setTimeout(function(){  document.getElementById('print0').contentWindow.print() ;  }, 3000); 
+            });
             break;
           default:
             break;

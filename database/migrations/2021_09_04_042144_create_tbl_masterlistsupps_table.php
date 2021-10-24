@@ -15,14 +15,16 @@ class CreateTblMasterlistsuppsTable extends Migration
     {
         Schema::create('tbl_masterlistsupps', function (Blueprint $table) {
             $table->id();
-            $table->integer('category')->references('id')->on('tbl_suppcat');   
-            $table->string('group'); //if belong w/same supply name
+            $table->integer('category')->references('id')->on('tbl_suppcat');    
             $table->string('supply_name');
             $table->string('description')->nullable();
             $table->string('unit');
             $table->float('net_price'); 
             $table->float('vat');
             $table->integer('vatable');  
+            $table->integer('lead_time')->nullable();  
+            $table->integer('order_frequency')->default(7);  
+            $table->integer('maximum_order_quantity')->default(0);  
             $table->integer('supplier')->references('id')->on('tbl_supplist');  
             $table->datetime('exp_date')->nullable();
             $table->integer('status')->default(1); //0 = inactive, else active

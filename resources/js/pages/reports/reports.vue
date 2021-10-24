@@ -193,6 +193,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Reports" };
+  },
   components: {
     masterlistsupplies1,
     incomingsupplies1,

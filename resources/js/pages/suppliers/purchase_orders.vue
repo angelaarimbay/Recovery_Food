@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Suppliers
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -260,14 +263,21 @@
               {{ item.row }}</template
             >
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -291,6 +301,19 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Purchase Order
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -359,6 +382,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="invoiceKeydown($event)"
+                        maxlength="20"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Invoice Number *</div>
@@ -398,14 +424,17 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesPrice"
                         v-model="form.amount"
                         outlined
                         clearable
                         dense
+                        @keydown="numberKeydown($event)"
+                        counter
+                        maxlength="15"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Total Amount *</div>
+                          <div style="font-size: 14px">Amount *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -465,6 +494,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Suppliers" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -484,14 +516,21 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
+    formRulesInvoice: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^(?:([0-9])(?!\1{9}))+$/.test(v) || "Invoice Number must be valid",
+    ],
+    formRulesPrice: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
         return "This is required";
       },
-    ],
-    formRulesNumber: [
-      (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
 
     // Form Data
@@ -571,6 +610,16 @@ export default {
   },
 
   methods: {
+    invoiceKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    numberKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     itemperpage() {
       this.page = 1;
       this.get();

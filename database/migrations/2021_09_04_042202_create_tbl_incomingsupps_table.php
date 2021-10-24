@@ -21,6 +21,7 @@ class CreateTblIncomingsuppsTable extends Migration
             $table->float('quantity');
             $table->float('amount'); 
             $table->datetime('incoming_date');
+            
 
             // $table->string('col'); //required string
             // $table->string('col')->nullable(); //optional string

@@ -27,14 +27,17 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           User Accounts
           <!-- {{ json_encode($auth_user)  }} -->
           <!-- <div  v-if="$can('Access Inventory')">yes</div> -->
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -136,8 +139,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -186,16 +189,22 @@
                 </v-chip>
               </span>
             </template>
-
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -247,6 +256,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="25"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">First Name *</div>
@@ -261,6 +273,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="25"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Last Name *</div>
@@ -277,14 +292,17 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesEmail"
                         v-model="form.email"
                         outlined
                         clearable
                         dense
+                        counter
+                        maxlength="64"
+                        placeholder="johndoe@gmail.com"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Email *</div>
+                          <div style="font-size: 14px">Email Address *</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -298,11 +316,14 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesNumberOnly"
                         v-model="form.phone_number"
                         outlined
                         clearable
                         dense
+                        @keydown="contactKeydown($event)"
+                        maxlength="15"
+                        placeholder="+639XXXXXXXXX"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Phone Number *</div>
@@ -313,10 +334,10 @@
                     <v-col
                       class="py-0"
                       cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
                       v-if="passwords"
                     >
                       <v-text-field
@@ -325,9 +346,12 @@
                         :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                         :type="show1 ? 'text' : 'password'"
                         @click:append="show1 = !show1"
+                        @input="inputPass"
                         outlined
                         clearable
                         dense
+                        counter
+                        maxlength="20"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Password *</div>
@@ -338,14 +362,21 @@
                     <v-col
                       class="py-0"
                       cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
-                      v-if="passwords"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                      v-if="
+                        passwords &&
+                        this.form.password !== null &&
+                        this.form.password.length !== 0
+                      "
                     >
                       <v-text-field
-                        :rules="formRules"
+                        :rules="[
+                          form.password === form.confirmPass ||
+                            'Password must match',
+                        ]"
                         v-model="form.confirmPass"
                         :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                         :type="show2 ? 'text' : 'password'"
@@ -353,6 +384,8 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        maxlength="20"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Confirm Pass *</div>
@@ -399,7 +432,6 @@
                         item-text="branch_name"
                         item-value="id"
                         outlined
-                        clearable
                         dense
                       >
                         <template slot="label">
@@ -463,10 +495,18 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "User Accounts" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
+    inputPass() {
+      if (this.form.password == null || this.form.password.length == 0) {
+        this.form.confirmPass = null;
+      }
+    },
   },
   data: () => ({
     progressbar: false,
@@ -487,7 +527,26 @@ export default {
     branchlist: [],
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
+    formRules: [
+      (v) => (!!v && v.length >= 3) || "This is required",
+      (v) =>
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesEmail: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        "E-mail must be valid",
+    ],
+    formRulesNumberOnly: [
+      (v) => !!v || "This field is required",
+      (v) =>
+        /^(?:([+])(?!\1{1}))*([0-9]{7,12})+$/.test(v) ||
+        "This field only accepts valid contact number",
+      (v) => (!!v && v.length >= 7) || "Contact number must be valid",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
@@ -500,6 +559,7 @@ export default {
 
     // Form Data
     form: {
+      id: null,
       first_name: null,
       last_name: null,
       email: null,
@@ -534,7 +594,7 @@ export default {
       },
       {
         text: "BRANCH",
-        value: "branch_details.branch_name",
+        value: "branch.branch_name",
         filterable: false,
         class: "black--text",
       },
@@ -565,6 +625,17 @@ export default {
   },
 
   methods: {
+    valueKeydown(e) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    contactKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+
     addnew() {
       this.passwords = true;
       this.dialog = true;
@@ -600,7 +671,15 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          found += 1;
+          if (key == "branch") {
+            if (this.currentdata.branch) {
+              if (this.currentdata.branch.id != this.form.branch) {
+                found += 1;
+              }
+            }
+          } else {
+            found += 1;
+          }
         }
       }
       //if has changes
@@ -687,7 +766,8 @@ export default {
       this.form.last_name = row.last_name;
       this.form.email = row.email;
       this.form.phone_number = row.phone_number;
-      this.form.branch = row.branch_details.id;
+      this.form.branch = row.branch.id;
+
       this.dialog = true;
     },
 
