@@ -75,7 +75,7 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="dialog = true"
+              @click="openDialog"
             >
               Add Supply
             </v-btn>
@@ -260,7 +260,7 @@
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
-            :page.sync="page"
+            :page.sync="page" 
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -282,22 +282,15 @@
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
-            >
-            <template v-slot:[`item.without_vat`]="{ item }">
-              <div class="text-warning" v-if="item.vatable == 1">
-                {{ Math.round(item.without_vat * 100) / 100 }}
-              </div>
-              <div v-else>{{ Math.round(item.without_vat * 100) / 100 }}</div>
-            </template>
-            <template v-slot:[`item.with_vat`]="{ item }">
-              <div class="text-warning" v-if="item.vatable == 1">
-                {{ Math.round(item.with_vat * 100) / 100 }}
-              </div>
-              <div v-else>{{ Math.round(item.with_vat * 100) / 100 }}</div>
-            </template>
+            >  
             <template v-slot:[`item.status`]="{ item }">
+                  <!-- <small> Lead time: {{ item.lead_time }} /
+              Max order: {{ item.maximum_order_quantity }} /
+              Frequency:  {{ item.order_frequency }}<br> </small> -->
+              
               <v-chip
                 style="justify-content: center"
+                x-small
                 :style="widthSize"
                 :small="$vuetify.breakpoint.smAndDown"
                 :color="
@@ -344,7 +337,7 @@
 
         <!--Dialog Form-->
         <v-form ref="form">
-          <v-dialog v-model="dialog" max-width="450px">
+          <v-dialog v-model="dialog" max-width="550px">
             <v-toolbar
               dense
               dark
@@ -370,16 +363,39 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+                    
+                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="12" md="12">
+                      <v-text-field v-model="form.id" class="d-none" dense >
+                        <template slot="label">
+                          <div style="font-size: 14px">ID</div>
+                        </template>
+                      </v-text-field>
+
+                      <v-select
+                        :rules="formRulesNumberRange"
+                        v-model="form.status"
+                        outlined
+                        dense  
+                        :items="status"
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Status *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
                     <v-col
                       class="py-0"
                       cols="12"
-                      xl="12"
-                      lg="12"
+                      xl="8"
+                      lg="8"
                       sm="12"
                       md="12"
                     >
                       <v-select
-                        :rules="formRules"
+                        :rules="formRulesNumberRange"
                         v-model="form.supplier"
                         outlined
                         dense
@@ -393,33 +409,11 @@
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 14px">ID</div>
-                        </template>
-                      </v-text-field>
-
-                      <v-select
-                        :rules="formRulesNumberRange"
-                        v-model="form.status"
-                        outlined
-                        dense
-                        :items="status"
-                        item-text="name"
-                        item-value="id"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Status *</div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
+                    <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.category"
-                        outlined
+                        outlined :disabled="!form.supplier"
                         :items="suppcatlist"
                         dense
                         item-text="supply_cat_name"
@@ -442,9 +436,12 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.supply_name"
-                        outlined
+                        outlined :disabled="!form.supplier"
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
@@ -452,19 +449,16 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
+                    <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                       <v-text-field
+                        :rules="formRulesDesc"
                         v-model="form.description"
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="descKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Description</div>
@@ -472,37 +466,32 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
+                    <v-col class="py-0" cols="12" xl="3" lg="3" sm="12" md="12">
+                      <v-select
+                        :items="unit"
                         :rules="formRules"
                         v-model="form.unit"
                         outlined
-                        clearable
                         dense
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Unit *</div>
                         </template>
-                      </v-text-field>
+                      </v-select>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="5" lg="5" sm="12" md="12">
                       <v-text-field
-                        :rules="formRulesNetPrice"
+                        :rules="formRulesPrice"
                         v-model="form.net_price"
                         outlined
                         clearable
                         dense
-                        type="number"
-                        min="0"
-                        @keydown="net_priceKeydown($event)"
+                        counter
+                        @keydown="numberKeydown($event)"
+                        @input="compute"
+                        @click:clear="compute"
+                        maxlength="15"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Net Price *</div>
@@ -510,17 +499,16 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="12" md="12">
                       <v-layout align-center>
                         <v-text-field
-                          :disabled="disable"
+                          :rules="formRulesVAT"
                           v-model="temp_vat"
                           outlined
+                          disabled
                           clearable
-                          dense
-                          type="number"
-                          min="0"
-                          @keydown="temp_vatKeydown($event)"
+                          dense 
+                          @keydown="numberKeydown($event)" 
                         >
                           <template slot="label">
                             <div style="font-size: 14px">VAT</div>
@@ -528,6 +516,7 @@
                         </v-text-field>
 
                         <v-checkbox
+                          :disabled="!disabled"
                           v-model="vat"
                           hide-details
                           class="shrink pt-0 mt-0 mb-7 ml-3"
@@ -538,16 +527,15 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
+                      class="py-0 d-none"
+                      cols="8"
+                      xl="8"
+                      lg="8"
+                      sm="12" 
                       md="12"
                     >
                       <v-text-field
-                        disabled
-                        v-model="form.without_vat"
+                        disabled 
                         outlined
                         clearable
                         dense
@@ -560,9 +548,9 @@
 
                     <v-col
                       class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
+                      cols="6"
+                      xl="6"
+                      lg="6"
                       sm="12"
                       md="12"
                     >
@@ -597,6 +585,60 @@
                           dark
                         ></v-date-picker>
                       </v-menu>
+                    </v-col>
+                      <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="12"
+                      md="12"
+                    >
+                      <v-text-field 
+                        v-model="form.maximum_order_quantity"
+                        outlined
+                        clearable
+                        dense
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Max Order Quantity</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        v-model="form.lead_time"
+                        outlined
+                        clearable
+                        dense
+                        counter
+                        @keydown="numberKeydown($event)"
+                        @input="compute"
+                        @click:clear="compute"
+                        maxlength="2"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Lead Time</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        :rules="formRulesPrice"
+                        v-model="form.order_frequency"
+                        outlined
+                        clearable
+                        dense
+                        counter
+                        @keydown="numberKeydown($event)"
+                        @input="compute"
+                        @click:clear="compute"
+                        maxlength="5"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Order Frequency *</div>
+                        </template>
+                      </v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -654,6 +696,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Inventory" };
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -664,6 +709,24 @@ export default {
     button: false,
     dialog: false,
     sheet: false,
+    unit: [
+      "pack",
+      "bot",
+      "kg",
+      "gal",
+      "tin",
+      "jar",
+      "tab",
+      "pcs",
+      "cont",
+      "roll",
+      "box",
+      "pad",
+      "rim",
+      "book",
+      "set",
+      "unit",
+    ],
     status: [
       { name: "Active", id: 1 },
       { name: "Inactive", id: 0 },
@@ -679,10 +742,22 @@ export default {
     menu: false,
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
-    formRulesNetPrice: [
+    formRules: [(v) => !!v || "This field must have a valid value"], 
+    formRulesDesc: [
+      (v) =>
+        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesPrice: [
       (v) => !!v || "This is required",
-      (v) => /[+-]?[0-9]+\.?[0-9]*/.test(v) || "Net Price must be valid",
+      (v) =>
+        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
+    ],
+    formRulesVAT: [
+      (v) => !!v || "This is required",
+      (v) =>
+        /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -704,12 +779,14 @@ export default {
       description: null,
       unit: null,
       net_price: null,
-      vat: 1.12,
-      without_vat: null,
+      vat: null, 
       exp_date: null,
       vatable: null,
+      lead_time: 0,
+      order_frequency: 7,
+      maximum_order_quantity: 0
     },
-    temp_vat: 1.12, //form.vat = this.
+    temp_vat: null, //form.vat = this.
     vat: false,
     supplierlist: [],
 
@@ -748,25 +825,25 @@ export default {
       },
       {
         text: "WITH VAT",
-        value: "format_with_vat",
+        value: "with_vat_price",
         align: "right",
         filterable: false,
         class: "black--text",
       },
       {
         text: "WITHOUT VAT",
-        value: "format_without_vat",
+        value: "without_vat_price",
         align: "right",
         filterable: false,
         class: "black--text",
       },
       {
-        text: "STATUS",
+        text: "OTHER",
         value: "status",
         align: "center",
         filterable: false,
         class: "black--text",
-      },
+      }, 
       {
         text: "ACTION(S)",
         value: "id",
@@ -786,6 +863,13 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
+    disabled() {
+      if (this.form.net_price !== null) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     widthSize() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -811,15 +895,27 @@ export default {
   },
 
   methods: {
-    net_priceKeydown(e) {
-      if (/[+-]/.test(e.key)) {
+    valueKeydown(e) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
       }
     },
-    temp_vatKeydown(e) {
-      if (/[+-]/.test(e.key)) {
+    descKeydown(e) {
+      if (/[~`!@#$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
         e.preventDefault();
       }
+    },
+    numberKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    async getVat() {
+      await axios
+        .get("/api/settings/vat/get", { params: { type: "s" } })
+        .then((result) => {
+          this.temp_vat = result.data.vat;
+        });
     },
     async suppName() {
       this.form.supply_name = null;
@@ -867,6 +963,7 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
+          console.log(key);
           if (key == "category") {
             if (this.currentdata.category) {
               if (
@@ -883,12 +980,20 @@ export default {
             ) {
               found += 1;
             }
+          } else if (key == "supplier") {
+            if (this.currentdata.supplier) {
+              if (
+                parseInt(this.currentdata.supplier.id) !=
+                parseInt(this.form.supplier)
+              ) {
+                found += 1;
+              }
+            }
           } else {
             found += 1;
           }
         }
       }
-      //if has changes
       if (found > 0) {
         return true;
       } else {
@@ -912,7 +1017,6 @@ export default {
           await axios
             .post("/api/msupp/save", this.form)
             .then((result) => {
-              console.log(result.data);
               //if the value is true then save to database
               switch (result.data) {
                 case 0:
@@ -924,14 +1028,6 @@ export default {
                   };
                   this.get();
                   this.cancel();
-                  break;
-                case 1:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "The supply name already exists.",
-                  };
                   break;
                 default:
                   break;
@@ -1010,26 +1106,19 @@ export default {
     },
 
     // 1. get specific item info ,eg total amount, total quantity
-    // 2. check if true then total / tem_vat 1.12
+    // 2. check if true then total / tem_vat
     // 3. else wo/vat = total (total amt / quantity)
     async compute() {
       //check if vatable or not
       if (this.vat) {
-        this.disable = false;
         if (this.temp_vat) {
-          this.form.vatable = 1;
-          this.form.without_vat = (this.form.net_price / this.temp_vat).toFixed(
-            2
-          );
+          this.form.vatable = 1; 
         } else {
-          this.form.vatable = 0;
-          this.form.without_vat = this.form.net_price;
+          this.form.vatable = 0; 
         }
       } else {
-        this.temp_vat = 1.12;
-        this.disable = true;
-        this.form.vatable = 0;
-        this.form.without_vat = this.form.net_price;
+        this.getVat();
+        this.form.vatable = 0; 
       }
       this.form.vat = this.temp_vat;
       this.sum();
@@ -1037,8 +1126,8 @@ export default {
 
     // Editing/updating of row
     edit(row) {
-      this.form.supplier = row.supplier.id;
       this.currentdata = JSON.parse(JSON.stringify(row));
+      this.form.supplier = row.supplier.id;
       this.form.id = row.id;
       this.form.status = row.status;
       this.form.category = row.category.id;
@@ -1048,20 +1137,37 @@ export default {
       this.form.net_price = row.net_price;
       this.form.vat = row.vat;
       this.vat = row.vatable == 0 ? false : true;
-      this.temp_vat = row.vat;
-      this.form.without_vat = row.without_vat;
+      this.temp_vat = row.vat; 
+       this.form.lead_time = row.lead_time;  
+      this.form.order_frequency = row.order_frequency; 
+      this.form.maximum_order_quantity = row.maximum_order_quantity;
+      
+      
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;
       this.compute();
     },
 
+
+    // Open Dialog Form
+    openDialog() {
+      if (this.form.temp_vat !== null) {
+        this.$refs.form.resetValidation();
+        this.getVat();
+        this.dialog = true;
+      } else {
+        this.$refs.form.reset();
+        this.getVat();
+        this.dialog = true;
+      }
+    },
+
     // Reset Forms
     cancel() {
       for (var key in this.form) {
         if (key == "vat") {
-          this.temp_vat = 1.12;
-          this.form[key] = 1.12;
+          this.getVat();
         } else {
           this.form[key] = "";
           this.vat = false;

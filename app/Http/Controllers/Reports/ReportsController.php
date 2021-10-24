@@ -12,6 +12,7 @@ use App\Models\tbl_purchaseord;
 use App\Models\tbl_pos;
 use App\Models\tbl_supplist;
 use App\Models\tbl_branches;
+use App\User;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -21,7 +22,12 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InventoryExport;
 
 class ReportsController extends Controller
-{
+{    
+    public function __construct()
+    {
+        $this->middleware("auth");
+    }
+
     // Masterlist Supplies Report - OK
     public function MasterlistSuppliesReport(Request $t)
     {
@@ -209,8 +215,8 @@ class ReportsController extends Controller
         foreach ($data_temp as $key => $value) {
             $temp = [];
             $temp['category'] = $value->supply_cat_name;
-            $temp['incoming'] = number_format(tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("amount"), 2, ".", ",");
-            $temp['outgoing'] = number_format(tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("outgoing_amount"), 2, ".", ",");
+            $temp['incoming'] =  tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity") ;
+            $temp['outgoing'] = tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity") ;
             $temp['stocks'] = tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity")
                                     - tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity");
             array_push($data, $temp);
@@ -245,7 +251,8 @@ class ReportsController extends Controller
         $data = tbl_pos::where("branch", $t->branch)
             ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-            ->groupby(["branch","created_at","reference_no"])->get();
+            ->groupby(["branch","created_at","reference_no"])
+            ->get();
               
         switch ($t->type) {
             case 'pdf':
@@ -283,8 +290,8 @@ class ReportsController extends Controller
     public function TransactionReport(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_pos::whereBetween('created_at', [$t->from, $t->to])
-                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
+        $data = tbl_pos::whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+                       ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
         case 'pdf':
@@ -365,7 +372,7 @@ class ReportsController extends Controller
             ->where('branch', auth()->user()->branch)
             ->where('cashier', auth()->user()->id)
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-            ->groupby(["branch","created_at","reference_no"])
+            ->orderBy('created_at',"desc") ->groupby(["branch","created_at","reference_no"])
              ;
         } else {
             $table = tbl_pos::with(["branch"])
@@ -373,8 +380,7 @@ class ReportsController extends Controller
             ->groupby(["branch","created_at","reference_no"])
              ;
         }
-   
- 
+
         if ($t->branch) {
             $table->where("branch", $t->branch);
         }
@@ -383,10 +389,9 @@ class ReportsController extends Controller
             $table->where("reference_no", "like", "%".$t->search."%");
         }
         if ($t->dateFromSP && $t->dateUntilSP) {
-            $table->whereBetween("created_at", [$t->dateFromSP, $t->dateUntilSP]);
+            $table->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->dateFromSP . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntilSP . ' 11:59:59'))]);
         }
- 
-        
+
         $return = [];
         $row = 1;
         foreach ($table->get() as $key => $value) {
@@ -412,13 +417,33 @@ class ReportsController extends Controller
     public function Receipt(Request $t)
     {
         if ($t->reference_no) {
-            $data = tbl_pos::where("reference_no", $t->reference_no)->get();
-            $content['data'] = $data;
+             $data = tbl_pos::where("reference_no", $t->reference_no)->get();
+               
+            $temp = [];
+            $temp['data'] = $data;
+            $temp['branch'] = $data[0]->branch_name_details->branch_name  ;
+            $temp['branch_location'] = $data[0]->branch_name_details->location;
+            $temp['branch_number'] = $data[0]->branch_name_details->phone_number;
+            $temp['reference_no'] = $data[0]->reference_no;
+            $temp['mode'] = $data[0]->mode;
+            $temp['change'] = $data[0]->change;
+            $temp['discount'] = $data[0]->discount;
+            $temp['payment'] = $data[0]->payment;
+
+
+            $data_cloned = clone $data;
+            $temp['sub_total'] = $data_cloned->sum('sub_total');
+            $data_cloned = clone $data;
+            $temp['sub_total_discounted'] =$data_cloned->sum('sub_total_discounted');
+            $temp['cashier_name_details'] = User::where("id", $data[0]->cashier)->first()->name;
+            
+             
+            $data_cloned = clone $data;
             $pdf = PDF::loadView(
                 'receipt.receipt',
-                $content,
+                $temp,
                 [],
-                ['format' => ['57','76'],
+                ['format' => ['57',76 + (7 * $data_cloned->count())],
                 'margin_left' => 3,
                 'margin_right' => 3,
                 'margin_top' => 5,

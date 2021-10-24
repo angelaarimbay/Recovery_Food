@@ -20,6 +20,8 @@ class CreateTblMasterlistprodsTable extends Migration
             $table->string('product_name');
             $table->string('description')->nullable();
             $table->float('price');
+            $table->float('vat');
+            $table->integer('vatable');
             $table->datetime('exp_date')->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();

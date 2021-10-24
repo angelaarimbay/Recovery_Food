@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Categories;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\tbl_prodcat;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+ 
 
 class ProductsCategoryController extends Controller
 {
@@ -43,15 +45,26 @@ class ProductsCategoryController extends Controller
         return 0;
     }
     public function get(Request $t)
-    {
-        DB::statement(DB::raw("set @row:=0"));
-        if ($t->search) { // If has value
-            $table = tbl_prodcat::where("status", "!=", null);
-            $table_clone = clone $table;   // Get all items from prodcat
- 
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("product_cat_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+    { 
+        $table = tbl_prodcat::where("status", "!=", null);
+        if ($t->search) { // If has value 
+             $table =  $table->where("product_cat_name", "like", "%".$t->search."%")->get();
+        }else{
+            $table =  $table->get();
         }
-        // Else
-        return  tbl_prodcat::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+
+        $return = [];
+        foreach ($table as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id; 
+            $temp['status'] = $value->status;  
+            $temp['product_cat_name'] = $value->product_cat_name;  
+            array_push($return,$temp);
+        }   
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+  
+       
     }
 }

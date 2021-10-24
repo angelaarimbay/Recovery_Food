@@ -8,8 +8,10 @@ use App\Models\tbl_outgoingprod;
 use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
 use App\Models\tbl_masterlistprod;
+use App\Models\tbl_incomingprod;
 use App\Models\tbl_branches;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class OutgoingProductsController extends Controller
 {
@@ -43,28 +45,40 @@ class OutgoingProductsController extends Controller
     {
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
                 ($t->branch? " and requesting_branch=".$t->branch:"");
- 
-        DB::statement(DB::raw("set @row:=0"));
+  
         $table = tbl_outgoingprod::with(["category","sub_category","product_name","requesting_branch"])
-        ->selectRaw("*, @row:=@row+1 as row ")
-        ->whereRaw($where)
-        ->where("product_name", "!=", null);
+                ->whereRaw($where)
+                ->where("product_name", "!=", null);
  
-        if ($t->search) { // If has value
-            $table_clone = clone $table;   // Get all items from outgoingsupp
+        if ($t->dateFrom && $t->dateUntil) {
+            $table = $table->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
+        }
 
-            if ($t->dateFrom && $t->dateUntil) {
-                $table_clone->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
-            }
-            return $table_clone->whereHas('product_name', function ($q) use ($t) {
+        if ($t->search) { // If has value
+            $table =  $table->whereHas('product_name', function ($q) use ($t) {
                 $q->where('product_name', 'like', "%".$t->search."%");
             }) ->paginate($t->itemsPerPage, "*", "page", 1);
         }
-        // Else
-        if ($t->dateFrom && $t->dateUntil) {
-            $table->whereBetween("outgoing_date", [date("Y-m-d", strtotime($t->dateFrom)), date("Y-m-d", strtotime($t->dateUntil))]);
+         
+        
+        $return = [];
+        foreach ($table->get() as $key => $value) {
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id;
+            $temp['status'] = $value->status;
+            $temp['category'] = $value->category_details;
+            $temp['outgoing_amount'] = $value->outgoing_amount;
+            $temp['outgoing_date'] = $value->outgoing_date;
+            $temp['product_name'] = $value->product_name_details;
+            $temp['quantity'] = $value->quantity;
+            $temp['quantity_diff'] = $value->quantity_diff;
+            $temp['requesting_branch'] = $value->requesting_branch_details;
+            $temp['sub_category'] = $value->sub_category_details;
+            array_push($return, $temp);
         }
-        return  $table->paginate($t->itemsPerPage, "*", "page", $t->page);
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
     public function prodCat()
@@ -85,5 +99,13 @@ class OutgoingProductsController extends Controller
     public function branchName()
     {
         return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
+    }
+
+    public function validateQuantity(Request $request)
+    {
+        return $request->id;
+        $get_group = tbl_masterlistprod::where("id", $request->id)->first()->group;
+        $get_group = tbl_masterlistprod::where("group", $get_group)->pluck('id');
+        return tbl_incomingprod::wherein('product_name', $get_group)->sum('quantity');
     }
 }

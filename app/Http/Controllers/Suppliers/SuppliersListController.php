@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Suppliers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\tbl_supplist;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SuppliersListController extends Controller
 {
@@ -46,15 +47,29 @@ class SuppliersListController extends Controller
         return 0;
     }
     public function get(Request $t)
-    {
-        DB::statement(DB::raw("set @row:=0"));
-        if ($t->search) { // If has value
-            $table = tbl_supplist::where("status", "!=", null);
-            $table_clone = clone $table;   // Get all items from supplist
-           
-            return $table_clone->selectRaw("*, @row:=@row+1 as row ")->where("supplier_name", "like", "%".$t->search."%")->paginate($t->itemsPerPage, "*", "page", 1);
+    { 
+        $table = tbl_supplist::where("status", "!=", null);
+        if ($t->search) { // If has value 
+            $table =  $table->where("supplier_name", "like", "%".$t->search."%");
         }
-        // Else
-        return  tbl_supplist::selectRaw("*, @row:=@row+1 as row ")->paginate($t->itemsPerPage, "*", "page", $t->page);
+       
+        $return = [];
+        foreach ($table->get() as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id; 
+            $temp['status'] = $value->status;  
+            $temp['address'] = $value->address;  
+            $temp['contact_person'] = $value->contact_person;  
+            $temp['description'] = $value->description;  
+            $temp['phone_number'] = $value->phone_number;  
+            $temp['supplier_name'] = $value->supplier_name;  
+            array_push($return,$temp);
+        }   
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+  
+
+
     }
 }

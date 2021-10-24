@@ -24,6 +24,7 @@
               large
               icon
               dark
+              text
               color="red darken-2"
               class="mx-1"
               v-on="data.on"
@@ -328,7 +329,13 @@
       <!-- Graphs -->
       <v-row no-gutters>
         <v-col cols="12" class="pa-3">
-          <v-card elevation="6" style="border-radius: 10px" class="pa-3">
+          <v-card
+            color="grey darken-4"
+            dark
+            elevation="6"
+            style="border-radius: 10px"
+            class="pa-3"
+          >
             <v-row no-gutters>
               <v-col cols="12" xl="4" lg="4" md="6" class="pa-0">
                 <v-card-actions>
@@ -428,6 +435,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Dashboard" };
+  },
   components: {
     BarChart,
     BarChart1,
@@ -516,7 +526,10 @@ export default {
           label: function (data) {
             return [
               "₱ " +
-                data.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                data.yLabel
+                  .toFixed(2)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             ];
           },
           title: function (data) {
@@ -735,7 +748,21 @@ export default {
       if (this.user.permissionslist.includes("Access POS")) {
         this.$router.push({ name: "pos" }).catch((errr) => {});
       } else {
-        this.$router.push({ name: "invalid-page" }).catch((errr) => {});
+        if (this.user.roles[0].name == "Stockman") {
+          this.$router
+            .push({ name: "masterlist-supplies" })
+            .catch((errr) => {});
+        }
+        if (this.user.roles[0].name == "Production Assistant") {
+          this.$router
+            .push({ name: "masterlist-products" })
+            .catch((errr) => {});
+        }
+        if (this.user.roles[0].name == "Supervisor") {
+          this.$router
+            .push({ name: "supplies-inventory" })
+            .catch((errr) => {});
+        }
       }
     }
   },

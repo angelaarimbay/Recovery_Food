@@ -11,7 +11,7 @@ class tbl_incomingprod extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['format_amount'];
+    public $appends = ['format_amount','product_name_details','category_details','sub_category_details' ];
 
     public function category()
     {
@@ -32,4 +32,20 @@ class tbl_incomingprod extends Model
     {
         return number_format($this->amount, 2, ".", ",");
     }
+
+    public function getProductNameDetailsAttribute()
+    {
+        return tbl_masterlistprod::where("id", $this->product_name)->first();
+    }  
+
+    public function getCategoryDetailsAttribute()
+    {
+        return tbl_prodcat::where("id", $this->category)->first();
+    }  
+    public function getSubCategoryDetailsAttribute()
+    {
+        return tbl_prodsubcat::where("id", $this->sub_category)->first();
+    }  
+
+  
 }

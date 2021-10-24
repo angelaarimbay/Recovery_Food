@@ -2,7 +2,7 @@
  
 use Illuminate\Support\Facades\Route;
 
-    Route::get('seeder', 'UserAccounts\UserAccountsController@createSeeder');
+    Route::get('seeder', 'UserController@createSeeder');
     Route::group(['middleware' => 'guest'], function () {
         Route::post('login', 'Auth\LoginController@login');
     });
@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Route;
 
 
     Route::group(['middleware' => 'api'], function () {
-        Route::get('users', 'UserController@getUsers');
-        Route::post('/changepassword', 'UserController@change_password');
 
         // Dashboard
         Route::get('dashboard/getSupp', 'Dashboard\MainController@getSupp');
@@ -56,6 +54,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('msupp/suppCat', 'Inventory\MasterlistSuppliesController@suppCat');
         Route::get('msupp/validateItem', 'Inventory\MasterlistSuppliesController@validateItem');
         Route::get('msupp/sum', 'Inventory\MasterlistSuppliesController@sum');
+        
 
         // Incoming Supplies
         Route::post('isupp/save', 'Inventory\IncomingSuppliesController@save');
@@ -70,7 +69,8 @@ use Illuminate\Support\Facades\Route;
         Route::get('osupp/get', 'Inventory\OutgoingSuppliesController@get');
         Route::get('osupp/suppCat', 'Inventory\OutgoingSuppliesController@suppCat');
         Route::get('osupp/suppName', 'Inventory\OutgoingSuppliesController@suppName');
-        Route::get('osupp/branchName', 'Inventory\OutgoingSuppliesController@branchName');
+        Route::get('osupp/branchName', 'Inventory\OutgoingSuppliesController@branchName'); 
+        Route::get('osupp/suppValidate', 'Inventory\OutgoingSuppliesController@validateQuantity');
 
         // Main Inventory
         Route::post('misupp/save', 'Inventory\MainInventoryController@save');
@@ -79,6 +79,11 @@ use Illuminate\Support\Facades\Route;
 
         // Inventory Summary
         Route::get('invsumm/get', 'Inventory\InventorySummaryController@get');
+
+        // Supplies Inventory (Branch)
+        Route::post('suppinven/save', 'Inventory\SuppliesInventoryController@store');
+        Route::get('suppinven/get', 'Inventory\SuppliesInventoryController@get');
+        Route::get('deductedsupp/get', 'Inventory\DeductedSuppliesController@get');
 
         // Masterlist Products
         Route::post('mprod/save', 'Products\MasterlistProductsController@save');
@@ -100,6 +105,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('outprod/prodSubCat', 'Products\OutgoingProductsController@prodSubCat');
         Route::get('outprod/prodName', 'Products\OutgoingProductsController@prodName');
         Route::get('outprod/branchName', 'Products\OutgoingProductsController@branchName');
+        Route::get('outprod/prodValidate', 'Inventory\OutgoingProductsController@validateQuantity');
 
         // Suppliers List
         Route::post('supplist/save', 'Suppliers\SuppliersListController@save');
@@ -110,22 +116,32 @@ use Illuminate\Support\Facades\Route;
         Route::get('porder/get', 'Suppliers\PurchaseOrdersController@get');
         Route::get('porder/suppName', 'Suppliers\PurchaseOrdersController@suppName');
 
-        // User Accounts
-        Route::post('useracc/save', 'UserAccounts\UserAccountsController@save');
-        Route::get('useracc/get', 'UserAccounts\UserAccountsController@get');
+        // Company
+        Route::post('settings/company/logo/upload', 'Settings\SettingsController@uploadLogo');
+        Route::post('settings/company/logo/store', 'Settings\SettingsController@storeLogo');
+        Route::post('settings/company/logo/delete', 'Settings\SettingsController@deleteLogo');
+
+        Route::get('settings/company/logo/get', 'Settings\SettingsController@getLogo');
+
+        Route::post('settings/vat/store', 'Settings\SettingsController@storeVat'); 
+        Route::get('settings/vat/get', 'Settings\SettingsController@getVat');
 
 
+        // User Accounts 
+        Route::post('useracc/save', 'UserController@save');
+        Route::get('useracc/get', 'UserController@get'); 
         Route::get('useracc/getPermission', 'UserController@getPermission');
         Route::get('useracc/getRoles', 'UserController@getRoles');
-        Route::get('useracc/getUserRole', 'UserController@getUserRole');
 
+        Route::get('useracc/getUserRole', 'UserController@getUserRole');
+        Route::get('users', 'UserController@getUsers');
+        Route::post('/changepassword', 'UserController@change_password');
         Route::post('useracc/storeRole', 'UserController@storeRole');
         Route::post('useracc/storePermission', 'UserController@storePermission');
         Route::post('useracc/storeRolePermission', 'UserController@storeRolePermission');
         Route::post('useracc/storeUserRole', 'UserController@storeUserRole');
         Route::post('useracc/removeUserRole', 'UserController@removeUserRole');
-
-        Route::get('useracc/branchName', 'UserAccounts\UserAccountsController@branchName');
+        Route::get('useracc/branchName', 'UserController@branchName');
 
         // POS
         Route::post('pos/prodlist/save', 'POS\ProductsListController@save');

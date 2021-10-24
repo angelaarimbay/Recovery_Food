@@ -47,9 +47,9 @@ class MainController extends Controller
         $return = [];
         $months = [];
         //return  tbl_pos::whereMonth('created_at',7)->whereYear('created_at',$t->year)->where('branch',$t->branch)->sum('sub_total_discounted');
-        if ($t->month =='All') {
+        if($t->month == "NaN"){
             $return['month'] = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-            array_push($months, tbl_pos::whereMonth('created_at', 1)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
+            array_push($months,   tbl_pos::whereMonth('created_at', 1)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at', 2)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at', 3)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
             array_push($months, tbl_pos::whereMonth('created_at', 4)->whereYear('created_at', $t->year)->where('branch', $t->branch)->sum('sub_total_discounted'));
@@ -70,26 +70,35 @@ class MainController extends Controller
         return $return;
     }
     public function getProductsGraph(Request $t)
-    {
-        $return = [];
-        $months = [];
-
-        $data = tbl_pos::query()
-        ->with(['product_name'])
-       ->selectRaw(' sum(quantity) as quantity, max(product_name) as product_name  ')
-        ->whereMonth('created_at', $t->month)
-        ->whereYear('created_at', $t->year)
-        ->groupBy(['product_name'])
-        ->where('branch', $t->branch)
-        ->orderByRaw('sum(quantity) DESC')->get()
-        ->take(5);
-        //find all id in masterlist, stack the product names.
-
-        $temp_name = clone $data;
-        $return['name'] = tbl_masterlistprod::wherein('id', $temp_name->pluck('product_name'))->pluck('product_name');
+    { 
+        $months = [];  $data =[];
+        if($t->month == "NaN"){
+            $data = tbl_pos::query()
+            ->with(['product_name'])
+            ->selectRaw(' sum(quantity) as quantity, max(product_name) as product_name  ')  
+            ->whereYear('created_at', $t->year)
+            ->groupBy(['product_name'])
+            ->where('branch', $t->branch) ->get()
+            ->take(5); 
+        }else{ 
+            $data = tbl_pos::query()
+            ->with(['product_name'])
+            ->selectRaw(' sum(quantity) as quantity, max(product_name) as product_name  ')
+            ->whereMonth('created_at', $t->month)
+            ->whereYear('created_at', $t->year)
+            ->groupBy(['product_name'])
+            ->where('branch', $t->branch) ->get()
+            ->take(5);
+        }
        
-        $temp_data = clone $data;
-        $return['sold'] = $temp_data->pluck('quantity') ;
-        return $return;
+        //find all id in masterlist, stack the product names.
+        $name = [];$sold = []; 
+     
+        foreach ($data as $key => $value) {
+            array_push($name , tbl_masterlistprod::where('id', $value->product_name)->first()->product_name); 
+            array_push($sold , $value->quantity);
+            
+        }      
+        return ['name'=>$name,'sold'=>$sold];
     }
 }

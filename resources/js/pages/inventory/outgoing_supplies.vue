@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Inventory
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -54,7 +57,15 @@
             disabled
             class="px-0"
             style="text-transform: none"
-            >Outgoing Supplies</v-btn
+            >
+            
+              <template  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'> 
+            Outgoing Supplies
+              </template>
+                      <template  v-else> 
+              Supplies Inventory
+              </template>
+            </v-btn
           >
         </v-card-actions>
       </v-layout>
@@ -74,8 +85,9 @@
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
               @click="openDialog"
             >
-              Add Outgoing Supply
-            </v-btn>
+            <template  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'> Add Outgoing Supply </template> 
+            <template  v-else> Add Supply </template> 
+         </v-btn>
           </v-card-actions>
 
           <!-- Search Filters -->
@@ -134,8 +146,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -153,7 +165,7 @@
 
                 <v-row no-gutters>
                   <!-- Branch Field -->
-                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
+                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto"  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'>
                     <v-card-actions class="py-0">
                       <v-select
                         v-model="branch"
@@ -271,7 +283,7 @@
 
           <!-- Table -->
           <v-data-table
-            :headers="headers"
+            :headers="myheaders"
             :items="table.data"
             :loading="progressbar"
             :page.sync="page"
@@ -299,14 +311,21 @@
               {{ item.row }}</template
             >
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -330,6 +349,19 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Outgoing Supply
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -432,26 +464,38 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="pt-0 pb-6"
                       cols="12"
                       xl="12"
                       lg="12"
                       sm="12"
                       md="12"
                     >
-                      <v-select
-                        :rules="formRulesNumberRange"
+                      <v-autocomplete
+                        :rules="formRules"
                         v-model="form.supply_name"
-                        :items="suppnamelist"
+                        :items="suppnamelist" :disabled="!form.category"
                         outlined
                         dense
+                        hide-details=""
                         item-text="supply_name"
-                        item-value="id"
+                        return-object
+                        @change="suppValidate"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
-                        </template>
-                      </v-select>
+                        </template> 
+                        </v-autocomplete>
+
+                      <v-card color="white" flat class="px-4  border" v-if="form.supply_name"> 
+                          <table style="width: 70%; font-size: 10px">
+                                  <tr> <th class="text-left pr-2" style="width:130px;"><b>Description :</b></th><th> {{ form.supply_name.description  }} </th></tr>
+                                  <tr> <th class="text-left pr-2"><b>Net Price :</b></th><th> {{  getFormatCurrency(form.supply_name.net_price,'0,0.00') }} </th></tr>
+                                  <tr> <th class="text-left pr-2"><b>Unit :</b></th><th> {{ form.supply_name.unit }} </th></tr> 
+                                  <tr> <th class="text-left pr-2"><b>Available Quantity :</b></th><th> {{ getQuantity }} </th></tr> 
+    
+                          </table>     
+                      </v-card> 
                     </v-col>
 
                     <v-col
@@ -461,13 +505,16 @@
                       lg="12"
                       sm="12"
                       md="12"
-                    >
+                    > 
                       <v-text-field
-                        :rules="formRules"
+                        :rules="formRulesQuantity"
                         v-model="form.quantity"
                         outlined
                         clearable
                         dense
+                        @keydown="quantityKeydown($event)"
+                        counter
+                        maxlength="3"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Quantity *</div>
@@ -528,12 +575,20 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
+import template from '../template.vue';
 export default {
+  components: { template },
   middleware: "auth",
+  metaInfo() {
+    return { title: "Inventory" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
+       myheaders() {
+      return this.headers.filter((s) => this.headers.includes(s));
+    },
   },
   data: () => ({
     progressbar: false,
@@ -554,6 +609,10 @@ export default {
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
@@ -601,14 +660,14 @@ export default {
       },
       {
         text: "NET PRICE",
-        value: "supply_name.format_net_price",
+        value: "supply_name.net_price",
         align: "right",
         filterable: false,
         class: "black--text",
       },
       {
         text: "WITH VAT",
-        value: "supply_name.format_with_vat",
+        value: "with_vat_price",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -638,6 +697,12 @@ export default {
         value: "outgoing_date",
         filterable: false,
         class: "black--text",
+      },   {
+        text: "FLUCTIATION",
+        value: "fluctiation",
+        align: "right",
+        filterable: false,
+        class: "black--text",
       },
       {
         text: "ACTION(S)",
@@ -656,12 +721,21 @@ export default {
     date1: false,
     date2: false,
     date3: false,
+    getQuantity: 0,
   }),
 
   // Onload
   created() {
-    if (this.user.permissionslist.includes("Access Inventory")) {
-      this.get();
+    if (this.user.permissionslist.includes("Access Inventory") || this.user.permissionslist.includes("Access Reports - Outgoing Supplies")) {
+      for (var key in this.user.permissionslist) {
+      if (this.user.permissionslist[key] == "Access Reports - Outgoing Supplies") {
+        this.headers.splice(this.headers.indexOf(this.headers[8]), 1);
+        this.headers.splice(this.headers.indexOf(this.headers[9]), 1); 
+        this.headers.splice(this.headers.indexOf(this.headers[8]), 1); 
+      }
+    }
+     
+     this.get();
       this.suppCat();
       this.branchName();
     } else {
@@ -670,6 +744,11 @@ export default {
   },
 
   methods: {
+    quantityKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
     itemperpage() {
       this.page = 1;
       this.get();
@@ -678,6 +757,10 @@ export default {
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
+    },
+       getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
     },
 
     // Format for everytime we call on database
@@ -746,11 +829,22 @@ export default {
     async save() {
       if (this.$refs.form.validate()) {
         // Validate first before compare
+        if (this.getQuantity < this.form.quantity) {
+          this.snackbar = {
+            active: true,
+            iconText: "close",
+            iconColor: "danger",
+            message: "Insufficient Quantity in Incoming stock.",
+          };
+          return;
+        }
+
         if (this.compare()) {
           // Save or update data in the table
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
+              console.log(result.data)
               //if the value is true then save to database
               this.snackbar = {
                 active: true,
@@ -771,6 +865,12 @@ export default {
       this.progressbar = true; // Show the progress bar
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
+
+    if(this.user.permissionslist.includes("Access Reports - Outgoing Supplies") ){
+      this.branch = this.user.branch;
+    }
+
+
       await axios
         .get("/api/osupp/get", {
           params: {
@@ -785,6 +885,7 @@ export default {
         })
         .then((result) => {
           // If the value is true then get the data
+          console.log(result.data);
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
@@ -797,6 +898,15 @@ export default {
       await axios.get("/api/osupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
+    },
+
+    async suppValidate(item) {
+      
+      await axios
+        .get("/api/osupp/suppValidate", { params: { id: item.id } })
+        .then((result) => {
+          this.getQuantity = result.data;
+        });
     },
 
     async suppName() {
@@ -822,14 +932,14 @@ export default {
       this.form.id = row.id;
       this.form.category = row.category.id;
       this.suppName();
-      this.form.supply_name = row.supply_name.id;
+      this.form.supply_name = row.supply_name ;
       this.form.quantity = row.quantity;
-      this.form.requesting_branch = row.requesting_branch.id;
+      this.form.requesting_branch = row.requesting_branch.id; 
       this.form.outgoing_date = this.getFormatDate(
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-
+      this.suppValidate(row.supply_name); 
       this.dialog = true;
     },
 

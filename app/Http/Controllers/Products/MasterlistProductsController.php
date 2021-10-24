@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\tbl_masterlistprod;
 use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MasterlistProductsController extends Controller
 {
@@ -38,6 +39,7 @@ class MasterlistProductsController extends Controller
             $table_clone->where("id", $data->id)->update(
                 ["status"=>$data->status,
                  "category"=>$data->category,
+                 "vat"=>$data->vat,
                  "sub_category"=>$data->sub_category,
                  "product_name"=>$data->product_name,
                  "description"=>$data->description,
@@ -56,11 +58,31 @@ class MasterlistProductsController extends Controller
         ($t->search?" and product_name like '%".$t->search."%'":'');
 
         // return $where;
-        DB::statement(DB::raw("set @row:=0"));
-        return $table = tbl_masterlistprod::with(["category","sub_category"])
-        ->whereRaw($where)
-        ->selectRaw("*, @row:=@row+1 as row ")
-        ->paginate($t->itemsPerPage, "*", "page", $t->page);
+        
+           $table = tbl_masterlistprod::with(["category","sub_category"])
+        ->whereRaw($where) ;
+
+        $return = [];
+        foreach ($table->get() as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id; 
+            $temp['status'] = $value->status;  
+            $temp['category'] = $value->category_details;
+            $temp['description'] = $value->description;
+            $temp['diff_quantity'] = $value->diff_quantity;
+            $temp['exp_date'] = $value->exp_date; 
+            $temp['with_vat'] = $value->format_with_vat;
+            $temp['vat'] = $value->vat;
+            $temp['format_unit_price'] = $value->format_unit_price;
+            $temp['format_price'] = $value->format_price;
+            $temp['price'] = $value->price;  
+            $temp['product_name'] = $value->product_name;  
+            $temp['sub_category'] = $value->sub_category_details;   
+            array_push($return,$temp);
+        }   
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
     public function prodCat()
     {

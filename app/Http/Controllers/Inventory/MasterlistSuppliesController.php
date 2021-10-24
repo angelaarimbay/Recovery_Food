@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_suppcat;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MasterlistSuppliesController extends Controller
 {
@@ -34,8 +36,13 @@ class MasterlistSuppliesController extends Controller
                  "vat"=>$data->vat,
                  "vatable"=>$data->vatable,
                  "exp_date"=>$data->exp_date,
+                 "lead_time"=>$data->lead_time,
+                 "order_frequency"=>$data->order_frequency,
+                 "maximum_order_quantity"=>$data->maximum_order_quantity,
                 ]
             );
+
+             
         } else {
             $supply='';
             if(is_array($data->supply_name)){
@@ -43,29 +50,11 @@ class MasterlistSuppliesController extends Controller
             }else{
                 $supply = $data->supply_name;
             }
- 
-
-            //check supply if exsiting
-            $table_clone = clone $table; 
-            if( $table_clone->where(['supply_name'=>$supply, 'unit'=>$data->unit, 'description'=>$data->description])->get()->count()>0){
-                $table_clone = clone $table;
-                //get the group 
-                $group = $table_clone->where(['supply_name'=>$supply, 'unit'=>$data->unit, 'description'=>$data->description])->first()->group;
-            }else{
-                $table_clone = clone $table;
-                //get the last row and add 1 for a new group
-                try {
-                     
-                $group = $table_clone->orderBy('group')->first()->group + 1;
-                } catch (\Throwable $th) {
-                    $group =   0;
-                }
-         
-            }            
+  
             // return  $data->except('supply_name') ;
             tbl_masterlistsupp::create(
                 $data->except('supply_name') + 
-                ['group' => $group,
+                [ 
                  'supply_name'=>$supply] //purpose is when same item sum quantity
             );
         }
@@ -81,12 +70,38 @@ class MasterlistSuppliesController extends Controller
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
                  ($t->search?" and supply_name like '%".$t->search."%'":'');
         
-        // return $where;
-        DB::statement(DB::raw("set @row:=0"));
-        return $table = tbl_masterlistsupp::with("category",'supplier')
+        // return $where; 
+         $table = tbl_masterlistsupp::with("category",'supplier')
         ->whereRaw($where)
         ->selectRaw("*, @row:=@row+1 as row ")
-        ->paginate($t->itemsPerPage, "*", "page", $t->page);
+        ->get();
+
+        $return = [];
+        foreach ($table as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id; 
+            $temp['status'] = $value->status;  
+            $temp['supplier'] = $value->supplier_name_details;  
+            $temp['category'] = $value->category_details;  
+            $temp['unit'] = $value->unit;  
+            $temp['vat'] = $value->vat;  
+            $temp['vatable'] = $value->vatable;   
+            $temp['supply_name'] = $value->supply_name;  
+            $temp['description'] = $value->description;  
+            $temp['format_net_price'] = $value->format_net_price;  
+            $temp['net_price'] = $value->net_price;    
+            $temp['lead_time'] = $value->lead_time;  
+            $temp['order_frequency'] = $value->order_frequency;  
+            $temp['maximum_order_quantity'] = $value->maximum_order_quantity;   
+
+            $temp['without_vat_price'] = number_format($value->without_vat_price,2);   
+            $temp['with_vat_price'] = number_format($value->with_vat_price,2);   
+            array_push($return,$temp);
+        }   
+
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
     public function suppCat()
     {
@@ -96,13 +111,15 @@ class MasterlistSuppliesController extends Controller
     {
         try {
             return tbl_masterlistsupp::where("supply_name", $t->name)->get();
-        } catch (Throwable $th) {
+        } catch (\Throwable $th) {
             return false;
         }
+       
     }
     public function sum(Request $t)
     {
         //  ->where("date", date("Y-m-d", strtotime($t->date) ) )
         return tbl_masterlistsupp::where("id", $t->id)->sum("net_price");
     }
+
 }

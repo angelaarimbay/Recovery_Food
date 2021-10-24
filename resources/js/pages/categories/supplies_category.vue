@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Categories
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -134,8 +137,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -295,6 +298,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="25"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Category *</div>
@@ -357,6 +363,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Categories" };
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -373,7 +382,13 @@ export default {
     table: [],
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
+    formRules: [
+      (v) => (!!v && v.length >= 3) || "This is required",
+      (v) =>
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 1) return true;
@@ -453,6 +468,12 @@ export default {
   },
 
   methods: {
+    valueKeydown(e) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+
     itemperpage() {
       this.page = 1;
       this.get();

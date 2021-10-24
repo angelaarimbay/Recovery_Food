@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Products
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -72,7 +75,7 @@
               dark
               :small="$vuetify.breakpoint.smAndDown"
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="dialog = true"
+              @click="openDialog"
             >
               Add Product
             </v-btn>
@@ -134,8 +137,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -220,14 +223,21 @@
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="edit(item)"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                <span>Edit</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -251,6 +261,19 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               Product
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-icon
+                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                    v-on="data.on"
+                    text
+                    @click="cancel"
+                    >mdi-close
+                  </v-icon>
+                </template>
+                <span>Close</span>
+              </v-tooltip>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -332,6 +355,9 @@
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="valueKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Name *</div>
@@ -348,15 +374,64 @@
                       md="12"
                     >
                       <v-text-field
+                        :rules="formRulesDesc"
                         v-model="form.description"
                         outlined
                         clearable
                         dense
+                        counter
+                        @keydown="descKeydown($event)"
+                        maxlength="35"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Description</div>
                         </template>
                       </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-text-field
+                        :rules="formRulesPrice"
+                        v-model="form.price"
+                        outlined
+                        clearable
+                        dense
+                        counter
+                        @keydown="numberKeydown($event)"
+                        @input="compute"
+                        @click:clear="compute"
+                        maxlength="15"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Price *</div>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+
+                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                      <v-layout align-center>
+                        <v-text-field
+                          v-model="temp_vat"
+                          outlined
+                          disabled
+                          clearable
+                          dense
+                          @keydown="numberKeydown($event)"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 14px">VAT</div>
+                          </template>
+                        </v-text-field>
+
+                        <v-checkbox
+                          :disabled="!disabled"
+                          v-model="vat"
+                          hide-details
+                          class="shrink pt-0 mt-0 mb-7 ml-3 d-none"
+                          color="red darken-3"
+                          @change="compute"
+                        ></v-checkbox>
+                      </v-layout>
                     </v-col>
 
                     <v-col
@@ -368,14 +443,14 @@
                       md="12"
                     >
                       <v-text-field
-                        :rules="formRules"
-                        v-model="form.price"
+                        disabled
+                        v-model="form.with_vat"
                         outlined
                         clearable
                         dense
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Price *</div>
+                          <div style="font-size: 14px">Price w/ VAT</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -476,6 +551,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Products" };
+  },
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -498,12 +576,28 @@ export default {
     menu: false,
 
     // Form Rules
-    formRules: [(v) => !!v || "This is required"],
+    formRules: [
+      (v) => (!!v && v.length >= 3) || "This is required",
+      (v) =>
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
+    formRulesDesc: [
+      (v) =>
+        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
+    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
         return "This is required";
       },
+    ],
+    formRulesPrice: [
+      (v) => !!v || "This is required",
+      (v) => /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Price must be valid",
     ],
     formRulesNumber: [
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
@@ -518,8 +612,12 @@ export default {
       product_name: null,
       description: null,
       price: null,
+      vat: null,
+      with_vat: null,
       exp_date: null,
     },
+    temp_vat: null,
+    vat: true,
 
     // For comparing data
     currentdata: {},
@@ -554,6 +652,13 @@ export default {
         class: "black--text",
       },
       {
+        text: "WITH VAT",
+        value: "with_vat",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
         text: "QTY",
         value: "diff_quantity",
         align: "right",
@@ -578,6 +683,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
+    disabled: true,
     itemsPerPage: 5,
   }),
 
@@ -610,6 +716,22 @@ export default {
   },
 
   methods: {
+    valueKeydown(e) {
+      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    descKeydown(e) {
+      if (/[~`!@#$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    numberKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -668,6 +790,7 @@ export default {
 
     // Saving data to database
     async save() {
+      this.compute();
       if (this.$refs.form.validate()) {
         // Validate first before compare
         if (this.compare()) {
@@ -745,6 +868,15 @@ export default {
       return date.format(format);
     },
 
+    // 1. get specific item info ,eg total amount, total quantity
+    // 2. check if true then total / tem_vat
+    // 3. else wo/vat = total (total amt / quantity)
+    async compute() {
+      this.form.with_vat = (this.form.price / this.temp_vat).toFixed(2);
+      this.form.vat = this.temp_vat;
+      this.getVat();
+    },
+
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
@@ -755,14 +887,45 @@ export default {
       this.form.product_name = row.product_name;
       this.form.description = row.description;
       this.form.price = row.price;
+      this.form.vat = row.vat;
+      this.vat = true;
+      this.temp_vat = row.vat;
+      this.form.with_vat = row.with_vat;
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;
+      this.compute();
+    },
+
+    // Open Dialog Form
+    openDialog() {
+      if (this.form.temp_vat !== null) {
+        this.$refs.form.resetValidation();
+        this.getVat();
+        this.dialog = true;
+      } else {
+        this.$refs.form.reset();
+        this.getVat();
+        this.dialog = true;
+      }
+    },
+    async getVat() {
+      await axios
+        .get("/api/settings/vat/get", { params: { type: "p" } })
+        .then((result) => {
+          this.temp_vat = result.data.vat;
+        });
     },
 
     // Reset Forms
     cancel() {
-      this.$refs.form.reset();
+      for (var key in this.form) {
+        if (key == "vat") {
+          this.getVat();
+        } else {
+          this.form[key] = "";
+        }
+      }
       this.dialog = false;
     },
   },
@@ -770,6 +933,9 @@ export default {
   watch: {
     dialog(val) {
       val || this.cancel();
+    },
+    temp_vat() {
+      this.compute();
     },
     page(val) {
       this.page = val;

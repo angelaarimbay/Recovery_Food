@@ -27,12 +27,15 @@
 
     <v-container>
       <v-layout row wrap>
-        <h4
-          class="font-weight-bold heading my-auto"
-          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
         >
           Inventory
-        </h4>
+        </span>
         <v-spacer></v-spacer>
 
         <!-- Breadcrumbs -->
@@ -120,8 +123,8 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
+                            large
                             :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
                             color="red darken-2"
                             icon
                             v-on="data.on"
@@ -166,6 +169,7 @@
             :items="table.data"
             :loading="progressbar"
             :page.sync="page"
+            
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -185,7 +189,46 @@
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
-            >
+            >     <template v-slot:[`item.begining_a`]="{ item }" style="text-align: right">
+              <small> Qty: {{ item.begining_q }} <br>   {{ item.begining_a }} </small> </template
+              >
+                <template v-slot:[`item.incoming_a`]="{ item }" style="text-align: right">
+              <small> Qty: {{ item.incoming_q }} <br>   {{ item.incoming_a }} </small> </template
+              >
+
+
+            <template v-slot:[`item.total_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.total_q }} <br>  {{ item.total_a }} </small> </template
+              >
+
+
+
+              <template v-slot:[`item.outgoing_a`]="{ item }" style="text-align: right">
+              <small> Qty: {{ item.outgoing_q }} <br>   {{ item.outgoing_a }} </small> </template
+              >
+              <template v-slot:[`item.onhand_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.onhand_q }} <br>  {{ item.onhand_a }} </small> </template
+              >
+
+
+            <template v-slot:[`item.average_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.average_q }} <br>  {{ item.average_a }} </small> </template
+              >
+
+            <template v-slot:[`item.variance_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.variance_q }} <br>  {{ item.variance_a }} </small> </template
+              >
+ <template v-slot:[`item.ending_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.ending_q }} <br>  {{ item.ending_a }} </small> </template
+              >
+
+ <template v-slot:[`item.consumption_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.consumption_q }} <br>  {{ item.consumption_a }} </small> </template
+              >
+
+ <template v-slot:[`item.ideal_a`]="{ item }" style="text-align: right">
+              <small> Qty : {{ item.ideal_q }} <br>  {{ item.ideal_a }} </small> </template
+              >
             <template v-slot:[`item.id`]="{ item }">
               <v-btn
                 icon
@@ -231,6 +274,9 @@ import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  metaInfo() {
+    return { title: "Inventory" };
+  },
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -288,6 +334,12 @@ export default {
         value: "unit",
         filterable: false,
         class: "black--text",
+      },{
+        text: "BEGINING",
+        value: "begining_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
       },
       {
         text: "NET PRICE",
@@ -297,15 +349,88 @@ export default {
         class: "black--text",
       },
       {
-        text: "STOCKS ON HAND",
-        value: "quantity_diff",
+        text: "INCOMING",
+        value: "incoming_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      }, 
+   {
+        text: "TOTAL",
+        value: "total_a",
         align: "right",
         filterable: false,
         class: "black--text",
       },
+   {
+        text: "OUTGOING",
+        value: "outgoing_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+
+
       {
-        text: "TOTAL AMT",
-        value: "amount",
+        text: "ON HAND",
+        value: "onhand_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+
+      {
+        text: "AVERAGE",
+        value: "average_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+
+         {
+        text: "ORDER POINT",
+        value: "orderpoint",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+          {
+        text: "ORDR QTY",
+        value: "ordr",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+          {
+        text: "TRIGGER POINT",
+        value: "triggerpoint",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },  
+      {
+        text: "ENDING",
+        value: "ending_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },  
+      {
+        text: "CONSUMPTION",
+        value: "consumption_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },  
+      {
+        text: "IDEAL",
+        value: "ideal_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },    {
+        text: "VARIANCE",
+        value: "variance_a",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -346,7 +471,7 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
+          console.log(result.data);
           //if the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
