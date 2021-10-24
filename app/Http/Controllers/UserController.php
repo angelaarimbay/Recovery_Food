@@ -112,7 +112,7 @@ class UserController extends Controller
             }
 
             foreach ($temp_db[$key1] as $key => $value) {
-                if($key == 'created_at' || $key =='updated_at'){
+                if($key == 'created_at' || $key =='updated_at'|| $key =='email_verified_at'){
 
                 }else{
                     $temp_num++;

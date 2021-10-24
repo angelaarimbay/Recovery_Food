@@ -821,6 +821,7 @@ export default {
           },
         })
         .then((prod_name) => {
+          console.log(prod_name.data)
           this.prodnamelist = prod_name.data;
         });
     },
