@@ -98,9 +98,9 @@ class tbl_masterlistsupp extends Model
         if ($get_quantity->sum('quantity') > 0) {
             $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity');
         } else {
-            $get_wov = 0;
+            $get_wov =  $this->net_price;
         }
-        //get vat
+        //get vat 
         if ($this->vatable == 1) {
             if ($get_wov > 0) {
                 $get_wov = $get_wov / $this->vat;
@@ -123,11 +123,11 @@ class tbl_masterlistsupp extends Model
         $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
         ->whereBetween('incoming_date', [$date1,$date2]);
         //get average amount
+        $get_wov = $this->net_price ;
         if ($get_quantity->sum('quantity') > 0) {
             $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity');
-        } else {
-            $get_wov = $this->net_price ;
-        }
+        }   
+
         return $get_wov;
     }
 }

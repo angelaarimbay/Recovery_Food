@@ -65,10 +65,10 @@ class IncomingProductsController extends Controller
             $temp = [];
             $temp['row']  = $key+1;
             $temp['id'] = $value->id; 
-            $temp['amount'] = $value->amount;  
-            $temp['format_amount'] = $value->format_amount;  
+            $temp['amount'] = number_format($value->amount,2);   
             $temp['incoming_date'] = $value->incoming_date;  
             $temp['product_name'] = $value->product_name_details;  
+            $temp['price'] = number_format($value->product_name_details['price'],2);   
             $temp['quantity'] = $value->quantity; 
             $temp['category'] = $value->category_details;   
             $temp['sub_category'] = $value->sub_category_details;  
@@ -76,12 +76,6 @@ class IncomingProductsController extends Controller
         }   
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
-  
- 
-
-
-
-
     }
 
     public function prodCat()

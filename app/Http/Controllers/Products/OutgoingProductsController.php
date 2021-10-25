@@ -22,6 +22,7 @@ class OutgoingProductsController extends Controller
     public function save(Request $data)
     {
         $table = tbl_outgoingprod::where("product_name", "!=", null);
+      
 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
@@ -32,13 +33,13 @@ class OutgoingProductsController extends Controller
                  "sub_category"=>$data->sub_category,
                  "product_name"=>$data->product_name['id'],
                  "quantity"=>$data->quantity,
-                 "amount"=>$with_vat * $data->quantity,
+                 "amount"=> tbl_masterlistprod::where("id",$data->product_name['id'] )->first()->price * $data->quantity,
                  "requesting_branch"=>$data->requesting_branch,
                  "outgoing_date"=>date('Y-m-d', strtotime($data->outgoing_date)),
                 ]
             );
         } else {
-            tbl_outgoingprod::create($data->all());
+            tbl_outgoingprod::create($data->all() + [ "amount"=> tbl_masterlistprod::where("id",$data->product_name['id'] )->first()->price * $data->quantity]);
         }
         return 0;
     }
@@ -69,7 +70,7 @@ class OutgoingProductsController extends Controller
             $temp['id'] = $value->id;
             $temp['status'] = $value->status;
             $temp['category'] = $value->category_details;
-            $temp['outgoing_amount'] = $value->outgoing_amount;
+            $temp['outgoing_amount'] = number_format($value->outgoing_amount,2);
             $temp['outgoing_date'] = $value->outgoing_date;
             $temp['product_name'] = $value->product_name_details;
             $temp['quantity'] = $value->quantity;
@@ -105,9 +106,7 @@ class OutgoingProductsController extends Controller
 
     public function validateQuantity(Request $request)
     {
-        return $request->id;
-        $get_group = tbl_masterlistprod::where("id", $request->id)->first()->group;
-        $get_group = tbl_masterlistprod::where("group", $get_group)->pluck('id');
-        return tbl_incomingprod::wherein('product_name', $get_group)->sum('quantity');
+        
+        return tbl_incomingprod::where('id', $request->id )->sum('quantity') ;
     }
 }

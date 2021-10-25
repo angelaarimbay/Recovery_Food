@@ -472,19 +472,19 @@
                       sm="12"
                       md="12"
                     >
-                      <v-select
-                        :rules="formRulesNumberRange"
+                      <v-autocomplete
+                        :rules="formRules"
                         v-model="form.product_name"
                         :items="prodnamelist"
                         outlined
                         dense
                         item-text="product_name"
-                        item-value="id"
+                        return-object
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Name *</div>
                         </template>
-                      </v-select>
+                      </v-autocomplete>
                     </v-col>
 
                     <v-col
@@ -678,6 +678,7 @@ export default {
         class: "black--text",
       },
     ],
+    getQuantity: 0,
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
@@ -787,6 +788,18 @@ export default {
     // Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
+        this.prodValidate();
+        if (this.getQuantity < this.form.quantity) {
+          this.snackbar = {
+            active: true,
+            iconText: "alert-box",
+            iconColor: "warning",
+            message: "Insufficient stocks",
+          };
+
+          return;
+        }
+
         // Validate first before compare
         if (this.compare()) {
           // Save or update data in the table
@@ -826,7 +839,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -838,7 +850,9 @@ export default {
 
     async prodValidate() {
       await axios
-        .get("/api/outprod/prodValidate", { params: { id: this.getID } })
+        .get("/api/outprod/prodValidate", {
+          params: { id: this.form.product_name.id },
+        })
         .then((result) => {
           this.getQuantity = result.data;
         });
@@ -866,7 +880,7 @@ export default {
           },
         })
         .then((prod_name) => {
-          console.log(prod_name)
+          console.log(prod_name);
           this.prodnamelist = prod_name.data;
         });
     },
@@ -884,7 +898,7 @@ export default {
       this.form.category = row.category.id;
       this.form.sub_category = row.sub_category.id;
       this.prodName();
-      this.form.product_name = row.product_name.id;
+      this.form.product_name = row.product_name;
       this.form.quantity = row.quantity;
       this.form.requesting_branch = row.requesting_branch.id;
       this.form.outgoing_date = this.getFormatDate(

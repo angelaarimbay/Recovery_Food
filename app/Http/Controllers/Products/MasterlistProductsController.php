@@ -74,11 +74,11 @@ class MasterlistProductsController extends Controller
             $temp['description'] = $value->description;
             $temp['diff_quantity'] = $value->diff_quantity;
             $temp['exp_date'] = $value->exp_date;
-            $temp['with_vat'] = $value->format_with_vat;
+            $temp['without_vat'] = number_format($value->without_vat,2);
             $temp['vat'] = $value->vat;
-            $temp['format_unit_price'] = $value->format_unit_price;
-            $temp['format_price'] = $value->format_price;
-            $temp['price'] = $value->price;
+            $temp['unit_price'] =  number_format($value->unit_price,2);
+            $temp['format_price'] = number_format($value->price,2);
+            $temp['price'] = $value->price; //retain natin
             $temp['product_name'] = $value->product_name;
             $temp['sub_category'] = $value->sub_category_details;
             array_push($return, $temp);

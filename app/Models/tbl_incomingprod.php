@@ -42,9 +42,4 @@ class tbl_incomingprod extends Model
     {
         return tbl_prodsubcat::where("id", $this->sub_category)->first();
     }
-
-    public function getIncomingAmountAttribute()
-    {
-        return tbl_masterlistprod::where("id", $this->product_name)->first()->format_with_vat * $this->quantity;
-    }
 }

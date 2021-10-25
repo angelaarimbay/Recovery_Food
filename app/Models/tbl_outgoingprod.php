@@ -62,6 +62,6 @@ class tbl_outgoingprod extends Model
 
     public function getOutgoingAmountAttribute()
     {
-        return tbl_masterlistprod::where("id", $this->product_name)->first()->with_vat * $this->quantity;
+        return tbl_masterlistprod::where("id", $this->product_name)->first()->price * $this->quantity;
     }
 }
