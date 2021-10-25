@@ -32,12 +32,12 @@ class IncomingProductsController extends Controller
                 "sub_category"=>$data->sub_category,
                 "product_name"=>$data->product_name['id'],
                 "quantity"=>$data->quantity,
-                "amount"=>$data->amount,
+                "amount"=> tbl_masterlistprod::where("id",$data->product_name['id'] )->first()->price * $data->quantity,
                 "incoming_date"=>$data->incoming_date,
                 ]
             );
         } else {
-            tbl_incomingprod::create($data->except('product_name') + ['product_name'=>$data->product_name['id']]);
+            tbl_incomingprod::create($data->except('product_name') + ['product_name'=>$data->product_name['id'], 'amount'=>tbl_masterlistprod::where("id",$data->product_name['id'] )->first()->price * $data->quantity]);
         }
         return 0;
     }

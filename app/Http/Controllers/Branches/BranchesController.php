@@ -38,6 +38,7 @@ class BranchesController extends Controller
                  "location"=>$data->location,
                  "phone_number"=>$data->phone_number,
                  "email_add"=>$data->email_add,
+                 "type"=>$data->type,
                  "branch_image"=>$data->branch_image,
                 ]
             );
@@ -59,6 +60,7 @@ class BranchesController extends Controller
             $temp['id'] = $value->id;
             $temp['branch_image'] =  ($value->branch_image?$value->branch_image:'/img/Logo.jpg');
             $temp['branch_name'] = $value->branch_name;
+            $temp['type'] = $value->type;
             $temp['email_add'] = $value->email_add;
             $temp['location'] = $value->location;
             $temp['phone_number'] = $value->phone_number; 

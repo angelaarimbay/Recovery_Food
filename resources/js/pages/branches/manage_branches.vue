@@ -180,6 +180,12 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
+
+           <template v-slot:[`item.type`]="{ item }">
+             <div v-if="item.type == 0"> Branch </div>  
+             <div v-else>Warehouse</div>
+              </template
+            >
             <template v-slot:[`item.status`]="{ item }">
               <v-chip
                 style="justify-content: center"
@@ -392,6 +398,31 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
+                       <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
+                    
+                      <v-select
+                        :rules="formRulesBasic"
+                        v-model="form.type"
+                        outlined
+                        dense
+                        :items="[{'name':'Branch','id':'0' },
+                                 {'name':'Warehouse','id':'1'}]"
+                        item-text="name"
+                        item-value="id"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 14px">Type *</div>
+                        </template>
+                      </v-select>
+                    </v-col>
+
                     <v-col
                       class="py-0"
                       cols="12"
@@ -683,6 +714,7 @@ export default {
     table: [],
 
     // Form Rules
+    formRulesBasic: [(v) => !!v || "This is required"],
     formRules: [
       (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
@@ -719,6 +751,7 @@ export default {
       phone_number: null,
       email_add: null,
       branch_image: null,
+      type: 0,
     },
 
     // For comparing data
@@ -730,6 +763,7 @@ export default {
       phone_number: null,
       email_add: null,
       branch_image: null,
+      type: null,
     },
 
     // Table Headers
@@ -743,6 +777,12 @@ export default {
       },
       { text: "BRANCH NAME", value: "branch_name", class: "black--text" },
       {
+        text: "Type",
+        value: "type",
+        align: "center",
+        filterable: false,
+        class: "black--text",
+      }, {
         text: "STATUS",
         value: "status",
         align: "center",
@@ -943,6 +983,7 @@ export default {
       this.form.location = row.location;
       this.form.phone_number = row.phone_number;
       this.form.email_add = row.email_add; 
+      this.form.type =  row.type.toString();
       this.form.branch_image =  (row.branch_image == '/img/Logo.jpg'?null: row.branch_image);
       this.tempfile = row.branch_image ? (row.branch_image == '/img/Logo.jpg'?null:row.branch_image.split("-")[0] ): null;
       this.dialog = true;
@@ -962,6 +1003,7 @@ export default {
       this.form.branch_name = row.branch_name;
       this.form.location = row.location;
       this.form.phone_number = row.phone_number;
+      this.form.type =  row.type.toString();
       this.form.email_add = row.email_add; 
       this.form.branch_image =   (row.branch_image == '/img/Logo.jpg'? '/img/Logo.jpg':  '/storage/branches/'+row.branch_image  ) 
       this.viewdialog = true;

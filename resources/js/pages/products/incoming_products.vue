@@ -463,24 +463,7 @@
                       </v-text-field>
                     </v-col>
                     
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
-                      <v-layout align-center>
-                        <v-text-field
-                          :rules="formRulesPrice"
-                          v-model="form.amount"
-                          outlined
-                          clearable
-                          dense
-                          @keydown="numberKeydown($event)"
-                          counter
-                          maxlength="15"
-                        >
-                          <template slot="label">
-                            <div style="font-size: 14px">Amount *</div>
-                          </template>
-                        </v-text-field>
-                      </v-layout>
-                    </v-col>
+                    
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -587,8 +570,7 @@ export default {
       category: null,
       sub_category: null,
       product_name: null,
-      description: null,
-      price: null,
+      description: null, 
       quantity: null,
       incoming_date: null,
     },
@@ -678,7 +660,7 @@ export default {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
        
-      }   this.form.amount = (this.form.quantity * this.form.product_name.price)
+      }   
        
     },
     numberKeydown(e) {
@@ -840,8 +822,7 @@ export default {
       this.form.sub_category = row.sub_category.id;
       this.prodName();
       this.form.product_name = row.product_name.id;
-      this.form.quantity = row.quantity;
-      this.form.amount = row.amount;
+      this.form.quantity = row.quantity; 
       this.form.incoming_date = this.getFormatDate(
         row.incoming_date,
         "YYYY-MM-DD"
