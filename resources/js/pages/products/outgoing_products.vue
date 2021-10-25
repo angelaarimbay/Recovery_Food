@@ -826,6 +826,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -865,6 +866,7 @@ export default {
           },
         })
         .then((prod_name) => {
+          console.log(prod_name)
           this.prodnamelist = prod_name.data;
         });
     },
