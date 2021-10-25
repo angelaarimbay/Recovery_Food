@@ -118,6 +118,6 @@ class BranchesInventoryController extends Controller
 
     public function branchName()
     {
-        return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
+        return tbl_branches::select(["branch_name","id"])->where('type',0)->where("status", 1)->get();
     }
 }
