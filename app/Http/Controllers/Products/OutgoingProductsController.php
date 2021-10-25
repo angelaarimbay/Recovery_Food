@@ -30,9 +30,11 @@ class OutgoingProductsController extends Controller
             $table_clone->where("id", $data->id)->update(
                 ["category"=>$data->category,
                  "sub_category"=>$data->sub_category,
-                 "product_name"=>$data->product_name,
+                 "product_name"=>$data->product_name['id'],
                  "quantity"=>$data->quantity,
+                 "amount"=>$with_vat * $data->quantity,
                  "requesting_branch"=>$data->requesting_branch,
+                 "outgoing_date"=>date('Y-m-d', strtotime($data->outgoing_date)),
                 ]
             );
         } else {
@@ -47,8 +49,8 @@ class OutgoingProductsController extends Controller
                 ($t->branch? " and requesting_branch=".$t->branch:"");
   
         $table = tbl_outgoingprod::with(["category","sub_category","product_name","requesting_branch"])
-                ->whereRaw($where)
-                ->where("product_name", "!=", null);
+                                    ->whereRaw($where)
+                                    ->where("product_name", "!=", null);
  
         if ($t->dateFrom && $t->dateUntil) {
             $table = $table->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
@@ -60,7 +62,6 @@ class OutgoingProductsController extends Controller
             }) ->paginate($t->itemsPerPage, "*", "page", 1);
         }
          
-        
         $return = [];
         foreach ($table->get() as $key => $value) {
             $temp = [];

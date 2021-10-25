@@ -435,10 +435,10 @@
                         :rules="formRules"
                         v-model="form.product_name"
                         :items="prodnamelist"
-                        item-text="product_name" 
-                        return-object
                         outlined
                         dense
+                        item-text="product_name"
+                        item-value="id"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Name *</div>
@@ -446,40 +446,28 @@
                       </v-autocomplete>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
                         outlined
                         clearable
-                        dense 
+                        dense
                         @keyup="quantityKeydown($event)"
                         counter
                         maxlength="3"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Quantity *</div>
+                          <div style="font-size: 14px">Product Quantity *</div>
                         </template>
                       </v-text-field>
-                    </v-col>
-                    
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
-                      <v-layout align-center>
-                        <v-text-field
-                          :rules="formRulesPrice"
-                          v-model="form.amount"
-                          outlined
-                          clearable
-                          dense
-                          @keydown="numberKeydown($event)"
-                          counter
-                          maxlength="15"
-                        >
-                          <template slot="label">
-                            <div style="font-size: 14px">Amount *</div>
-                          </template>
-                        </v-text-field>
-                      </v-layout>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -569,11 +557,6 @@ export default {
       (v) => !!v || "This is required",
       (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
     ],
-    formRulesPrice: [
-      (v) => !!v || "This is required",
-      (v) =>
-        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
-    ],
     formRulesNumberRange: [
       (v) => {
         if (!isNaN(parseFloat(v)) && v >= 0 && v <= 9999999) return true;
@@ -588,7 +571,6 @@ export default {
       sub_category: null,
       product_name: null,
       description: null,
-      price: null,
       quantity: null,
       incoming_date: null,
     },
@@ -631,7 +613,7 @@ export default {
       },
       {
         text: "TOTAL AMT",
-        value: "format_amount",
+        value: "incoming_amount",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -677,10 +659,9 @@ export default {
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
-       
-      }   this.form.amount = (this.form.quantity * this.form.product_name.price)
-       
+      }
     },
+
     numberKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
@@ -822,7 +803,6 @@ export default {
           },
         })
         .then((prod_name) => {
-          console.log(prod_name.data)
           this.prodnamelist = prod_name.data;
         });
     },
@@ -841,7 +821,6 @@ export default {
       this.prodName();
       this.form.product_name = row.product_name.id;
       this.form.quantity = row.quantity;
-      this.form.amount = row.amount;
       this.form.incoming_date = this.getFormatDate(
         row.incoming_date,
         "YYYY-MM-DD"
