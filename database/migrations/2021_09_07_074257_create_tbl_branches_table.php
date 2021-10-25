@@ -19,6 +19,7 @@ class CreateTblBranchesTable extends Migration
             $table->string('branch_name');
             $table->string('location');
             $table->string('phone_number');
+            $table->integer('type')->default(0);
             $table->string('email_add');
             $table->string('branch_image')->nullable();
             $table->timestamps();

@@ -93,12 +93,13 @@ class OutgoingProductsController extends Controller
 
     public function prodName(Request $t)
     {
-        return tbl_masterlistprod::select(["product_name","id"])->where("category", $t->category)->where("sub_category", $t->sub_category)->where("status", 1)->get();
+        return tbl_masterlistprod::where("status", 1)->where("category", $t->category)->where("sub_category", $t->sub_category)->where("status", 1)->get();
     }
 
     public function branchName()
     {
-        return tbl_branches::select(["branch_name","id"])->where("status", 1)->get();
+        return tbl_branches::select(["branch_name","id"])
+            ->where(["status"=>1,'type'=> 0])->get();
     }
 
     public function validateQuantity(Request $request)
