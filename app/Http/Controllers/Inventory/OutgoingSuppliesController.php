@@ -31,7 +31,7 @@ class OutgoingSuppliesController extends Controller
         $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name", $data->supply_name['id'])
         ->whereBetween('incoming_date', [$date1,$date2]);
       
-        $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity');
+        $get_wov = ( $get_amount->sum('amount')?$get_amount->sum('amount') / $get_quantity->sum('quantity'):0);
 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {

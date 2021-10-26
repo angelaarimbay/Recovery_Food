@@ -169,7 +169,6 @@
             :items="table.data"
             :loading="progressbar"
             :page.sync="page"
-            
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -189,55 +188,119 @@
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
-            >     <template v-slot:[`item.begining_a`]="{ item }" style="text-align: right">
-              <small> Qty: {{ item.begining_q }} <br>   {{ item.begining_a }} </small> </template
-              >
-                <template v-slot:[`item.incoming_a`]="{ item }" style="text-align: right">
-              <small> Qty: {{ item.incoming_q }} <br>   {{ item.incoming_a }} </small> </template
-              >
+            >
+            <template
+              v-slot:[`item.begining_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty: {{ item.begining_q }} <br />
+                {{ item.begining_a }}
+              </small>
+            </template>
+            <template
+              v-slot:[`item.incoming_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty: {{ item.incoming_q }} <br />
+                {{ item.incoming_a }}
+              </small>
+            </template>
 
+            <template
+              v-slot:[`item.total_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty : {{ item.total_q }} <br />
+                {{ item.total_a }}
+              </small>
+            </template>
 
-            <template v-slot:[`item.total_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.total_q }} <br>  {{ item.total_a }} </small> </template
-              >
+            <template
+              v-slot:[`item.outgoing_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty: {{ item.outgoing_q }} <br />
+                {{ item.outgoing_a }}
+              </small>
+            </template>
+            <template
+              v-slot:[`item.onhand_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty : {{ item.onhand_q }} <br />
+                {{ item.onhand_a }}
+              </small>
+            </template>
 
+            <template
+              v-slot:[`item.average_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty : {{ item.average_q }} <br />
+                {{ item.average_a }}
+              </small>
+            </template>
 
+            <template
+              v-slot:[`item.variance_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty : {{ item.variance_q }} <br />
+                {{ item.variance_a }}
+              </small>
+            </template>
+            <template
+              v-slot:[`item.ending_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty : {{ item.ending_q }} <br />
+                {{ item.ending_a }}
+              </small>
+            </template>
 
-              <template v-slot:[`item.outgoing_a`]="{ item }" style="text-align: right">
-              <small> Qty: {{ item.outgoing_q }} <br>   {{ item.outgoing_a }} </small> </template
-              >
-              <template v-slot:[`item.onhand_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.onhand_q }} <br>  {{ item.onhand_a }} </small> </template
-              >
+            <template
+              v-slot:[`item.consumption_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty : {{ item.consumption_q }} <br />
+                {{ item.consumption_a }}
+              </small>
+            </template>
 
-
-            <template v-slot:[`item.average_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.average_q }} <br>  {{ item.average_a }} </small> </template
-              >
-
-            <template v-slot:[`item.variance_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.variance_q }} <br>  {{ item.variance_a }} </small> </template
-              >
- <template v-slot:[`item.ending_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.ending_q }} <br>  {{ item.ending_a }} </small> </template
-              >
-
- <template v-slot:[`item.consumption_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.consumption_q }} <br>  {{ item.consumption_a }} </small> </template
-              >
-
- <template v-slot:[`item.ideal_a`]="{ item }" style="text-align: right">
-              <small> Qty : {{ item.ideal_q }} <br>  {{ item.ideal_a }} </small> </template
-              >
+            <template
+              v-slot:[`item.ideal_a`]="{ item }"
+              style="text-align: right"
+            >
+              <small>
+                Qty : {{ item.ideal_q }} <br />
+                {{ item.ideal_a }}
+              </small>
+            </template>
             <template v-slot:[`item.id`]="{ item }">
-              <v-btn
-                icon
-                color="red darken-2"
-                @click="edit(item)"
-                :x-small="$vuetify.breakpoint.smAndDown"
-              >
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    v-on="data.on"
+                    @click="openViewDialog(item)"
+                  >
+                    <v-icon>mdi-eye</v-icon>
+                  </v-btn>
+                </template>
+                <span>View</span>
+              </v-tooltip>
             </template>
           </v-data-table>
 
@@ -250,6 +313,53 @@
               color="red darken-2"
             ></v-pagination>
           </div>
+
+          <v-dialog v-model="viewdialog" max-width="900px">
+            <v-card id="dialog" class="bgcolor">
+              <v-toolbar
+                dense
+                dark
+                class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+              >
+                Main Inventory
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-icon
+                      class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                      v-on="data.on"
+                      text
+                      @click="closeViewDialog"
+                      >mdi-close
+                    </v-icon>
+                  </template>
+                  <span>Close</span>
+                </v-tooltip>
+              </v-toolbar>
+
+              <v-card tile>
+                <v-card-text class="py-2">
+                  <v-card-text> </v-card-text>
+                </v-card-text>
+
+                <v-card-actions
+                  class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4"
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="error"
+                    style="text-transform: none"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    depressed
+                    dark
+                    @click="closeViewDialog"
+                  >
+                    Close
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-card>
+          </v-dialog>
         </v-container>
       </v-container>
     </v-card>
@@ -295,6 +405,7 @@ export default {
     progressBar: false,
     table: [],
     suppcatlist: [],
+    viewdialog: false,
 
     // Form Data
     form: {
@@ -334,7 +445,8 @@ export default {
         value: "unit",
         filterable: false,
         class: "black--text",
-      },{
+      },
+      {
         text: "BEGINING",
         value: "begining_a",
         align: "right",
@@ -354,22 +466,21 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
-      }, 
-   {
+      },
+      {
         text: "TOTAL",
         value: "total_a",
         align: "right",
         filterable: false,
         class: "black--text",
       },
-   {
+      {
         text: "OUTGOING",
         value: "outgoing_a",
         align: "right",
         filterable: false,
         class: "black--text",
       },
-
 
       {
         text: "ON HAND",
@@ -387,51 +498,60 @@ export default {
         class: "black--text",
       },
 
-         {
+      {
         text: "ORDER POINT",
         value: "orderpoint",
         align: "right",
         filterable: false,
         class: "black--text",
       },
-          {
+      {
         text: "ORDR QTY",
         value: "ordr",
         align: "right",
         filterable: false,
         class: "black--text",
       },
-          {
+      {
         text: "TRIGGER POINT",
         value: "triggerpoint",
         align: "right",
         filterable: false,
         class: "black--text",
-      },  
+      },
       {
         text: "ENDING",
         value: "ending_a",
         align: "right",
         filterable: false,
         class: "black--text",
-      },  
+      },
       {
         text: "CONSUMPTION",
         value: "consumption_a",
         align: "right",
         filterable: false,
         class: "black--text",
-      },  
+      },
       {
         text: "IDEAL",
         value: "ideal_a",
         align: "right",
         filterable: false,
         class: "black--text",
-      },    {
+      },
+      {
         text: "VARIANCE",
         value: "variance_a",
         align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION(S)",
+        value: "id",
+        align: "center",
+        sortable: false,
         filterable: false,
         class: "black--text",
       },
@@ -455,6 +575,17 @@ export default {
     itemperpage() {
       this.page = 1;
       this.get();
+    },
+
+    // View Branch Info
+    openViewDialog(row) {
+      this.form.id = row.id;
+      this.viewdialog = true;
+    },
+
+    // Close View Dialog
+    closeViewDialog() {
+      this.viewdialog = false;
     },
 
     async get() {
