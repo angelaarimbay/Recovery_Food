@@ -40,7 +40,7 @@ class MasterlistProductsController extends Controller
             $table_clone->where("id", $data->id)->update(
                 ["status"=>$data->status,
                  "category"=>$data->category,
-                 "vat"=> tbl_vat::where("type","p")->first()->vat,
+                 "vat"=> tbl_vat::where("type", "p")->first()->vat,
                  "vatable" => 1,
                  "sub_category"=>$data->sub_category,
                  "product_name"=>$data->product_name,
@@ -61,28 +61,28 @@ class MasterlistProductsController extends Controller
 
         // return $where;
         
-           $table = tbl_masterlistprod::with(["category","sub_category"])
+        $table = tbl_masterlistprod::with(["category","sub_category"])
         ->whereRaw($where) ;
 
         $return = [];
-        foreach ($table->get() as $key => $value) { 
+        foreach ($table->get() as $key => $value) {
             $temp = [];
             $temp['row']  = $key+1;
-            $temp['id'] = $value->id; 
-            $temp['status'] = $value->status;  
+            $temp['id'] = $value->id;
+            $temp['status'] = $value->status;
             $temp['category'] = $value->category_details;
             $temp['description'] = $value->description;
             $temp['diff_quantity'] = $value->diff_quantity;
-            $temp['exp_date'] = $value->exp_date; 
-            $temp['with_vat'] = $value->format_with_vat;
+            $temp['exp_date'] = $value->exp_date;
+            $temp['without_vat'] = number_format($value->without_vat,2);
             $temp['vat'] = $value->vat;
-            $temp['format_unit_price'] = $value->format_unit_price;
-            $temp['format_price'] = $value->format_price;
-            $temp['price'] = $value->price;  
-            $temp['product_name'] = $value->product_name;  
-            $temp['sub_category'] = $value->sub_category_details;   
-            array_push($return,$temp);
-        }   
+            $temp['unit_price'] =  number_format($value->unit_price,2);
+            $temp['format_price'] = number_format($value->price,2);
+            $temp['price'] = $value->price; //retain natin
+            $temp['product_name'] = $value->product_name;
+            $temp['sub_category'] = $value->sub_category_details;
+            array_push($return, $temp);
+        }
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }

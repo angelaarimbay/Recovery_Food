@@ -105,7 +105,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('outprod/prodSubCat', 'Products\OutgoingProductsController@prodSubCat');
         Route::get('outprod/prodName', 'Products\OutgoingProductsController@prodName');
         Route::get('outprod/branchName', 'Products\OutgoingProductsController@branchName');
-        Route::get('outprod/prodValidate', 'Inventory\OutgoingProductsController@validateQuantity');
+        Route::get('outprod/prodValidate', 'Products\OutgoingProductsController@validateQuantity');
 
         // Suppliers List
         Route::post('supplist/save', 'Suppliers\SuppliersListController@save');

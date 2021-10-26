@@ -19,12 +19,13 @@ class CreateTblOutgoingprodsTable extends Migration
             $table->integer('sub_category')->references('id')->on('tbl_prodsubcat');
             $table->integer('product_name')->references('id')->on('tbl_masterlistprod');
             $table->float('quantity');
+            $table->float('amount');
             $table->integer('requesting_branch')->references('id')->on('tbl_branches');
             $table->datetime('outgoing_date');
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *

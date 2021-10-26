@@ -448,7 +448,7 @@
             :to="{ name: 'reports' }"
           >
             <v-list-item-icon>
-              <v-icon size="23">mdi-account-multiple</v-icon>
+              <v-icon size="23">mdi-file</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Reports</v-list-item-title>
           </v-list-item>

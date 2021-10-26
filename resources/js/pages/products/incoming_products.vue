@@ -435,7 +435,7 @@
                         :rules="formRules"
                         v-model="form.product_name"
                         :items="prodnamelist"
-                        item-text="product_name" 
+                        item-text="product_name"
                         return-object
                         outlined
                         dense
@@ -452,7 +452,7 @@
                         v-model="form.quantity"
                         outlined
                         clearable
-                        dense 
+                        dense
                         @keyup="quantityKeydown($event)"
                         counter
                         maxlength="3"
@@ -462,8 +462,6 @@
                         </template>
                       </v-text-field>
                     </v-col>
-                    
-                    
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -570,7 +568,7 @@ export default {
       category: null,
       sub_category: null,
       product_name: null,
-      description: null, 
+      description: null,
       quantity: null,
       incoming_date: null,
     },
@@ -605,6 +603,13 @@ export default {
         class: "black--text",
       },
       {
+        text: "PRICE",
+        value: "price",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
         text: "QTY",
         value: "quantity",
         align: "right",
@@ -613,7 +618,7 @@ export default {
       },
       {
         text: "TOTAL AMT",
-        value: "format_amount",
+        value: "amount",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -659,9 +664,7 @@ export default {
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
-       
-      }   
-       
+      }
     },
     numberKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
@@ -700,7 +703,9 @@ export default {
             }
           } else if (key == "product_name") {
             if (this.currentdata.product_name) {
-              if (this.currentdata.product_name.id != this.form.product_name) {
+              if (
+                this.currentdata.product_name.id != this.form.product_name.id
+              ) {
                 found += 1;
               }
             }
@@ -773,6 +778,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -804,7 +810,6 @@ export default {
           },
         })
         .then((prod_name) => {
-          console.log(prod_name.data)
           this.prodnamelist = prod_name.data;
         });
     },
@@ -821,8 +826,8 @@ export default {
       this.form.category = row.category.id;
       this.form.sub_category = row.sub_category.id;
       this.prodName();
-      this.form.product_name = row.product_name.id;
-      this.form.quantity = row.quantity; 
+      this.form.product_name = row.product_name;
+      this.form.quantity = row.quantity;
       this.form.incoming_date = this.getFormatDate(
         row.incoming_date,
         "YYYY-MM-DD"
