@@ -25,7 +25,7 @@
           >
         </template>
       </v-snackbar>
-      
+
       <v-card-actions class="px-0 justify-center">
         <v-tooltip bottom>
           <template #activator="data">
@@ -267,7 +267,6 @@
       ></v-pagination>
     </div>
 
-    <!-- Add User To Role Dialog -->
     <v-dialog v-model="viewdialog" max-width="900px">
       <v-card id="dialog" class="bgcolor">
         <v-toolbar
@@ -368,7 +367,7 @@
         </v-card>
       </v-card>
     </v-dialog>
- <iframe id="print7" class="d-none" :src="print" frameborder="0"></iframe>
+    <iframe id="print7" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -382,7 +381,7 @@ export default {
       message: "",
     },
     branch: "",
-    print: '',
+    print: "",
     search: "",
     reference_no: "",
     prodcatlist: [],
@@ -564,8 +563,8 @@ export default {
               link.download = "Transaction Report.pdf";
               link.click();
             });
-            break;  
-             case "print":
+            break;
+          case "print":
             await axios({
               url: "/api/reports/transaction/get",
               method: "GET",
@@ -574,19 +573,20 @@ export default {
                 branch: this.branch,
                 from: this.dateFromTP,
                 to: this.dateUntilTP,
-                type: 'pdf',
+                type: "pdf",
               },
             }).then((response) => {
               let blob = new Blob([response.data], { type: "application/pdf" });
-                 this.print =  window.URL.createObjectURL(blob);    
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert",
-                  iconColor: "warning",
-                  message: "Printing, Please wait.",
-                };
-              setTimeout(function(){  document.getElementById('print7').contentWindow.print() ;  }, 3000); 
-    
+              this.print = window.URL.createObjectURL(blob);
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "warning",
+                message: "Printing, Please wait.",
+              };
+              setTimeout(function () {
+                document.getElementById("print7").contentWindow.print();
+              }, 3000);
             });
             break;
           case "excel":

@@ -283,12 +283,6 @@
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
-            <template v-slot:[`item.category.supply_cat_name`]="{ item }">
-              {{ item.category.supply_cat_name }}<br />
-              <small style="font-size: 10px"
-                >Supplier: {{ item.supplier.supplier_name }}</small
-              >
-            </template>
             <template v-slot:[`item.id`]="{ item }">
               <v-tooltip bottom>
                 <template #activator="data">
@@ -321,7 +315,7 @@
 
         <!--Dialog Form-->
         <v-form ref="form">
-          <v-dialog v-model="dialog" max-width="650px">
+          <v-dialog v-model="dialog" max-width="450px">
             <v-toolbar
               dense
               dark
@@ -347,7 +341,14 @@
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
-                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="12" md="12">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
                           <div style="font-size: 14px">ID</div>
@@ -368,7 +369,7 @@
                           <v-text-field
                             :rules="formRules"
                             v-model="form.incoming_date"
-                            label="Incoming Date"
+                            label="Incoming Date *"
                             readonly
                             v-on="on"
                             class="py-0"
@@ -388,7 +389,14 @@
                       </v-menu>
                     </v-col>
 
-                    <v-col class="py-0" cols="8" xl="8" lg="12" sm="12" md="12">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-select
                         :rules="formRules"
                         v-model="form.supplier"
@@ -418,7 +426,6 @@
                         :rules="formRulesNumberRange"
                         v-model="form.category"
                         outlined
-                        :disabled="!form.supplier"
                         dense
                         :items="suppcatlist"
                         item-text="supply_cat_name"
@@ -443,7 +450,6 @@
                         :rules="formRules"
                         v-model="form.supply_name"
                         outlined
-                        :disabled="!form.supplier"
                         dense
                         hide-details=""
                         :items="suppnamelist"
@@ -453,23 +459,33 @@
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
                         </template>
+                        <template slot="selection" slot-scope="data">
+                          <!-- HTML that describe how select should render selected items -->
+                          {{ data.item.supply_name }}
+                          {{ data.item.description }}
+                        </template>
+                        <template slot="item" slot-scope="data">
+                          <!-- HTML that describe how select should render items when the select is open -->
+                          {{ data.item.supply_name }}
+                          {{ data.item.description }}
+                        </template>
                       </v-autocomplete>
 
                       <v-card
-                        color="white"
+                        style="background-color: #f5f5f5"
                         flat
-                        class="px-4 border"
+                        class="px-4"
                         v-if="form.supply_name"
                       >
-                        <table style="width: 50%; font-size: 10px">
+                        <table style="width: 50%; font-size: 11px">
                           <tr>
-                            <th class="text-left pr-2" style="width: 50px">
-                              <b>Description:</b>
+                            <th class="text-left pr-2" style="width: 50%">
+                              Description:
                             </th>
                             <th>{{ form.supply_name.description }}</th>
                           </tr>
                           <tr>
-                            <th class="text-left pr-2"><b>Net Price:</b></th>
+                            <th class="text-left pr-2">Net Price:</th>
                             <th>
                               {{
                                 getFormatCurrency(
@@ -480,21 +496,20 @@
                             </th>
                           </tr>
                           <tr>
-                            <th class="text-left pr-2"><b>Unit:</b></th>
+                            <th class="text-left pr-2">Unit:</th>
                             <th>{{ form.supply_name.unit }}</th>
                           </tr>
                         </table>
                       </v-card>
                     </v-col>
-                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="4" md="4">
+                    <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
                         outlined
-                        :disabled="!form.supplier"
                         clearable
-                        dense 
-                        @keyup="quantityKeydown($event); "
+                        dense
+                        @keydown="quantityKeydown($event)"
                         counter
                         maxlength="4"
                       >
@@ -504,13 +519,11 @@
                       </v-text-field>
                     </v-col>
 
-                  
                     <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.amount"
                         outlined
-                        :disabled="!form.supplier"
                         clearable
                         dense
                         @keydown="numberKeydown($event)"
@@ -651,7 +664,7 @@ export default {
       },
       {
         text: "SUPPLY NAME",
-        value: "supply_name.supply_name",
+        value: "supply_full",
         class: "black--text",
       },
       {
@@ -682,15 +695,8 @@ export default {
         class: "black--text",
       },
       {
-        text: "AMT",
+        text: "TOTAL AMT",
         value: "amount",
-        align: "right",
-        filterable: false,
-        class: "black--text",
-      },
-      {
-        text: "FLUCTIATION",
-        value: "fluctiation",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -737,7 +743,6 @@ export default {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
-  
     },
     numberKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
@@ -789,6 +794,10 @@ export default {
                 found += 1;
               }
             }
+          } else if (key == "amount") {
+            if (this.currentdata.amount.replace(",", "") != this.form.amount) {
+              found += 1;
+            }
           } else if (key == "incoming_date") {
             if (
               this.getFormatDate(
@@ -799,6 +808,7 @@ export default {
               found += 1;
             }
           } else {
+            console.log(key);
             found += 1;
           }
         }
@@ -899,7 +909,7 @@ export default {
       this.suppName();
       this.form.supply_name = row.supply_name;
       this.form.quantity = row.quantity;
-      this.form.amount = row.amount.replace(",",'') ;
+      this.form.amount = row.amount.replace(",", "");
       this.form.incoming_date = this.getFormatDate(
         row.incoming_date,
         "YYYY-MM-DD"
