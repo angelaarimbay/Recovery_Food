@@ -334,53 +334,50 @@
             dark
             elevation="6"
             style="border-radius: 10px"
-            class="pa-3"
+            class="pa-2"
           >
             <v-row no-gutters>
-              <v-col cols="12" xl="4" lg="4" md="6" class="pa-0">
-                <v-card-actions>
-                  <v-select
-                    :items="branchlist"
-                    v-model="branch"
-                    item-text="branch_name"
-                    item-value="id"
-                    dense
-                    label="Branch"
-                    @change="getProductsGraph"
-                    outlined
-                    hide-details
-                  >
-                  </v-select></v-card-actions
+              <v-col cols="12" xl="4" lg="4" md="6" class="pa-1">
+                <v-select
+                  :items="branchlist"
+                  v-model="branch"
+                  item-text="branch_name"
+                  item-value="id"
+                  dense
+                  label="Branch"
+                  @change="getProductsGraph"
+                  outlined
+                  hide-details
+                >
+                </v-select
               ></v-col>
-              <v-col cols="12" xl="4" lg="4" md="6" class="pa-0">
-                <v-card-actions>
-                  <v-select
-                    v-model="year"
-                    item-text=""
-                    item-value="id"
-                    :items="ylist"
-                    dense
-                    label="Year"
-                    @change="getProductsGraph"
-                    outlined
-                    hide-details
-                  >
-                  </v-select></v-card-actions
+              <v-col cols="12" xl="4" lg="4" md="6" class="pa-1">
+                <v-select
+                  v-model="year"
+                  item-text=""
+                  item-value="id"
+                  :items="ylist"
+                  dense
+                  label="Year"
+                  @change="getProductsGraph"
+                  outlined
+                  hide-details
+                >
+                </v-select
               ></v-col>
-              <v-col cols="12" xl="4" lg="4" md="6" class="pa-0">
-                <v-card-actions>
-                  <v-select
-                    v-model="month"
-                    item-text=""
-                    item-value="id"
-                    :items="mlist"
-                    dense
-                    label="Month"
-                    @change="getProductsGraph"
-                    outlined
-                    hide-details
-                  >
-                  </v-select></v-card-actions
+              <v-col cols="12" xl="4" lg="4" md="6" class="pa-1">
+                <v-select
+                  v-model="month"
+                  item-text=""
+                  item-value="id"
+                  :items="mlist"
+                  dense
+                  label="Month"
+                  @change="getProductsGraph"
+                  outlined
+                  hide-details
+                >
+                </v-select
               ></v-col> </v-row></v-card
         ></v-col>
       </v-row>
@@ -759,9 +756,7 @@ export default {
             .catch((errr) => {});
         }
         if (this.user.roles[0].name == "Supervisor") {
-          this.$router
-            .push({ name: "supplies-inventory" })
-            .catch((errr) => {});
+          this.$router.push({ name: "supplies-inventory" }).catch((errr) => {});
         }
       }
     }

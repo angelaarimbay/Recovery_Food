@@ -129,7 +129,7 @@
                         <th class="caption" style="text-align: right">{{ sumField('incoming_orig')}}  </th>
                         <th class="caption" style="text-align: right">{{ sumField('total_orig')}}  </th>
                         <th class="caption" style="text-align: right">{{ sumField('outgoing_orig')}}  </th>
-                        <th class="caption" style="text-align: right">{{ sumField('stock_orig')}}  </th>
+                        <th class="caption" style="text-align: right">{{ sumField('stocks_orig')}}  </th>
                         <th class="caption" style="text-align: right">{{ sumField('ending_orig')}}  </th>
                         <th class="caption" style="text-align: right">{{ sumField('variance_orig')}}  </th>
                         <th class="caption" style="text-align: right">{{ sumField('fluctuation_orig')}}  </th>

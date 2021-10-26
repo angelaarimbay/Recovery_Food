@@ -57,16 +57,18 @@
             disabled
             class="px-0"
             style="text-transform: none"
-            >
-            
-              <template  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'> 
-            Outgoing Supplies
-              </template>
-                      <template  v-else> 
-              Supplies Inventory
-              </template>
-            </v-btn
           >
+            <template
+              v-if="
+                !user.permissionslist.includes(
+                  'Access Reports - Outgoing Supplies'
+                )
+              "
+            >
+              Outgoing Supplies
+            </template>
+            <template v-else> Supplies Inventory </template>
+          </v-btn>
         </v-card-actions>
       </v-layout>
     </v-container>
@@ -85,9 +87,17 @@
               class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
               @click="openDialog"
             >
-            <template  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'> Add Outgoing Supply </template> 
-            <template  v-else> Add Supply </template> 
-         </v-btn>
+              <template
+                v-if="
+                  !user.permissionslist.includes(
+                    'Access Reports - Outgoing Supplies'
+                  )
+                "
+              >
+                Add Outgoing Supply
+              </template>
+              <template v-else> Add Supply </template>
+            </v-btn>
           </v-card-actions>
 
           <!-- Search Filters -->
@@ -165,7 +175,19 @@
 
                 <v-row no-gutters>
                   <!-- Branch Field -->
-                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto"  v-if='!user.permissionslist.includes("Access Reports - Outgoing Supplies")'>
+                  <v-col
+                    cols="6"
+                    xl="2"
+                    lg="2"
+                    md="3"
+                    sm="6"
+                    class="my-auto"
+                    v-if="
+                      !user.permissionslist.includes(
+                        'Access Reports - Outgoing Supplies'
+                      )
+                    "
+                  >
                     <v-card-actions class="py-0">
                       <v-select
                         v-model="branch"
@@ -474,7 +496,7 @@
                       <v-autocomplete
                         :rules="formRules"
                         v-model="form.supply_name"
-                        :items="suppnamelist" :disabled="!form.category"
+                        :items="suppnamelist"
                         outlined
                         dense
                         hide-details=""
@@ -484,18 +506,53 @@
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Supply Name *</div>
-                        </template> 
-                        </v-autocomplete>
+                        </template>
+                        <template slot="selection" slot-scope="data">
+                          <!-- HTML that describe how select should render selected items -->
+                          {{ data.item.supply_name }}
+                          {{ data.item.description }}
+                        </template>
+                        <template slot="item" slot-scope="data">
+                          <!-- HTML that describe how select should render items when the select is open -->
+                          {{ data.item.supply_name }}
+                          {{ data.item.description }}
+                        </template>
+                      </v-autocomplete>
 
-                      <v-card color="white" flat class="px-4  border" v-if="form.supply_name"> 
-                          <table style="width: 70%; font-size: 10px">
-                                  <tr> <th class="text-left pr-2" style="width:130px;"><b>Description :</b></th><th> {{ form.supply_name.description  }} </th></tr>
-                                  <tr> <th class="text-left pr-2"><b>Net Price :</b></th><th> {{  getFormatCurrency(form.supply_name.net_price,'0,0.00') }} </th></tr>
-                                  <tr> <th class="text-left pr-2"><b>Unit :</b></th><th> {{ form.supply_name.unit }} </th></tr> 
-                                  <tr> <th class="text-left pr-2"><b>Available Quantity :</b></th><th> {{ getQuantity }} </th></tr> 
-    
-                          </table>     
-                      </v-card> 
+                      <v-card
+                        style="background-color: #f5f5f5"
+                        flat
+                        class="px-4"
+                        v-if="form.supply_name"
+                      >
+                        <table style="width: 50%; font-size: 11px">
+                          <tr>
+                            <th class="text-left pr-2" style="width: 80%">
+                              Description:
+                            </th>
+                            <th>{{ form.supply_name.description }}</th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2">Net Price:</th>
+                            <th>
+                              {{
+                                getFormatCurrency(
+                                  form.supply_name.net_price,
+                                  "0,0.00"
+                                )
+                              }}
+                            </th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2">Unit:</th>
+                            <th>{{ form.supply_name.unit }}</th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2">Available Quantity:</th>
+                            <th>{{ getQuantity }}</th>
+                          </tr>
+                        </table>
+                      </v-card>
                     </v-col>
 
                     <v-col
@@ -505,7 +562,7 @@
                       lg="12"
                       sm="12"
                       md="12"
-                    > 
+                    >
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
@@ -575,7 +632,7 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
-import template from '../template.vue';
+import template from "../template.vue";
 export default {
   components: { template },
   middleware: "auth",
@@ -586,7 +643,7 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
-       myheaders() {
+    myheaders() {
       return this.headers.filter((s) => this.headers.includes(s));
     },
   },
@@ -680,7 +737,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "AMT",
+        text: "TOTAL AMT",
         value: "outgoing_amount",
         align: "right",
         filterable: false,
@@ -695,12 +752,6 @@ export default {
       {
         text: "DATE",
         value: "outgoing_date",
-        filterable: false,
-        class: "black--text",
-      },   {
-        text: "FLUCTIATION",
-        value: "fluctiation",
-        align: "right",
         filterable: false,
         class: "black--text",
       },
@@ -726,16 +777,21 @@ export default {
 
   // Onload
   created() {
-    if (this.user.permissionslist.includes("Access Inventory") || this.user.permissionslist.includes("Access Reports - Outgoing Supplies")) {
+    if (
+      this.user.permissionslist.includes("Access Inventory") ||
+      this.user.permissionslist.includes("Access Reports - Outgoing Supplies")
+    ) {
       for (var key in this.user.permissionslist) {
-      if (this.user.permissionslist[key] == "Access Reports - Outgoing Supplies") {
-        this.headers.splice(this.headers.indexOf(this.headers[8]), 1);
-        this.headers.splice(this.headers.indexOf(this.headers[9]), 1); 
-        this.headers.splice(this.headers.indexOf(this.headers[8]), 1); 
+        if (
+          this.user.permissionslist[key] == "Access Reports - Outgoing Supplies"
+        ) {
+          this.headers.splice(this.headers.indexOf(this.headers[8]), 1);
+          this.headers.splice(this.headers.indexOf(this.headers[9]), 1);
+          this.headers.splice(this.headers.indexOf(this.headers[8]), 1);
+        }
       }
-    }
-     
-     this.get();
+
+      this.get();
       this.suppCat();
       this.branchName();
     } else {
@@ -758,7 +814,7 @@ export default {
       const date = moment(e);
       return date.format(format);
     },
-       getFormatCurrency(e, format) {
+    getFormatCurrency(e, format) {
       const numbr = numeral(e);
       return numbr.format(format);
     },
@@ -784,7 +840,7 @@ export default {
             }
           } else if (key == "supply_name") {
             if (this.currentdata.supply_name) {
-              if (this.currentdata.supply_name.id != this.form.supply_name) {
+              if (this.currentdata.supply_name.id != this.form.supply_name.id) {
                 found += 1;
               }
             }
@@ -807,6 +863,7 @@ export default {
               found += 1;
             }
           } else {
+            console.log(key);
             found += 1;
           }
         }
@@ -832,9 +889,9 @@ export default {
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
-            iconText: "close",
+            iconText: "emoticon-sad",
             iconColor: "danger",
-            message: "Insufficient Quantity in Incoming stock.",
+            message: "Insufficient quantity in incoming supplies",
           };
           return;
         }
@@ -844,7 +901,6 @@ export default {
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
-              console.log(result.data)
               //if the value is true then save to database
               this.snackbar = {
                 active: true,
@@ -866,10 +922,11 @@ export default {
       // Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
 
-    if(this.user.permissionslist.includes("Access Reports - Outgoing Supplies") ){
-      this.branch = this.user.branch;
-    }
-
+      if (
+        this.user.permissionslist.includes("Access Reports - Outgoing Supplies")
+      ) {
+        this.branch = this.user.branch;
+      }
 
       await axios
         .get("/api/osupp/get", {
@@ -885,7 +942,6 @@ export default {
         })
         .then((result) => {
           // If the value is true then get the data
-          console.log(result.data);
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
@@ -901,7 +957,6 @@ export default {
     },
 
     async suppValidate(item) {
-      
       await axios
         .get("/api/osupp/suppValidate", { params: { id: item.id } })
         .then((result) => {
@@ -932,14 +987,14 @@ export default {
       this.form.id = row.id;
       this.form.category = row.category.id;
       this.suppName();
-      this.form.supply_name = row.supply_name ;
+      this.form.supply_name = row.supply_name;
       this.form.quantity = row.quantity;
-      this.form.requesting_branch = row.requesting_branch.id; 
+      this.form.requesting_branch = row.requesting_branch.id;
       this.form.outgoing_date = this.getFormatDate(
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-      this.suppValidate(row.supply_name); 
+      this.suppValidate(row.supply_name);
       this.dialog = true;
     },
 

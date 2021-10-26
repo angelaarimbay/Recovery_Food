@@ -744,7 +744,7 @@ export default {
             }
           } else if (key == "product_name") {
             if (this.currentdata.product_name) {
-              if (this.currentdata.product_name.id != this.form.product_name) {
+              if (this.currentdata.product_name.id != this.form.product_name.id) {
                 found += 1;
               }
             }
@@ -766,7 +766,7 @@ export default {
             ) {
               found += 1;
             }
-          } else {
+          } else { 
             found += 1;
           }
         }
@@ -788,7 +788,6 @@ export default {
     // Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        this.prodValidate();
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
@@ -857,6 +856,7 @@ export default {
           this.getQuantity = result.data;
         });
     },
+    
 
     async prodCat() {
       await axios.get("/api/outprod/prodCat").then((prod_cat) => {
@@ -880,7 +880,6 @@ export default {
           },
         })
         .then((prod_name) => {
-          console.log(prod_name);
           this.prodnamelist = prod_name.data;
         });
     },
@@ -906,6 +905,7 @@ export default {
         "YYYY-MM-DD"
       );
 
+        this.prodValidate();
       this.dialog = true;
     },
 
