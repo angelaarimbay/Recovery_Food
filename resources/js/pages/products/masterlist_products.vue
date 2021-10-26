@@ -444,7 +444,7 @@
                     >
                       <v-text-field
                         disabled
-                        v-model="form.with_vat"
+                        v-model="form.without_vat"
                         outlined
                         clearable
                         dense
@@ -613,7 +613,7 @@ export default {
       description: null,
       price: null,
       vat: null, 
-      with_vat: null,
+      without_vat: null,
       exp_date: null,
     },
     temp_vat: null,
@@ -652,8 +652,8 @@ export default {
         class: "black--text",
       },
       {
-        text: "WITH VAT",
-        value: "with_vat",
+        text: "WITHOUT VAT",
+        value: "without_vat",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -872,7 +872,7 @@ export default {
     // 2. check if true then total / tem_vat
     // 3. else wo/vat = total (total amt / quantity)
     async compute() {
-      this.form.with_vat = (this.form.price / this.temp_vat).toFixed(2);
+      this.form.without_vat = (this.form.price / this.temp_vat).toFixed(2);
       this.form.vat = this.temp_vat;
       this.getVat();
     },
@@ -890,7 +890,7 @@ export default {
       this.form.vat = row.vat;
       this.vat = true;
       this.temp_vat = row.vat;
-      this.form.with_vat = row.with_vat;
+      this.form.without_vat = row.without_vat;
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;

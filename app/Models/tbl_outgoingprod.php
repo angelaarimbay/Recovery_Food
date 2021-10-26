@@ -22,7 +22,7 @@ class tbl_outgoingprod extends Model
 
     public function getCategoryDetailsAttribute()
     {
-        return  tbl_prodcat::where( 'id', $this->category)->first();
+        return  tbl_prodcat::where('id', $this->category)->first();
     }
 
     public function sub_category()
@@ -32,7 +32,7 @@ class tbl_outgoingprod extends Model
 
     public function getSubCategoryDetailsAttribute()
     {
-        return  tbl_prodsubcat::where( 'id', $this->sub_category)->first();
+        return  tbl_prodsubcat::where('id', $this->sub_category)->first();
     }
 
     public function product_name()
@@ -62,6 +62,6 @@ class tbl_outgoingprod extends Model
 
     public function getOutgoingAmountAttribute()
     {
-        return number_format(tbl_masterlistprod::where("id", $this->product_name)->first()->price * $this->quantity,2, ".", ",");
+        return tbl_masterlistprod::where("id", $this->product_name)->first()->price * $this->quantity;
     }
 }
