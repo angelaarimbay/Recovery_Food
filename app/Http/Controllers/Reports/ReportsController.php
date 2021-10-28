@@ -12,6 +12,7 @@ use App\Models\tbl_purchaseord;
 use App\Models\tbl_pos;
 use App\Models\tbl_supplist;
 use App\Models\tbl_branches;
+use App\Models\tbl_vat;
 use App\User;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -410,7 +411,7 @@ class ReportsController extends Controller
     }
 
     public function getSPInfo(Request $t)
-    {
+    { 
         return  tbl_pos::with(["branch",'product_name','cashier'])->where("reference_no", $t->reference_no)->get();
     }
 
@@ -432,18 +433,20 @@ class ReportsController extends Controller
 
 
             $data_cloned = clone $data;
-            $temp['sub_total'] = $data_cloned->sum('sub_total');
+            $temp['sub_total'] = $data_cloned->sum('sub_total')  ;
             $data_cloned = clone $data;
-            $temp['sub_total_discounted'] =$data_cloned->sum('sub_total_discounted');
+            $temp['sub_total_discounted'] = $data_cloned->sum('sub_total_discounted');
             $temp['cashier_name_details'] = User::where("id", $data[0]->cashier)->first()->name;
-            
-             
+            $temp['vatable_sales'] =  $data_cloned->sum('sub_total') / tbl_vat::where("type","p")->first()->vat;
+            $temp['vat_amount'] =   $data_cloned->sum('sub_total') -  ($data_cloned->sum('sub_total') / tbl_vat::where("type","p")->first()->vat);
+        
+          
             $data_cloned = clone $data;
             $pdf = PDF::loadView(
                 'receipt.receipt',
                 $temp,
                 [],
-                ['format' => ['57',76 + (7 * $data_cloned->count())],
+                ['format' => ['57', 76 + (27 * $data_cloned->count())],
                 'margin_left' => 3,
                 'margin_right' => 3,
                 'margin_top' => 5,

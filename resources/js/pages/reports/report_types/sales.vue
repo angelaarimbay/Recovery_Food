@@ -355,7 +355,9 @@
               :headers="headers2"
               :items="table2"
               hide-default-footer
-            >
+            >   <template v-slot:[`item.product_name.price`]="{ item }">
+                {{ getFormatCurrency(item.product_name.price, "0,0.00") }}</template
+              >
               <template v-slot:[`item.created_at`]="{ item }">
                 {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
               >
@@ -491,7 +493,7 @@ export default {
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.format_unit_price",
+        value: "product_name.price",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -571,6 +573,10 @@ export default {
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
+    },
+      getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
     },
 
     async getSPInfo(item) {

@@ -337,27 +337,134 @@
                 </v-tooltip>
               </v-toolbar>
 
-              <v-card tile>
+              <v-card flat tile max-height="500" style="overflow-y: auto">
                 <v-card-text class="py-2">
-                  <v-card-text> </v-card-text>
+                  <v-card-text>
+                    <!-- Table -->
+                    <v-row>
+                      <v-col xl="4" lg="4" md="4">
+                        Category: {{ currentdata.category }} <br />
+                        Supply Name: {{ currentdata.supply_name }} <br />
+                        Unit: {{ currentdata.unit }} <br />
+                        Net Price: {{ currentdata.net_price }} <br />
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="6">
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Beginning Inventory</v-col
+                          >
+                          <v-col class="py-0"
+                            >{{ currentdata.begining_a }}
+                            {{ currentdata.begining_q }}</v-col
+                          >
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Incoming Supplies</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Total Stocks</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Outgoing Supplies</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Stocks On Hand</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Average Daily Usage</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Lead Time</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Order Point</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Minimum Order Qty</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Order Qty</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Trigger Point</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Ending Inventory</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Consumption</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Ideal Inventory</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col class="py-0" xl="6" lg="6" md="6"
+                            >Variance</v-col
+                          >
+                          <v-col class="py-0">1m</v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
                 </v-card-text>
-
-                <v-card-actions
-                  class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4"
-                >
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="error"
-                    style="text-transform: none"
-                    :small="$vuetify.breakpoint.smAndDown"
-                    depressed
-                    dark
-                    @click="closeViewDialog"
-                  >
-                    Close
-                  </v-btn>
-                </v-card-actions>
               </v-card>
+
+              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="error"
+                  style="text-transform: none"
+                  :small="$vuetify.breakpoint.smAndDown"
+                  depressed
+                  dark
+                  @click="closeViewDialog"
+                >
+                  Close
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-dialog>
         </v-container>
@@ -447,15 +554,32 @@ export default {
         class: "black--text",
       },
       {
-        text: "BEGINING",
-        value: "begining_a",
+        text: "NET PRICE",
+        value: "net_price",
         align: "right",
         filterable: false,
         class: "black--text",
       },
       {
-        text: "NET PRICE",
-        value: "net_price",
+        text: "ON HAND",
+        value: "onhand_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION(S)",
+        value: "id",
+        align: "center",
+        sortable: false,
+        filterable: false,
+        class: "black--text",
+      },
+    ],
+    headers2: [
+      {
+        text: "BEGINING",
+        value: "begining_a",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -481,7 +605,6 @@ export default {
         filterable: false,
         class: "black--text",
       },
-
       {
         text: "ON HAND",
         value: "onhand_a",
@@ -489,7 +612,6 @@ export default {
         filterable: false,
         class: "black--text",
       },
-
       {
         text: "AVERAGE",
         value: "average_a",
@@ -497,7 +619,6 @@ export default {
         filterable: false,
         class: "black--text",
       },
-
       {
         text: "ORDER POINT",
         value: "orderpoint",
@@ -547,14 +668,6 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      {
-        text: "ACTION(S)",
-        value: "id",
-        align: "center",
-        sortable: false,
-        filterable: false,
-        class: "black--text",
-      },
     ],
     page: 1,
     pageCount: 0,
@@ -579,6 +692,8 @@ export default {
 
     // View Branch Info
     openViewDialog(row) {
+      this.currentdata = JSON.parse(JSON.stringify(row));
+      console.log(this.currentdata);
       this.form.id = row.id;
       this.viewdialog = true;
     },
@@ -602,7 +717,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           //if the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

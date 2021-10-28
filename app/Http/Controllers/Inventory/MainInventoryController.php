@@ -43,7 +43,10 @@ class MainInventoryController extends Controller
             $temp['supply_name'] =  $value->supply_name ;
             $temp['unit'] =  $value->unit ;
             $temp['net_price'] =  $value->net_price ;
-
+            $temp['lead_time'] =  $value->lead_time;
+            $temp['minimum_order_quantity'] =  $value->minimum_order_quantity ;
+            $temp['order_frequency'] =  $value->order_frequency ;
+         
             $incoming = tbl_incomingsupp::where('supply_name', $value->id) ->whereBetween('incoming_date',[$date1,$date2]);
             $outgoing = tbl_outgoingsupp::where('supply_name', $value->id) ->whereBetween('outgoing_date',[$date1,$date2]);
 
@@ -99,8 +102,8 @@ class MainInventoryController extends Controller
             //order point  (lead time of item * total quantity / day today) + outgoing quantity / day today 
             $a = clone $outgoing;
             $orderqty = $value->order_frequency * ($a->sum('quantity')/ date('d'));
-            if ($orderqty < $value->maximum_order_quantity) {
-                $temp['ordr'] = number_format($value->maximum_order_quantity, 2) ;
+            if ($orderqty < $value->minimum_order_quantity) {
+                $temp['ordr'] = number_format($value->minimum_order_quantity, 2) ;
             } else {
                 $temp['ordr'] = number_format($orderqty, 2);
             }
