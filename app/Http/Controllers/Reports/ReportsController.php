@@ -47,13 +47,15 @@ class ReportsController extends Controller
         break;
         case 'excel':
             //columns
-            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','VAT','WITHOUT VAT','EXPIRATION DATE'];
+            $columns = ['CATEGORY','SUPPLY NAME','SUPPLY DESCRIPTION','SUPPLIER','UNIT','NET PRICE','WITH VAT','VAT','WITHOUT VAT','EXPIRATION DATE'];
             //data
                 $dataitems = [];
             foreach ($data as $key => $value) {
                 $temp = [];
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
-                $temp['supply_name'] = $value->supply_name . " " . $value->description;
+                $temp['supply_name'] = $value->supply_name . " " ;
+                $temp['supply_description'] = $value->supply_description . " ";
+                $temp['supplier'] = $value->supplier;
                 $temp['unit'] = $value->unit;
                 $temp['format_net_price'] = $value->format_net_price;
                 $temp['format_with_vat'] = $value->format_with_vat;
@@ -76,6 +78,9 @@ class ReportsController extends Controller
         break;
         }
     }
+
+
+
 
     // Incoming Supplies Report - OK
     public function IncomingSuppliesReport(Request $t)
@@ -101,7 +106,7 @@ class ReportsController extends Controller
             foreach ($data as $key => $value) {
                 $temp = [];
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
-                $temp['supply_name'] = $value->supply_name_details['supply_name'] . " " . $value->supply_name_details['description'];
+                $temp['supply_name'] = $value->supply_name_details['supply_name'] . " " . $value->supply_name_details['supply_description'];
                 $temp['unit'] = $value->supply_name_details['unit'];
                 $temp['net_price'] = $value->supply_name_details['format_net_price'];
                 $temp['with_vat'] = $value->supply_name_details['format_with_vat'];

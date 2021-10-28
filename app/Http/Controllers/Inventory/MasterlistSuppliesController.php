@@ -88,7 +88,7 @@ class MasterlistSuppliesController extends Controller
             $temp['vat'] = $value->vat;  
             $temp['vatable'] = $value->vatable;   
             $temp['supply_name'] = $value->supply_name;  
-            $temp['description'] = $value->description;  
+            $temp['supply_description'] = $value->supply_description;  
             $temp['format_net_price'] = $value->format_net_price;  
             $temp['net_price'] = $value->net_price;    
             $temp['lead_time'] = $value->lead_time;  

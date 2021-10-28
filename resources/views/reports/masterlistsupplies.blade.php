@@ -46,6 +46,7 @@
             <tr>
                 <th><h6>CATEGORY</h6></th>
                 <th><h6>SUPPLY NAME</h6></th> 
+                <th><h6>SUPPLY DESCRIPTION</h6></th> 
                 <th><h6>UNIT</h6></th>  
                 <th><h6>NET PRICE</h6></th>
                 <th><h6>WITH VAT</h6></th>
@@ -57,7 +58,8 @@
             @foreach ($data as $items)   
             <tr>
                 <td  style="width: auto"> {{ $items['category_name'] }} </td>
-                <td  style="width: auto"> {{ $items['supply_name'] }} {{ $items['description'] }} </td>  
+                <td  style="width: auto"> {{ $items['supply_name'] }} </td>  
+                <td  style="width: auto"> {{ $items['supply_description'] }} </td>  
                 <td  style="width: auto"> {{ $items['unit'] }}  </td>
                 <td  style="width: auto"> {{ $items['format_net_price'] }} </td>
                 <td  style="width: auto"> {{ $items['format_with_vat'] }} </td>
