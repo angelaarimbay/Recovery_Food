@@ -275,7 +275,7 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.supply_full`]="{ item }"
-              >{{ item.supply_name }} {{ item.supply_description }}</template
+              >{{ item.supply_name }} {{ item.description }}</template
             >
             <template v-slot:[`item.exp_date`]="{ item }">
               {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
@@ -465,8 +465,7 @@
                     <v-col class="py-0" cols="12" xl="7" lg="7" sm="7" md="7">
                       <v-text-field
                         :rules="formRulesDesc"
-                        v-model="form.supply_description"
-                        
+                        v-model="form.description"
                         outlined
                         clearable
                         dense
@@ -475,7 +474,7 @@
                         maxlength="35"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Description </div>
+                          <div style="font-size: 14px">Description</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -726,8 +725,6 @@ export default {
       "book",
       "set",
       "unit",
-      "pcs",
-      "can",
     ],
     status: [
       { name: "Active", id: 1 },
@@ -739,7 +736,6 @@ export default {
     category: "",
     suppcatlist: [],
     suppnamelist: [],
-    suppdesclist: [],
     dayslist: [],
     date: null,
     menu: false,
@@ -753,9 +749,8 @@ export default {
         ) || "This field must have a valid value",
     ],
     formRulesDesc: [
-      (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
-        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
+        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
           v
         ) || "This field must have a valid value",
     ],
@@ -790,7 +785,7 @@ export default {
       supply_name: null,
       supplier: null,
       category: null,
-      supply_description: null,
+      description: null,
       unit: null,
       net_price: null,
       vat: null,
@@ -828,9 +823,7 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      { text: "SUPPLY NAME", value: "supply_name", class: "black--text" },
-       { text: "SUPPLY DESCRIPTION", value: "supply_full", class: "black--text" },
-        
+      { text: "SUPPLY NAME", value: "supply_full", class: "black--text" },
       { text: "UNIT", value: "unit", filterable: false, class: "black--text" },
       {
         text: "NET PRICE",
@@ -944,18 +937,6 @@ export default {
           this.suppnamelist = supp_name.data;
         });
     },
-
-    async supply_description() {
-      this.form.supply_description = null;
-      await axios
-        .get("/api/msupp/suppDesc", {
-          params: { supplier: this.form.supplier },
-        })
-        .then((supply_description) => {
-          this.supplydesclist = supply_description.data;
-        });
-    },
-
 
     getFormatDate(e, format) {
       const date = moment(e);
@@ -1161,6 +1142,7 @@ export default {
       this.form.status = row.status;
       this.form.category = row.category.id;
       this.form.supply_name = row.supply_name;
+      this.form.description = row.description;
       this.form.unit = row.unit;
       this.form.net_price = row.net_price;
       this.form.vat = row.vat;
