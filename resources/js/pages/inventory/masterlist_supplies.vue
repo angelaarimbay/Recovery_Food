@@ -274,6 +274,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supplier_full`]="{ item }"
+              >{{ item.supplier.supplier_name }} {{ item.supplier.description }}</template
+            >
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name }} {{ item.description }}</template
             >
@@ -817,7 +820,7 @@ export default {
       },
       {
         text: "SUPPLIER",
-        value: "supplier.supplier_name",
+        value: "supplier_full",
         filterable: false,
         class: "black--text",
       },

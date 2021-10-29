@@ -35,6 +35,19 @@ class InventoryExport2 implements WithHeadings, FromArray, ShouldAutoSize, WithS
         $sheet->mergeCells('D1:D2');
         $sheet->mergeCells('E1:F1');
         $sheet->mergeCells('G1:H1');
+        $sheet->mergeCells('I1:J1');
+        $sheet->mergeCells('K1:L1');
+        $sheet->mergeCells('M1:N1');
+        $sheet->mergeCells('O1:P1');
+        $sheet->mergeCells('Q1:Q2');
+        $sheet->mergeCells('R1:R2');
+        $sheet->mergeCells('S1:S2');
+        $sheet->mergeCells('T1:T2');
+        $sheet->mergeCells('U1:U2');
+        $sheet->mergeCells('V1:W1');
+        $sheet->mergeCells('X1:Y1');
+        $sheet->mergeCells('Z1:AA1');
+        $sheet->mergeCells('AB1:AC1');
         $sheet->getStyle(1)->getAlignment()->applyFromArray(
             array('horizontal' => 'center')
         );

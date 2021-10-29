@@ -742,6 +742,35 @@
                             lg="6"
                             md="6"
                             sm="6"
+                            >Order Frequency</v-col
+                          >
+                          <v-col
+                            class="py-1 px-2 text-right"
+                            cols="3"
+                            xl="3"
+                            lg="3"
+                            md="3"
+                            sm="3"
+                          ></v-col>
+                          <v-col
+                            class="py-1 px-2 text-right"
+                            cols="3"
+                            xl="3"
+                            lg="3"
+                            md="3"
+                            sm="3"
+                          >
+                            {{ currentdata.order_frequency }}
+                          </v-col>
+                        </v-row>
+                        <v-row>
+                          <v-col
+                            class="py-1 px-2 text-uppercase font-weight-bold"
+                            cols="6"
+                            xl="6"
+                            lg="6"
+                            md="6"
+                            sm="6"
                             >Trigger Point</v-col
                           >
                           <v-col

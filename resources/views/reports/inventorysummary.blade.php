@@ -48,19 +48,40 @@
             <!-- Header -->
             <tr>
                 <th><h6>SUPPLIES CATEGORY</h6></th>
-                <th><h6>INCOMING SUPPLIES</h6></th>
-                <th><h6>OUTGOING SUPPLIES</h6></th>
+                <th><h6>BEGINNING INVENTORY</h6></th>
+                <th><h6>PURCHASES</h6></th>
+                <th><h6>TOTAL STOCKS</h6></th>
+                <th><h6>OUTGOING</h6></th>
                 <th><h6>STOCKS ON HAND</h6></th>
+                <th><h6>ENDING INVENTORY</h6></th>
+                <th><h6>VARIANCE</h6></th>
+                <th><h6>FLUCTUATION</h6></th>
             </tr>
             <!-- Rows -->
             @foreach ($data as $items)  
             <tr>
-                <td  style="width: auto"> {{ $items['category'] }} </td>
-                <td  style="width: auto"> {{ $items['incoming'] }} </td>
-                <td  style="width: auto"> {{ $items['outgoing'] }} </td>
-                <td  style="width: auto"> {{ $items['stocks'] }} </td>
+                <td style="width: auto"> {{ $items['category'] }} </td>
+                <td style="width: auto"> {{ $items['begining'] }} </td>
+                <td style="width: auto"> {{ $items['incoming'] }} </td>
+                <td style="width: auto"> {{ $items['total'] }} </td>
+                <td style="width: auto"> {{ $items['outgoing'] }} </td>
+                <td style="width: auto"> {{ $items['stocks'] }} </td>
+                <td style="width: auto"> {{ $items['ending'] }} </td>
+                <td style="width: auto"> {{ $items['variance'] }} </td>
+                <td style="width: auto"> {{ $items['fluctuation'] }} </td>
             </tr>  
             @endforeach
+            <tr>
+                <th><h5>GRAND TOTALS</h5></th>
+                <td><h5>{{ $items['begining_orig'] }}</h5></td>
+                <td><h5></h5></td>
+                <td><h5></h5></td>
+                <td><h5></h5></td>
+                <td><h5></h5></td>
+                <td><h5></h5></td>
+                <td><h5></h5></td>
+                <td><h5></h5></td>
+            </tr>
         </table>
         <!-- Page Number --> 
         <htmlpagefooter name="page-footer">

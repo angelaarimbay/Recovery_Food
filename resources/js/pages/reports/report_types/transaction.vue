@@ -30,7 +30,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="red accent-4"
               class="mx-1"
               v-on="data.on"
               @click="get('pdf')"
@@ -43,7 +44,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="green darken-4"
               class="mx-1"
               v-on="data.on"
               @click="get('excel')"
@@ -56,7 +58,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="blue-grey darken-1"
               class="mx-1"
               @click="get('print')"
               v-on="data.on"
@@ -575,9 +578,9 @@ export default {
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
                 active: true,
-                iconText: "alert",
-                iconColor: "warning",
-                message: "Printing, Please wait.",
+                iconText: "information",
+                iconColor: "primary",
+                message: "Printing... Please wait.",
               };
               setTimeout(function () {
                 document.getElementById("print7").contentWindow.print();

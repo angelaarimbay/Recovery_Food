@@ -61,6 +61,7 @@
                 <th rowspan="2"><h6>ORDER POINT</h6></th>
                 <th rowspan="2"><h6>MINIMUM ORDER QTY</h6></th>
                 <th rowspan="2"><h6>ORDER QTY</h6></th>
+                <th rowspan="2"><h6>ORDER FREQUENCY</h6></th>
                 <th rowspan="2"><h6>TRIGGER POINT</h6></th>
                 <th colspan="2"><h6>ENDING INVENTORY</h6></th>
                 <th colspan="2"><h6>CONSUMPTION</h6></th>
@@ -112,6 +113,7 @@
                 <td style="width: auto"> {{ $items['orderpoint'] }} </td>
                 <td style="width: auto"> {{ $items['minimum_order_quantity'] }} </td>
                 <td style="width: auto"> {{ $items['ordr'] }} </td>
+                <td style="width: auto"> {{ $items['order_frequency'] }} </td>
                 <td style="width: auto"> {{ $items['triggerpoint'] }} </td>
                 <td style="width: auto"> {{ $items['ending_q'] }} </td>
                 <td style="width: auto"> {{ $items['ending_a'] }} </td>

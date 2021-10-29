@@ -889,9 +889,9 @@ export default {
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
-            iconText: "emoticon-sad",
-            iconColor: "danger",
-            message: "Insufficient quantity in incoming supplies",
+            iconText: "alert-circle",
+            iconColor: "error",
+            message: "Insufficient stocks",
           };
           return;
         }

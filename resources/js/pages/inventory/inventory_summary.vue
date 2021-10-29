@@ -207,7 +207,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "TOTAL INVENTORY",
+        text: "TOTAL STOCKS",
         value: "total",
         align: "right",
         filterable: false,

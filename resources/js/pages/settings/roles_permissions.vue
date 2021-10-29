@@ -453,7 +453,7 @@
           >
             User Roles
           </v-tab>
-          <v-tab
+          <!-- <v-tab
             class="
               text-body-2
               text-xl-subtitle-1
@@ -465,7 +465,7 @@
             style="text-transform: none"
           >
             Dev
-          </v-tab>
+          </v-tab> -->
         </v-tabs>
 
         <v-tabs-items v-model="tab">
@@ -705,7 +705,7 @@
           </v-tab-item>
 
           <!-- Dev-->
-          <v-tab-item  >
+          <v-tab-item class="d-none">
             <v-card-text>
               <v-text-field
                 class=""
