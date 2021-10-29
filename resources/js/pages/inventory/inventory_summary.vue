@@ -122,19 +122,37 @@
               rounded
             ></v-progress-linear>
 
-                <template slot="body.append">
-                    <tr class="green--text"  >
-                        <th class="caption" >Totals</th>
-                        <th class="caption" style="text-align: right">{{ sumField('begining_orig')}} </th>
-                        <th class="caption" style="text-align: right">{{ sumField('incoming_orig')}}  </th>
-                        <th class="caption" style="text-align: right">{{ sumField('total_orig')}}  </th>
-                        <th class="caption" style="text-align: right">{{ sumField('outgoing_orig')}}  </th>
-                        <th class="caption" style="text-align: right">{{ sumField('stocks_orig')}}  </th>
-                        <th class="caption" style="text-align: right">{{ sumField('ending_orig')}}  </th>
-                        <th class="caption" style="text-align: right">{{ sumField('variance_orig')}}  </th>
-                        <th class="caption" style="text-align: right">{{ sumField('fluctuation_orig')}}  </th>
-                    </tr>
-                </template>
+            <template slot="body.append">
+              <tr class="hidden-xs-only">
+                <th class="text-uppercase">
+                  Grand Totals
+                </th>
+                <td style="text-align: right; font-size: 15px">
+                  {{ sumField("begining_orig") }}
+                </td>
+                <td style="text-align: right; font-size: 15px">
+                  {{ sumField("incoming_orig") }}
+                </td>
+                <td style="text-align: right; font-size: 15px">
+                  {{ sumField("total_orig") }}
+                </td>
+                <td style="text-align: right; font-size: 15px">
+                  {{ sumField("outgoing_orig") }}
+                </td>
+                <td style="text-align: right; font-size: 15px">
+                  {{ sumField("stocks_orig") }}
+                </td>
+                <td style="text-align: right; font-size: 15px">
+                  {{ sumField("ending_orig") }}
+                </td>
+                <td style="text-align: right; font-size: 15px">
+                  {{ sumField("variance_orig") }}
+                </td>
+                <td style="text-align: right; font-size: 15px">
+                  {{ sumField("fluctuation_orig") }}
+                </td>
+              </tr>
+            </template>
           </v-data-table>
         </v-container>
       </v-container>
@@ -211,7 +229,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ENDING",
+        text: "ENDING INVENTORY",
         value: "ending",
         align: "right",
         filterable: false,
@@ -238,16 +256,17 @@ export default {
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.list();
+      this.get();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
   },
 
   methods: {
-     sumField(key) { 
-       var num = 0;
-       num =  this.table.reduce((a, b) =>  a + (  b[key]  || 0), 0)
-        return  numeral(num).format('0,0.00') ;
+    sumField(key) {
+      var num = 0;
+      num = this.table.reduce((a, b) => a + (b[key] || 0), 0);
+      return numeral(num).format("0,0.00");
     },
     list() {
       for (var key in moment.months()) {

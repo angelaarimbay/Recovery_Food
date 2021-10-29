@@ -330,6 +330,10 @@
               :items="table2"
               hide-default-footer
             >
+              <template v-slot:[`item.product_full`]="{ item }"
+                >{{ item.product_name.product_name }}
+                {{ item.product_name.description }}</template
+              >
               <template v-slot:[`item.created_at`]="{ item }">
                 {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
               >
@@ -353,15 +357,6 @@
               @click="closeViewDialog"
             >
               Close
-            </v-btn>
-            <v-btn
-              color="#00794b"
-              style="text-transform: none"
-              :small="$vuetify.breakpoint.smAndDown"
-              depressed
-              dark
-            >
-              Print
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -453,13 +448,13 @@ export default {
     headers2: [
       {
         text: "PRODUCT(S)",
-        value: "product_name.product_name",
+        value: "product_full",
         filterable: false,
         class: "black--text",
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.format_unit_price",
+        value: "product_name.price",
         align: "right",
         filterable: false,
         class: "black--text",

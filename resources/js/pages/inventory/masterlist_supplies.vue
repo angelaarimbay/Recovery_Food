@@ -482,7 +482,7 @@
                     <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-select
                         :items="unit"
-                        :rules="formRules"
+                        :rules="formRulesUnit"
                         v-model="form.unit"
                         outlined
                         dense
@@ -711,6 +711,8 @@ export default {
     unit: [
       "pack",
       "bot",
+      "can",
+      "bar",
       "kg",
       "gal",
       "tin",
@@ -748,6 +750,8 @@ export default {
           v
         ) || "This field must have a valid value",
     ],
+    // Form Rules
+    formRulesUnit: [(v) => (!!v && v.length >= 2) || "This is required"],
     formRulesDesc: [
       (v) =>
         /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(

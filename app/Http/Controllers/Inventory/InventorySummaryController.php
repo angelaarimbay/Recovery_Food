@@ -23,7 +23,7 @@ class InventorySummaryController extends Controller
         $data = tbl_suppcat::all();
         // Laravel default format of date and time, use other format will handle exemptions
   
-           $date11 =  date("Y-m-d H:i:s",   strtotime("-1 month", strtotime( $request->year."-".$request->month."-01". ' 00:00:01'))) ;
+        $date11 =  date("Y-m-d H:i:s",   strtotime("-1 month", strtotime( $request->year."-".$request->month."-01". ' 00:00:01'))) ;
         $date22 = cal_days_in_month(CAL_GREGORIAN, ($request->month-1), $request->year);
         $date22 = date("Y-m-d H:i:s",   strtotime("-1 month", strtotime($request->year."-".$request->month."-".$date22.  ' 23:59:59')));
 

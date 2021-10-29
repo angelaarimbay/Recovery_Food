@@ -22,16 +22,17 @@ class OutgoingSuppliesController extends Controller
     public function save(Request $data)
     {
         $table = tbl_outgoingsupp::where("supply_name", "!=", null);
-        $date1 = date("Y-m-d h:i:s", strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
+        $date1 = date("Y-m-d H:i:s", strtotime(date("m")."/01/".date("Y"). ' 00:00:01'));
         $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
         $date2 = date("Y-m-d h:i:s", strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
 
         $get_amount = tbl_incomingsupp::where("supply_name", $data->supply_name['id'])
-        ->whereBetween('incoming_date', [$date1,$date2]);
-        $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name", $data->supply_name['id'])
+        ->whereBetween('incoming_date', [$date1,$date2]) ;
+        $get_quantity = tbl_incomingsupp::where("supply_name", $data->supply_name['id'])
         ->whereBetween('incoming_date', [$date1,$date2]);
       
-        $get_wov = ( $get_amount->sum('amount')?$get_amount->sum('amount') / $get_quantity->sum('quantity'):0);
+        $get_quantity->sum('quantity');
+        $get_wov = ($get_amount->sum('amount')?$get_amount->sum('amount') / $get_quantity->sum('quantity'):0);
 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count()>0) {
@@ -104,7 +105,7 @@ class OutgoingSuppliesController extends Controller
 
     public function branchName()
     {
-        return tbl_branches::select(["branch_name","id"])->where('type',0)->where("status", 1)->get();
+        return tbl_branches::select(["branch_name","id"])->where('type', 0)->where("status", 1)->get();
     }
 
     public function validateQuantity(Request $request)

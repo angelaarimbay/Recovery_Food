@@ -15,7 +15,10 @@
         background-color:aliceblue;
         color: black;
     } 
-    
+    @page {
+        header: page-header;
+        footer: page-footer;
+    }
     .body{
         margin: 0;
         padding: 0;
@@ -61,8 +64,10 @@
             </tr>  
             @endforeach
         </table>
-        <!-- Page Number -->
-        <p style="bottom: 0%; position: fixed">Page {PAGENO} of {nb}</p>
+        <!-- Page Number --> 
+        <htmlpagefooter name="page-footer">
+        <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>      
+        </htmlpagefooter>
     </body>
 </iframe>
 </html>

@@ -158,6 +158,7 @@ export default {
                 params: { category: this.category, type: type },
               })
               .then((response) => {
+                // console.log(response.data) 
                 let blob = new Blob([response.data], {
                   type: "application/excel",
                 });

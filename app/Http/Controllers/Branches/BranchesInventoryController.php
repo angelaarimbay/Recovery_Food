@@ -10,6 +10,7 @@ use App\Models\tbl_suppcat;
 use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
 use App\Models\tbl_branches;
+use App\Models\tbl_pos;
 use App\Models\tbl_suppliesinventory;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -86,8 +87,8 @@ class BranchesInventoryController extends Controller
                 $temp['sub_category'] = $value->sub_category_details;
                 $temp['product_name'] = $value->product_name_details;
                 $temp['requesting_branch'] = $value->requesting_branch_details;
-                $temp['outgoing_amount'] = number_format($value->outgoing_amount, 2);
-                $temp['quantity'] = $value->quantity;
+                $temp['outgoing_amount'] = number_format($value->outgoing_amount - tbl_pos::where(["product_name"=>$value->product_name,"branch"=>$t->branch])->get()->sum('sub_total'), 2);
+                $temp['quantity'] = $value->quantity - tbl_pos::where(["product_name"=>$value->product_name,"branch"=>$t->branch])->get()->sum('quantity');
                 array_push($return, $temp);
             }
             //return

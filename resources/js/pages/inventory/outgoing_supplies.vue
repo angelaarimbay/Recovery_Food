@@ -901,6 +901,7 @@ export default {
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
+              console.log(result.data)
               //if the value is true then save to database
               this.snackbar = {
                 active: true,

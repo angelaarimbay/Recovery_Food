@@ -56,7 +56,7 @@
 
         <p style="font-size: 8px; font-family: 'Courier New', monospace; margin-top: 15px; margin-bottom: 0px"> {{ $cashier_name_details }} </p>
         <hr class="divider" />
-        <p class="header"> {{ date("M-d-Y h:i A") }} </p>
+        <p class="header"> {{ date("M-d-Y h:i A", strtotime($created_at)) }} </p>
         <hr class="divider" />
             
         @foreach($data as $items)

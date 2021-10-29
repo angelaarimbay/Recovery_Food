@@ -21,9 +21,10 @@ use Illuminate\Support\Facades\DB;
 use niklasravnsborg\LaravelPdf\Facades\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InventoryExport;
+use App\Exports\InventoryExport2;
 
 class ReportsController extends Controller
-{    
+{
     public function __construct()
     {
         $this->middleware("auth");
@@ -36,6 +37,8 @@ class ReportsController extends Controller
         $data = tbl_masterlistsupp::with("category")
                                 ->where("category", $t->category)
                                 ->selectRaw("*, @row:=@row+1 as row ")->get();
+
+ 
     
         switch ($t->type) {
         case 'pdf':
@@ -55,11 +58,11 @@ class ReportsController extends Controller
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
                 $temp['supply_name'] = $value->supply_name . " " . $value->description;
                 $temp['unit'] = $value->unit;
-                $temp['format_net_price'] = $value->format_net_price;
-                $temp['format_with_vat'] = $value->format_with_vat;
+                $temp['format_net_price'] = $value->net_price;
+                $temp['format_with_vat'] = $value->with_vat;
                 $temp['vat'] = $value->vat;
-                $temp['format_without_vat'] = $value->format_without_vat;
-                $temp['exp_date'] = date("Y-m-d", strtotime($value->exp_date));
+                $temp['format_without_vat'] = $value->without_vat;
+                $temp['exp_date'] = ($value->exp_date? date("Y-m-d", strtotime($value->exp_date)):null);
                 array_push($dataitems, $temp);
             }
             return Excel::download(new InventoryExport($dataitems, $columns), "Masterlist Supplies Report.xlsx");
@@ -82,7 +85,7 @@ class ReportsController extends Controller
     {
         DB::statement(DB::raw("set @row:=0"));
         $data = tbl_incomingsupp::where("category", $t->category)
-                                    ->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+                                    ->whereBetween("incoming_date", [$t->from,  $t->to])
                                     ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
@@ -95,7 +98,7 @@ class ReportsController extends Controller
         break;
         case 'excel':
             //columns
-            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','QTY','AMT','DATE'];
+            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','QTY','TOTAL AMT','DATE'];
             //data
                 $dataitems = [];
             foreach ($data as $key => $value) {
@@ -103,11 +106,11 @@ class ReportsController extends Controller
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
                 $temp['supply_name'] = $value->supply_name_details['supply_name'] . " " . $value->supply_name_details['description'];
                 $temp['unit'] = $value->supply_name_details['unit'];
-                $temp['net_price'] = $value->supply_name_details['format_net_price'];
-                $temp['with_vat'] = $value->supply_name_details['format_with_vat'];
+                $temp['net_price'] = $value->supply_name_details['net_price'];
+                $temp['with_vat'] = $value->supply_name_details['with_vat'];
                 $temp['quantity'] = $value->quantity;
-                $temp['total_amount'] = $value->format_amount;
-                $temp['incoming_date'] = date("Y-m-d", strtotime($value->incoming_date));
+                $temp['total_amount'] = $value->amount;
+                $temp['incoming_date'] = ($value->incoming_date?  date("Y-m-d", strtotime($value->incoming_date)):null);
                 array_push($dataitems, $temp);
             }
             return Excel::download(new InventoryExport($dataitems, $columns), "Incoming Supplies Report.xlsx");
@@ -128,7 +131,7 @@ class ReportsController extends Controller
         DB::statement(DB::raw("set @row:=0"));
         $data = tbl_outgoingsupp::where("requesting_branch", $t->branch)
                                     ->where("category", $t->category)
-                                    ->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+                                    ->whereBetween("outgoing_date", [ $t->from, $t->to ])
                                     ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
@@ -141,7 +144,7 @@ class ReportsController extends Controller
         break;
         case 'excel':
             //columns
-            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','QTY','AMT','DATE'];
+            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','QTY','TOTAL AMT','DATE'];
             //data
             $dataitems = [];
             foreach ($data as $key => $value) {
@@ -149,11 +152,11 @@ class ReportsController extends Controller
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
                 $temp['supply_name'] = $value->supply_name_details['supply_name'] . " " . $value->supply_name_details['description'];
                 $temp['unit'] = $value->supply_name_details['unit'];
-                $temp['net_price'] = $value->supply_name_details['format_net_price'];
-                $temp['with_vat'] = $value->supply_name_details['format_with_vat'];
+                $temp['net_price'] = $value->supply_name_details['net_price'];
+                $temp['with_vat'] = $value->supply_name_details['with_vat'];
                 $temp['quantity'] = $value->quantity;
-                $temp['outgoing_amount'] = $value->outgoing_amount;
-                $temp['outgoing_date'] = date("Y-m-d", strtotime($value->outgoing_date));
+                $temp['amount'] =  number_format($value->with_vat_price * $value->quantity, 2) ;
+                $temp['outgoing_date'] = ($value->outgoing_date?  date("Y-m-d", strtotime($value->outgoing_date)):null);
                 array_push($dataitems, $temp);
             }
             return Excel::download(new InventoryExport($dataitems, $columns), "Outgoing Supplies Report.xlsx");
@@ -170,35 +173,179 @@ class ReportsController extends Controller
     // Main Inventory Report - OK
     public function MainInventoryReport(Request $t)
     {
-        DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_incomingsupp::where("category", $t->category)
-                                    ->selectRaw("*, @row:=@row+1 as row ")->get();
+        $data = tbl_masterlistsupp::where("category", $t->category)->get();
 
+        $date11 =  date("Y-m-d H:i:s", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-01". ' 00:00:00'))) ;
+        $date22 = cal_days_in_month(CAL_GREGORIAN, (date("m")-1), date("Y"));
+        $date22 = date("Y-m-d H:i:s", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-".$date22.  ' 23:59:59')));
+    
+
+        $date1 =  date("Y-m-d H:i:s", strtotime(date("Y")."-".date("m")."-01". ' 00:00:00'));
+        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+        $date2 = date("Y-m-d H:i:s", strtotime(date("Y").'-'.date("m").'-'.$date2.' 23:59:59'));
+        
+        
+        $return = [];
+        $row = 1;
+        foreach ($data as $key => $value) {
+            $temp=[];
+            $temp['row'] = $row++ ;
+            $temp['category'] =  tbl_suppcat::where("id", $value->category)->first()->supply_cat_name ;
+            $temp['supply_name'] =  $value->supply_name ;
+            $temp['description'] =  $value->description ;
+            $temp['unit'] =  $value->unit ;
+            $temp['net_price'] =  $value->net_price ;
+            $temp['lead_time'] =  $value->lead_time;
+            $temp['minimum_order_quantity'] =  $value->minimum_order_quantity ;
+            $temp['order_frequency'] =  $value->order_frequency ;
+            
+            $incoming = tbl_incomingsupp::where('supply_name', $value->id) ->whereBetween('incoming_date', [$date1,$date2]);
+            $outgoing = tbl_outgoingsupp::where('supply_name', $value->id) ->whereBetween('outgoing_date', [$date1,$date2]);
+
+            $incoming_past = tbl_incomingsupp::where('supply_name', $value->id) ->whereBetween('incoming_date', [$date11,$date22]);
+            $outgoing_past = tbl_outgoingsupp::where('supply_name', $value->id) ->whereBetween('outgoing_date', [$date11,$date22]);
+
+            $incoming_and_past = tbl_incomingsupp::where('supply_name', $value->id) ->whereBetween('incoming_date', [$date11,$date2]);
+            $outgoing_and_past = tbl_outgoingsupp::where('supply_name', $value->id) ->whereBetween('outgoing_date', [$date11,$date2]);
+
+            //begining (total of last month)
+            $a = clone $incoming_past;
+            $temp['begining_q'] = $a->sum('quantity');
+            $a = clone $incoming_past;
+            $temp['begining_a'] = number_format($a->sum('amount'), 2);
+
+            //incming (total of current month)
+            $a = clone $incoming;
+            $temp['incoming_q'] = $a->sum('quantity');
+            $a = clone $incoming;
+            $temp['incoming_a'] = number_format($a->sum('amount'), 2);
+
+            //total (total of last month + current month)
+            $a = clone $incoming_and_past;
+            $temp['total_q'] = $temp['begining_q'] + $temp['incoming_q'] ;
+            $temp['total_a'] =  number_format($a->sum('amount'), 2) ;
+    
+            //outgoing (total of current month)
+            $b = clone $outgoing;
+            $temp['outgoing_q'] = $b->sum('quantity');
+            $b = clone $outgoing;
+            $temp['outgoing_a'] = number_format($b->sum('amount'), 2);
+            
+            //onhand (total of last month + current month) - outgoing
+            $c = clone $incoming_and_past;
+            $d = clone $outgoing;
+            $temp['onhand_q'] = $c->sum('quantity') - $d->sum('quantity') ;
+            $c_a = clone $incoming_and_past;
+            $cc_a = clone $incoming_and_past;
+            if ($c_a->sum('quantity') > 0) {
+                $temp['onhand_a'] =     number_format(($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q']), 2);
+            } else {
+                $temp['onhand_a'] = 0;
+            }
+    
+            //average (total of last month + current month / quantity of last month + current month) / (current month quantity / date today)
+            $a = clone $outgoing;
+            $temp['average_q'] =   number_format($a->sum('quantity') / date('d'), 2);
+            $c_a = clone $incoming_and_past;
+            $cc_a = clone $incoming_and_past;
+            if ($c_a->sum('quantity') > 0) {
+                $temp['average_a'] =     number_format(($c_a->sum('amount') / $cc_a->sum('quantity') *  $temp['average_q']), 2);
+            } else {
+                $temp['average_a'] = 0;
+            }
+    
+            //order poin  (lead time of item * total quantity / day today) + outgoing quantity / day today
+            $a = clone $outgoing;
+            $temp['orderpoint'] =  number_format(($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2), 2) ;
+
+            //order point  (lead time of item * total quantity / day today) + outgoing quantity / day today
+            $a = clone $outgoing;
+            $orderqty = $value->order_frequency * ($a->sum('quantity')/ date('d'));
+            if ($orderqty < $value->minimum_order_quantity) {
+                $temp['ordr'] = number_format($value->minimum_order_quantity, 2) ;
+            } else {
+                $temp['ordr'] = number_format($orderqty, 2);
+            }
+
+            //trigger point  (lead time of item * total quantity / day today) + outgoing quantity / day today
+            $a = clone $incoming_and_past;
+            $b = clone $outgoing;
+            if (($a->sum('quantity') - $b->sum('quantity')) <  $value->lead_time * ($b->sum('quantity') / date('d'))) {
+                $temp['triggerpoint'] = "Order";
+            } else {
+                $temp['triggerpoint'] = "Manage";
+            }
+            
+            $a = clone $incoming_and_past;
+            $b = clone $outgoing;
+            $aa = clone $incoming;
+            $temp['ending_q'] =  ($a->sum('quantity') - $b->sum('quantity'));
+
+            if ($temp['begining_q'] > 0) {
+                $temp['ending_a'] =  number_format($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+            } else {
+                $temp['ending_a'] = 0;
+            }
+
+            $a = clone $incoming_and_past;
+            $temp['consumption_q'] =  $a->sum('quantity') - $temp['ending_q'];
+
+            if ($temp['begining_q'] > 0) {
+                $temp['consumption_a'] =  number_format($temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+            } else {
+                $temp['consumption_a'] = 0;
+            }
+        
+            $a = clone $incoming_and_past;
+            $b = clone $outgoing;
+            $temp['ideal_q'] =  $a->sum('quantity') - $b->sum('quantity')  ;
+            $aa = clone $incoming;
+            if ($temp['ideal_q'] > 0) {
+                $temp['ideal_a'] =  number_format($temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+            } else {
+                $temp['ideal_a'] = 0;
+            }
+
+            $temp['variance_q'] = $temp['ending_q'] -  $temp['ideal_q'];
+            $aa = clone $incoming;
+            if ($temp['variance_q']  > 0) {
+                $temp['variance_a'] =  number_format($temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'))), 2);
+            } else {
+                $temp['variance_a'] = 0;
+            }
+            array_push($return, $temp);
+        }
         switch ($t->type) {
+
         case 'pdf':
-            $content['data'] = $data;
-            $pdf = PDF::loadView('reports.maininventory', $content, [], [
-                'format' => 'A4-L'
+        $content['data'] = $return;
+                    $pdf = PDF::loadView('reports.maininventory', $content, [], [
+                        'format' => 'A4-L'
               ]);
-            return $pdf->stream();
+        return $pdf->stream();
         break;
         case 'excel':
-            //columns
-            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','STOCKS ON HAND','TOTAL AMT'];
-            //data
-                $dataitems = [];
-             foreach ($data as $key => $value) {
+            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','BEGINNING INVENTORY','',
+                        'INCOMING SUPPLIES','','TOTAL STOCKS','OUTGOING SUPPLIES','STOCKS ON HAND',
+                        'AVERAGE DAILY USAGE','LEAD TIME','ORDER POINT','MINIMUM ORDER QTY',
+                        'ORDER QTY','TRIGGER POINT','ENDING INVENTORY','CONSUMPTION','IDEAL INVENTORY',
+                        'VARIANCE'];
+       
+                $dataitems = [["","","","","QTY","VALUE","QTY","VALUE"]];
+             foreach ($return as $key => $value) {
                  $temp = [];
-                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
-                 $temp['supply_name'] = $value->supply_name_details['supply_name'] . " " . $value->supply_name_details['description'];
-                 $temp['unit'] = $value->supply_name_details['unit'];
-                 $temp['net_price'] = $value->supply_name_details['format_net_price'];
-                 $temp['quantity_difference'] = $value->quantity_difference;
-                 $temp['quantity_amount'] = number_format($value->quantity_amount, 2, ".", ",");
+                 $temp['category'] = $value['category'] ;
+                 $temp['supply_name'] = $value['supply_name'] . " " . $value['description'];
+                 $temp['unit'] = $value['unit'];
+                 $temp['net_price'] =  $value['net_price']??0;
+                 $temp['begining_q'] = $value['begining_q']??0;
+                 $temp['begining_a'] =  $value['begining_a']??0;
                  array_push($dataitems, $temp);
              }
-            return   Excel::download(new InventoryExport($dataitems, $columns), "Main Inventory Report.xlsx");
-        break;
+           return   Excel::download(new InventoryExport2($dataitems, $columns), "Main Inventory Report.xlsx");
+     
+  
+              break;
         case 'print':
 
         break;
@@ -212,14 +359,81 @@ class ReportsController extends Controller
     public function InventorySummaryReport(Request $t)
     {
         $data_temp = tbl_suppcat::all();
+        // Laravel default format of date and time, use other format will handle exemptions
+  
+        $date11 = date("Y-m-d H:i:s", strtotime("-1 month", strtotime($t->year."-".$t->month."-01". ' 00:00:01'))) ;
+        $date22 = cal_days_in_month(CAL_GREGORIAN, ($t->month-1), $t->year);
+        $date22 = date("Y-m-d H:i:s", strtotime("-1 month", strtotime($t->year."-".$t->month."-".$date22.  ' 23:59:59')));
+
+
+        $date1 = date("Y-m-d H:i:s", strtotime($t->year."-".$t->month."-01". ' 00:00:01'));
+        $date2 = cal_days_in_month(CAL_GREGORIAN, $t->month, $t->year);
+        $date2 = date("Y-m-d H:i:s", strtotime($t->year.'-'.$t->month.'-'.$date2.' 23:59:59'));
+         
         $data = [];
         foreach ($data_temp as $key => $value) {
             $temp = [];
             $temp['category'] = $value->supply_cat_name;
-            $temp['incoming'] =  tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity") ;
-            $temp['outgoing'] = tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity") ;
-            $temp['stocks'] = tbl_incomingsupp::whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity")
-                                    - tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])->where("category", $value->id)->get()->sum("quantity");
+
+            $temp['begining_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") ;
+            $temp['begining'] =   number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount"), 2);
+            // Get incoming based on from, to and per category, then sum amounts
+            $temp['incoming_orig'] =    tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") ;
+            $temp['incoming'] =   number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount"), 2);
+            // beg + in
+            $temp['total_orig'] =  tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount")  ;
+            $temp['total'] =      number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount"), 2) ;
+            // Get outgoing based on from, to and per category, then sum outgoing_amount based on masterlist net
+            $temp['outgoing_orig'] =  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount");
+            $temp['outgoing'] =   number_format(tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount"), 2);
+            // stocks = total - outgoing
+            $temp['stocks_orig'] =   (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount")) -tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount") ;
+            $temp['stocks'] =    number_format((tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount")) -tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount"), 2);
+            try {
+                $temp['ending'] =   number_format(
+                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date2])->get()->sum("quantity") -tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity")) *
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity")),
+                    2
+                );
+            } catch (\Throwable $th) {
+                $temp['ending'] =   number_format(0, 2);
+            }
+            try {
+                $temp['ending_orig'] =
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date2])->get()->sum("quantity") -tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity")) *
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity")) ;
+            } catch (\Throwable $th) {
+                $temp['ending_orig'] =  0 ;
+            }
+            try {
+                $temp['variance'] = number_format($temp['ending'] -    (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity") -tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("quantity")) *
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity"))(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("amount")
+                -  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount")), 2);
+            } catch (\Throwable $th) {
+                $temp['variance'] =   number_format(0, 2);
+            }
+            try {
+                $temp['variance_orig'] =  $temp['ending'] -    (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity") -tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("quantity")) *
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity"))(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("amount")
+                -  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount"));
+            } catch (\Throwable $th) {
+                $temp['variance_orig'] =    0 ;
+            }
+            try {
+                $temp['fluctuation'] =  number_format($temp['ending'] -    (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity") -tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("quantity")) *
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity"))(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("amount")
+                -  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount")), 2);
+            } catch (\Throwable $th) {
+                $temp['fluctuation'] =   number_format(0, 2);
+            }
+            try {
+                $temp['fluctuation_orig'] =  $temp['ending'] -    (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity") -tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("quantity")) *
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity"))(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("amount")
+                -  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount"));
+            } catch (\Throwable $th) {
+                $temp['fluctuation_orig'] =    0 ;
+            }
+      
             array_push($data, $temp);
         }
         switch ($t->type) {
@@ -373,7 +587,7 @@ class ReportsController extends Controller
             ->where('branch', auth()->user()->branch)
             ->where('cashier', auth()->user()->id)
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-            ->orderBy('created_at',"desc") ->groupby(["branch","created_at","reference_no"])
+            ->orderBy('created_at', "desc") ->groupby(["branch","created_at","reference_no"])
              ;
         } else {
             $table = tbl_pos::with(["branch"])
@@ -411,14 +625,14 @@ class ReportsController extends Controller
     }
 
     public function getSPInfo(Request $t)
-    { 
+    {
         return  tbl_pos::with(["branch",'product_name','cashier'])->where("reference_no", $t->reference_no)->get();
     }
 
     public function Receipt(Request $t)
     {
         if ($t->reference_no) {
-             $data = tbl_pos::where("reference_no", $t->reference_no)->get();
+            $data = tbl_pos::where("reference_no", $t->reference_no)->get();
                
             $temp = [];
             $temp['data'] = $data;
@@ -426,6 +640,7 @@ class ReportsController extends Controller
             $temp['branch_location'] = $data[0]->branch_name_details->location;
             $temp['branch_number'] = $data[0]->branch_name_details->phone_number;
             $temp['reference_no'] = $data[0]->reference_no;
+            $temp['created_at'] = $data[0]->created_at;
             $temp['mode'] = $data[0]->mode;
             $temp['change'] = $data[0]->change;
             $temp['discount'] = $data[0]->discount;
@@ -437,8 +652,8 @@ class ReportsController extends Controller
             $data_cloned = clone $data;
             $temp['sub_total_discounted'] = $data_cloned->sum('sub_total_discounted');
             $temp['cashier_name_details'] = User::where("id", $data[0]->cashier)->first()->name;
-            $temp['vatable_sales'] =  $data_cloned->sum('sub_total') / tbl_vat::where("type","p")->first()->vat;
-            $temp['vat_amount'] =   $data_cloned->sum('sub_total') -  ($data_cloned->sum('sub_total') / tbl_vat::where("type","p")->first()->vat);
+            $temp['vatable_sales'] = $data_cloned->sum('sub_total') / tbl_vat::where("type", "p")->first()->vat;
+            $temp['vat_amount'] = $data_cloned->sum('sub_total') -  ($data_cloned->sum('sub_total') / tbl_vat::where("type", "p")->first()->vat);
         
           
             $data_cloned = clone $data;

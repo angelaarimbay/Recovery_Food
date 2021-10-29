@@ -269,7 +269,7 @@ export default {
                 from: this.outgoing_from,
                 to: this.outgoing_to,
               },
-            }).then((response) => { 
+            }).then((response) => {  
               let blob = new Blob([response.data], { type: "application/pdf" });
            this.print =  window.URL.createObjectURL(blob);    
                 this.snackbar = {

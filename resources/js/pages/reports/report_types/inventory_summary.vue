@@ -68,77 +68,40 @@
         </v-tooltip></v-card-actions
       >
       <v-row no-gutters justify="center">
-        <!-- Date Picker -->
         <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
-            <v-menu
-              v-model="date1"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
+            <v-select
+              v-model="year"
+              item-text=""
+              item-value="id"
+              :items="ylist"
+              dense
+              label="Year"
+              @change="get"
+              hide-details
             >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="dateFrom"
-                  label="Date From"
-                  prepend-icon="mdi-calendar-range"
-                  readonly
-                  v-on="on"
-                  class="py-0"
-                  dense
-                  clearable
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateFrom"
-                @input="date1 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-              ></v-date-picker>
-            </v-menu>
+            </v-select>
           </v-card-actions>
         </v-col>
 
         <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
-            <v-menu
-              v-model="date2"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
+            <v-select
+              v-model="month"
+              item-text=""
+              item-value="id"
+              :items="mlist"
+              dense
+              label="Month"
+              @change="get"
+              hide-details
             >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="dateUntil"
-                  label="Date Until"
-                  prepend-icon="mdi-calendar-range"
-                  readonly
-                  v-on="on"
-                  class="py-0"
-                  dense
-                  clearable
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateUntil"
-                @input="date2 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-              ></v-date-picker>
-            </v-menu>
+            </v-select>
           </v-card-actions>
         </v-col>
       </v-row>
     </v-container>
-  <iframe id="print4" class="d-none" :src="print" frameborder="0"></iframe>
+    <iframe id="print4" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -147,7 +110,7 @@ import axios from "axios"; // Library for sending api request
 export default {
   data: () => ({
     dateFrom: null,
-    print: '',
+    print: "",
     dateUntil: null,
     date1: false,
     date2: false,
@@ -155,15 +118,38 @@ export default {
       active: false,
       message: "",
     },
+    year: new Date().getFullYear(),
+    month: new Date().toLocaleString("default", { month: "long" }),
+    mlist: [],
+    ylist: [],
   }),
+
+  created() {
+    this.list();
+  },
+
   methods: {
+    list() {
+      for (var key in moment.months()) {
+        this.mlist.push(moment.months()[key]);
+      }
+
+      var currentYear = new Date().getFullYear(),
+        years = [];
+      var startYear = new Date().getFullYear() - 3;
+      while (startYear <= currentYear) {
+        years.push(startYear++);
+      }
+      this.ylist = years;
+    },
+
     async get(type) {
-      if (this.dateFrom == null || this.dateUntil == null) {
+      if (this.year == null || this.month == null) {
         this.snackbar = {
           active: true,
           iconText: "alert",
           iconColor: "error",
-          message: "Error! Please select a date first.",
+          message: "Error! Please select a year and/or month first.",
         };
       } else {
         switch (type) {
@@ -172,7 +158,12 @@ export default {
               url: "/api/reports/inventorysummary/get",
               method: "GET",
               responseType: "blob",
-              params: { type: type, from: this.dateFrom, to: this.dateUntil },
+              params: {
+                type: type,
+                year: this.year,
+                month:
+                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
+              },
             }).then((response) => {
               // console.log(response.data);
               // return;
@@ -183,23 +174,29 @@ export default {
               link.click();
             });
             break;
-             case "print":
+          case "print":
             await axios({
               url: "/api/reports/inventorysummary/get",
               method: "GET",
               responseType: "blob",
-              params: { type: 'pdf', from: this.dateFrom, to: this.dateUntil },
-            }).then((response) => { 
+              params: {
+                type: "pdf",
+                year: this.year,
+                month:
+                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
+              },
+            }).then((response) => {
               let blob = new Blob([response.data], { type: "application/pdf" });
-               this.print =  window.URL.createObjectURL(blob);    
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert",
-                  iconColor: "warning",
-                  message: "Printing, Please wait.",
-                };
-              setTimeout(function(){  document.getElementById('print4').contentWindow.print() ;  }, 3000); 
-      
+              this.print = window.URL.createObjectURL(blob);
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "warning",
+                message: "Printing, Please wait.",
+              };
+              setTimeout(function () {
+                document.getElementById("print4").contentWindow.print();
+              }, 3000);
             });
             break;
           case "excel":
@@ -207,7 +204,13 @@ export default {
               .get("/api/reports/inventorysummary/get", {
                 method: "GET",
                 responseType: "arraybuffer",
-                params: { type: type, from: this.dateFrom, to: this.dateUntil },
+                params: {
+                  type: type,
+                  year: this.year,
+                  month:
+                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
+                    1,
+                },
               })
               .then((response) => {
                 let blob = new Blob([response.data], {

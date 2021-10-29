@@ -355,8 +355,15 @@
               :headers="headers2"
               :items="table2"
               hide-default-footer
-            >   <template v-slot:[`item.product_name.price`]="{ item }">
-                {{ getFormatCurrency(item.product_name.price, "0,0.00") }}</template
+            >
+              <template v-slot:[`item.product_full`]="{ item }"
+                >{{ item.product_name.product_name }}
+                {{ item.product_name.description }}</template
+              >
+              <template v-slot:[`item.product_name.price`]="{ item }">
+                {{
+                  getFormatCurrency(item.product_name.price, "0,0.00")
+                }}</template
               >
               <template v-slot:[`item.created_at`]="{ item }">
                 {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
@@ -397,8 +404,8 @@
         </v-card>
       </v-card>
     </v-dialog>
-  <iframe id="print6" class="d-none" :src="print" frameborder="0"></iframe>
- </v-container>
+    <iframe id="print6" class="d-none" :src="print" frameborder="0"></iframe>
+  </v-container>
 </template>
 <style>
 iframe:focus {
@@ -419,7 +426,7 @@ export default {
       active: false,
       message: "",
     },
-    print:'',
+    print: "",
     branch: "",
     search: "",
     reference_no: "",
@@ -487,7 +494,7 @@ export default {
     headers2: [
       {
         text: "PRODUCT(S)",
-        value: "product_name.product_name",
+        value: "product_full",
         filterable: false,
         class: "black--text",
       },
@@ -574,7 +581,7 @@ export default {
       const date = moment(e);
       return date.format(format);
     },
-      getFormatCurrency(e, format) {
+    getFormatCurrency(e, format) {
       const numbr = numeral(e);
       return numbr.format(format);
     },
@@ -643,23 +650,25 @@ export default {
                 branch: this.branch,
                 from: this.dateFromSP,
                 to: this.dateUntilSP,
-                type: 'pdf',
+                type: "pdf",
               },
             }).then((response) => {
               // console.log(response.data);
               // return;
               let blob = new Blob([response.data], { type: "application/pdf" });
-                this.print =  window.URL.createObjectURL(blob);    
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert",
-                  iconColor: "warning",
-                  message: "Printing, Please wait.",
-                };
-              setTimeout(function(){  document.getElementById('print6').contentWindow.print() ;  }, 3000); 
-             });
+              this.print = window.URL.createObjectURL(blob);
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "warning",
+                message: "Printing, Please wait.",
+              };
+              setTimeout(function () {
+                document.getElementById("print6").contentWindow.print();
+              }, 3000);
+            });
             break;
-                
+
           case "excel":
             await axios
               .get("/api/reports/sales/get", {
