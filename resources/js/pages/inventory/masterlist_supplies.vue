@@ -285,7 +285,7 @@
             >
             <template v-slot:[`item.status`]="{ item }">
               <!-- <small> Lead time: {{ item.lead_time }} /
-              Max order: {{ item.maximum_order_quantity }} /
+              Max order: {{ item.minimum_order_quantity }} /
               Frequency:  {{ item.order_frequency }}<br> </small> -->
 
               <v-chip
@@ -575,7 +575,7 @@
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
                         :rules="formRulesOthers"
-                        v-model="form.maximum_order_quantity"
+                        v-model="form.minimum_order_quantity"
                         outlined
                         clearable
                         dense
@@ -793,7 +793,7 @@ export default {
       vatable: null,
       lead_time: null,
       order_frequency: null,
-      maximum_order_quantity: null,
+      minimum_order_quantity: null,
     },
     temp_vat: null, //form.vat = this.
     vat: false,
@@ -1150,7 +1150,7 @@ export default {
       this.temp_vat = row.vat;
       this.form.lead_time = row.lead_time;
       this.form.order_frequency = row.order_frequency;
-      this.form.maximum_order_quantity = row.maximum_order_quantity;
+      this.form.minimum_order_quantity = row.minimum_order_quantity;
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;
