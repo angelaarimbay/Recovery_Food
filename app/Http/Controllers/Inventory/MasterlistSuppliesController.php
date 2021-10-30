@@ -38,7 +38,7 @@ class MasterlistSuppliesController extends Controller
                  "exp_date"=>$data->exp_date,
                  "lead_time"=>$data->lead_time,
                  "order_frequency"=>$data->order_frequency,
-                 "maximum_order_quantity"=>$data->maximum_order_quantity,
+                 "minimum_order_quantity"=>$data->minimum_order_quantity,
                 ]
             );
 
@@ -93,8 +93,7 @@ class MasterlistSuppliesController extends Controller
             $temp['net_price'] = $value->net_price;    
             $temp['lead_time'] = $value->lead_time;  
             $temp['order_frequency'] = $value->order_frequency;  
-            $temp['maximum_order_quantity'] = $value->maximum_order_quantity;   
-
+            $temp['minimum_order_quantity'] = $value->minimum_order_quantity;   
             $temp['without_vat_price'] = number_format($value->without_vat_price,2);   
             $temp['with_vat_price'] = number_format($value->with_vat_price,2);   
             array_push($return,$temp);

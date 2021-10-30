@@ -889,9 +889,9 @@ export default {
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
-            iconText: "emoticon-sad",
-            iconColor: "danger",
-            message: "Insufficient quantity in incoming supplies",
+            iconText: "alert-circle",
+            iconColor: "error",
+            message: "Insufficient stocks",
           };
           return;
         }
@@ -901,6 +901,7 @@ export default {
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
+              console.log(result.data)
               //if the value is true then save to database
               this.snackbar = {
                 active: true,

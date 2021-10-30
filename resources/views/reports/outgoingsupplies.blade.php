@@ -15,7 +15,10 @@
         background-color:aliceblue;
         color: black;
     } 
-    
+    @page {
+        header: page-header;
+        footer: page-footer;
+    }
     .body{
         margin: 0;
         padding: 0;
@@ -50,7 +53,7 @@
                 <th><h6>NET PRICE</h6></th>  
                 <th><h6>WITH VAT</h6></th>
                 <th><h6>QTY</h6></th>
-                <th><h6>AMT</h6></th>
+                <th><h6>TOTAL AMT</h6></th>
                 <th><h6>BRANCH</h6></th>
                 <th><h6>DATE</h6></th>
             </tr>
@@ -60,17 +63,19 @@
                 <td  style="width: auto"> {{ $items['category_details']['supply_cat_name'] }} </td>
                 <td  style="width: auto"> {{ $items['supply_name_details']['supply_name'] }} {{ $items['supply_name_details']['description'] }} </td>  
                 <td  style="width: auto"> {{ $items['supply_name_details']['unit'] }} </td>
-                <td  style="width: auto"> {{ $items['supply_name_details']['format_net_price'] }} </td>  
-                <td  style="width: auto"> {{ $items['supply_name_details']['format_with_vat'] }} </td>
+                <td  style="width: auto"> {{ number_format($items['supply_name_details']['net_price'],2) }} </td>  
+                <td  style="width: auto"> {{  number_format($items['supply_name_details']['with_vat'],2) }} </td>
                 <td  style="width: auto"> {{ $items['quantity'] }} </td>
-                <td  style="width: auto"> {{ $items['outgoing_amount']  }} </td>  
+                <td  style="width: auto"> {{  number_format($items['with_vat_price'] * $items['quantity'], 2)  }} </td>  
                 <td  style="width: auto"> {{ $items['requesting_branch_details']['branch_name'] }} </td> 
                 <td  style="width: auto"> {{ date("Y-m-d", strtotime($items['outgoing_date'])) }} </td> 
             </tr>  
             @endforeach
         </table>
-        <!-- Page Number -->
-        <p style="bottom: 0%; position: fixed">Page {PAGENO} of {nb}</p>
+        <!-- Page Number --> 
+        <htmlpagefooter name="page-footer">
+        <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>      
+        </htmlpagefooter>
     </body>
 </iframe>
 </html>

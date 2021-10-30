@@ -47,4 +47,5 @@ class tbl_pos extends Model
     {
         return User::where("id", $this->cashier)->first();
     }
+    
 }

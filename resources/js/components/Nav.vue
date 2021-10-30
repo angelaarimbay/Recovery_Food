@@ -39,6 +39,7 @@
               style="text-transform: none"
               large
               :small="$vuetify.breakpoint.smAndDown"
+              class="px-2"
             >
               <v-icon class="round">mdi-account</v-icon
               ><span>{{ user.first_name }}</span>
@@ -91,6 +92,7 @@
               style="text-transform: none"
               large
               :small="$vuetify.breakpoint.smAndDown"
+              class="px-2"
             >
               <v-icon class="round">mdi-account</v-icon><span></span
               ><span>{{ user.first_name }}</span>

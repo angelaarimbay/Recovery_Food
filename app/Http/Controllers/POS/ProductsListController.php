@@ -24,36 +24,35 @@ class ProductsListController extends Controller
 
     public function get(Request $t)
     {
-  
-          $table =  tbl_outgoingprod::with(["category","sub_category","product_name"])
+        $table =  tbl_outgoingprod::with(["category","sub_category","product_name"])
         ->whereHas("requesting_branch", function ($q) {
             $q->where("id", auth()->user()->branch);
         })->whereHas("product_name", function ($q1) use ($t) {
             $q1->where("product_name", "like", "%".$t->search."%");
-        })->selectRaw('    product_name, category, sub_category, sum(quantity) as quantity') 
+        })->selectRaw('    product_name, category, sub_category, sum(quantity) as quantity')
         ->groupBy(['category','sub_category','product_name'])
         ;
-
 
         $return = [];
         $row = 1;
         foreach ($table->get() as $key => $value) {
-            $temp = []; 
-            if ($value->quantity_diff != 0) { 
-                 array_push($return, $value);
+            $temp = [];
+            if ($value->quantity_diff != 0) {
+                array_push($return, $value);
             }
         }
         $return_data = [];
-        foreach ($return as $key => $value) { 
+        foreach ($return as $key => $value) {
             $data = [];
-            $data['row'] = $row++; 
-            $data['category'] = tbl_prodcat::where("id",$value->category)->first(); 
-            $data['outgoing_amount'] = $value->outgoing_amount; 
-            $data['product_name'] =   tbl_masterlistprod::where("id",$value->product_name)->first();  
-            $data['quantity'] = $value->quantity;  
-            $data['quantity_diff'] = $value->quantity_diff;  
-            $data['sub_category'] =tbl_prodsubcat::where("id", $value->sub_category)->first();  
-            array_push($return_data, $data );
+            $data['row'] = $row++;
+            $data['category'] = tbl_prodcat::where("id", $value->category)->first();
+            $data['outgoing_amount'] = number_format($value->outgoing_amount, 2);
+            $data['product_name'] =   tbl_masterlistprod::where("id", $value->product_name)->first();
+            $data['price'] =  number_format(tbl_masterlistprod::where("id", $value->product_name)->first()->price,2);
+            $data['quantity'] = $value->quantity;
+            $data['quantity_diff'] = $value->quantity_diff;
+            $data['sub_category'] =tbl_prodsubcat::where("id", $value->sub_category)->first();
+            array_push($return_data, $data);
         }
         $items =   Collection::make($return_data);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
@@ -94,10 +93,11 @@ class ProductsListController extends Controller
                         ->get();
 
         $content['data'] = $data;
-        $pdf = PDF::loadView('pos.transaction',
-        $content,
-        [],
-        ['format' => 'A4-L']
+        $pdf = PDF::loadView(
+            'pos.transaction',
+            $content,
+            [],
+            ['format' => 'A4-L']
         );
         return $pdf->stream();
     }

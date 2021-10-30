@@ -274,6 +274,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supplier_full`]="{ item }"
+              >{{ item.supplier.supplier_name }} {{ item.supplier.description }}</template
+            >
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name }} {{ item.description }}</template
             >
@@ -285,7 +288,7 @@
             >
             <template v-slot:[`item.status`]="{ item }">
               <!-- <small> Lead time: {{ item.lead_time }} /
-              Max order: {{ item.maximum_order_quantity }} /
+              Max order: {{ item.minimum_order_quantity }} /
               Frequency:  {{ item.order_frequency }}<br> </small> -->
 
               <v-chip
@@ -482,7 +485,7 @@
                     <v-col class="py-0" cols="12" xl="5" lg="5" sm="5" md="5">
                       <v-select
                         :items="unit"
-                        :rules="formRules"
+                        :rules="formRulesUnit"
                         v-model="form.unit"
                         outlined
                         dense
@@ -575,7 +578,7 @@
                     <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-text-field
                         :rules="formRulesOthers"
-                        v-model="form.maximum_order_quantity"
+                        v-model="form.minimum_order_quantity"
                         outlined
                         clearable
                         dense
@@ -711,6 +714,8 @@ export default {
     unit: [
       "pack",
       "bot",
+      "can",
+      "bar",
       "kg",
       "gal",
       "tin",
@@ -748,6 +753,8 @@ export default {
           v
         ) || "This field must have a valid value",
     ],
+    // Form Rules
+    formRulesUnit: [(v) => (!!v && v.length >= 2) || "This is required"],
     formRulesDesc: [
       (v) =>
         /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
@@ -765,7 +772,7 @@ export default {
     ],
     formRulesOthers: [
       (v) =>
-        /^[0-9]\d{0,7}(?:\.\d{1,4})?$|null/.test(v) ||
+        /^$|^([0-9]\d{0,7}(?:\.\d{1,4})?)+$/.test(v) ||
         "This field must be valid",
     ],
     formRulesNumberRange: [
@@ -782,18 +789,18 @@ export default {
         { name: "Active", id: 1 },
         { name: "Inactive", id: 0 },
       ],
-      supply_name: null,
-      supplier: null,
-      category: null,
-      description: null,
-      unit: null,
-      net_price: null,
-      vat: null,
-      exp_date: null,
-      vatable: null,
-      lead_time: null,
-      order_frequency: null,
-      maximum_order_quantity: null,
+      supply_name: "",
+      supplier: "",
+      category: "",
+      description: "",
+      unit:  "",
+      net_price:   "",
+      vat:   "",
+      exp_date: "",
+      vatable: 0,
+      lead_time: "",
+      order_frequency:  "",
+      minimum_order_quantity:  "",
     },
     temp_vat: null, //form.vat = this.
     vat: false,
@@ -813,7 +820,7 @@ export default {
       },
       {
         text: "SUPPLIER",
-        value: "supplier.supplier_name",
+        value: "supplier_full",
         filterable: false,
         class: "black--text",
       },
@@ -1150,7 +1157,7 @@ export default {
       this.temp_vat = row.vat;
       this.form.lead_time = row.lead_time;
       this.form.order_frequency = row.order_frequency;
-      this.form.maximum_order_quantity = row.maximum_order_quantity;
+      this.form.minimum_order_quantity = row.minimum_order_quantity;
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;

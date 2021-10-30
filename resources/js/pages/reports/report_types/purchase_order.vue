@@ -30,7 +30,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="red accent-4"
               class="mx-1"
               @click="get('pdf')"
               v-on="data.on"
@@ -43,7 +44,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="green darken-4"
               class="mx-1"
               @click="get('excel')"
               v-on="data.on"
@@ -56,7 +58,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="blue-grey darken-1"
               class="mx-1"
               @click="get('print')"
               v-on="data.on"
@@ -137,7 +140,7 @@
         </v-col>
       </v-row>
     </v-container>
-  <iframe id="print8" class="d-none" :src="print" frameborder="0"></iframe>
+    <iframe id="print8" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -147,7 +150,7 @@ export default {
   data: () => ({
     dateFromPO: null,
     dateUntilPO: null,
-    print: '',
+    print: "",
     date1: false,
     date2: false,
     snackbar: {
@@ -188,27 +191,28 @@ export default {
             });
 
             break;
-              case "print":
+          case "print":
             await axios({
               url: "/api/reports/purchaseorder/get",
               method: "GET",
               responseType: "blob",
               params: {
-                type: 'pdf',
+                type: "pdf",
                 from: this.dateFromPO,
                 to: this.dateUntilPO,
               },
-            }).then((response) => { 
+            }).then((response) => {
               let blob = new Blob([response.data], { type: "application/pdf" });
-             this.print =  window.URL.createObjectURL(blob);    
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert",
-                  iconColor: "warning",
-                  message: "Printing, Please wait.",
-                };
-              setTimeout(function(){  document.getElementById('print8').contentWindow.print() ;  }, 3000); 
-       
+              this.print = window.URL.createObjectURL(blob);
+              this.snackbar = {
+                active: true,
+                iconText: "information",
+                iconColor: "primary",
+                message: "Printing... Please wait.",
+              };
+              setTimeout(function () {
+                document.getElementById("print8").contentWindow.print();
+              }, 3000);
             });
 
             break;

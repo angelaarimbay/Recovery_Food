@@ -22,9 +22,9 @@ class CreateTblMasterlistsuppsTable extends Migration
             $table->float('net_price');
             $table->float('vat');
             $table->integer('vatable');
-            $table->integer('lead_time')->nullable();
+            $table->integer('lead_time')->default(0);
             $table->integer('order_frequency')->default(7);
-            $table->integer('maximum_order_quantity')->default(0);
+            $table->integer('minimum_order_quantity')->default(0);
             $table->integer('supplier')->references('id')->on('tbl_supplist');
             $table->datetime('exp_date')->nullable();
             $table->integer('status')->default(1); //0 = inactive, else active
