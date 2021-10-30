@@ -795,9 +795,12 @@ export default {
               }
             }
           } else if (key == "amount") {
-            if (this.currentdata.amount.replace(",", "") != this.form.amount) {
-              found += 1;
+            if(this.currentdata.amount){
+              if (this.currentdata.amount.replace(",", "") != this.form.amount) {
+                found += 1;
+              }
             }
+          
           } else if (key == "incoming_date") {
             if (
               this.getFormatDate(

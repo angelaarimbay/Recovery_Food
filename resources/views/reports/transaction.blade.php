@@ -60,7 +60,7 @@
                 <td style="width: auto"> {{ date("Y-m-d", strtotime($items['created_at'])) }} </td>
                 <td style="width: auto"> {{ $items['reference_no'] }} </td>  
                 <td style="width: auto"> {{ $items['quantity'] }} </td>
-                <td style="width: auto"> {{ $items['total_amount'] }} </td> 
+                <td style="width: auto"> {{ number_format($items['total_amount'],2) }} </td> 
             </tr>  
             @endforeach
         </table>

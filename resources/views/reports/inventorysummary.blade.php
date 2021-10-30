@@ -59,34 +59,30 @@
             </tr>
             <!-- Rows -->
             @foreach ($data as $items)  
+                @php
+                    $total = isset($total) ? $total +  $items['incoming'] : 0; 
+                    $total1 = isset($total1) ? $total1 +  $items['outgoing'] : 0;
+                    $total2 = isset($total2) ? $total2 +  $items['stocks'] : 0;
+                @endphp
             <tr>
-                <td style="width: auto"> {{ $items['category'] }} </td>
-                <td style="width: auto"> {{ $items['begining'] }} </td>
-                <td style="width: auto"> {{ $items['incoming'] }} </td>
-                <td style="width: auto"> {{ $items['total'] }} </td>
-                <td style="width: auto"> {{ $items['outgoing'] }} </td>
-                <td style="width: auto"> {{ $items['stocks'] }} </td>
-                <td style="width: auto"> {{ $items['ending'] }} </td>
-                <td style="width: auto"> {{ $items['variance'] }} </td>
-                <td style="width: auto"> {{ $items['fluctuation'] }} </td>
+                <td  style="width: auto"> {{ $items['category'] }} </td>
+                <td  style="width: auto"> {{ $items['incoming'] }}  @php($total += $items['incoming']) </td>
+                <td  style="width: auto"> {{ $items['outgoing'] }}  @php($total1 += $items['outgoing'])  </td>
+                <td  style="width: auto"> {{ $items['stocks'] }}   @php($total2 += $items['stocks']) </td>
             </tr>  
             @endforeach
+
+            
             <tr>
-                <th><h5>GRAND TOTALS</h5></th>
-                <td><h5>{{ $items['begining_orig'] }}</h5></td>
-                <td><h5></h5></td>
-                <td><h5></h5></td>
-                <td><h5></h5></td>
-                <td><h5></h5></td>
-                <td><h5></h5></td>
-                <td><h5></h5></td>
-                <td><h5></h5></td>
-            </tr>
+                <td  style="width: auto"> Total </td>
+                <td  style="width: auto">  {{ $total }}  </td>
+                <td  style="width: auto"> {{ $total1 }}   </td>
+                <td  style="width: auto"> {{ $total2 }}   </td>
+            </tr>   
         </table>
-        <!-- Page Number --> 
-        <htmlpagefooter name="page-footer">
-        <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>      
-        </htmlpagefooter>
+
+        <!-- Page Number -->
+        <p style="bottom: 0%; position: fixed">Page {PAGENO} of {nb}</p>
     </body>
 </iframe>
 </html>
