@@ -30,7 +30,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="red accent-4"
               class="mx-1"
               v-on="data.on"
               @click="get('pdf')"
@@ -43,7 +44,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="green darken-4"
               class="mx-1"
               v-on="data.on"
               @click="get('excel')"
@@ -56,7 +58,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="blue-grey darken-1"
               class="mx-1"
               @click="get('print')"
               v-on="data.on"
@@ -330,6 +333,18 @@
               :items="table2"
               hide-default-footer
             >
+
+
+              <template v-slot:[`item.product_name.price`]="{ item }"
+                >{{ getFormatCurrency(item.product_name.price,'0,0.00') }}
+               </template
+              >
+
+            
+              <template v-slot:[`item.product_full`]="{ item }"
+                >{{ item.product_name.product_name }}
+                {{ item.product_name.description }}</template
+              >
               <template v-slot:[`item.created_at`]="{ item }">
                 {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
               >
@@ -353,15 +368,6 @@
               @click="closeViewDialog"
             >
               Close
-            </v-btn>
-            <v-btn
-              color="#00794b"
-              style="text-transform: none"
-              :small="$vuetify.breakpoint.smAndDown"
-              depressed
-              dark
-            >
-              Print
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -453,13 +459,13 @@ export default {
     headers2: [
       {
         text: "PRODUCT(S)",
-        value: "product_name.product_name",
+        value: "product_full",
         filterable: false,
         class: "black--text",
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.format_unit_price",
+        value: "product_name.price",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -530,7 +536,10 @@ export default {
         this.branchlist = bran_name.data;
       });
     },
-
+  getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
+    },
     async get(type) {
       if (
         this.branch == "" ||
@@ -580,9 +589,9 @@ export default {
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
                 active: true,
-                iconText: "alert",
-                iconColor: "warning",
-                message: "Printing, Please wait.",
+                iconText: "information",
+                iconColor: "primary",
+                message: "Printing... Please wait.",
               };
               setTimeout(function () {
                 document.getElementById("print7").contentWindow.print();

@@ -79,9 +79,6 @@ class IncomingSuppliesController extends Controller
         }   
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
-  
- 
-    
     }
 
     public function suppCat()

@@ -257,7 +257,7 @@
               <v-data-table
                 class="px-4"
                 v-model="selectedAddPermission"
-                :items-per-page="5" 
+                :items-per-page="5"
                 dense
                 :loading="progressBar"
                 :headers="headersAddPermissions"
@@ -271,7 +271,6 @@
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
-            
             </v-card-text>
 
             <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
@@ -323,7 +322,6 @@
                 class="px-4"
                 v-model="selectedAddRoles"
                 :items-per-page="5"
-                hide-default-footer
                 dense
                 :loading="progressBar"
                 :headers="headersAddRoles"
@@ -337,14 +335,14 @@
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
-               <div class="text-center pt-2">
-                    <v-pagination
-                      v-model="page3"
-                      :total-visible="5"
-                      :length="tableAddRoles.last_page"
-                      color="red darken-2"
-                    ></v-pagination>
-                  </div>
+              <div class="text-center pt-2 d-none">
+                <v-pagination
+                  v-model="page3"
+                  :total-visible="5"
+                  :length="tableAddRoles.last_page"
+                  color="red darken-2"
+                ></v-pagination>
+              </div>
             </v-card-text>
 
             <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
@@ -453,7 +451,7 @@
           >
             User Roles
           </v-tab>
-          <v-tab
+          <!-- <v-tab
             class="
               text-body-2
               text-xl-subtitle-1
@@ -465,7 +463,7 @@
             style="text-transform: none"
           >
             Dev
-          </v-tab>
+          </v-tab> -->
         </v-tabs>
 
         <v-tabs-items v-model="tab">
@@ -499,7 +497,7 @@
 
                 <!-- Roles List Table -->
                 <v-data-table
-                hide-default-footer 
+                  hide-default-footer
                   id="table"
                   :items-per-page="5"
                   :loading="progressBar"
@@ -547,14 +545,14 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
-               <div class="text-center pt-2">
-                    <v-pagination
-                      v-model="page1"
-                      :total-visible="5"
-                      :length="tableRoles.last_page"
-                      color="red darken-2"
-                    ></v-pagination>
-                  </div>
+                <div class="text-center pt-2">
+                  <v-pagination
+                    v-model="page1"
+                    :total-visible="5"
+                    :length="tableRoles.last_page"
+                    color="red darken-2"
+                  ></v-pagination>
+                </div>
               </v-container>
             </v-container>
           </v-tab-item>
@@ -616,15 +614,14 @@
                   </template>
                 </v-data-table>
 
-                  <div class="text-center pt-2">
-                    <v-pagination
-                      v-model="page4"
-                      :total-visible="5"
-                      :length="tablePermissions.last_page"
-                      color="red darken-2"
-                    ></v-pagination>
-                  </div>
-
+                <div class="text-center pt-2">
+                  <v-pagination
+                    v-model="page4"
+                    :total-visible="5"
+                    :length="tablePermissions.last_page"
+                    color="red darken-2"
+                  ></v-pagination>
+                </div>
               </v-container>
             </v-container>
           </v-tab-item>
@@ -693,19 +690,19 @@
                   </template>
                 </v-data-table>
                 <div class="text-center pt-2">
-                    <v-pagination
-                      v-model="page2"
-                      :total-visible="5"
-                      :length="tableUserrole.last_page"
-                      color="red darken-2"
-                    ></v-pagination>
-                  </div>
+                  <v-pagination
+                    v-model="page2"
+                    :total-visible="5"
+                    :length="tableUserrole.last_page"
+                    color="red darken-2"
+                  ></v-pagination>
+                </div>
               </v-container>
             </v-container>
           </v-tab-item>
 
           <!-- Dev-->
-          <v-tab-item  >
+          <v-tab-item class="d-none">
             <v-card-text>
               <v-text-field
                 class=""
@@ -842,6 +839,7 @@ export default {
     // --------------------------------------------------set role permission
     dialogAddPermissions: false,
     selectedAddPermission: [],
+    selectedAddPermission_cloned: [],
     headersAddPermissions: [
       {
         text: "PERMISSION",
@@ -858,6 +856,7 @@ export default {
     tableAddRoles: [],
     page3: 1,
     selectedAddRoles: [],
+    selectedAddRoles_cloned: [],
     username: "",
     userid: "",
     headersAddRoles: [
@@ -887,17 +886,15 @@ export default {
 
     // Compare Roles
     compareRoles() {
-      
-        
       if (!this.currentdataRoles) {
         return true;
-      } 
+      }
 
       var found = 0;
-      for (var key in this.role) { 
+      for (var key in this.role) {
         if (this.currentdataRoles[key] != this.role[key]) {
           found += 1;
-        } 
+        }
       }
 
       if (found > 0) {
@@ -977,8 +974,8 @@ export default {
       self.progressBar = true;
       self.tableRoles = [];
       await axios
-        .get("/api/useracc/getRoles",{params:{page: this.page1}})
-        .then((result) => {  
+        .get("/api/useracc/getRoles", { params: { page: this.page1 } })
+        .then((result) => {
           self.tableRoles = result.data.data;
           self.tableUserrole = result.data.data;
           self.progressBar = false;
@@ -992,7 +989,7 @@ export default {
         if (this.compareRoles()) {
           await axios
             .post("/api/useracc/storeRole", this.role)
-            .then((result) => { 
+            .then((result) => {
               switch (result.data.type) {
                 case 0:
                   if (this.editedIndex > -1) {
@@ -1028,7 +1025,7 @@ export default {
     },
 
     // Edit Roles
-    editItemRoles(item) { 
+    editItemRoles(item) {
       this.currentdataRoles = JSON.parse(JSON.stringify(item));
       this.editedIndex = this.tableRoles.data.indexOf(item);
       this.role.name = item.name;
@@ -1050,8 +1047,7 @@ export default {
     },
 
     // Permission
-    async getPermissions() { 
-    
+    async getPermissions() {
       let self = this;
       self.progressBar = true;
       self.tablePermissions = [];
@@ -1070,14 +1066,17 @@ export default {
           };
         });
     },
- 
+
     // Save Roles
-    async storePermissions() { 
+    async storePermissions() {
       await axios
         .post("/api/useracc/storePermission", this.permission)
         .then((result) => {
           if (this.editedIndex > -1) {
-            Object.assign(this.tablePermissions.data[this.editedIndex], result.data);
+            Object.assign(
+              this.tablePermissions.data[this.editedIndex],
+              result.data
+            );
           } else {
             this.tablePermissions.data.push(result.data);
           }
@@ -1102,12 +1101,12 @@ export default {
     },
 
     // User Role
-    async getUserRoles() { 
+    async getUserRoles() {
       let self = this;
       self.progressBar = true;
       self.tableUserrole = [];
       await axios
-        .get("/api/useracc/getUserRole",{params:{page: this.page2}})
+        .get("/api/useracc/getUserRole", { params: { page: this.page2 } })
         .then((result) => {
           self.tableUserrole = result.data;
           self.progressBar = false;
@@ -1116,15 +1115,19 @@ export default {
     },
 
     // Add Role Permission
-    async getRolePermissions(item) { 
+    async getRolePermissions(item) {
       let self = this;
       self.progressBar = true;
       self.tablePermissions = [];
       await axios
-        .get("/api/useracc/getPermission", { params: { role: item, page: this.page4 } })
+        .get("/api/useracc/getPermission", {
+          params: { role: item, page: this.page4 },
+        })
         .then((result) => {
           self.tablePermissions = result.data.all;
           self.selectedAddPermission = result.data.selected;
+          self.selectedAddPermission_cloned = result.data.selected;
+
           self.progressBar = false;
         })
         .catch((result) => {});
@@ -1136,46 +1139,129 @@ export default {
       this.getRolePermissions(item.name);
     },
 
-
-    checkRolesIsValid(){
+    checkRolesIsValid() {
       //if mag add ng restriction bukod dito,
-      // console this.selectedAddPermission tignan and index then get name, then gawa ka if else mo ung message   
-      // lagyan mo ng return sa loob. basta mag greater than one ndi yan prproceed. 
-      if(this.selectedAddPermission[0].name == 'Access POS' && this.selectedAddPermission[1].name == 'Access Dashboard'){
-          this.snackbar = {
-            active: true,
-            iconText: "error",
-            iconColor: "danger",
-            message: "If Access POS is checked, you must Disabled all other permissions.",
-          };
-        return 1
+      // console this.selectedAddPermission tignan and index then get name, then gawa ka if else mo ung message
+      // lagyan mo ng return sa loob. basta mag greater than one ndi yan prproceed.
+      if (
+        this.selectedAddPermission[0].name == "Access POS" &&
+        this.selectedAddPermission[1].name == "Access Dashboard"
+      ) {
+        this.snackbar = {
+          active: true,
+          iconText: "error",
+          iconColor: "danger",
+          message:
+            "If Access POS is checked, you must Disabled all other permissions.",
+        };
+        return 1;
+      }
+    },
+
+    comparePermission() {
+      // Check if not existed
+      // Check each value if the same or not
+      var found = 0;
+      if (
+        this.selectedAddPermission_cloned.length ===
+        this.selectedAddPermission.length
+      ) {
+        for (var key in this.selectedAddPermission_cloned.length >
+        this.selectedAddPermission.length
+          ? this.selectedAddPermission_cloned.length
+          : this.selectedAddRoles.length) {
+          try {
+            if (
+              this.selectedAddPermission[key].id !=
+              this.selectedAddPermission_cloned[key].id
+            ) {
+              found += 1;
+            }
+          } catch (error) {
+            found += 1;
+          }
+        }
+      } else {
+        found += 1;
+      }
+
+      //if has changes
+      if (found > 0) {
+        return true;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "warning",
+          message: "No changes has been made.",
+        };
+        return false;
       }
     },
 
     // Save Role Permission
-    async storeAddPermissions() { 
-      if(this.checkRolesIsValid()> 0){ 
+    async storeAddPermissions() {
+      if (this.checkRolesIsValid() > 0) {
         return;
-      } 
+      }
 
-      await axios
-        .post("/api/useracc/storeRolePermission", {
-          selected: this.selectedAddPermission,
-          role: this.rolename,
-        })
-        .then((result) => {
-          this.snackbar = {
-            active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully saved.",
-          };
-          this.getUserRoles();
-        })
-        .catch((result) => {});
-      this.close();
+      if (this.comparePermission()) {
+        await axios
+          .post("/api/useracc/storeRolePermission", {
+            selected: this.selectedAddPermission,
+            role: this.rolename,
+          })
+          .then((result) => {
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully saved.",
+            };
+            this.getUserRoles();
+          })
+          .catch((result) => {});
+        this.close();
+      }
     },
 
+    compareUserRoles() {
+      var found = 0;
+      if (
+        this.selectedAddRoles_cloned.length === this.selectedAddRoles.length
+      ) {
+        for (var key in this.selectedAddRoles_cloned.length >
+        this.selectedAddRoles.length
+          ? this.selectedAddRoles_cloned.length
+          : this.selectedAddRoles.length) {
+          try {
+            if (
+              this.selectedAddRoles[key].id !=
+              this.selectedAddRoles_cloned[key].id
+            ) {
+              found += 1;
+            }
+          } catch (error) {
+            found += 1;
+          }
+        }
+      } else {
+        found += 1;
+      }
+
+      //if has changes
+      if (found > 0) {
+        return true;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "warning",
+          message: "No changes has been made.",
+        };
+        return false;
+      }
+    },
     // Set User Role
     // Get Roles
     async getAddUserRoles(item) {
@@ -1187,6 +1273,7 @@ export default {
         .then((result) => {
           self.tableAddRoles = result.data.data;
           self.selectedAddRoles = result.data.selected;
+          self.selectedAddRoles_cloned = result.data.selected;
           self.progressBar = false;
         })
         .catch((result) => {});
@@ -1202,22 +1289,25 @@ export default {
 
     // Save User Roles
     async storeUserRole() {
-      await axios
-        .post("/api/useracc/storeUserRole", {
-          selected: this.selectedAddRoles,
-          user: this.userid,
-        })
-        .then((result) => {
-          this.snackbar = {
-            active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully saved.",
-          };
-          this.getAddUserRoles();
-        })
-        .catch((result) => {});
-      this.close();
+      if (this.compareUserRoles()) {
+        await axios
+          .post("/api/useracc/storeUserRole", {
+            selected: this.selectedAddRoles,
+            user: this.userid,
+          })
+          .then((result) => {
+            this.getUserRoles();
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully saved.",
+            };
+          })
+          .catch((result) => {});
+
+        this.close();
+      }
     },
 
     // Reset Form User Roles
@@ -1278,15 +1368,16 @@ export default {
     page1(val) {
       this.page1 = val;
       this.getRoles();
-    },     page4(val) {
+    },
+    page4(val) {
       this.page4 = val;
       this.getRolePermissions();
     },
-      page3(val) {
+    page3(val) {
       this.page3 = val;
       this.getRoles();
     },
-     page2(val) {
+    page2(val) {
       this.page2 = val;
       this.getUserRoles();
     },

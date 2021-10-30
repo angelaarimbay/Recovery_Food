@@ -9,6 +9,9 @@
         ></v-progress-circular>
       </v-overlay>
       <v-row v-if="user" align="center">
+        <v-col cols="12" xl="6" lg="6" md="6">
+          <v-img contain :src="logo_path" class="hidden-xs-only"></v-img>
+        </v-col>
         <v-col
           cols="12"
           xl="6"
@@ -102,9 +105,6 @@
               </v-card-text>
             </v-form>
           </v-card>
-        </v-col>
-        <v-col cols="12" xl="6" lg="6" md="6">
-          <v-img contain :src="logo_path" class="hidden-xs-only"></v-img>
         </v-col>
       </v-row>
     </v-container>

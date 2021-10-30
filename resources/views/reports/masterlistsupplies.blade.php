@@ -15,7 +15,10 @@
         background-color:aliceblue;
         color: black;
     } 
-    
+    @page {
+        header: page-header;
+        footer: page-footer;
+    }
     .body{
         margin: 0;
         padding: 0;
@@ -56,19 +59,22 @@
             <!-- Rows -->
             @foreach ($data as $items)   
             <tr>
+                
                 <td  style="width: auto"> {{ $items['category_name'] }} </td>
                 <td  style="width: auto"> {{ $items['supply_name'] }} {{ $items['description'] }} </td>  
                 <td  style="width: auto"> {{ $items['unit'] }}  </td>
-                <td  style="width: auto"> {{ $items['format_net_price'] }} </td>
-                <td  style="width: auto"> {{ $items['format_with_vat'] }} </td>
-                <td  style="width: auto"> {{ $items['vat'] }} </td>
-                <td  style="width: auto"> {{ $items['format_without_vat'] }} </td>  
-                <td  style="width: auto"> {{ date("Y-m-d",strtotime( $items['exp_date'])) }} </td>
+                <td  style="width: auto"> {{ number_format($items['net_price'] ,2)}} </td>
+                <td  style="width: auto"> {{  number_format($items['with_vat'] ,2) }} </td>
+                <td  style="width: auto"> {{ number_format($items['vat'] ,2)  }} </td>
+                <td  style="width: auto"> {{ number_format($items['without_vat'] ,2)}} </td>  
+                <td  style="width: auto"> {{ ( $items['exp_date']? date("Y-m-d",strtotime( $items['exp_date'])):null) }} </td>
             </tr>  
             @endforeach
         </table>
         <!-- Page Number -->
-        <p style="bottom: 0%; position: fixed">Page {PAGENO} of {nb}</p>
+        <htmlpagefooter name="page-footer">
+        <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>      
+        </htmlpagefooter>
     </body>
 </iframe>
 </html>

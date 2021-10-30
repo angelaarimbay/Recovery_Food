@@ -25,12 +25,13 @@
           >
         </template>
       </v-snackbar>
-      
+
       <v-card-actions class="px-0 justify-center">
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="red accent-4"
               class="mx-1"
               @click="get('pdf')"
               v-on="data.on"
@@ -43,7 +44,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="green darken-4"
               class="mx-1"
               @click="get('excel')"
               v-on="data.on"
@@ -56,7 +58,8 @@
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
-              color="primary"
+              dark
+              color="blue-grey darken-1"
               class="mx-1"
               @click="get('print')"
               v-on="data.on"
@@ -85,7 +88,7 @@
         </v-col>
       </v-row>
     </v-container>
-  <iframe id="print3" class="d-none" :src="print" frameborder="0"></iframe>
+    <iframe id="print3" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
 
@@ -95,7 +98,7 @@ export default {
   data: () => ({
     category: "",
     suppcatlist: [],
-    print: '',
+    print: "",
     snackbar: {
       active: false,
       message: "",
@@ -131,23 +134,24 @@ export default {
               link.click();
             });
             break;
-             case "print":
+          case "print":
             await axios({
               url: "/api/reports/maininventory/get",
               method: "GET",
               responseType: "blob",
-              params: { category: this.category, type: 'pdf' },
+              params: { category: this.category, type: "pdf" },
             }).then((response) => {
               let blob = new Blob([response.data], { type: "application/pdf" });
-                this.print =  window.URL.createObjectURL(blob);    
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert",
-                  iconColor: "warning",
-                  message: "Printing, Please wait.",
-                };
-              setTimeout(function(){  document.getElementById('print3').contentWindow.print() ;  }, 3000); 
-        
+              this.print = window.URL.createObjectURL(blob);
+              this.snackbar = {
+                active: true,
+                iconText: "information",
+                iconColor: "primary",
+                message: "Printing... Please wait.",
+              };
+              setTimeout(function () {
+                document.getElementById("print3").contentWindow.print();
+              }, 3000);
             });
             break;
           case "excel":
@@ -158,6 +162,7 @@ export default {
                 params: { category: this.category, type: type },
               })
               .then((response) => {
+                // console.log(response.data)
                 let blob = new Blob([response.data], {
                   type: "application/excel",
                 });

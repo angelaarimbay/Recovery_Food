@@ -446,7 +446,7 @@
                       </v-autocomplete>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
