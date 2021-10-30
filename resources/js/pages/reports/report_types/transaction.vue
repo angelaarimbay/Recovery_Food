@@ -333,6 +333,14 @@
               :items="table2"
               hide-default-footer
             >
+
+
+              <template v-slot:[`item.product_name.price`]="{ item }"
+                >{{ getFormatCurrency(item.product_name.price,'0,0.00') }}
+               </template
+              >
+
+            
               <template v-slot:[`item.product_full`]="{ item }"
                 >{{ item.product_name.product_name }}
                 {{ item.product_name.description }}</template
@@ -528,7 +536,10 @@ export default {
         this.branchlist = bran_name.data;
       });
     },
-
+  getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
+    },
     async get(type) {
       if (
         this.branch == "" ||

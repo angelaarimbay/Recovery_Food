@@ -167,9 +167,7 @@ export default {
                 month:
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
-            }).then((response) => {
-              // console.log(response.data);
-              // return;
+            }).then((response) => { 
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
@@ -189,6 +187,8 @@ export default {
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
             }).then((response) => {
+              // console.log(response.data)
+              // return;
               let blob = new Blob([response.data], { type: "application/pdf" });
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
@@ -215,7 +215,7 @@ export default {
                     1,
                 },
               })
-              .then((response) => {
+              .then((response) => { 
                 let blob = new Blob([response.data], {
                   type: "application/excel",
                 });

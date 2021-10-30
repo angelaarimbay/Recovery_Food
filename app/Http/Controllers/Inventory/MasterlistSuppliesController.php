@@ -94,7 +94,6 @@ class MasterlistSuppliesController extends Controller
             $temp['lead_time'] = $value->lead_time;  
             $temp['order_frequency'] = $value->order_frequency;  
             $temp['minimum_order_quantity'] = $value->minimum_order_quantity;   
-
             $temp['without_vat_price'] = number_format($value->without_vat_price,2);   
             $temp['with_vat_price'] = number_format($value->with_vat_price,2);   
             array_push($return,$temp);

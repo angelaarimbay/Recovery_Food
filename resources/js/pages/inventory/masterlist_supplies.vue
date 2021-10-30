@@ -772,7 +772,7 @@ export default {
     ],
     formRulesOthers: [
       (v) =>
-        /^[0-9]\d{0,7}(?:\.\d{1,4})?$|null/.test(v) ||
+        /^$|^([0-9]\d{0,7}(?:\.\d{1,4})?)+$/.test(v) ||
         "This field must be valid",
     ],
     formRulesNumberRange: [
@@ -789,18 +789,18 @@ export default {
         { name: "Active", id: 1 },
         { name: "Inactive", id: 0 },
       ],
-      supply_name: null,
-      supplier: null,
-      category: null,
-      description: null,
-      unit: null,
-      net_price: null,
-      vat: null,
-      exp_date: null,
-      vatable: null,
-      lead_time: null,
-      order_frequency: null,
-      minimum_order_quantity: null,
+      supply_name: "",
+      supplier: "",
+      category: "",
+      description: "",
+      unit:  "",
+      net_price:   "",
+      vat:   "",
+      exp_date: "",
+      vatable: 0,
+      lead_time: "",
+      order_frequency:  "",
+      minimum_order_quantity:  "",
     },
     temp_vat: null, //form.vat = this.
     vat: false,

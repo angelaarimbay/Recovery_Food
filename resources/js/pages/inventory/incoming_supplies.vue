@@ -720,7 +720,7 @@ export default {
     pageCount: 0,
     itemsPerPage: 5,
     dateFrom: null,
-    dateUntil: null,
+    dateUntil:  null,
     incomingDate: null,
     date1: false,
     date2: false,
@@ -729,7 +729,9 @@ export default {
 
   // Onload
   created() {
-    if (this.user.permissionslist.includes("Access Inventory")) {
+    if (this.user.permissionslist.includes("Access Inventory")) { 
+      this.dateFrom = this.getFormatDate( new Date( new Date(). getFullYear(), new Date(). getMonth() ,1),"YYYY-MM-DD")
+      this.dateUntil = this.getFormatDate( new Date( new Date(). getFullYear(), new Date(). getMonth() + 1,0),"YYYY-MM-DD")
       this.get();
       this.suppCat();
       this.suppliers();

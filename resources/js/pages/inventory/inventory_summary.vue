@@ -215,7 +215,7 @@ export default {
       },
 
       {
-        text: "OUTGOING ",
+        text: "OUTGOING SUPPLIES",
         value: "outgoing",
         align: "right",
         filterable: false,

@@ -58,40 +58,19 @@
                 <th><h6>FLUCTUATION</h6></th>
             </tr>
             <!-- Rows -->
-            @foreach ($data as $items)  
-                @php
-                    $total  = isset($total)  ? $total  +  $items['incoming'] : 0; 
-                    $total1 = isset($total1) ? $total1 +  $items['begining'] : 0; 
-                    $total2 = isset($total2) ? $total2 +  $items['total'] : 0; 
-                    $total3 = isset($total3) ? $total3 +  $items['outgoing'] : 0;
-                    $total4= isset($total4)  ? $total4 +  $items['ending'] : 0;
-                    $total5 = isset($total5) ? $total5 +  $items['stocks'] : 0; 
-                    $total6 = isset($total6) ? $total6 +  $items['variance'] : 0;
-                    $total7 = isset($total7) ? $total7 +  $items['fluctuation'] : 0;
-                @endphp
+            @foreach ($data as $key => $items )   
             <tr>
-                <td  style="width: auto"> {{ $items['category'] }} </td> 
-                <td style="width: auto"> {{ $items['incoming'] }}  @php($total += $items['incoming']) </td>
-                <td style="width: auto"> {{ $items['begining'] }}  @php($total1 += $items['begining']) </td>  
-                <td style="width: auto"> {{ $items['total'] }}  @php($total2 += $items['total']) </td> 
-                <td style="width: auto"> {{ $items['outgoing'] }}  @php($total3 += $items['outgoing'])  </td>
-                <td style="width: auto"> {{ $items['ending'] }}  @php($total4 += $items['ending']) </td>
-                <td style="width: auto"> {{ $items['stocks'] }}   @php($total5+= $items['stocks']) </td>
-                <td style="width: auto"> {{ $items['variance'] }} @php($total6 += $items['variance'])  </td>
-                <td style="width: auto"> {{ $items['fluctuation'] }}  @php($total7 += $items['fluctuation']) </td>
+                <td  style="width: auto">   {!!  $items['category'] !!} </td> 
+                <td style="width: auto"> {{ number_format($items['beginning'],2) }}  </td>  
+                <td style="width: auto"> {{ number_format($items['incoming'],2) }} </td>
+                <td style="width: auto"> {{ number_format($items['total'],2) }}    </td> 
+                <td style="width: auto"> {{ number_format($items['outgoing'],2) }}   </td>
+                <td style="width: auto"> {{ number_format($items['ending'],2) }}  </td>
+                <td style="width: auto"> {{ number_format($items['stocks'],2) }}   </td>
+                <td style="width: auto"> {{ number_format($items['variance'],2) }}   </td>
+                <td style="width: auto"> {{ number_format($items['fluctuation'],2) }}  </td>
             </tr>  
-            @endforeach 
-            <tr>
-                <td  style="width: auto"> Total </td>
-                <td  style="width: auto"> {{ number_format($total,2) }}  </td>
-                <td  style="width: auto"> {{ number_format($total1,2) }}   </td>
-                <td  style="width: auto"> {{ number_format($total2,2) }}   </td>
-                <td  style="width: auto"> {{ number_format($total3,2) }}   </td>
-                <td  style="width: auto"> {{ number_format($total4,2) }}   </td>
-                <td  style="width: auto"> {{ number_format($total5,2) }}   </td>
-                <td  style="width: auto"> {{ number_format($total6,2) }}   </td>
-                <td  style="width: auto"> {{ number_format($total7,2) }}   </td>
-            </tr>   
+            @endforeach  
         </table>
 
         <!-- Page Number -->
