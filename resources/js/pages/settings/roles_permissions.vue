@@ -322,8 +322,7 @@
               <v-data-table
                 class="px-4"
                 v-model="selectedAddRoles"
-                :items-per-page="5"
-                hide-default-footer
+                :items-per-page="5" 
                 dense
                 :loading="progressBar"
                 :headers="headersAddRoles"
@@ -337,7 +336,7 @@
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
-               <div class="text-center pt-2">
+               <div class="text-center pt-2 d-none" >
                     <v-pagination
                       v-model="page3"
                       :total-visible="5"

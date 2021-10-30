@@ -51,14 +51,28 @@
             </tr>
             <!-- Rows -->
             @foreach ($data as $items)  
+                @php
+                    $total = isset($total) ? $total +  $items['incoming'] : 0; 
+                    $total1 = isset($total1) ? $total1 +  $items['outgoing'] : 0;
+                    $total2 = isset($total2) ? $total2 +  $items['stocks'] : 0;
+                @endphp
             <tr>
                 <td  style="width: auto"> {{ $items['category'] }} </td>
-                <td  style="width: auto"> {{ $items['incoming'] }} </td>
-                <td  style="width: auto"> {{ $items['outgoing'] }} </td>
-                <td  style="width: auto"> {{ $items['stocks'] }} </td>
+                <td  style="width: auto"> {{ $items['incoming'] }}  @php($total += $items['incoming']) </td>
+                <td  style="width: auto"> {{ $items['outgoing'] }}  @php($total1 += $items['outgoing'])  </td>
+                <td  style="width: auto"> {{ $items['stocks'] }}   @php($total2 += $items['stocks']) </td>
             </tr>  
             @endforeach
+
+            
+            <tr>
+                <td  style="width: auto"> Total </td>
+                <td  style="width: auto">  {{ $total }}  </td>
+                <td  style="width: auto"> {{ $total1 }}   </td>
+                <td  style="width: auto"> {{ $total2 }}   </td>
+            </tr>   
         </table>
+
         <!-- Page Number -->
         <p style="bottom: 0%; position: fixed">Page {PAGENO} of {nb}</p>
     </body>

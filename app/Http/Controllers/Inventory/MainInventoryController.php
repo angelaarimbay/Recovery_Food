@@ -40,7 +40,7 @@ class MainInventoryController extends Controller
             $temp=[];
             $temp['row'] = $row++ ;
             $temp['category'] =  tbl_suppcat::where("id",$value->category)->first()->supply_cat_name ;
-            $temp['supply_name'] =  $value->supply_name ;
+            $temp['supply_name'] =  $value->supply_name . ' '. $value->description ; 
             $temp['unit'] =  $value->unit ;
             $temp['net_price'] =  $value->net_price ;
             $temp['lead_time'] =  $value->lead_time;
