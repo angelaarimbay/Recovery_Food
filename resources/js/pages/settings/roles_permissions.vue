@@ -735,6 +735,16 @@
 .v-input--selection-controls__input .mdi-minus-box {
   color: #d32f2f !important;
 }
+.v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
 </style>
 
 <script>
