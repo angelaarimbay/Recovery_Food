@@ -54,7 +54,7 @@ class IncomingSuppliesController extends Controller
         if ($t->search) { // If has value 
            $table =  $table->whereHas('supply_name', function ($q) use ($t) {
                 $q->where('supply_name', 'like', "%".$t->search."%");
-            }) ->paginate($t->itemsPerPage, "*", "page", 1);
+            });
         }
 
         $return = [];

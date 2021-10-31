@@ -21,7 +21,13 @@ class MainInventoryController extends Controller
     public function get(Request $t)
     {
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
-        $table = tbl_masterlistsupp::whereRaw($where)->get();
+        
+
+        $table = tbl_masterlistsupp::whereRaw($where);
+
+        if ($t->search) { // If has value
+            $table = $table->where("supply_name", "like", "%".$t->search."%");
+        }
 
         $date11 =  date("Y-m-d H:i:s", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-01". ' 00:00:00'))) ;
         $date22 = cal_days_in_month(CAL_GREGORIAN, (date("m")-1), date("Y"));
@@ -33,11 +39,11 @@ class MainInventoryController extends Controller
         
         $return = [];
         $row = 1;
-        foreach ($table as $key => $value) {
+        foreach ($table->get() as $key => $value) {
             $temp=[];
             $temp['row'] = $row++ ;
-            $temp['category'] =  tbl_suppcat::where("id",$value->category)->first()->supply_cat_name ;
-            $temp['supply_name'] =  $value->supply_name . ' '. $value->description ; 
+            $temp['category'] =  tbl_suppcat::where("id", $value->category)->first()->supply_cat_name ;
+            $temp['supply_name'] =  $value->supply_name . ' '. $value->description ;
             $temp['unit'] =  $value->unit ;
             $temp['net_price'] =  $value->net_price ;
             $temp['lead_time'] =  $value->lead_time;

@@ -56,13 +56,16 @@ class MasterlistProductsController extends Controller
     }
     public function get(Request $t)
     {
-        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
-        ($t->search?" and product_name like '%".$t->search."%'":'');
-
+        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
+        
         // return $where;
         
         $table = tbl_masterlistprod::with(["category","sub_category"])
         ->whereRaw($where) ;
+
+        if ($t->search) { // If has value
+            $table = $table->where("product_name", "like", "%".$t->search."%");
+        }
 
         $return = [];
         foreach ($table->get() as $key => $value) {
@@ -74,10 +77,10 @@ class MasterlistProductsController extends Controller
             $temp['description'] = $value->description;
             $temp['diff_quantity'] = $value->diff_quantity;
             $temp['exp_date'] = $value->exp_date;
-            $temp['without_vat'] = number_format($value->without_vat,2);
+            $temp['without_vat'] = number_format($value->without_vat, 2);
             $temp['vat'] = $value->vat;
-            $temp['unit_price'] =  number_format($value->unit_price,2);
-            $temp['format_price'] = number_format($value->price,2);
+            $temp['unit_price'] =  number_format($value->unit_price, 2);
+            $temp['format_price'] = number_format($value->price, 2);
             $temp['price'] = $value->price;
             $temp['product_name'] = $value->product_name;
             $temp['sub_category'] = $value->sub_category_details;
