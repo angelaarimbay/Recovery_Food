@@ -692,6 +692,14 @@ export default {
   // Onload
   created() {
     if (this.user.permissionslist.includes("Access Products")) {
+      this.dateFrom = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        "YYYY-MM-DD"
+      );
+      this.dateUntil = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+        "YYYY-MM-DD"
+      );
       this.get();
       this.prodCat();
       this.prodSubCat();
@@ -744,7 +752,9 @@ export default {
             }
           } else if (key == "product_name") {
             if (this.currentdata.product_name) {
-              if (this.currentdata.product_name.id != this.form.product_name.id) {
+              if (
+                this.currentdata.product_name.id != this.form.product_name.id
+              ) {
                 found += 1;
               }
             }
@@ -766,7 +776,7 @@ export default {
             ) {
               found += 1;
             }
-          } else { 
+          } else {
             found += 1;
           }
         }
@@ -856,7 +866,6 @@ export default {
           this.getQuantity = result.data;
         });
     },
-    
 
     async prodCat() {
       await axios.get("/api/outprod/prodCat").then((prod_cat) => {
@@ -905,7 +914,7 @@ export default {
         "YYYY-MM-DD"
       );
 
-        this.prodValidate();
+      this.prodValidate();
       this.dialog = true;
     },
 
