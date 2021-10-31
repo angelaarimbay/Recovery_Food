@@ -790,14 +790,7 @@ export default {
           this.headers.splice(this.headers.indexOf(this.headers[8]), 1);
         }
       }
-      this.dateFrom = this.getFormatDate(
-        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-        "YYYY-MM-DD"
-      );
-      this.dateUntil = this.getFormatDate(
-        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-        "YYYY-MM-DD"
-      );
+
       this.get();
       this.suppCat();
       this.branchName();
@@ -908,7 +901,7 @@ export default {
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
-              console.log(result.data);
+              console.log(result.data)
               //if the value is true then save to database
               this.snackbar = {
                 active: true,

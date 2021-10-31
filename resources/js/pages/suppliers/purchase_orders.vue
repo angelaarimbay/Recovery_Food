@@ -602,14 +602,6 @@ export default {
   // Onload
   created() {
     if (this.user.permissionslist.includes("Access Suppliers")) {
-      this.dateFrom = this.getFormatDate(
-        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-        "YYYY-MM-DD"
-      );
-      this.dateUntil = this.getFormatDate(
-        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-        "YYYY-MM-DD"
-      );
       this.get();
       this.suppName();
     } else {
