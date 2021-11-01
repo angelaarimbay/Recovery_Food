@@ -33,13 +33,14 @@ class OutgoingProductsController extends Controller
                  "sub_category"=>$data->sub_category,
                  "product_name"=>$data->product_name['id'],
                  "quantity"=>$data->quantity,
-                 "amount"=> tbl_masterlistprod::where("id",$data->product_name['id'] )->first()->price * $data->quantity,
+                 "amount"=> tbl_masterlistprod::where("id", $data->product_name['id'])->first()->price * $data->quantity,
                  "requesting_branch"=>$data->requesting_branch,
                  "outgoing_date"=>date('Y-m-d', strtotime($data->outgoing_date)),
                 ]
             );
         } else {
-            tbl_outgoingprod::create($data->all() + [ "amount"=> tbl_masterlistprod::where("id",$data->product_name['id'] )->first()->price * $data->quantity]);
+            tbl_outgoingprod::create($data->except(['product_name']) + 
+            ['product_name'=>$data->product_name['id'], "amount"=> tbl_masterlistprod::where("id", $data->product_name['id'])->first()->price * $data->quantity]);
         }
         return 0;
     }
@@ -54,13 +55,13 @@ class OutgoingProductsController extends Controller
                                     ->where("product_name", "!=", null);
  
         if ($t->dateFrom && $t->dateUntil) {
-            $table = $table->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
+            $table = $table->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom )), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
 
         if ($t->search) { // If has value
             $table =  $table->whereHas('product_name', function ($q) use ($t) {
                 $q->where('product_name', 'like', "%".$t->search."%");
-            }) ->paginate($t->itemsPerPage, "*", "page", 1);
+            });
         }
          
         $return = [];
@@ -70,7 +71,7 @@ class OutgoingProductsController extends Controller
             $temp['id'] = $value->id;
             $temp['status'] = $value->status;
             $temp['category'] = $value->category_details;
-            $temp['outgoing_amount'] = number_format($value->outgoing_amount,2);
+            $temp['outgoing_amount'] = number_format($value->outgoing_amount, 2);
             $temp['outgoing_date'] = $value->outgoing_date;
             $temp['product_name'] = $value->product_name_details;
             $temp['quantity'] = $value->quantity;
@@ -105,8 +106,8 @@ class OutgoingProductsController extends Controller
     }
 
     public function validateQuantity(Request $request)
-    {
-        
-        return tbl_incomingprod::where('id', $request->id )->sum('quantity') ;
+    {    
+        return   tbl_incomingprod::where('product_name', $request->product_name)->get()->sum('quantity') - tbl_outgoingprod::where("product_name",$request->product_name)->get()->sum('quantity') ;
+               
     }
 }

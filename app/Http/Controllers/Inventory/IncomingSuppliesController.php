@@ -31,11 +31,12 @@ class IncomingSuppliesController extends Controller
                 "supply_name"=>$data->supply_name['id'],
                 "quantity"=>$data->quantity,
                 "amount"=>$data->amount,
-                "incoming_date"=>$data->incoming_date,
+                "incoming_date"=> date("Y-m-d h:i:s", strtotime($data->incoming_date. ' '.date("h:i:s"))),
                 ]
             );
         } else { 
-            tbl_incomingsupp::create($data->except('supply_name') + ['supply_name'=>$data->supply_name['id']]);
+            tbl_incomingsupp::create($data->except(['supply_name','incoming_date']) + 
+            ['supply_name'=>$data->supply_name['id'], 'incoming_date'=> date("Y-m-d h:i:s", strtotime($data->incoming_date. ' '.date("h:i:s")))]);
         }
         return 0;
     }
@@ -48,13 +49,13 @@ class IncomingSuppliesController extends Controller
         $table = tbl_incomingsupp::with(["category","supply_name",'supplier'])->whereRaw($where) ;
       
         if($t->dateFrom && $t->dateUntil){
-           $table = $table->whereBetween("incoming_date",[date("Y-m-d",strtotime($t->dateFrom)), date("Y-m-d",strtotime($t->dateUntil))]);
+           $table = $table->whereBetween("incoming_date",[date("Y-m-d 00:00:00",strtotime($t->dateFrom)), date("Y-m-d 23:59:59",strtotime($t->dateUntil))]);
         } 
         
         if ($t->search) { // If has value 
            $table =  $table->whereHas('supply_name', function ($q) use ($t) {
                 $q->where('supply_name', 'like', "%".$t->search."%");
-            }) ->paginate($t->itemsPerPage, "*", "page", 1);
+            });
         }
 
         $return = [];

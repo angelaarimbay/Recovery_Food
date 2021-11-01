@@ -21,15 +21,16 @@ class OutgoingSuppliesController extends Controller
     
     public function save(Request $data)
     {
-        $table = tbl_outgoingsupp::where("supply_name", "!=", null);
-        $date1 = date("Y-m-d H:i:s", strtotime(date("m")."/01/".date("Y"). ' 00:00:01'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s", strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
+        $table = tbl_outgoingsupp::where("supply_name", "!=", null); 
+        $date1 =  date("Y-m-d 00:00:00", strtotime(date("Y")."-".date("m")."-01" )); 
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y").'-'.date("m").'-'.date("t")));
+    
 
         $get_amount = tbl_incomingsupp::where("supply_name", $data->supply_name['id'])
-        ->whereBetween('incoming_date', [$date1,$date2]) ;
+        ->whereBetween('incoming_date', [$date1,$date2]);
         $get_quantity = tbl_incomingsupp::where("supply_name", $data->supply_name['id'])
         ->whereBetween('incoming_date', [$date1,$date2]);
+        
       
         $get_quantity->sum('quantity');
         $get_wov = ($get_amount->sum('amount')?$get_amount->sum('amount') / $get_quantity->sum('quantity'):0);
@@ -44,11 +45,15 @@ class OutgoingSuppliesController extends Controller
                  "quantity"=>$data->quantity,
                  "amount"=>$get_wov * $data->quantity,
                  "requesting_branch"=>$data->requesting_branch,
-                 "outgoing_date"=> date('Y-m-d', strtotime($data->outgoing_date)),
+                 "outgoing_date"=> date('Y-m-d', strtotime($data->outgoing_date).' '. date("h:i:s")),
                 ]
             );
         } else {
-            tbl_outgoingsupp::create($data->except(['supply_name','amount']) + ['supply_name'=>$data->supply_name['id'], 'amount' => $get_wov  * $data->quantity]);
+            tbl_outgoingsupp::create($data->except(['supply_name','amount','outgoing_date']) + 
+            ['supply_name'=>$data->supply_name['id'], 
+             'amount' => $get_wov  * $data->quantity,
+             'outgoing_date' => date('Y-m-d', strtotime($data->outgoing_date).' '. date("h:i:s")),
+            ]);
         }
         return 0;
     }
@@ -59,11 +64,10 @@ class OutgoingSuppliesController extends Controller
                  ($t->branch? " and requesting_branch=".$t->branch:"");
  
         $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])
-        ->whereRaw($where)
-        ->where("supply_name", "!=", null);
-
+        ->whereRaw($where) ;
+        
         if ($t->dateFrom && $t->dateUntil) {
-            $table =  $table->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
+            $table =  $table->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom )), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
  
         if ($t->search) { // If has value

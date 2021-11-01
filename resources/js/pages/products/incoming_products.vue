@@ -273,7 +273,7 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.product_full`]="{ item }"
+            <template v-slot:[`item.product_name.product_name`]="{ item }"
               >{{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
             >
@@ -446,7 +446,14 @@
                       </v-autocomplete>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <v-col
+                      class="py-0"
+                      cols="12"
+                      xl="12"
+                      lg="12"
+                      sm="12"
+                      md="12"
+                    >
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
@@ -599,7 +606,7 @@ export default {
       },
       {
         text: "PRODUCT NAME",
-        value: "product_full",
+        value: "product_name.product_name",
         class: "black--text",
       },
       {
@@ -652,6 +659,14 @@ export default {
   // Onload
   created() {
     if (this.user.permissionslist.includes("Access Products")) {
+      this.dateFrom = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        "YYYY-MM-DD"
+      );
+      this.dateUntil = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+        "YYYY-MM-DD"
+      );
       this.get();
       this.prodCat();
       this.prodSubCat();
