@@ -350,7 +350,7 @@
                     text-body-2 text-xl-h6 text-lg-h6 text-md-body-1 text-sm-body-1
                     mb-0
                   "
-                  >Sales Count: {{ salescount }}</span
+                  >Sales Count: {{ salescount.count }}</span
                 >
               </v-card-actions>
             </v-col>
@@ -363,7 +363,7 @@
                     text-body-2 text-xl-h6 text-lg-h6 text-md-body-1 text-sm-body-1
                     mb-0
                   "
-                  >Total Sales: {{ salescount }}</span
+                  >Total Sales: {{ salescount.amount }}</span
                 >
               </v-card-actions>
             </v-col>
@@ -1021,6 +1021,7 @@ export default {
     async getSalesCount() {
       await axios.get("/api/sales_report/sales_count").then((result) => {
         this.salescount = result.data;
+
       });
     },
 
