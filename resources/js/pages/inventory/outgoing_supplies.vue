@@ -965,10 +965,15 @@ export default {
       });
     },
 
-    async suppValidate(item) {
+    async suppValidate(id ='') {
       await axios
-        .get("/api/osupp/suppValidate", { params: { id: item.id } })
+        .get("/api/osupp/suppValidate", { params: { id: id } })
         .then((result) => {
+            if(id){ 
+            this.getQuantity = (result.data + this.form.quantity);
+          }else{ 
+            this.getQuantity = result.data;
+          } 
           this.getQuantity = result.data;
         });
     },
@@ -1003,7 +1008,7 @@ export default {
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-      this.suppValidate(row.supply_name);
+      this.suppValidate(row.supply_name.id);
       this.dialog = true;
     },
 

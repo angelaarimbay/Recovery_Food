@@ -107,13 +107,7 @@ class OutgoingProductsController extends Controller
 
     public function validateQuantity(Request $request)
     {    
- 
-        $diff = tbl_incomingprod::where('product_name', $request->product_name)->get()->sum('quantity') - tbl_outgoingprod::where("product_name",$request->product_name)->get()->sum('quantity') ;
-        if($request->id ){
-           $diff =   ( $diff + (  tbl_outgoingprod::where("id",$request->id)->get()->sum('quantity') -  tbl_outgoingprod::where("product_name",$request->product_name)->get()->sum('quantity')))   ;
-        } 
-
-
-        return  $diff ;
+        return   tbl_incomingprod::where('product_name', $request->product_name)->get()->sum('quantity') - tbl_outgoingprod::where("product_name",$request->product_name)->get()->sum('quantity') ;
+               
     }
 }

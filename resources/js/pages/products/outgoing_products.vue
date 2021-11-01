@@ -848,7 +848,7 @@ export default {
             dateUntil: this.dateUntil,
           },
         })
-        .then((result) => {
+        .then((result) => { 
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -865,12 +865,10 @@ export default {
         })
         .then((result) => { 
           if(id){ 
-          this.getQuantity = (result.data + this.form.quantity);
+            this.getQuantity = (result.data + this.form.quantity);
           }else{ 
             this.getQuantity = result.data;
-          }
-          console.log( result.data)
-          console.log(this.getQuantity)
+          } 
         });
     },
 
