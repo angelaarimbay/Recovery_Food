@@ -39,7 +39,7 @@ class PurchaseOrdersController extends Controller
 
 
         if ($t->dateFrom && $t->dateUntil) {
-            $table = $table->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
+            $table = $table->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil ))]);
         }
 
         if ($t->search) { // If has value 

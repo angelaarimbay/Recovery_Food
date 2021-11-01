@@ -39,7 +39,8 @@ class OutgoingProductsController extends Controller
                 ]
             );
         } else {
-            tbl_outgoingprod::create($data->all() + [ "amount"=> tbl_masterlistprod::where("id", $data->product_name['id'])->first()->price * $data->quantity]);
+            tbl_outgoingprod::create($data->except(['product_name']) + 
+            ['product_name'=>$data->product_name['id'], "amount"=> tbl_masterlistprod::where("id", $data->product_name['id'])->first()->price * $data->quantity]);
         }
         return 0;
     }
@@ -54,7 +55,7 @@ class OutgoingProductsController extends Controller
                                     ->where("product_name", "!=", null);
  
         if ($t->dateFrom && $t->dateUntil) {
-            $table = $table->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
+            $table = $table->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom )), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
 
         if ($t->search) { // If has value
@@ -105,7 +106,14 @@ class OutgoingProductsController extends Controller
     }
 
     public function validateQuantity(Request $request)
-    {
-        return tbl_incomingprod::where('id', $request->id)->sum('quantity') ;
+    {    
+ 
+        $diff = tbl_incomingprod::where('product_name', $request->product_name)->get()->sum('quantity') - tbl_outgoingprod::where("product_name",$request->product_name)->get()->sum('quantity') ;
+        if($request->id ){
+           $diff =   ( $diff + (  tbl_outgoingprod::where("id",$request->id)->get()->sum('quantity') -  tbl_outgoingprod::where("product_name",$request->product_name)->get()->sum('quantity')))   ;
+        } 
+
+
+        return  $diff ;
     }
 }

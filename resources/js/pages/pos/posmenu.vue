@@ -342,12 +342,12 @@
 
           <v-row no-gutters class="mt-2">
             <!-- Items Per Page -->
-            <v-col cols="6" class="my-auto">
+            <v-col cols="6" xl="3" lg="3" md="3" class="my-auto">
               <v-card-actions>
                 <span
                   style="color: #616161"
                   class="
-                    text-body-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                    text-body-2 text-xl-h6 text-lg-h6 text-md-body-1 text-sm-body-1
                     mb-0
                   "
                   >Sales Count: {{ salescount }}</span
@@ -355,10 +355,23 @@
               </v-card-actions>
             </v-col>
 
+            <v-col cols="6" xl="5" lg="5" md="3" class="my-auto">
+              <v-card-actions>
+                <span
+                  style="color: #616161"
+                  class="
+                    text-body-2 text-xl-h6 text-lg-h6 text-md-body-1 text-sm-body-1
+                    mb-0
+                  "
+                  >Total Sales: {{ salescount }}</span
+                >
+              </v-card-actions>
+            </v-col>
+
             <v-spacer></v-spacer>
 
             <!-- Mode Field -->
-            <v-col cols="6" xl="4" lg="4" md="6" sm="7" class="my-auto">
+            <v-col cols="12" xl="4" lg="4" md="5" sm="4" class="my-auto">
               <v-card-actions>
                 <v-select
                   outlined
@@ -1091,7 +1104,9 @@ export default {
                 },
                 description: this.selectedrow.product_name.description,
                 product: this.selectedrow.product_name.id,
-                price: numeral( this.selectedrow.product_name.price).format("0,0.00"),
+                price: numeral(this.selectedrow.product_name.price).format(
+                  "0,0.00"
+                ),
                 quantity: this.quantity,
                 sub_total: numeral(
                   this.quantity * this.selectedrow.product_name.price
@@ -1121,7 +1136,9 @@ export default {
               },
               description: this.selectedrow.product_name.description,
               product: this.selectedrow.product_name.id,
-              price: numeral( this.selectedrow.product_name.price).format("0,0.00"),
+              price: numeral(this.selectedrow.product_name.price).format(
+                "0,0.00"
+              ),
               quantity: this.quantity,
               sub_total: numeral(
                 this.quantity * this.selectedrow.product_name.price

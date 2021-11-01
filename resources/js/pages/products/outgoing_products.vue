@@ -480,6 +480,7 @@
                         dense
                         item-text="product_name"
                         return-object
+                        @change="prodValidate"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Name *</div>
@@ -797,15 +798,15 @@ export default {
 
     // Saving data to database
     async save() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate()) {  
+        
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
             iconText: "alert-circle",
             iconColor: "error",
             message: "Insufficient stocks",
-          };
-
+          }; 
           return;
         }
 
@@ -857,13 +858,19 @@ export default {
         });
     },
 
-    async prodValidate() {
+    async prodValidate( id='') {
       await axios
         .get("/api/outprod/prodValidate", {
-          params: { id: this.form.product_name.id },
+          params: { product_name: this.form.product_name.id, id: id  },
         })
-        .then((result) => {
-          this.getQuantity = result.data;
+        .then((result) => { 
+          if(id){ 
+          this.getQuantity = (result.data + this.form.quantity);
+          }else{ 
+            this.getQuantity = result.data;
+          }
+          console.log( result.data)
+          console.log(this.getQuantity)
         });
     },
 
@@ -890,6 +897,7 @@ export default {
         })
         .then((prod_name) => {
           this.prodnamelist = prod_name.data;
+
         });
     },
 
@@ -913,9 +921,9 @@ export default {
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-
-      this.prodValidate();
+  
       this.dialog = true;
+      this.prodValidate(row.id);
     },
 
     // Open Dialog Form

@@ -355,7 +355,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -949,6 +949,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

@@ -61,7 +61,7 @@ class ProductsListController extends Controller
     public function getSalesCount()
     {
         return tbl_pos::where(['branch'=> auth()->user()->branch])
-        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 23:59:59')) ])
+        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d") )) ])
                        ->count();
     }
     
@@ -89,7 +89,7 @@ class ProductsListController extends Controller
     public function getSalesToday()
     {
         $data = tbl_pos::where(['cashier'=> auth()->user()->id])
-                        ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 00:00:01')),  date("Y-m-d H:i:s", strtotime(date("Y-m-d") . ' 23:59:59')) ])
+                        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d") )) ])
                         ->get();
 
         $content['data'] = $data;

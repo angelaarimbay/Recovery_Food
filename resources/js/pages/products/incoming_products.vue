@@ -273,7 +273,7 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.product_full`]="{ item }"
+            <template v-slot:[`item.product_name.product_name`]="{ item }"
               >{{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
             >
@@ -606,7 +606,7 @@ export default {
       },
       {
         text: "PRODUCT NAME",
-        value: "product_full",
+        value: "product_name.product_name",
         class: "black--text",
       },
       {
