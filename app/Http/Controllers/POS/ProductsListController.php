@@ -65,8 +65,8 @@ class ProductsListController extends Controller
                        ->count();
         $amount =  tbl_pos::where(['branch'=> auth()->user()->branch])
         ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d") )) ])
-                       ->sum('amount');
-                       return ['count' => $count, 'amount' => $amount];
+                       ->get()->sum('sub_total');
+                       return ['count' => $count, 'amount' => number_format($amount,2)];
     }
     
     public function save(Request $t)

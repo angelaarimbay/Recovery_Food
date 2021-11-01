@@ -599,6 +599,7 @@ class ReportsController extends Controller
             $table = tbl_pos::with(["branch"])
             ->where('branch', auth()->user()->branch)
             ->where('cashier', auth()->user()->id)
+            ->whereBetween('created_at',[date("Y-m-d", strtotime(date('Y').'-'.date('m').'-01')), date('Y-m-t',strtotime(date("Y").'-'.date('m').'-'.date('t'))) ])
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
             ->orderBy('created_at', "desc") ->groupby(["branch","created_at","reference_no"])
              ;

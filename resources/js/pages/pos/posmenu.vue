@@ -215,7 +215,7 @@
             dark
             class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
           >
-            Sales History
+            Current Month Sales History
             <v-spacer></v-spacer>
             <v-tooltip bottom>
               <template #activator="data">
