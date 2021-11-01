@@ -60,9 +60,13 @@ class ProductsListController extends Controller
 
     public function getSalesCount()
     {
-        return tbl_pos::where(['branch'=> auth()->user()->branch])
+        $count =  tbl_pos::where(['branch'=> auth()->user()->branch])
         ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d") )) ])
                        ->count();
+        $amount =  tbl_pos::where(['branch'=> auth()->user()->branch])
+        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d") )) ])
+                       ->sum('amount');
+                       return ['count' => $count, 'amount' => $amount];
     }
     
     public function save(Request $t)
