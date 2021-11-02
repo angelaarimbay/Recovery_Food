@@ -295,7 +295,7 @@
     <div class="text-center pt-2">
       <v-pagination
         v-model="page"
-        :total-visible="5"
+        :total-visible="7"
         :length="table.last_page"
         color="red darken-2"
       ></v-pagination>
@@ -526,6 +526,14 @@ export default {
   }),
 
   created() {
+    this.dateFromSP = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      "YYYY-MM-DD"
+    );
+    this.dateUntilSP = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      "YYYY-MM-DD"
+    );
     this.getSalesReport();
     this.branchName();
 

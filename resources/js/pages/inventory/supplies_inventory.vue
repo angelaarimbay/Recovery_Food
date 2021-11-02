@@ -260,7 +260,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -420,7 +420,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9]+$/.test(v) || "Quantity must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -567,7 +567,6 @@ export default {
         }
         // Save or update data in the table
         await axios.post("/api/suppinven/save", this.form).then((result) => {
-          console.log(result.data);
           //if the value is true then save to database
           this.snackbar = {
             active: true,
@@ -599,7 +598,6 @@ export default {
         })
         .then((result) => {
           // If the value is true then get the data
-          console.log(result.data);
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
@@ -627,7 +625,6 @@ export default {
 
     // Editing/updating of row
     edit(row) {
-      console.log(row);
       this.getQuantity = row.quantity;
       this.form.category = row.category.id;
       this.form.supply_name = row.supply_name.id;

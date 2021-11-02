@@ -668,7 +668,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9]+$/.test(v) || "Quantity must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -870,7 +870,6 @@ export default {
               found += 1;
             }
           } else {
-            console.log(key);
             found += 1;
           }
         }
@@ -908,7 +907,6 @@ export default {
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
-              console.log(result.data);
               //if the value is true then save to database
               this.snackbar = {
                 active: true,
@@ -949,7 +947,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data)
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -965,15 +962,15 @@ export default {
       });
     },
 
-    async suppValidate(id ='') {
+    async suppValidate(id = "") {
       await axios
         .get("/api/osupp/suppValidate", { params: { id: id } })
         .then((result) => {
-            if(id){ 
-            this.getQuantity = (result.data + this.form.quantity);
-          }else{ 
+          if (id) {
+            this.getQuantity = result.data + this.form.quantity;
+          } else {
             this.getQuantity = result.data;
-          } 
+          }
           this.getQuantity = result.data;
         });
     },

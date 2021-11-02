@@ -330,7 +330,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -980,7 +980,6 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          console.log(key);
           if (key == "category") {
             if (this.currentdata.category) {
               if (

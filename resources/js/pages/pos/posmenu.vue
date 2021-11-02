@@ -178,7 +178,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table1.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -342,12 +342,16 @@
 
           <v-row no-gutters class="mt-2">
             <!-- Items Per Page -->
-            <v-col cols="6" xl="3" lg="3" md="3" class="my-auto">
+            <v-col cols="5" xl="3" lg="4" md="3" class="my-auto">
               <v-card-actions>
                 <span
                   style="color: #616161"
                   class="
-                    text-body-2 text-xl-h6 text-lg-h6 text-md-body-1 text-sm-body-1
+                    text-body-2
+                    text-xl-h6
+                    text-lg-h6
+                    text-md-body-2
+                    text-sm-body-2
                     mb-0
                   "
                   >Sales Count: {{ salescount.count }}</span
@@ -355,12 +359,16 @@
               </v-card-actions>
             </v-col>
 
-            <v-col cols="6" xl="5" lg="5" md="3" class="my-auto">
+            <v-col cols="7" xl="5" lg="4" md="4" class="my-auto">
               <v-card-actions>
                 <span
                   style="color: #616161"
                   class="
-                    text-body-2 text-xl-h6 text-lg-h6 text-md-body-1 text-sm-body-1
+                    text-body-2
+                    text-xl-h6
+                    text-lg-h6
+                    text-md-body-2
+                    text-sm-body-2
                     mb-0
                   "
                   >Total Sales: {{ salescount.amount }}</span
@@ -379,7 +387,7 @@
                   v-model="mode"
                   :items="['Walk-In', 'Take-Out']"
                   hide-details
-                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-0 mb-sm-2"
+                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-0 mb-sm-2 ml-auto"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Mode</div>
@@ -437,7 +445,7 @@
           <!-- <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table2.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -529,7 +537,7 @@
                   @focus="clearD"
                   @blur="resetD"
                   autocomplete="off"
-                  :disabled="!disabled"
+                  :disabled="!payment"
                   @keydown="discountKeydown($event)"
                 >
                   <template slot="label">
@@ -760,7 +768,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9]+$/.test(v) || "Quantity must be valid",
     ],
     formRulesPrice: [
       (v) => !!v || "This is required",
@@ -920,7 +928,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -1021,7 +1028,6 @@ export default {
     async getSalesCount() {
       await axios.get("/api/sales_report/sales_count").then((result) => {
         this.salescount = result.data;
-
       });
     },
 
