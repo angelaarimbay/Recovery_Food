@@ -227,6 +227,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supply_name.net_price`]="{ item }"
+              >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
+            </template>
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name.supply_name }}
               {{ item.supply_name.description }}</template
@@ -515,9 +518,7 @@ export default {
 
   // Onload
   created() {
-    if (
-      this.user.permissionslist.includes("Access Branch Inventory")
-    ) {
+    if (this.user.permissionslist.includes("Access Branch Inventory")) {
       this.get();
       this.suppCat();
     } else {

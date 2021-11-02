@@ -265,6 +265,15 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.with_vat_price`]="{ item }"
+              >{{ getFormatCurrency(item.with_vat_price, "0,0.00") }}
+            </template>
+            <template v-slot:[`item.supply_name.net_price`]="{ item }"
+              >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
+            </template>
+            <template v-slot:[`item.amount`]="{ item }"
+              >{{ getFormatCurrency(item.amount, "0,0.00") }}
+            </template>
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name.supply_name }}
               {{ item.supply_name.description }}</template
