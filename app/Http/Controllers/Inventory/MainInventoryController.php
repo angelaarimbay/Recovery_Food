@@ -19,25 +19,31 @@ class MainInventoryController extends Controller
         $this->middleware('auth');
     }
     public function get(Request $t)
-    {
+    { 
         $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
-        $table = tbl_masterlistsupp::whereRaw($where)->get();
+        
 
-        $date11 =  date("Y-m-d H:i:s", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-01". ' 00:00:00'))) ;
-        $date22 = cal_days_in_month(CAL_GREGORIAN, (date("m")-1), date("Y"));
-        $date22 = date("Y-m-d H:i:s", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-".$date22.  ' 23:59:59')));
-  
-        $date1 =  date("Y-m-d H:i:s", strtotime(date("Y")."-".date("m")."-01". ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d H:i:s", strtotime(date("Y").'-'.date("m").'-'.$date2.' 23:59:59'));
+        $table = tbl_masterlistsupp::whereRaw($where);
+
+        if ($t->search) { // If has value
+            $table = $table->where("supply_name", "like", "%".$t->search."%");
+        }
+
+        //last month
+        $date11 =  date("Y-m-d 00:00:00", strtotime("-1 month", strtotime(date("Y")."-". date("m") ."-01"))); 
+          $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-".date("t"))));
+        
+        //for the month
+        $date1 =  date("Y-m-d 00:00:00", strtotime(date("Y")."-".date("m")."-01" )); 
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y").'-'.date("m").'-'.date("t")));
         
         $return = [];
         $row = 1;
-        foreach ($table as $key => $value) {
+        foreach ($table->get() as $key => $value) {
             $temp=[];
             $temp['row'] = $row++ ;
-            $temp['category'] =  tbl_suppcat::where("id",$value->category)->first()->supply_cat_name ;
-            $temp['supply_name'] =  $value->supply_name . ' '. $value->description ; 
+            $temp['category'] =  tbl_suppcat::where("id", $value->category)->first()->supply_cat_name ;
+            $temp['supply_name'] =  $value->supply_name . ' '. $value->description ;
             $temp['unit'] =  $value->unit ;
             $temp['net_price'] =  $value->net_price ;
             $temp['lead_time'] =  $value->lead_time;
@@ -126,7 +132,7 @@ class MainInventoryController extends Controller
             $aa = clone $incoming;
             $temp['ending_q'] =  ($a->sum('quantity') - $b->sum('quantity'));
 
-            if ($temp['begining_q'] > 0) {
+            if ($aa->sum('amount') > 0) {
                 $temp['ending_a'] =  number_format($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
                 $temp['ending_a'] = 0;
@@ -135,7 +141,7 @@ class MainInventoryController extends Controller
             $a = clone $incoming_and_past;
             $temp['consumption_q'] =  $a->sum('quantity') - $temp['ending_q'];
 
-            if ($temp['begining_q'] > 0) {
+            if ($aa->sum('amount')> 0) {
                 $temp['consumption_a'] =  number_format($temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
                 $temp['consumption_a'] = 0;
@@ -145,11 +151,12 @@ class MainInventoryController extends Controller
             $b = clone $outgoing;
             $temp['ideal_q'] =  $a->sum('quantity') - $b->sum('quantity')  ;
             $aa = clone $incoming;
-            if ($temp['ideal_q'] > 0) {
+            if ($aa->sum('amount')  > 0) {
                 $temp['ideal_a'] =  number_format($temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
                 $temp['ideal_a'] = 0;
             }
+            
 
             $temp['variance_q'] = $temp['ending_q'] -  $temp['ideal_q'];
             $aa = clone $incoming;

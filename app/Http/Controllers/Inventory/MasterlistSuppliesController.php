@@ -22,7 +22,7 @@ class MasterlistSuppliesController extends Controller
         
       
         $table_clone = clone $table;
-        if ($table_clone->where("id",$data->id)->count()>0) {
+        if ($table_clone->where("id", $data->id)->count()>0) {
             // Update
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
@@ -41,63 +41,62 @@ class MasterlistSuppliesController extends Controller
                  "minimum_order_quantity"=>$data->minimum_order_quantity,
                 ]
             );
-
-             
         } else {
             $supply='';
-            if(is_array($data->supply_name)){
-                 $supply = $data->supply_name['supply_name'];
-            }else{
+            if (is_array($data->supply_name)) {
+                $supply = $data->supply_name['supply_name'];
+            } else {
                 $supply = $data->supply_name;
             }
   
             // return  $data->except('supply_name') ;
             tbl_masterlistsupp::create(
-                $data->except('supply_name') + 
-                [ 
+                $data->except('supply_name') +
+                [
                  'supply_name'=>$supply] //purpose is when same item sum quantity
             );
         }
         return 0;
     }
     public function suppName(Request $t)
-    { 
+    {
         return tbl_masterlistsupp::where("supplier", $t->supplier)->where("status", 1)->get();
     }
 
     public function get(Request $t)
     {
-        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0").
-                 ($t->search?" and supply_name like '%".$t->search."%'":'');
+        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
         
-        // return $where; 
-         $table = tbl_masterlistsupp::with("category",'supplier')
-        ->whereRaw($where)
-        ->selectRaw("*, @row:=@row+1 as row ")
-        ->get();
+        // return $where;
+        $table = tbl_masterlistsupp::with("category", 'supplier')
+        ->whereRaw($where)  ;
+ 
+        if ($t->search) { // If has value
+            $table = $table->where("supply_name", "like", "%".$t->search."%");
+        }
 
         $return = [];
-        foreach ($table as $key => $value) { 
+        foreach ($table->get() as $key => $value) {
             $temp = [];
             $temp['row']  = $key+1;
-            $temp['id'] = $value->id; 
-            $temp['status'] = $value->status;  
-            $temp['supplier'] = $value->supplier_name_details;  
-            $temp['category'] = $value->category_details;  
-            $temp['unit'] = $value->unit;  
-            $temp['vat'] = $value->vat;  
-            $temp['vatable'] = $value->vatable;   
-            $temp['supply_name'] = $value->supply_name;  
-            $temp['description'] = $value->description;  
-            $temp['format_net_price'] = $value->format_net_price;  
-            $temp['net_price'] = $value->net_price;    
-            $temp['lead_time'] = $value->lead_time;  
-            $temp['order_frequency'] = $value->order_frequency;  
-            $temp['minimum_order_quantity'] = $value->minimum_order_quantity;   
-            $temp['without_vat_price'] = number_format($value->without_vat_price,2);   
-            $temp['with_vat_price'] = number_format($value->with_vat_price,2);   
-            array_push($return,$temp);
-        }   
+            $temp['id'] = $value->id;
+            $temp['status'] = $value->status;
+            $temp['supplier'] = $value->supplier_name_details;
+            $temp['category'] = $value->category_details;
+            $temp['unit'] = $value->unit;
+            $temp['vat'] = $value->vat;
+            $temp['vatable'] = $value->vatable;
+            $temp['supply_name'] = $value->supply_name;
+            $temp['description'] = $value->description;
+            $temp['format_net_price'] = $value->format_net_price;
+            $temp['net_price'] = $value->net_price;
+            $temp['lead_time'] = $value->lead_time;
+            $temp['order_frequency'] = $value->order_frequency;
+            $temp['minimum_order_quantity'] = $value->minimum_order_quantity;
+            $temp['without_vat_price'] = number_format($value->without_vat_price, 2);
+            $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
+            array_push($return, $temp);
+        }
 
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
@@ -113,12 +112,10 @@ class MasterlistSuppliesController extends Controller
         } catch (\Throwable $th) {
             return false;
         }
-       
     }
     public function sum(Request $t)
     {
         //  ->where("date", date("Y-m-d", strtotime($t->date) ) )
         return tbl_masterlistsupp::where("id", $t->id)->sum("net_price");
     }
-
 }

@@ -324,7 +324,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -480,6 +480,7 @@
                         dense
                         item-text="product_name"
                         return-object
+                        @change="prodValidate"
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Product Name *</div>
@@ -595,7 +596,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9]+$/.test(v) || "Quantity must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -692,6 +693,14 @@ export default {
   // Onload
   created() {
     if (this.user.permissionslist.includes("Access Products")) {
+      this.dateFrom = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        "YYYY-MM-DD"
+      );
+      this.dateUntil = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+        "YYYY-MM-DD"
+      );
       this.get();
       this.prodCat();
       this.prodSubCat();
@@ -744,7 +753,9 @@ export default {
             }
           } else if (key == "product_name") {
             if (this.currentdata.product_name) {
-              if (this.currentdata.product_name.id != this.form.product_name.id) {
+              if (
+                this.currentdata.product_name.id != this.form.product_name.id
+              ) {
                 found += 1;
               }
             }
@@ -766,7 +777,7 @@ export default {
             ) {
               found += 1;
             }
-          } else { 
+          } else {
             found += 1;
           }
         }
@@ -787,15 +798,15 @@ export default {
 
     // Saving data to database
     async save() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate()) {  
+        
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
             iconText: "alert-circle",
             iconColor: "error",
             message: "Insufficient stocks",
-          };
-
+          }; 
           return;
         }
 
@@ -837,7 +848,7 @@ export default {
             dateUntil: this.dateUntil,
           },
         })
-        .then((result) => {
+        .then((result) => { 
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -847,16 +858,19 @@ export default {
         });
     },
 
-    async prodValidate() {
+    async prodValidate( id='') {
       await axios
         .get("/api/outprod/prodValidate", {
-          params: { id: this.form.product_name.id },
+          params: { product_name: this.form.product_name.id, id: id  },
         })
-        .then((result) => {
-          this.getQuantity = result.data;
+        .then((result) => { 
+          if(id){ 
+            this.getQuantity = (result.data + this.form.quantity);
+          }else{ 
+            this.getQuantity = result.data;
+          } 
         });
     },
-    
 
     async prodCat() {
       await axios.get("/api/outprod/prodCat").then((prod_cat) => {
@@ -881,6 +895,7 @@ export default {
         })
         .then((prod_name) => {
           this.prodnamelist = prod_name.data;
+
         });
     },
 
@@ -904,9 +919,9 @@ export default {
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-
-        this.prodValidate();
+  
       this.dialog = true;
+      this.prodValidate(row.id);
     },
 
     // Open Dialog Form

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\tbl_suppliesinventory; 
+use App\Models\tbl_suppliesinventory;
 use App\Models\tbl_outgoingsupp;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -13,7 +13,8 @@ class SuppliesInventoryController extends Controller
 {
     //
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         tbl_suppliesinventory::create(
             ['ref'=>$request->ref,
              'category'=> $request->category,
@@ -22,7 +23,8 @@ class SuppliesInventoryController extends Controller
              'outgoing_date'=>date("Y-m-d h:i:s"),
              'branch'=>auth()->user()->branch,
              'user'=>auth()->user()->id,
-        ]); 
+        ]
+        );
     }
     
     public function get(Request $t)
@@ -31,39 +33,38 @@ class SuppliesInventoryController extends Controller
                 ($t->branch? " and requesting_branch=".$t->branch:"");
  
         
-         $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])  
+        $table = tbl_outgoingsupp::with(["category","supply_name","requesting_branch"])
         ->selectRaw("max(id) as id, category, supply_name, requesting_branch, sum(quantity) as quantity")
-        ->groupby(["category","supply_name","requesting_branch"]) 
-        ->whereRaw($where)->where("requesting_branch",auth()->user()->branch)  ->where("supply_name", "!=", null);
+        ->groupby(["category","supply_name","requesting_branch"])
+        ->whereRaw($where)->where("requesting_branch", auth()->user()->branch)  ->where("supply_name", "!=", null);
    
 
         if ($t->dateFrom && $t->dateUntil) {
-            $table =  $table->whereBetween("outgoing_date", [date("Y-m-d H:i:s", strtotime($t->dateFrom . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntil . ' 11:59:59'))]);
-         }
+            $table =  $table->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom )), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
+        }
  
-        if ($t->search) { // If has value 
+        if ($t->search) { // If has value
             $table  = $table->whereHas('supply_name', function ($q) use ($t) {
                 $q->where('supply_name', 'like', "%".$t->search."%");
             });
-        } 
+        }
        
         $return = [];
-        foreach ($table->get() as $key => $value) { 
+        foreach ($table->get() as $key => $value) {
             $temp = [];
-            $temp['row']  = $key+1;  
-            $temp['id'] = $value->id;    
-            $temp['category'] = $value->category_details;    
-            $temp['quantity'] = $value->quantity -  tbl_suppliesinventory::where([ 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity') ;  
-            $temp['requesting_branch'] = $value->requesting_branch_details;  
-            $temp['supply_name'] = $value->supply_name_details;  
-            $temp['outgoing_amount'] = number_format($value->with_vat_price *  ($value->quantity -  tbl_suppliesinventory::where([ 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity') ),2) ;  
-            $temp['with_vat_price'] = number_format($value->with_vat_price,2) ;  
-            $temp['without_vat_price'] = number_format($value->without_vat_price,2) ;  
-            $temp['fluctiation'] = number_format($value->fluctiation,2) ;  
-           array_push($return,$temp);
-        }   
+            $temp['row']  = $key+1;
+            $temp['id'] = $value->id;
+            $temp['category'] = $value->category_details;
+            $temp['quantity'] = $value->quantity -  tbl_suppliesinventory::where([ 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity') ;
+            $temp['requesting_branch'] = $value->requesting_branch_details;
+            $temp['supply_name'] = $value->supply_name_details;
+            $temp['outgoing_amount'] = number_format($value->with_vat_price *  ($value->quantity -  tbl_suppliesinventory::where([ 'branch'=>auth()->user()->branch, 'ref'=>$value->id ])->sum('quantity')), 2) ;
+            $temp['with_vat_price'] = number_format($value->with_vat_price, 2) ;
+            $temp['without_vat_price'] = number_format($value->without_vat_price, 2) ;
+            $temp['fluctiation'] = number_format($value->fluctiation, 2) ;
+            array_push($return, $temp);
+        }
         $items =   Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
-
 }

@@ -85,7 +85,7 @@ class ReportsController extends Controller
     {
         DB::statement(DB::raw("set @row:=0"));
         $data = tbl_incomingsupp::where("category", $t->category)
-                                    ->whereBetween("incoming_date", [$t->from,  $t->to])
+                                    ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)),  date("Y-m-d 23:59:59", strtotime($t->to))])
                                     ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
@@ -131,7 +131,7 @@ class ReportsController extends Controller
         DB::statement(DB::raw("set @row:=0"));
         $data = tbl_outgoingsupp::where("requesting_branch", $t->branch)
                                     ->where("category", $t->category)
-                                    ->whereBetween("outgoing_date", [ $t->from, $t->to ])
+                                    ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)),  date("Y-m-d 23:59:59", strtotime($t->to))])
                                     ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
@@ -173,25 +173,20 @@ class ReportsController extends Controller
     // Main Inventory Report - OK
     public function MainInventoryReport(Request $t)
     {
-        $data = tbl_masterlistsupp::where("category", $t->category)->get();
-
-        $date11 =  date("Y-m-d H:i:s", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-01". ' 00:00:00'))) ;
-        $date22 = cal_days_in_month(CAL_GREGORIAN, (date("m")-1), date("Y"));
-        $date22 = date("Y-m-d H:i:s", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-".$date22.  ' 23:59:59')));
-    
-
-        $date1 =  date("Y-m-d H:i:s", strtotime(date("Y")."-".date("m")."-01". ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d H:i:s", strtotime(date("Y").'-'.date("m").'-'.$date2.' 23:59:59'));
-        
+        //last month
+        $date11 =  date("Y-m-d 00:00:00", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-01"))) ;
+        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y")."-".date("m")."-".date("t"))));
+        //this month
+        $date1 =  date("Y-m-d 00:00:00", strtotime(date("Y")."-".date("m")."-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y").'-'.date("m").'-'.date("t")));
         
         $return = [];
         $row = 1;
-        foreach ($data as $key => $value) {
+        foreach (tbl_masterlistsupp::where("category", $t->category)->get() as $key => $value) {
             $temp=[];
             $temp['row'] = $row++ ;
             $temp['category'] =  tbl_suppcat::where("id", $value->category)->first()->supply_cat_name ;
-            $temp['supply_name'] =  $value->supply_name . ' '.  $value->description ; 
+            $temp['supply_name'] =  $value->supply_name . ' '.  $value->description ;
             $temp['unit'] =  $value->unit ;
             $temp['net_price'] =  $value->net_price ;
             $temp['lead_time'] =  $value->lead_time;
@@ -280,7 +275,7 @@ class ReportsController extends Controller
             $aa = clone $incoming;
             $temp['ending_q'] =  ($a->sum('quantity') - $b->sum('quantity'));
 
-            if ($temp['beginning_q'] > 0) {
+            if ($aa->sum('amount') > 0) {
                 $temp['ending_a'] =  number_format($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
                 $temp['ending_a'] = 0;
@@ -289,7 +284,7 @@ class ReportsController extends Controller
             $a = clone $incoming_and_past;
             $temp['consumption_q'] =  $a->sum('quantity') - $temp['ending_q'];
 
-            if ($temp['beginning_q'] > 0) {
+            if ($aa->sum('amount')> 0) {
                 $temp['consumption_a'] =  number_format($temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
                 $temp['consumption_a'] = 0;
@@ -297,9 +292,9 @@ class ReportsController extends Controller
         
             $a = clone $incoming_and_past;
             $b = clone $outgoing;
-            $temp['ideal_q'] =  $a->sum('quantity') - $b->sum('quantity')  ;
+            $temp['ideal_q'] =  $a->sum('quantity') - $b->sum('quantity')  ;//total from last month and this month - outgoing this month
             $aa = clone $incoming;
-            if ($temp['ideal_q'] > 0) {
+            if ($aa->sum('amount') > 0) {
                 $temp['ideal_a'] =  number_format($temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
                 $temp['ideal_a'] = 0;
@@ -307,7 +302,7 @@ class ReportsController extends Controller
 
             $temp['variance_q'] = $temp['ending_q'] -  $temp['ideal_q'];
             $aa = clone $incoming;
-            if ($temp['variance_q']  > 0) {
+            if ($aa->sum('amount') > 0) {
                 $temp['variance_a'] =  number_format($temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'))), 2);
             } else {
                 $temp['variance_a'] = 0;
@@ -379,34 +374,30 @@ class ReportsController extends Controller
     // Inventory Summary Report - OK
     public function InventorySummaryReport(Request $t)
     {
-        $data_temp = tbl_suppcat::all();
         // Laravel default format of date and time, use other format will handle exemptions
-  
-        $date11 = date("Y-m-d H:i:s", strtotime("-1 month", strtotime($t->year."-".$t->month."-01". ' 00:00:01'))) ;
-        $date22 = cal_days_in_month(CAL_GREGORIAN, ($t->month-1), $t->year);
-        $date22 = date("Y-m-d H:i:s", strtotime("-1 month", strtotime($t->year."-".$t->month."-".$date22.  ' 23:59:59')));
-
-
-        $date1 = date("Y-m-d H:i:s", strtotime($t->year."-".$t->month."-01". ' 00:00:01'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, $t->month, $t->year);
-        $date2 = date("Y-m-d H:i:s", strtotime($t->year.'-'.$t->month.'-'.$date2.' 23:59:59'));
+        //last month
+        $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime($t->year."-".$t->month."-01"))) ;
+        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($t->year."-".$t->month."-".date("t"))));
+        //this month
+        $date1 = date("Y-m-d 00:00:00", strtotime($t->year."-".$t->month."-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime($t->year.'-'.$t->month.'-'.date("t")));
          
         $data = [];
-        foreach ($data_temp as $key => $value) {
+        foreach (tbl_suppcat::all() as $key => $value) {
             $temp = [];
             $temp['category'] = $value->supply_cat_name;
 
-              $temp['beginning'] =   tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") ;
+            $temp['beginning'] =   tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") ;
             // Get incoming based on from, to and per category, then sum amounts
-             $temp['incoming'] =  tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") ;
+            $temp['incoming'] =  tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") ;
             // beg + in
-             $temp['total'] =  tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount")  ;
+            $temp['total'] =  tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount")  ;
             // Get outgoing based on from, to and per category, then sum outgoing_amount based on masterlist net
-             $temp['outgoing'] =  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount") ;
+            $temp['outgoing'] =  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount") ;
             // stocks = total - outgoing
-             $temp['stocks'] =  (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount")) -tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount") ;
+            $temp['stocks'] =  (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount")) -tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount") ;
             try {
-                $temp['ending'] = 
+                $temp['ending'] =
                     (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11,$date2])->get()->sum("quantity") -tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity")) *
                 (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity"))
                   ;
@@ -432,29 +423,25 @@ class ReportsController extends Controller
         
       
             array_push($data, $temp);
-
-
         }
 
         
         $content = [];
         $temp=[];
-         foreach ($data as $key => $value) {
-        
-             foreach ($value as $key1 => $value1) { 
-                 if ($key1 != 'category') {  
-                  $temp[$key1]  =   ($temp[$key1]??0) +  $value[$key1]; 
-                 }else{
-                     if($t->type == 'excel'){
+        foreach ($data as $key => $value) {
+            foreach ($value as $key1 => $value1) {
+                if ($key1 != 'category') {
+                    $temp[$key1]  =   ($temp[$key1]??0) +  $value[$key1];
+                } else {
+                    if ($t->type == 'excel') {
                         $temp[$key1] = 'GRAND TOTALS';
-
-                     }else{ 
+                    } else {
                         $temp[$key1] = '<b>GRAND TOTALS</b>';
-                     }
-                 }
-             } 
-         }
-         array_push($data,$temp);  
+                    }
+                }
+            }
+        }
+        array_push($data, $temp);
         //  return $data;
         switch ($t->type) {
         case 'pdf':
@@ -487,7 +474,7 @@ class ReportsController extends Controller
         DB::statement(DB::raw("set @row:=0"));
        
         $data = tbl_pos::where("branch", $t->branch)
-            ->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+            ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
             ->groupby(["branch","created_at","reference_no"])
             ->get();
@@ -528,7 +515,7 @@ class ReportsController extends Controller
     public function TransactionReport(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_pos::whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+        $data = tbl_pos::whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                        ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
@@ -568,7 +555,7 @@ class ReportsController extends Controller
     public function PurchaseOrderReport(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_purchaseord::whereBetween('incoming_date', [date("Y-m-d H:i:s", strtotime($t->from . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->to . ' 11:59:59'))])
+        $data = tbl_purchaseord::whereBetween('incoming_date', [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                                         ->selectRaw("*, @row:=@row+1 as row ")->get();
 
         switch ($t->type) {
@@ -609,6 +596,7 @@ class ReportsController extends Controller
             $table = tbl_pos::with(["branch"])
             ->where('branch', auth()->user()->branch)
             ->where('cashier', auth()->user()->id)
+            ->whereBetween('created_at', [date("Y-m-d", strtotime(date('Y').'-'.date('m').'-01')), date('Y-m-t', strtotime(date("Y").'-'.date('m').'-'.date('t'))) ])
             ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
             ->orderBy('created_at', "desc") ->groupby(["branch","created_at","reference_no"])
              ;
@@ -627,7 +615,7 @@ class ReportsController extends Controller
             $table->where("reference_no", "like", "%".$t->search."%");
         }
         if ($t->dateFromSP && $t->dateUntilSP) {
-            $table->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($t->dateFromSP . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($t->dateUntilSP . ' 11:59:59'))]);
+            $table->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->dateFromSP)), date("Y-m-d 23:59:59", strtotime($t->dateUntilSP))]);
         }
 
         $return = [];

@@ -338,7 +338,7 @@
               <div class="text-center pt-2 d-none">
                 <v-pagination
                   v-model="page3"
-                  :total-visible="5"
+                  :total-visible="7"
                   :length="tableAddRoles.last_page"
                   color="red darken-2"
                 ></v-pagination>
@@ -548,7 +548,7 @@
                 <div class="text-center pt-2">
                   <v-pagination
                     v-model="page1"
-                    :total-visible="5"
+                    :total-visible="7"
                     :length="tableRoles.last_page"
                     color="red darken-2"
                   ></v-pagination>
@@ -617,7 +617,7 @@
                 <div class="text-center pt-2">
                   <v-pagination
                     v-model="page4"
-                    :total-visible="5"
+                    :total-visible="7"
                     :length="tablePermissions.last_page"
                     color="red darken-2"
                   ></v-pagination>
@@ -692,7 +692,7 @@
                 <div class="text-center pt-2">
                   <v-pagination
                     v-model="page2"
-                    :total-visible="5"
+                    :total-visible="7"
                     :length="tableUserrole.last_page"
                     color="red darken-2"
                   ></v-pagination>
@@ -734,6 +734,16 @@
 .v-input--selection-controls__input .mdi-checkbox-marked,
 .v-input--selection-controls__input .mdi-minus-box {
   color: #d32f2f !important;
+}
+.v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.v-pagination__navigation:disabled {
+  background-color: #000000 !important;
 }
 </style>
 

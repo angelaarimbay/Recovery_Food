@@ -306,7 +306,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -720,7 +720,7 @@ export default {
     pageCount: 0,
     itemsPerPage: 5,
     dateFrom: null,
-    dateUntil:  null,
+    dateUntil: null,
     incomingDate: null,
     date1: false,
     date2: false,
@@ -729,9 +729,15 @@ export default {
 
   // Onload
   created() {
-    if (this.user.permissionslist.includes("Access Inventory")) { 
-      this.dateFrom = this.getFormatDate( new Date( new Date(). getFullYear(), new Date(). getMonth() ,1),"YYYY-MM-DD")
-      this.dateUntil = this.getFormatDate( new Date( new Date(). getFullYear(), new Date(). getMonth() + 1,0),"YYYY-MM-DD")
+    if (this.user.permissionslist.includes("Access Inventory")) {
+      this.dateFrom = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        "YYYY-MM-DD"
+      );
+      this.dateUntil = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+        "YYYY-MM-DD"
+      );
       this.get();
       this.suppCat();
       this.suppliers();
@@ -797,12 +803,13 @@ export default {
               }
             }
           } else if (key == "amount") {
-            if(this.currentdata.amount){
-              if (this.currentdata.amount.replace(",", "") != this.form.amount) {
+            if (this.currentdata.amount) {
+              if (
+                this.currentdata.amount.replace(",", "") != this.form.amount
+              ) {
                 found += 1;
               }
             }
-          
           } else if (key == "incoming_date") {
             if (
               this.getFormatDate(

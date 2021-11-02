@@ -303,7 +303,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -1065,8 +1065,7 @@ export default {
 
     // View Branch Info
     openViewDialog(row) {
-      this.currentdata = JSON.parse(JSON.stringify(row));
-      console.log(this.currentdata);
+      this.currentdata = JSON.parse(JSON.stringify(row));  
       this.form.id = row.id;
       this.viewdialog = true;
     },
@@ -1090,6 +1089,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data)
           //if the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

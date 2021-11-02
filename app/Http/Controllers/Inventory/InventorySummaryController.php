@@ -23,20 +23,14 @@ class InventorySummaryController extends Controller
         $data = tbl_suppcat::all();
         // Laravel default format of date and time, use other format will handle exemptions
   
-        $date11 =  date("Y-m-d H:i:s",   strtotime("-1 month", strtotime( $request->year."-".$request->month."-01". ' 00:00:01'))) ;
-        $date22 = cal_days_in_month(CAL_GREGORIAN, ($request->month-1), $request->year);
-        $date22 = date("Y-m-d H:i:s",   strtotime("-1 month", strtotime($request->year."-".$request->month."-".$date22.  ' 23:59:59')));
-
-
-        $date1 =  date("Y-m-d H:i:s", strtotime( $request->year."-".$request->month."-01". ' 00:00:01'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, $request->month, $request->year);
-        $date2 = date("Y-m-d H:i:s", strtotime($request->year.'-'.$request->month.'-'.$date2.' 23:59:59'));
+        //last month
+        $date11 =  date("Y-m-d 00:00:00",   strtotime("-1 month", strtotime( $request->year."-".$request->month."-01"))) ; 
+        $date22 = date("Y-m-t 23:59:59",   strtotime("-1 month", strtotime($request->year."-".$request->month."-".date("t") )));
+        // this month
+        $date1 =  date("Y-m-d 00:00:00", strtotime( $request->year."-".$request->month."-01")); 
+        $date2 = date("Y-m-t 23:59:59", strtotime($request->year.'-'.$request->month.'-'.date("t").' '));
         
-     
- 
-
-
-
+      
 
            // Set array for temporary table
         $return = [];
@@ -92,10 +86,7 @@ class InventorySummaryController extends Controller
                 -  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount"));
             } catch (\Throwable $th) {
                 $temp['variance_orig'] =    0 ;
-            }
-           
-           
-             
+            } 
             try {
                 $temp['fluctuation'] =  number_format($temp['ending'] -    (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("quantity") -tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date22])->get()->sum("quantity") ) *  
                 (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1,$date2])->get()->sum("quantity"))
@@ -111,15 +102,9 @@ class InventorySummaryController extends Controller
                 -  tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1,$date2])->get()->sum("amount"));
             } catch (\Throwable $th) {
                 $temp['fluctuation_orig'] =    0 ;
-            }
-      
-                   
-       
-
-         
+            }  
           array_push($return, $temp);
-        }
-
+        } 
         return $return;
     }
 }

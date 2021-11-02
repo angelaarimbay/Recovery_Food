@@ -69,7 +69,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('osupp/get', 'Inventory\OutgoingSuppliesController@get');
         Route::get('osupp/suppCat', 'Inventory\OutgoingSuppliesController@suppCat');
         Route::get('osupp/suppName', 'Inventory\OutgoingSuppliesController@suppName');
-        Route::get('osupp/branchName', 'Inventory\OutgoingSuppliesController@branchName'); 
+        Route::get('osupp/branchName', 'Inventory\OutgoingSuppliesController@branchName');
         Route::get('osupp/suppValidate', 'Inventory\OutgoingSuppliesController@validateQuantity');
 
         // Main Inventory
@@ -123,13 +123,13 @@ use Illuminate\Support\Facades\Route;
 
         Route::get('settings/company/logo/get', 'Settings\SettingsController@getLogo');
 
-        Route::post('settings/vat/store', 'Settings\SettingsController@storeVat'); 
+        Route::post('settings/vat/store', 'Settings\SettingsController@storeVat');
         Route::get('settings/vat/get', 'Settings\SettingsController@getVat');
 
 
-        // User Accounts 
+        // User Accounts
         Route::post('useracc/save', 'UserController@save');
-        Route::get('useracc/get', 'UserController@get'); 
+        Route::get('useracc/get', 'UserController@get');
         Route::get('useracc/getPermission', 'UserController@getPermission');
         Route::get('useracc/getRoles', 'UserController@getRoles');
 

@@ -355,7 +355,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -790,7 +790,14 @@ export default {
           this.headers.splice(this.headers.indexOf(this.headers[8]), 1);
         }
       }
-
+      this.dateFrom = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        "YYYY-MM-DD"
+      );
+      this.dateUntil = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+        "YYYY-MM-DD"
+      );
       this.get();
       this.suppCat();
       this.branchName();
@@ -901,7 +908,7 @@ export default {
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
-              console.log(result.data)
+              console.log(result.data);
               //if the value is true then save to database
               this.snackbar = {
                 active: true,
@@ -942,6 +949,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -957,10 +965,15 @@ export default {
       });
     },
 
-    async suppValidate(item) {
+    async suppValidate(id = "") {
       await axios
-        .get("/api/osupp/suppValidate", { params: { id: item.id } })
+        .get("/api/osupp/suppValidate", { params: { id: id } })
         .then((result) => {
+          if (id) {
+            this.getQuantity = result.data + this.form.quantity;
+          } else {
+            this.getQuantity = result.data;
+          }
           this.getQuantity = result.data;
         });
     },
@@ -995,7 +1008,7 @@ export default {
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-      this.suppValidate(row.supply_name);
+      this.suppValidate(row.supply_name.id);
       this.dialog = true;
     },
 

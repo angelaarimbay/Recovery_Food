@@ -97,8 +97,8 @@
                 <td style="width: auto"> {{ $items['supply_name'] }}</td>
                 <td style="width: auto"> {{ $items['unit'] }} </td>
                 <td style="width: auto"> {{ number_format($items['net_price']??0,2) }} </td>
-                <td style="width: auto"> {{ $items['begining_q']??0 }} </td>
-                <td style="width: auto"> {{ number_format($items['begining_a']??0,2)  }} </td>
+                <td style="width: auto"> {{ $items['beginning_q']??0 }} </td>
+                <td style="width: auto"> {{ $items['beginning_a']??0   }} </td>
                 <td style="width: auto"> {{ $items['incoming_q'] }} </td>
                 <td style="width: auto"> {{ $items['incoming_a'] }} </td>
                 <td style="width: auto"> {{ $items['total_q'] }} </td>
