@@ -1,5 +1,8 @@
 <html>
 <style>
+    body {
+        text-transform: uppercase;
+    }
     table, td, th {
         padding: 3px;
         border-collapse: collapse;
@@ -9,7 +12,6 @@
         text-align: center;
         font-size: 8px;
         font-family: 'Courier New', monospace;
-        text-transform: uppercase;
         margin: 1px;
     }
 
@@ -24,7 +26,6 @@
         text-align: center;
         font-size: 8px;
         font-family: 'Courier New', monospace;
-        text-transform: uppercase;
         margin: 1px;
     }
 
@@ -38,9 +39,9 @@
     .body {
         font-size: 8px;
         font-family: 'Courier New', monospace;
-        text-transform: uppercase;
         margin: 1px;
         page-break-inside: avoid;
+        text-transform: uppercase;
     }
     
     .divider {
@@ -48,13 +49,12 @@
         color: transparent;
     }
 </style>
-
     <body style="height: 100%">
         <p class="header"> Recovery Food </p>
         <p class="header"> {{ $branch  }} </p>
         <p class="header_location"> {{ $branch_location }} </p>
 
-        <p style="font-size: 8px; font-family: 'Courier New', monospace; margin-top: 15px; margin-bottom: 0px"> {{ $cashier_name_details }} </p>
+        <p style="font-size: 8px; font-family: 'Courier New', monospace; margin-top: 15px; margin-bottom: 0px">Cashier: {{ $cashier_name_details }} </p>
         <hr class="divider" />
         <p class="header"> {{ date("M-d-Y h:i A", strtotime($created_at)) }} </p>
         <hr class="divider" />
