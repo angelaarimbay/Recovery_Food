@@ -1038,7 +1038,8 @@ export default {
 
     async getSalesCount() {
       await axios.get("/api/sales_report/sales_count").then((result) => {
-        this.salescount = result.data;
+     console.log(result.data)
+     this.salescount = result.data;
       });
     },
 

@@ -1070,6 +1070,7 @@ export default {
         })
         .then((result) => {
           // If the value is true then get the data
+          
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })

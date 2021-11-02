@@ -43,6 +43,7 @@
                 style="  width: 50px;"></img>
     </div>
     <p class="header">Outgoing Supplies Report</p>
+    <p class="header">@if( count($data[0]) > 0) {{ $data[0][0]['branch'] }} @endif</p>
  
     <table style="border:none; width: 100%"> 
        <tr> 
@@ -65,7 +66,6 @@
                     <td style=" border: none; width: auto"></td>
                     <td style=" border: none; width: auto"></td>
                     <td style=" border: none; width: auto"></td>
-                    <td style=" border: none; width: auto"></td>
                 </tr>
    <tr> 
                 <th><h6>SUPPLY NAME</h6></th>
@@ -74,7 +74,6 @@
                 <th><h6>WITH VAT</h6></th>
                 <th><h6>QTY</h6></th>
                 <th><h6>TOTAL AMT</h6></th>
-                <th><h6>BRANCH</h6></th>
                 <th><h6>OUTGOING DATE</h6></th>
             </tr> 
 
@@ -87,16 +86,13 @@
                 <td  style="width: auto"> {{ ($items['with_vat']?number_format( $items['with_vat'],2):'') }} </td>
                 <td  style="width: auto"> {{ $items['quantity'] }} </td>  
                 <td  style="width: auto"> {{ ($items['quantity_amount']? number_format($items['quantity_amount'],2):'') }} </td>
-                <td  style="width: auto"> {{ $items['branch'] }} </td>   
                 <td  style="width: auto"> {{ ( $items['outgoing_date']? date("Y-m-d", strtotime( $items['outgoing_date'])):null) }} </td>   
          
             
                 </tr>  
                 @endforeach  
             @endforeach
-
-            <tr  >
-                 
+            <!-- <tr  >
                  <td  style=" border: none;width: auto">  </td>  
                  <td  style=" border: none;width: auto">  </td>
                  <td  style=" border: none;width: auto"> </td>
@@ -124,7 +120,7 @@
                  <td  style=" border: none;width: auto">  </td>
                  <td  style=" border-bottom: none;  border-left: none; border-right: none; width: auto">  </td>  
                  <td  style=" border: none;width: auto"> </td>
-             </tr>  
+             </tr>   -->
         </table>
         <!-- Page Number --> 
         <htmlpagefooter name="page-footer">
