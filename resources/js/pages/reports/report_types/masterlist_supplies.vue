@@ -124,9 +124,11 @@ export default {
             await axios({
               url: "/api/reports/masterlistsupplies/get",
               method: "GET",
-              responseType: "blob",
+               responseType: "blob",
               params: { category: this.category, type: type },
             }).then((response) => {  
+              // console.log(response.data)
+              // return;
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
@@ -138,13 +140,15 @@ export default {
             await axios
               .get("/api/reports/masterlistsupplies/get", {
                 method: "GET",
-                responseType: "arraybuffer",
+                 responseType: "arraybuffer",
                 params: {
                   category: this.category,
                   type: type,
                 },
               })
               .then((response) => {
+              // console.log(response.data)
+              // return;
                 let blob = new Blob([response.data], {
                   type: "application/excel",
                 });

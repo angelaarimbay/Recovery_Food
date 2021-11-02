@@ -51,7 +51,7 @@
             @foreach ($data  as $array)   
         
             <tr > 
-                <td  style="text-align: left; width: auto"><h5>{{ $array[0]['category_details']['supply_cat_name'] }}</h5></th> 
+                <td  style="text-align: left; width: auto"><h5>{{ $array[0]['category_details'] }}</h5></th> 
                 <td style=" border: none; width: auto"></td>  
                 <td style=" border: none; width: auto"></td>
                 <td style=" border: none; width: auto"></td>
@@ -72,7 +72,6 @@
             <!-- Rows -->
             @foreach ($array  as $items)   
             <tr>
-                 
                 <td  style="width: auto"> {!!   $items['supply_name'] !!} {{ $items['description'] }} </td>  
                 <td  style="width: auto"> {{ $items['unit'] }}  </td>
                 <td  style="width: auto"> {!! ($items['net_price']? number_format($items['net_price'] ,2):'') !!} </td>
@@ -83,7 +82,7 @@
             </tr>  
             @endforeach  
                  @endforeach  
-                 <tr  >
+                 <!-- <tr  >
                  
                  <td  style=" border: none;width: auto">  </td>  
                  <td  style=" border: none;width: auto">  </td>
@@ -112,7 +111,7 @@
                  <td  style=" border: none;width: auto">  </td>
                  <td  style=" border-bottom: none;  border-left: none; border-right: none; width: auto">  </td>  
                  <td  style=" border: none;width: auto"> </td>
-             </tr>  
+             </tr>   -->
    
         </table>  
         <!-- Page Number -->

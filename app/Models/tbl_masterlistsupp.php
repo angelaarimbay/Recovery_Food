@@ -11,7 +11,7 @@ class tbl_masterlistsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['process_by', 'with_vat', 'without_vat', 'format_net_price', 'category_name', 'category_details', 'supplier_name_details', 'without_vat_price', 'with_vat_price'];
+    public $appends = ['with_vat', 'without_vat', 'format_net_price', 'category_name', 'category_details', 'supplier_name_details', 'without_vat_price', 'with_vat_price'];
 
 
     public function category()
@@ -22,10 +22,7 @@ class tbl_masterlistsupp extends Model
     {
         return $this->hasOne(tbl_supplist::class, 'id', 'supplier');
     }
-    public function getProcessByAttribute()
-    {
-        return auth()->user()->name;
-    }
+    
     public function getWithVatAttribute()
     {
         $date1 =  date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
@@ -33,14 +30,18 @@ class tbl_masterlistsupp extends Model
         $incoming = 0;
 
         try {
-            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
-            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)
+            ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
 
-            $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 6, ".", ",");;
+            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)
+            ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
+
+            $incoming =  number_format($get_specific_item_amount->get()->sum('amount') / $get_specific_item_quantity->get()->sum("quantity"), 6, ".", ",");;
         } catch (\Throwable $th) {
             $incoming = $this->net_price;
         }
-        return $this->vatable == 0 ?  number_format($incoming, 6, ".", ",") :  number_format($this->net_price, 6, ".", ",");
+
+        return $this->vatable == 0 ?   $incoming :  $this->net_price ;
     }
 
     public function getWithoutVatAttribute()

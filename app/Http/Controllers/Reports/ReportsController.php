@@ -43,12 +43,14 @@ class ReportsController extends Controller
                 $wovat_p = 0;
                 //EACH CATEGORY ADD TO INNER ARRAY
                 foreach (tbl_masterlistsupp::with("category")->where("category", $value)->get() as $key1 => $value1) {
+              
                     $net_p += $value1->net_price;
-                    $wvat_p += $value1->with_vat;
+                    $wvat_p +=   $value1->with_vat;
                     $wovat_p += $value1->without_vat;
+                 
 
                     $ar = [
-                        'category_details' => $value1->category_details,
+                        'category_details' => $value1->category_details['supply_cat_name'],
                         'supply_name' => $value1->supply_name,
                         'description' => $value1->description,
                         'unit' => $value1->unit,
@@ -63,7 +65,7 @@ class ReportsController extends Controller
                 // ADD INNER ARRAY TO MAIN ARRAY (NESTED ARRAY) 
                 $ar = [
                     'category_details' => '',
-                    'supply_name' =>  '<small> <b style="color:blue; ">Sub Total</b></small>',
+                    'supply_name' =>   ($t->type == 'excel' ? 'Sub Total' :  '<small> <b style="color:blue; ">Sub Total</b></small>'),
                     'description' => '',
                     'unit' => '',
                     'net_price' =>  $net_p,
@@ -107,27 +109,30 @@ class ReportsController extends Controller
                 break;
             case 'excel':
 
-                if ($t->category == 'All') {
-                    $data =  tbl_masterlistsupp::with("category")->get();
-                } else {
-                    $data =  tbl_masterlistsupp::with("category")->where("category", $t->category)->get();
-                }
+                // if ($t->category == 'All') {
+                //     $data =  tbl_masterlistsupp::with("category")->get();
+                // } else {
+                //     $data =  tbl_masterlistsupp::with("category")->where("category", $t->category)->get();
+                // }
 
                 //columns
                 $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'VAT', 'WITHOUT VAT', 'EXPIRATION DATE'];
                 //data
                 $dataitems = [];
                 foreach ($data  as $key => $value) {
-                    $temp = [];
-                    $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
-                    $temp['supply_name'] = $value->supply_name . " " . $value->description;
-                    $temp['unit'] = $value->unit;
-                    $temp['format_net_price'] = $value->net_price;
-                    $temp['format_with_vat'] = $value->with_vat;
-                    $temp['vat'] = $value->vat;
-                    $temp['format_without_vat'] = $value->without_vat;
-                    $temp['exp_date'] = ($value->exp_date ? date("Y-m-d", strtotime($value->exp_date)) : null);
-                    array_push($dataitems, $temp);
+                    foreach ($value as $key1 => $value1) {
+                    
+                        $temp = [];
+                        $temp['category'] =  $value1['category_details'];  
+                        $temp['supply_name'] = $value1['supply_name'] . " " . $value1['description'];
+                        $temp['unit'] = $value1['unit'];
+                        $temp['format_net_price'] = $value1['net_price'];
+                        $temp['format_with_vat'] = $value1['with_vat'];
+                        $temp['vat'] = $value1['vat'];
+                        $temp['format_without_vat'] = $value1['without_vat'];
+                        $temp['exp_date'] = ($value1['exp_date'] ? date("Y-m-d", strtotime($value1['exp_date'])) : null);
+                        array_push($dataitems, $temp);
+                    }
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Masterlist Supplies Report.xlsx");
                 break;
@@ -252,8 +257,10 @@ class ReportsController extends Controller
     // Outgoing Supplies Report - OK
     public function OutgoingSuppliesReport(Request $t)
     {  
+  
         //filter if all or specific
-        $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
+        $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category).
+                ($t->branch?' and requesting_branch = '.$t->branch:'');
 
         $data = []; // <----------MAIN ARRAY
         //GET ALL THE CATEGORY THEN LOOP
@@ -271,8 +278,13 @@ class ReportsController extends Controller
             $wvat_p = 0;
             $quantity=0;
             $total_p = 0;
+            
             //EACH CATEGORY ADD TO INNER ARRAY
-            foreach (tbl_outgoingsupp::with("category")->where("category", $value)
+           if($t->branch){
+               $t_branch = ' requesting_branch ='.$t->branch;
+           }
+
+            foreach (tbl_outgoingsupp::with("category")->whereRaw($t_branch)->where("category", $value)
                 ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)),  date("Y-m-d 23:59:59", strtotime($t->to))])
                 ->get() as $key1 => $value1) {
 
@@ -296,7 +308,7 @@ class ReportsController extends Controller
                     'with_vat' => $value1->with_vat_price,
                     'quantity' => $value1->quantity,
                     'quantity_amount' => $value1->with_vat_price * $value1->quantity,
-                    'branch' => $value1->request_branch_dtails['branch_name'],
+                    'branch' => $value1->requesting_branch_details['branch_name'],
                     'outgoing_date' => $value1->outgoing_date,
                 ];
                 array_push($group, $ar);
@@ -743,6 +755,7 @@ class ReportsController extends Controller
     // Sales Report - OK
     public function SalesReport(Request $t)
     {
+ 
         DB::statement(DB::raw("set @row:=0"));
 
         $data = tbl_pos::where("branch", $t->branch)
@@ -786,9 +799,14 @@ class ReportsController extends Controller
     // Transaction Report - OK
     public function TransactionReport(Request $t)
     {
-        DB::statement(DB::raw("set @row:=0"));
+       
         $data = tbl_pos::whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-            ->selectRaw("*, @row:=@row+1 as row ")->get();
+        ->selectRaw(" sum(quantity) as quantity, 
+        sum(sub_total_discounted) as sub_total_discounted, 
+        branch 
+        ,created_at, 
+        reference_no  ")->groupby(["branch", "created_at", "reference_no"])
+        ->get();
 
         switch ($t->type) {
             case 'pdf':
@@ -863,14 +881,15 @@ class ReportsController extends Controller
     }
 
     public function ListSP(Request $t)
-    {
+    {       
         if (auth()->user()->can('Access POS')) {
             $table = tbl_pos::with(["branch"])
                 ->where('branch', auth()->user()->branch)
                 ->where('cashier', auth()->user()->id)
                 ->whereBetween('created_at', [date("Y-m-d", strtotime(date('Y') . '-' . date('m') . '-01')), date('Y-m-t', strtotime(date("Y") . '-' . date('m') . '-' . date('t')))])
                 ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-                ->orderBy('created_at', "desc")->groupby(["branch", "created_at", "reference_no"]);
+                ->orderBy('created_at', "desc")
+                ->groupby(["branch", "created_at", "reference_no"]);
         } else {
             $table = tbl_pos::with(["branch"])
                 ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
