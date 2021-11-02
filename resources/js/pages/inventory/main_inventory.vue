@@ -1027,8 +1027,15 @@ export default {
         class: "black--text",
       },
       {
-        text: "ON HAND",
+        text: "STOCKS ON HAND",
         value: "onhand_a",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "TRIGGERPOINT",
+        value: "triggerpoint",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -1065,7 +1072,7 @@ export default {
 
     // View Branch Info
     openViewDialog(row) {
-      this.currentdata = JSON.parse(JSON.stringify(row));  
+      this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.viewdialog = true;
     },
