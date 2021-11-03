@@ -182,6 +182,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.net_price`]="{ item }"
+              >{{ getFormatCurrency(item.net_price, "0,0.00") }}
+            </template>
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name.supply_name }}
               {{ item.supply_name.description }}</template
@@ -342,7 +345,11 @@
                         Supply Name: {{ currentdata.supply_name }}
                         {{ currentdata.description }} <br />
                         Unit: {{ currentdata.unit }} <br />
-                        Net Price: {{ currentdata.net_price }} <br />
+                        Net Price:
+                        {{
+                          getFormatCurrency(currentdata.net_price, "0,0.00")
+                        }}
+                        <br />
                       </v-col>
                     </v-row>
                     <v-row
@@ -1034,7 +1041,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "TRIGGERPOINT",
+        text: "TRIGGER POINT",
         value: "triggerpoint",
         align: "right",
         filterable: false,
@@ -1068,6 +1075,11 @@ export default {
     itemperpage() {
       this.page = 1;
       this.get();
+    },
+
+    getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
     },
 
     // View Branch Info

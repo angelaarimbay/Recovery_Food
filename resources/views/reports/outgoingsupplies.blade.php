@@ -55,7 +55,7 @@
                 <th><h6>QTY</h6></th>
                 <th><h6>TOTAL AMT</h6></th>
                 <th><h6>BRANCH</h6></th>
-                <th><h6>DATE</h6></th>
+                <th><h6>OUTGOING DATE</h6></th>
             </tr>
             <!-- Rows -->
             @foreach ($data as $items)  

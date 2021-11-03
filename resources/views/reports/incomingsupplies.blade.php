@@ -54,7 +54,7 @@
                 <th><h6>WITH VAT</h6></th>
                 <th><h6>QTY</h6></th>
                 <th><h6>TOTAL AMT</h6></th>
-                <th><h6>DATE</h6></th>
+                <th><h6>INCOMING DATE</h6></th>
             </tr>
             <!-- Rows -->
             @foreach ($data as $items)   

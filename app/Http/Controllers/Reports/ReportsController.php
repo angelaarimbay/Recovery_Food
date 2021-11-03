@@ -98,7 +98,7 @@ class ReportsController extends Controller
         break;
         case 'excel':
             //columns
-            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','QTY','TOTAL AMT','DATE'];
+            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','QTY','TOTAL AMT','INCOMING DATE'];
             //data
                 $dataitems = [];
             foreach ($data as $key => $value) {
@@ -144,7 +144,7 @@ class ReportsController extends Controller
         break;
         case 'excel':
             //columns
-            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','QTY','TOTAL AMT','DATE'];
+            $columns = ['CATEGORY','SUPPLY NAME','UNIT','NET PRICE','WITH VAT','QTY','TOTAL AMT','OUTGOING DATE'];
             //data
             $dataitems = [];
             foreach ($data as $key => $value) {

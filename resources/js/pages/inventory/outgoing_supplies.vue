@@ -322,6 +322,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supply_name.net_price`]="{ item }"
+              >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
+            </template>
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name.supply_name }}
               {{ item.supply_name.description }}</template
@@ -750,7 +753,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "DATE",
+        text: "OUTGOING DATE",
         value: "outgoing_date",
         filterable: false,
         class: "black--text",

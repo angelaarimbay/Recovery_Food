@@ -665,7 +665,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "DATE",
+        text: "OUTGOING DATE",
         value: "outgoing_date",
         filterable: false,
         class: "black--text",

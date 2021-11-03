@@ -631,7 +631,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "DATE",
+        text: "INCOMING DATE",
         value: "incoming_date",
         filterable: false,
         class: "black--text",
