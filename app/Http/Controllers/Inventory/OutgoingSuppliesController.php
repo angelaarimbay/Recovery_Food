@@ -23,8 +23,8 @@ class OutgoingSuppliesController extends Controller
     
     public function save(Request $data)
     {
-        $table = tbl_outgoingsupp::where("supply_name", "!=", null); 
-        $date1 =  date("Y-m-d 00:00:00", strtotime(date("Y")."-".date("m")."-01" )); 
+        $table = tbl_outgoingsupp::where("supply_name", "!=", null);
+        $date1 =  date("Y-m-d 00:00:00", strtotime(date("Y")."-".date("m")."-01"));
         $date2 = date("Y-m-t 23:59:59", strtotime(date("Y").'-'.date("m").'-'.date("t")));
     
 
@@ -51,8 +51,8 @@ class OutgoingSuppliesController extends Controller
                 ]
             );
         } else {
-            tbl_outgoingsupp::create($data->except(['supply_name','amount','outgoing_date']) + 
-            ['supply_name'=>$data->supply_name['id'], 
+            tbl_outgoingsupp::create($data->except(['supply_name','amount','outgoing_date']) +
+            ['supply_name'=>$data->supply_name['id'],
              'amount' => $get_wov  * $data->quantity,
              'outgoing_date' => date('Y-m-d', strtotime($data->outgoing_date).' '. date("h:i:s")),
             ]);
@@ -69,7 +69,7 @@ class OutgoingSuppliesController extends Controller
         ->whereRaw($where) ;
         
         if ($t->dateFrom && $t->dateUntil) {
-            $table =  $table->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom )), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
+            $table =  $table->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
  
         if ($t->search) { // If has value
@@ -119,67 +119,55 @@ class OutgoingSuppliesController extends Controller
         return tbl_incomingsupp::where('supply_name', $request->id)->sum('quantity') -  tbl_outgoingsupp::where('supply_name', $request->id)->sum('quantity') ;
     }
 
-
     public function getRequest(Request $t)
     {
         $table = tbl_requestsupp::select(['branch', 'ref','user','request_date'])
         ->selectRaw('min(status) as status')
         ->groupBy(['branch', 'ref','user','request_date' ])
-        ->wherein('status',[1,2,3])
-        ->get();  
+        ->wherein('status', [1,2,3])
+        ->get();
         $return = [];
-        foreach ($table  as $key => $value) { 
+        foreach ($table  as $key => $value) {
             $temp = [];
             $temp['row']  = $key+1;
-            $temp['branch'] = tbl_branches::where("id",$value->branch )->first()->branch_name;    
-            $temp['id'] = $value->ref;  
-            $temp['ref'] = $value->ref;   
-            $temp['status'] = $value->status;    
-            $temp['request_date'] = $value->request_date;     
-            array_push($return,$temp);
-        }    
-        $items =   Collection::make($return);
+            $temp['branch'] = tbl_branches::where("id", $value->branch)->first()->branch_name;
+            $temp['id'] = $value->ref;
+            $temp['ref'] = $value->ref;
+            $temp['status'] = $value->status;
+            $temp['request_date'] = $value->request_date;
+            array_push($return, $temp);
+        }
+        $items = Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
-
     }
 
-    public function getRequested(Request $request){
-        $table = tbl_requestsupp::where('ref',$request->ref) 
-        ->where('deleted',0)
-        ->get();  
+    public function getRequested(Request $request)
+    {
+        $table = tbl_requestsupp::where('ref', $request->ref)
+        ->where('deleted', 0)
+        ->get();
         $return = [];
-        foreach ($table  as $key => $value) { 
+        foreach ($table  as $key => $value) {
             $temp = [];
             $temp['ref'] = $request->ref;
-            $temp['supply_id'] = $value->supply_name;  
-            $temp['supply_name'] = $value->supply_name_details['supply_name'].' '. $value->supply_name_details['description'];     
+            $temp['supply_id'] = $value->supply_name;
+            $temp['supply_name'] = $value->supply_name_details['supply_name'].' '. $value->supply_name_details['description'];
             $temp['unit']  = $value->supply_name_details['supply_name'];
-            $temp['quantity_requested'] = $value->quantity;   
-            $temp['quantity_available'] = $value->quantity_available;   
-            $temp['branch'] =tbl_branches::where("id",$value->branch)->first()->branch_name;   
-            $temp['user'] = User::where("id", $value->user)->first()->name;  
-            $temp['request_date'] = $value->request_date;  
-            $temp['status'] = $value->status;  
-            array_push($return,$temp);
-        }    
-        return  $return  ;
+            $temp['quantity_requested'] = $value->quantity;
+            $temp['quantity_available'] = $value->quantity_available;
+            $temp['branch'] =tbl_branches::where("id", $value->branch)->first()->branch_name;
+            $temp['user'] = User::where("id", $value->user)->first()->name;
+            $temp['request_date'] = $value->request_date;
+            $temp['status'] = $value->status;
+            array_push($return, $temp);
+        }
+        return $return;
     }
 
-
-
-    public function processRequest(Request $request){
-       
-       
-
-            foreach ($request->checked as $key => $value) {
-                tbl_requestsupp::where(['supply_name'=>$value['supply_id'],'ref'=>$value['ref']])->update(['status'=>2]);
-            }
- 
-
-
- 
+    public function processRequest(Request $request)
+    {
+        foreach ($request->checked as $key => $value) {
+            tbl_requestsupp::where(['supply_name'=>$value['supply_id'],'ref'=>$value['ref']])->update(['status'=>2]);
+        }
     }
-
-
-
 }

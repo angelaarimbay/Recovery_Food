@@ -389,7 +389,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "AMT",
+        text: "TOTAL AMT",
         value: "amount",
         align: "right",
         filterable: false,

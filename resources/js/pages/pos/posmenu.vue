@@ -768,7 +768,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[1-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
     formRulesPrice: [
       (v) => !!v || "This is required",

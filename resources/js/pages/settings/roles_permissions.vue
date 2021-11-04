@@ -281,6 +281,7 @@
                 depressed
                 dark
                 @click="validate('permission')"
+                :small="$vuetify.breakpoint.smAndDown"
               >
                 Save
               </v-btn>
@@ -316,7 +317,7 @@
           <v-card tile>
             <v-card-text class="py-2">
               <v-card-text>
-                Selected User : <strong>{{ username }}</strong></v-card-text
+                <strong>Selected User:</strong> {{ username }}</v-card-text
               >
               <v-data-table
                 class="px-4"
@@ -353,6 +354,7 @@
                 depressed
                 dark
                 @click="validate('userrole')"
+                :small="$vuetify.breakpoint.smAndDown"
               >
                 Save
               </v-btn>
@@ -1162,7 +1164,7 @@ export default {
           iconText: "error",
           iconColor: "danger",
           message:
-            "If Access POS is checked, you must Disabled all other permissions.",
+            "If 'Access POS' is checked, you must disable all other permissions.",
         };
         return 1;
       }

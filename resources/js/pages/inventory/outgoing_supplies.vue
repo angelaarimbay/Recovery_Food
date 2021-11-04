@@ -78,46 +78,48 @@
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="pl-0">
-            <v-btn
-              color="primary"
-              style="text-transform: none"
-              depressed
-              dark
-              :small="$vuetify.breakpoint.smAndDown"
-              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="openDialog"
-            >
-              <template
-                v-if="
-                  !user.permissionslist.includes(
-                    'Access Reports - Outgoing Supplies'
-                  )
-                "
+            <v-row no-gutters>
+              <v-btn
+                color="primary"
+                style="text-transform: none"
+                depressed
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                @click="openDialog"
               >
-                Add Outgoing Supply
-              </template>
-              <template v-else> Add Supply </template>
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="warning"
-              style="text-transform: none"
-              depressed
-              dark
-              :small="$vuetify.breakpoint.smAndDown"
-              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="openRequestDialog"
-            >
-              <template
-                v-if="
-                  !user.permissionslist.includes(
-                    'Access Reports - Outgoing Supplies'
-                  )
-                "
+                <template
+                  v-if="
+                    !user.permissionslist.includes(
+                      'Access Reports - Outgoing Supplies'
+                    )
+                  "
+                >
+                  Add Outgoing Supply
+                </template>
+                <template v-else> Add Supply </template>
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="warning"
+                style="text-transform: none"
+                depressed
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                @click="openRequestDialog"
               >
-                Branch Request
-              </template>
-            </v-btn>
+                <template
+                  v-if="
+                    !user.permissionslist.includes(
+                      'Access Reports - Outgoing Supplies'
+                    )
+                  "
+                >
+                  Branch Request(s)
+                </template>
+              </v-btn>
+            </v-row>
           </v-card-actions>
 
           <!-- Search Filters -->
@@ -548,9 +550,9 @@
                         class="px-4"
                         v-if="form.supply_name"
                       >
-                        <table style="width: 50%; font-size: 11px">
+                        <table style="width: 100%; font-size: 11px">
                           <tr>
-                            <th class="text-left pr-2" style="width: 80%">
+                            <th class="text-left pr-2" style="width: 60%">
                               Description:
                             </th>
                             <th>{{ form.supply_name.description }}</th>
@@ -643,7 +645,7 @@
             dark
             class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
           >
-            Branch Supplies Request
+            Branch Request(s)
             <v-spacer></v-spacer>
             <v-tooltip bottom>
               <template #activator="data">
@@ -658,63 +660,73 @@
               <span>Close</span>
             </v-tooltip>
           </v-toolbar>
-          <v-card tile height="710" style="background-color: #f5f5f5">
+
+          <v-card tile height="auto" style="background-color: #f5f5f5">
             <v-card-text class="py-2">
-              <br />
               <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                <v-data-table
-                  :headers="headers1"
-                  :items="table1.data"
-                  :loading="progressbar1"
-                  :page.sync="page1"
-                  ref="progress"
-                  :items-per-page="itemsPerPage1"
-                  hide-default-footer
-                  @page-count="pageCount1 = $event"
-                >
-                  <!-- Progress Bar -->
-                  <v-progress-linear
-                    color="red darken-2"
-                    class="px-0 mx-0"
-                    slot="progress"
-                    indeterminate
-                    rounded
-                  ></v-progress-linear>
+                <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+                  <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+                    <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+                      <v-data-table
+                        :headers="headers1"
+                        :items="table1.data"
+                        :loading="progressbar1"
+                        :page.sync="page1"
+                        ref="progress"
+                        :items-per-page="itemsPerPage1"
+                        hide-default-footer
+                        @page-count="pageCount1 = $event"
+                      >
+                        <!-- Progress Bar -->
+                        <v-progress-linear
+                          color="red darken-2"
+                          class="px-0 mx-0"
+                          slot="progress"
+                          indeterminate
+                          rounded
+                        ></v-progress-linear>
 
-                  <template v-slot:[`item.supply_name`]="{ item }">
-                    {{ item.supply_name }} {{ item.description }}</template
-                  >
-
-                  <template v-slot:[`item.status`]="{ item }">
-                    <div v-if="item.status == 1" class="text-warning">
-                      Pending
-                    </div>
-                    <div v-else-if="item.status == 2" class="text-success">
-                      Confirmed / For Delivery
-                    </div>
-                    <div v-else-if="item.status == 3" class="text-success">
-                      Completed
-                    </div>
-                  </template>
-
-                  <template v-slot:[`item.id`]="{ item }">
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          icon
-                          color="blue darken-2"
-                          @click="viewRequestDialog(item)"
-                          small
-                          :x-small="$vuetify.breakpoint.smAndDown"
-                          v-on="data.on"
+                        <template v-slot:[`item.supply_name`]="{ item }">
+                          {{ item.supply_name }}
+                          {{ item.description }}</template
                         >
-                          <v-icon>mdi-eye</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>View</span>
-                    </v-tooltip>
-                  </template>
-                </v-data-table>
+
+                        <template v-slot:[`item.status`]="{ item }">
+                          <div v-if="item.status == 1" class="text-warning">
+                            Pending
+                          </div>
+                          <div v-else-if="item.status == 2" class="text-info">
+                            Confirmed / For Delivery
+                          </div>
+                          <div
+                            v-else-if="item.status == 3"
+                            class="text-success"
+                          >
+                            Completed
+                          </div>
+                        </template>
+
+                        <template v-slot:[`item.id`]="{ item }">
+                          <v-tooltip bottom>
+                            <template #activator="data">
+                              <v-btn
+                                icon
+                                color="red darken-2"
+                                @click="viewRequestDialog(item)"
+                                small
+                                :x-small="$vuetify.breakpoint.smAndDown"
+                                v-on="data.on"
+                              >
+                                <v-icon>mdi-eye</v-icon>
+                              </v-btn>
+                            </template>
+                            <span>View</span>
+                          </v-tooltip>
+                        </template>
+                      </v-data-table>
+                    </v-container>
+                  </v-container>
+                </v-card>
                 <div class="text-center pt-2">
                   <v-pagination
                     v-model="page1"
@@ -734,7 +746,7 @@
             dark
             class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
           >
-            Supplies List
+            Requested Supplies List
             <v-spacer></v-spacer>
             <v-tooltip bottom>
               <template #activator="data">
@@ -749,29 +761,57 @@
               <span>Close</span>
             </v-tooltip>
           </v-toolbar>
-          <v-card tile style="background-color: #f5f5f5">
+          <v-card tile>
             <v-card-text class="py-2">
-              <br />
               <v-container
                 v-if="table2.length > 0"
                 class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0"
               >
                 <v-card-actions>
-                  Requested by: {{ table2[0].branch }} - {{ table2[0].user }}
-                  <v-spacer></v-spacer>
-                  Requested Date: {{ table2[0].request_date }}
+                  <v-row no-gutters>
+                    <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                      <strong>Requested By:</strong><br />{{ table2[0].branch }}
+                      -
+                      {{ table2[0].user }}
+                    </v-col>
+                    <v-col
+                      :class="{ 'text-right': $vuetify.breakpoint.smAndUp }"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                    >
+                      <strong>Date Requested:</strong><br />{{
+                        table2[0].request_date
+                      }}
+                    </v-col>
+                  </v-row>
                 </v-card-actions>
 
                 <v-data-table
                   :headers="headers2"
                   show-select
-                  height="300"
                   :items="table2"
                   dense
                   item-key="supply_id"
                   :items-per-page="10"
                   v-model="selected"
                 >
+                  <template
+                    v-slot:[`item.data-table-select`]="{
+                      item,
+                      isSelected,
+                      select,
+                    }"
+                  >
+                    <v-simple-checkbox
+                      :value="item.status !== 3 && isSelected"
+                      :readonly="item.status == 3"
+                      :disabled="item.status == 3"
+                      @input="select($event)"
+                    ></v-simple-checkbox>
+                  </template>
                   <template v-slot:[`item.supply_name`]="{ item }">
                     {{ item.supply_name }} {{ item.description }}</template
                   >
@@ -783,33 +823,42 @@
                     <div v-else-if="item.status == 2" class="text-success">
                       Confirmed / For Delivery
                     </div>
-                    <div v-else-if="item.status == 3" class="text-info">
+                    <div v-else-if="item.status == 3" class="text-success">
                       Completed
                     </div>
                   </template>
 
                   <template v-slot:[`item.supply_id`]="{ item }">
                     <div v-if="item.status == 1">
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          icon
-                          color="blue darken-2"
-                          @click="editRequest(item)"
-                          :x-small="$vuetify.breakpoint.smAndDown"
-                          v-on="data.on"
-                        >
-                          <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Edit</span>
-                    </v-tooltip>
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            icon
+                            color="red darken-2"
+                            @click="editRequest(item)"
+                            :x-small="$vuetify.breakpoint.smAndDown"
+                            v-on="data.on"
+                          >
+                            <v-icon>mdi-pencil</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Edit</span>
+                      </v-tooltip>
                     </div>
                   </template>
                 </v-data-table>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn small color="success" @click="processRequest"> Post </v-btn>
+                  <v-btn
+                    style="text-transform: none"
+                    depressed
+                    dark
+                    :small="$vuetify.breakpoint.smAndDown"
+                    color="primary"
+                    @click="processRequest"
+                  >
+                    Approve Request
+                  </v-btn>
                 </v-card-actions>
               </v-container>
             </v-card-text>
@@ -824,37 +873,52 @@
             class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
           >
             Enter Quantity
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="dialog3 = false"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
           </v-toolbar>
           <v-card tile style="background-color: #f5f5f5">
             <v-card-text class="py-2">
               <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                 <v-row>
-                  <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
-                      >Item Selected:
-                      <strong> {{ selectedItem.supply_name }} </strong></span
+                      ><strong>Item Selected:</strong>
+                      {{ selectedItem.supply_name }}</span
                     >
                   </v-col>
                 </v-row>
-                <v-row>
+                <v-row class="mt-0">
                   <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
-                    <v-card-actions>
+                    <v-card-actions class="px-0">
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="quantity"
                         outlined
                         dense
-                        hide-details=""
                         autocomplete="off"
-                        @keydown="quantityKeydown($event)" 
+                        @keydown="quantityKeydown($event)"
+                        class="mr-2"
+                        clearable
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Quantity *</div>
                         </template>
                       </v-text-field>
                       <v-btn
-                      outlined
-                        color="primary" class="py-4 px-2"
+                        outlined
+                        color="primary"
+                        class="py-4 px-2 mb-6"
                         text
                         @click="allQuantity(selectedItem)"
                       >
@@ -900,6 +964,11 @@
 </template>
 
 <style>
+.v-data-table__checkbox,
+.v-input--selection-controls__input .mdi-checkbox-marked,
+.v-input--selection-controls__input .mdi-minus-box {
+  color: #d32f2f !important;
+}
 .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
@@ -918,7 +987,7 @@ import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
   metaInfo() {
-    return { title: "Outgoing" };
+    return { title: "Inventory" };
   },
   computed: {
     ...mapGetters({
@@ -930,7 +999,7 @@ export default {
   },
   data: () => ({
     progressbar: false,
-
+    progressbar1: false,
     snackbar: {
       active: false,
       message: "",
@@ -949,7 +1018,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[1-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -1063,7 +1132,8 @@ export default {
         class: "black--text",
       },
       {
-        text: "REF",
+        text: "REFERENCE NO.",
+        align: "right",
         value: "ref",
         filterable: false,
         class: "black--text",
@@ -1081,10 +1151,11 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION",
+        text: "ACTION(S)",
         value: "id",
-        align: "right",
+        align: "center",
         filterable: false,
+        sortable: false,
         class: "black--text",
       },
     ],
@@ -1102,17 +1173,19 @@ export default {
         class: "black--text",
       },
       {
-        text: "QUANTITY REQUESTED",
+        text: "REQUESTED QTY",
         value: "quantity_requested",
         filterable: false,
+        align: "right",
         class: "black--text",
       },
       {
-        text: "QUANTITY AVAILABLE",
+        text: "AVAILABLE QTY",
         value: "quantity_available",
+        align: "right",
         filterable: false,
         class: "black--text",
-      }, 
+      },
       {
         text: "STATUS",
         value: "status",
@@ -1120,10 +1193,11 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION",
+        text: "ACTION(S)",
         value: "supply_id",
-        align: "right",
+        align: "center",
         filterable: false,
+        sortable: false,
         class: "black--text",
       },
     ],
@@ -1384,6 +1458,7 @@ export default {
     //--------------------------------------------added
 
     async requestList() {
+      this.progressbar1 = true;
       await axios
         .get("/api/osupp/request/list", {
           params: {
@@ -1393,12 +1468,14 @@ export default {
         })
         .then((result) => {
           this.table1 = result.data;
+          this.progressbar1 = false;
         });
     },
     openRequestDialog() {
       this.dialog1 = true;
       this.requestList();
     },
+
     async viewRequestDialog(ref) {
       await axios
         .get("/api/osupp/request/items/list", {
@@ -1411,7 +1488,7 @@ export default {
         });
       this.selected = [];
       this.dialog2 = true;
-    }, 
+    },
     editRequest(row) {
       this.selectedItem = row;
       this.quantity = row.quantity_requested;
@@ -1422,27 +1499,29 @@ export default {
         this.quantity;
       this.dialog3 = false;
     },
-    allQuantity() { 
-        this.quantity =
-        this.selectedItem.quantity_available; 
+    allQuantity() {
+      this.quantity = this.selectedItem.quantity_available;
     },
 
     async processRequest() {
-      await axios.post("/api/osupp/request/process", { checked :this.selected, actual: this.table2 }).then((result) => {
-        //if the value is true then save to database
-        console.log(result.data)
-        this.snackbar = {
-          active: true,
-          iconText: "check",
-          iconColor: "success",
-          message: "Request has been successfully proccess.",
-        };
-        this.requestList(); 
-        this.dialog2 = false
-      });
+      await axios
+        .post("/api/osupp/request/process", {
+          checked: this.selected,
+          actual: this.table2,
+        })
+        .then((result) => {
+          //if the value is true then save to database
+          console.log(result.data);
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Request has been successfully proccessed.",
+          };
+          this.requestList();
+          this.dialog2 = false;
+        });
     },
-
-
   },
 
   watch: {

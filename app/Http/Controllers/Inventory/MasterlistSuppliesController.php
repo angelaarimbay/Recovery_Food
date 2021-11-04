@@ -74,6 +74,7 @@ class MasterlistSuppliesController extends Controller
         if ($t->search) { // If has value
             $table = $table->where("supply_name", "like", "%".$t->search."%");
         }
+        
 
         $return = [];
         foreach ($table->get() as $key => $value) {
