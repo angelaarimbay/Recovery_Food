@@ -37,12 +37,17 @@
     <div style="text-align: center">   
             <img src="{{ public_path(). '/img/logo.jpg' }}" 
                 style="display: block;  margin-left: auto; margin-right: auto;  width: 130px;"></img>
+            
     </div>
     <p class="header">Incoming Supplies Report</p>
-    <p class="date">Date exported:
-            {{ date("Y-m-d") }}
+    <p>Date exported: {{ date("Y-m-d") }}</p>
+    <p class="date"> Proccess By: {{ $param['user'] }}  </p>
+    <p>Parameter Date:  {{ $param['from'] }}  -  {{ $param['to'] }}   </p>
+    <p>Category: 
+    {{ $param['category'] }}  
     </p>
-
+ 
+    
         <!-- Table -->
         <table style="width: 100%">
             <!-- Header -->
@@ -57,9 +62,9 @@
                 <th><h6>INCOMING DATE</h6></th>
             </tr>
             <!-- Rows -->
-            @foreach ($data as $items)   
+            @foreach ($data  as $items)   
             <tr>
-                <td  style="width: auto"> {{ $items['category_details']['supply_cat_name'] }} </td>   
+                <td  style="width: auto">  </td>   
                 <td  style="width: auto"> {{ $items['supply_name_details']['supply_name'] }} {{ $items['supply_name_details']['description'] }}</td>
                 <td  style="width: auto"> {{ $items['supply_name_details']['unit'] }} </td>
                 <td  style="width: auto"> {{ number_format( $items['supply_name_details']['net_price'],2) }} </td>  

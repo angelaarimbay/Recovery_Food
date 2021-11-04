@@ -23,7 +23,7 @@
             to="/dashboard"
             class="px-0"
             style="text-decoration: none; text-transform: none"
-            >Home</v-btn
+            >Inventory </v-btn
           >
           /
           <v-btn

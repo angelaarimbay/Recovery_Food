@@ -11,7 +11,7 @@ class tbl_masterlistsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['with_vat','without_vat','format_net_price','category_name','category_details','supplier_name_details','without_vat_price','with_vat_price'];
+    public $appends = ['process_by','with_vat','without_vat','format_net_price','category_name','category_details','supplier_name_details','without_vat_price','with_vat_price'];
 
     
     public function category()
@@ -22,16 +22,19 @@ class tbl_masterlistsupp extends Model
     {
         return $this->hasOne(tbl_supplist::class, 'id', 'supplier');
     }
+    public function getProcessByAttribute()
+    {
+        return auth()->user()->name;
+    }
     public function getWithVatAttribute()
     {
-        $date1 =  date("Y-m-d h:i:s", strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s", strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
+        $date1 =  date("Y-m-d 00:00:00", strtotime(date("m")."-01-".date("Y"))); 
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("m").'/'.date("t").'/'.date("Y")));
         $incoming = 0;
 
         try {
-            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($date1 . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($date2 . ' 11:59:59'))]);
-            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($date1 . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($date2 . ' 11:59:59'))]);
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
+            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
     
             $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 6, ".", ",");
             ;
@@ -43,15 +46,14 @@ class tbl_masterlistsupp extends Model
 
     public function getWithoutVatAttribute()
     {
-        $date1 =  date("Y-m-d h:i:s", strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s", strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
+        $date1 =  date("Y-m-d 00:00:00", strtotime(date("m")."-01-".date("Y"))); 
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("m").'/'.date("t").'/'.date("Y")));
         $incoming = 0;
         try {
-            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d H:i:s", strtotime($date1 . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($date2 . ' 11:59:59'))]);
-            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("created_at", [date("Y-m-d H:i:s", strtotime($date1 . ' 00:00:01')), date("Y-m-d H:i:s", strtotime($date2 . ' 11:59:59'))]);
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t H:i:s", strtotime($date2))]);
+            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t H:i:s", strtotime($date2))]);
     
-            $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 2, ".", ",");
+            $incoming =  number_format($get_specific_item_amount->get()->sum('amount') / $get_specific_item_quantity->get()->sum('quantity'), 2, ".", ",");
         } catch (\Throwable $th) {
             $incoming = $this->net_price;
         }

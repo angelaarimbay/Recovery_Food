@@ -40,14 +40,16 @@
     </div>
     <p class="header">Masterlist Supplies Report</p>
     <p class="date">Date exported:
-            {{ date("Y-m-d") }}
+            {{ date("Y-m-d") }} - Proccess By:
+            {{ $data[0]['process_by'] }}
     </p>
-
+    <p>Category:
+            {{ $data[0]['category_name'] }}
+    </p>
         <!-- Table -->
         <table style="width: 100%">
             <!-- Header -->
-            <tr>
-                <th><h6>CATEGORY</h6></th>
+            <tr> 
                 <th><h6>SUPPLY NAME</h6></th> 
                 <th><h6>UNIT</h6></th>  
                 <th><h6>NET PRICE</h6></th>
@@ -59,8 +61,7 @@
             <!-- Rows -->
             @foreach ($data as $items)   
             <tr>
-                
-                <td  style="width: auto"> {{ $items['category_name'] }} </td>
+                 
                 <td  style="width: auto"> {{ $items['supply_name'] }} {{ $items['description'] }} </td>  
                 <td  style="width: auto"> {{ $items['unit'] }}  </td>
                 <td  style="width: auto"> {{ number_format($items['net_price'] ,2)}} </td>

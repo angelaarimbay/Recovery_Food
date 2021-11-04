@@ -71,7 +71,10 @@ use Illuminate\Support\Facades\Route;
         Route::get('osupp/suppName', 'Inventory\OutgoingSuppliesController@suppName');
         Route::get('osupp/branchName', 'Inventory\OutgoingSuppliesController@branchName');
         Route::get('osupp/suppValidate', 'Inventory\OutgoingSuppliesController@validateQuantity');
-
+        Route::get('osupp/request/list', 'Inventory\OutgoingSuppliesController@getRequest');
+        Route::get('osupp/request/items/list', 'Inventory\OutgoingSuppliesController@getRequested');
+        Route::post('osupp/request/process', 'Inventory\OutgoingSuppliesController@processRequest');
+    
         // Main Inventory
         Route::post('misupp/save', 'Inventory\MainInventoryController@save');
         Route::get('misupp/get', 'Inventory\MainInventoryController@get');
@@ -84,7 +87,12 @@ use Illuminate\Support\Facades\Route;
         Route::post('suppinven/save', 'Inventory\SuppliesInventoryController@store');
         Route::get('suppinven/get', 'Inventory\SuppliesInventoryController@get');
         Route::get('deductedsupp/get', 'Inventory\DeductedSuppliesController@get');
-
+        Route::get('requestsupp/supplies/list', 'Inventory\RequestSuppliesController@getSuppliesList');
+        Route::post('requestsupp/supplies/save', 'Inventory\RequestSuppliesController@storeSupplies');
+        Route::get('requestsupp/get', 'Inventory\RequestSuppliesController@get');
+        Route::get('requestsupp/request/list', 'Inventory\RequestSuppliesController@getRequested');
+        Route::post('requestsupp/request/complete', 'Inventory\RequestSuppliesController@completeRequest');
+    
         // Masterlist Products
         Route::post('mprod/save', 'Products\MasterlistProductsController@save');
         Route::get('mprod/get', 'Products\MasterlistProductsController@get');

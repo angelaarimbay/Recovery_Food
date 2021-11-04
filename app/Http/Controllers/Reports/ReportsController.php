@@ -90,7 +90,8 @@ class ReportsController extends Controller
 
         switch ($t->type) {
         case 'pdf':
-            $content['data'] = $data;
+            $content['data'] =  $data;
+            $content['param'] = ['from'=>$t->from, 'to'=>$t->to, 'category'=> tbl_suppcat::where("id", $t->category)->first()->supply_cat_name, 'user'=> auth()->user()->name] ;
             $pdf = PDF::loadView('reports.incomingsupplies', $content, [], [
                 'format' => 'A4-L'
               ]);

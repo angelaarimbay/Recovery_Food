@@ -9,6 +9,8 @@ use App\Models\tbl_suppcat;
 use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_branches;
 use App\Models\tbl_incomingsupp;
+use App\Models\tbl_requestsupp;
+use App\User;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -116,4 +118,68 @@ class OutgoingSuppliesController extends Controller
     {
         return tbl_incomingsupp::where('supply_name', $request->id)->sum('quantity') -  tbl_outgoingsupp::where('supply_name', $request->id)->sum('quantity') ;
     }
+
+
+    public function getRequest(Request $t)
+    {
+        $table = tbl_requestsupp::select(['branch', 'ref','user','request_date'])
+        ->selectRaw('min(status) as status')
+        ->groupBy(['branch', 'ref','user','request_date' ])
+        ->wherein('status',[1,2,3])
+        ->get();  
+        $return = [];
+        foreach ($table  as $key => $value) { 
+            $temp = [];
+            $temp['row']  = $key+1;
+            $temp['branch'] = tbl_branches::where("id",$value->branch )->first()->branch_name;    
+            $temp['id'] = $value->ref;  
+            $temp['ref'] = $value->ref;   
+            $temp['status'] = $value->status;    
+            $temp['request_date'] = $value->request_date;     
+            array_push($return,$temp);
+        }    
+        $items =   Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+
+    }
+
+    public function getRequested(Request $request){
+        $table = tbl_requestsupp::where('ref',$request->ref) 
+        ->where('deleted',0)
+        ->get();  
+        $return = [];
+        foreach ($table  as $key => $value) { 
+            $temp = [];
+            $temp['ref'] = $request->ref;
+            $temp['supply_id'] = $value->supply_name;  
+            $temp['supply_name'] = $value->supply_name_details['supply_name'].' '. $value->supply_name_details['description'];     
+            $temp['unit']  = $value->supply_name_details['supply_name'];
+            $temp['quantity_requested'] = $value->quantity;   
+            $temp['quantity_available'] = $value->quantity_available;   
+            $temp['branch'] =tbl_branches::where("id",$value->branch)->first()->branch_name;   
+            $temp['user'] = User::where("id", $value->user)->first()->name;  
+            $temp['request_date'] = $value->request_date;  
+            $temp['status'] = $value->status;  
+            array_push($return,$temp);
+        }    
+        return  $return  ;
+    }
+
+
+
+    public function processRequest(Request $request){
+       
+       
+
+            foreach ($request->checked as $key => $value) {
+                tbl_requestsupp::where(['supply_name'=>$value['supply_id'],'ref'=>$value['ref']])->update(['status'=>2]);
+            }
+ 
+
+
+ 
+    }
+
+
+
 }

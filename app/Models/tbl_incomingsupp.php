@@ -12,13 +12,16 @@ class tbl_incomingsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['quantity_difference','quantity_amount','category_details','supply_name_details','supplier_details',  'fluctiation'];
+    public $appends = ['process_by','quantity_difference','quantity_amount','category_details','supply_name_details','supplier_details',  'fluctiation'];
 
     public function category()
     {
         return $this->hasOne(tbl_suppcat::class, 'id', 'category');
     }
-
+    public function getProcessByAttribute()
+    {
+        return auth()->user()->name;
+    }
     public function supply_name()
     {
         return $this->hasOne(tbl_masterlistsupp::class, 'id', 'supply_name');
@@ -69,9 +72,8 @@ class tbl_incomingsupp extends Model
     public function getFluctiationAttribute()
     { //for list with vat column
         
-        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 23:59:59'));
+        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"))); 
+        $date2 = date("Y-m-t h:i:s",strtotime(date("m").'/'.date('t').'/'.date("Y")));
 
         //get the amount from incoming
         $get_amount = tbl_incomingsupp::where("supply_name",$this->supply_name)
