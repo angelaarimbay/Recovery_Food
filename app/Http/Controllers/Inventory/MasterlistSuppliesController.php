@@ -69,7 +69,7 @@ class MasterlistSuppliesController extends Controller
         
         // return $where;
         $table = tbl_masterlistsupp::with("category", 'supplier')
-        ->whereRaw($where)  ;
+        ->whereRaw($where);
  
         if ($t->search) { // If has value
             $table = $table->where("supply_name", "like", "%".$t->search."%");

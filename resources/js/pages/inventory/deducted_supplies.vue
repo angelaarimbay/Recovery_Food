@@ -20,10 +20,10 @@
             plain
             color="primary"
             v-ripple="false"
-            to="/dashboard"
+            to="/supplies_inventory"
             class="px-0"
             style="text-decoration: none; text-transform: none"
-            >Inventory </v-btn
+            >Home</v-btn
           >
           /
           <v-btn

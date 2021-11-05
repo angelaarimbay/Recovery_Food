@@ -29,9 +29,8 @@ class ProductsListController extends Controller
             $q->where("id", auth()->user()->branch);
         })->whereHas("product_name", function ($q1) use ($t) {
             $q1->where("product_name", "like", "%".$t->search."%");
-        })->selectRaw('    product_name, category, sub_category, sum(quantity) as quantity')
-        ->groupBy(['category','sub_category','product_name'])
-        ;
+        })->selectRaw('product_name, category, sub_category, sum(quantity) as quantity')
+        ->groupBy(['category','sub_category','product_name']);
 
         $return = [];
         $row = 1;
@@ -48,25 +47,25 @@ class ProductsListController extends Controller
             $data['category'] = tbl_prodcat::where("id", $value->category)->first();
             $data['outgoing_amount'] = number_format($value->outgoing_amount, 2);
             $data['product_name'] =   tbl_masterlistprod::where("id", $value->product_name)->first();
-            $data['price'] =  number_format(tbl_masterlistprod::where("id", $value->product_name)->first()->price,2);
+            $data['price'] =  number_format(tbl_masterlistprod::where("id", $value->product_name)->first()->price, 2);
             $data['quantity'] = $value->quantity;
             $data['quantity_diff'] = $value->quantity_diff;
             $data['sub_category'] =tbl_prodsubcat::where("id", $value->sub_category)->first();
             array_push($return_data, $data);
         }
-        $items =   Collection::make($return_data);
+        $items = Collection::make($return_data);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
     public function getSalesCount()
     {
         $count =  tbl_pos::where(['branch'=> auth()->user()->branch])
-        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d") )) ])
+        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d"))) ])
                        ->count();
         $amount =  tbl_pos::where(['branch'=> auth()->user()->branch])
-        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d") )) ])
+        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d"))) ])
                        ->get()->sum('sub_total');
-                       return ['count' => $count, 'amount' => number_format($amount,2)];
+        return ['count' => $count, 'amount' => number_format($amount, 2)];
     }
     
     public function save(Request $t)
@@ -93,7 +92,7 @@ class ProductsListController extends Controller
     public function getSalesToday()
     {
         $data = tbl_pos::where(['cashier'=> auth()->user()->id])
-                        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d") )) ])
+                        ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d"))) ])
                         ->get();
 
         $content['data'] = $data;

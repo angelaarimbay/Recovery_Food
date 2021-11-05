@@ -45,10 +45,10 @@
             plain
             color="primary"
             v-ripple="false"
-            to="/dashboard"
+            to="/supplies_inventory"
             class="px-0"
             style="text-decoration: none; text-transform: none"
-            >Inventory</v-btn
+            >Home</v-btn
           >
           /
           <v-btn
@@ -325,8 +325,10 @@
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
                         outlined
-                        clearable
                         dense
+                        autocomplete="off"
+                        @focus="clearQ"
+                        @blur="resetQ"
                         @keydown="quantityKeydown($event)"
                         counter
                         maxlength="3"
@@ -436,7 +438,7 @@ export default {
     form: {
       category: null,
       supply_name: null,
-      quantity: null,
+      quantity: 1,
     },
 
     // For comparing data
@@ -546,6 +548,18 @@ export default {
       return numbr.format(format);
     },
 
+    resetQ() {
+      if (this.form.quantity == null) {
+        this.form.quantity = 1;
+      }
+    },
+
+    clearQ() {
+      if (this.form.quantity == 1) {
+        this.form.quantity = null;
+      }
+    },
+
     // Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
@@ -641,7 +655,7 @@ export default {
 
     // Reset Forms
     cancel() {
-      this.$refs.form.reset();
+      this.quantity = 1;
       this.dialog = false;
     },
   },

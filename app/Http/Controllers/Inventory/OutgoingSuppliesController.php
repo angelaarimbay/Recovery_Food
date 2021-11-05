@@ -95,7 +95,7 @@ class OutgoingSuppliesController extends Controller
             $temp['fluctiation'] = number_format($value->fluctiation, 2) ;
             array_push($return, $temp);
         }
-        $items =   Collection::make($return);
+        $items = Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
@@ -124,7 +124,7 @@ class OutgoingSuppliesController extends Controller
         $table = tbl_requestsupp::select(['branch', 'ref','user','request_date'])
         ->selectRaw('min(status) as status')
         ->groupBy(['branch', 'ref','user','request_date' ])
-        ->wherein('status', [1,2,3])
+        ->wherein('status', [1,2])
         ->get();
         $return = [];
         foreach ($table  as $key => $value) {

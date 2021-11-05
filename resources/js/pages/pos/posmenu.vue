@@ -244,6 +244,19 @@
             class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
           >
             Enter Quantity
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="cancel"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
           </v-toolbar>
           <v-card tile style="background-color: #f5f5f5">
             <v-card-text class="py-2">
@@ -251,11 +264,9 @@
                 <v-row>
                   <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
-                      >Item Selected:
-                      <strong
-                        >{{ selectedrow.product_name.product_name }}
-                      </strong></span
-                    >
+                      ><strong>Item Selected:</strong>
+                      {{ selectedrow.product_name.product_name }}
+                    </span>
                   </v-col>
                 </v-row>
                 <v-row>

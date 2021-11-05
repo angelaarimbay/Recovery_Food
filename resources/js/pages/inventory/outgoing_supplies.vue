@@ -638,8 +638,13 @@
         </v-form>
 
         <!-- BRANCH REQUEST LIST -->
-
-        <v-dialog v-model="dialog1" fullscreen>
+        <v-dialog
+          v-model="dialog1"
+          fullscreen
+          transition="dialog-bottom-transition"
+          persistent
+          no-click-animation
+        >
           <v-toolbar
             dense
             dark
@@ -851,11 +856,10 @@
                   <v-spacer></v-spacer>
                   <v-btn
                     style="text-transform: none"
-                    depressed
-                    dark
                     :small="$vuetify.breakpoint.smAndDown"
                     color="primary"
                     @click="processRequest"
+                    :disabled="!disabled"
                   >
                     Approve Request
                   </v-btn>
@@ -993,6 +997,13 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
+    disabled() {
+      if (this.selected.length == 0) {
+        return false;
+      } else {
+        return true;
+      }
+    },
     myheaders() {
       return this.headers.filter((s) => this.headers.includes(s));
     },
@@ -1331,7 +1342,7 @@ export default {
             active: true,
             iconText: "alert-circle",
             iconColor: "error",
-            message: "Insufficient stocks",
+            message: "Insufficient stocks.",
           };
           return;
         }
@@ -1462,8 +1473,8 @@ export default {
       await axios
         .get("/api/osupp/request/list", {
           params: {
-            page: this.page,
-            itemsPerPage: this.itemsPerPage,
+            page: this.page1,
+            itemsPerPage: this.itemsPerPage1,
           },
         })
         .then((result) => {

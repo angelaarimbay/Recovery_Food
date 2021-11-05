@@ -805,7 +805,7 @@ export default {
             active: true,
             iconText: "alert-circle",
             iconColor: "error",
-            message: "Insufficient stocks",
+            message: "Insufficient stocks.",
           }; 
           return;
         }

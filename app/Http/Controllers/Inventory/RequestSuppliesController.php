@@ -19,12 +19,13 @@ class RequestSuppliesController extends Controller
     {
         return tbl_masterlistsupp::all();
     }
+    
     public function get(Request $t)
     {
         $table = tbl_requestsupp::select(['ref', 'user', 'request_date'])
             ->selectRaw('min(status) as status')
             ->groupBy(['ref', 'user', 'request_date'])
-            ->wherein('status', [1, 2, 3])
+            ->wherein('status', [1, 2])
             ->where('branch', auth()->user()->branch)
             ->get();
         $return = [];
@@ -54,9 +55,7 @@ class RequestSuppliesController extends Controller
         tbl_requestsupp::where('ref', $request[0]['ref'])->whereNotIn('supply_name', $ids)->update(['status' => 0]);
 
 
-
         //---------------------------update / save as new row for exsiting request or if no reference fount save all.
-
         $date =  date("Y-m-d h:i:s");
         foreach ($request->all() as $key => $value) {
             //first find the ref and id
@@ -118,20 +117,15 @@ class RequestSuppliesController extends Controller
             $temp['status'] = $value->status;
             array_push($return, $temp);
         }
-        return  $return;
+        return $return;
     }
 
     public function completeRequest(Request $request)
     {
-
-
-
         foreach (tbl_requestsupp::where(['ref' => $request->ref])->where('status', '!=', 0)->get() as $key => $value) {
-
 
             $date1 =  date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
             $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
-
 
             $get_amount = tbl_incomingsupp::where("supply_name", $value->supply_name)
                 ->whereBetween('incoming_date', [$date1, $date2]);
@@ -153,7 +147,6 @@ class RequestSuppliesController extends Controller
                 ]
             );
         }
-
         tbl_requestsupp::where(['ref' => $request->ref])->where('status', '!=', 0)->update(['status' => 3]);
     }
 }
