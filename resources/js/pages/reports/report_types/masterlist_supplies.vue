@@ -126,7 +126,7 @@ export default {
               method: "GET",
               responseType: "blob",
               params: { category: this.category, type: type },
-            }).then((response) => {
+            }).then((response) => {  
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
@@ -160,7 +160,7 @@ export default {
               method: "GET",
               responseType: "blob",
               params: { category: this.category, type: "pdf" },
-            }).then((response) => {
+            }).then((response) => { 
               let blob = new Blob([response.data], { type: "application/pdf" });
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
@@ -181,7 +181,11 @@ export default {
     },
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
-        this.suppcatlist = supp_cat.data;
+        this.suppcatlist.push({'supply_cat_name':'All','id':'All'});
+         for (var key in supp_cat.data) {
+           this.suppcatlist.push({'supply_cat_name':supp_cat.data[key]['supply_cat_name'],'id':supp_cat.data[key]['id'] });
+         }
+        
       });
     },
   },

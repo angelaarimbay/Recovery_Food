@@ -71,7 +71,7 @@ class tbl_outgoingsupp extends Model
 
     public function getNetPriceAttribute()
     {
-        return tbl_masterlistsupp::where("id", $this->supply_name)->first();
+        return tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price;
     }
 
     public function getFluctiationAttribute()
