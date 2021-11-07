@@ -398,8 +398,6 @@ export default {
       {
         text: "DATE",
         value: "outgoing_date",
-        align: "center",
-        sortable: false,
         filterable: false,
         class: "black--text",
       },
