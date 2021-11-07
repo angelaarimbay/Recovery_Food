@@ -802,6 +802,7 @@
                   item-key="supply_id"
                   :items-per-page="10"
                   v-model="selected"
+                 :item-selected="checkQuantity"
                 >
                   <template
                     v-slot:[`item.data-table-select`]="{
@@ -1513,6 +1514,10 @@ export default {
     allQuantity() {
       this.quantity = this.selectedItem.quantity_available;
     },
+    checkQuantity(){
+      alert("yes");
+    },
+
 
     async processRequest() {
       await axios
