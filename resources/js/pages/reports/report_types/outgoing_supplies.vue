@@ -219,7 +219,7 @@ export default {
             await axios({
               url: "/api/reports/outgoingsupplies/get",
               method: "GET",
-              responseType: "blob",
+              // responseType: "blob",
               params: {
                 type: type,
                 branch: this.branch,
@@ -227,7 +227,9 @@ export default {
                 from: this.outgoing_from,
                 to: this.outgoing_to,
               },
-            }).then((response) => { 
+            }).then((response) => {
+              console.log(response.data)
+              return;
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
@@ -292,10 +294,13 @@ export default {
 
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
-       this.suppcatlist.push({'supply_cat_name':'All','id':'All'});
-         for (var key in supp_cat.data) {
-           this.suppcatlist.push({'supply_cat_name':supp_cat.data[key]['supply_cat_name'],'id':supp_cat.data[key]['id'] });
-         }
+        this.suppcatlist.push({ supply_cat_name: "All", id: "All" });
+        for (var key in supp_cat.data) {
+          this.suppcatlist.push({
+            supply_cat_name: supp_cat.data[key]["supply_cat_name"],
+            id: supp_cat.data[key]["id"],
+          });
+        }
       });
     },
 

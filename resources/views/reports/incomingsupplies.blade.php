@@ -89,8 +89,7 @@
             </tr>  
             @endforeach
                  @endforeach  
-            <tr  >
-                 
+            <!-- <tr  >
                  <td  style=" border: none;width: auto">  </td>  
                  <td  style=" border: none;width: auto">  </td>
                  <td  style=" border: none;width: auto"> </td>
@@ -118,7 +117,7 @@
                  <td  style=" border: none;width: auto">  </td>
                  <td  style=" border-bottom: none;  border-left: none; border-right: none; width: auto">  </td>  
                  <td  style=" border: none;width: auto"> </td>
-             </tr>  
+             </tr>   -->
         </table>
         <!-- Page Number --> 
         <htmlpagefooter name="page-footer">
