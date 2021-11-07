@@ -149,4 +149,12 @@ class RequestSuppliesController extends Controller
         }
         tbl_requestsupp::where(['ref' => $request->ref])->where('status', '!=', 0)->update(['status' => 3]);
     }
+
+       public function cancelRequest(Request $request)
+    {
+        
+        tbl_requestsupp::where(['ref' => $request->ref])->where('status', '!=', 0)->update(['status' => 0]);
+    }
+
+    
 }

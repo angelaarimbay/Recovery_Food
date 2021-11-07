@@ -92,6 +92,7 @@ use Illuminate\Support\Facades\Route;
         Route::get('requestsupp/get', 'Inventory\RequestSuppliesController@get');
         Route::get('requestsupp/request/list', 'Inventory\RequestSuppliesController@getRequested');
         Route::post('requestsupp/request/complete', 'Inventory\RequestSuppliesController@completeRequest');
+        Route::post('requestsupp/request/cancel', 'Inventory\RequestSuppliesController@cancelRequest');
     
         
         // Masterlist Products

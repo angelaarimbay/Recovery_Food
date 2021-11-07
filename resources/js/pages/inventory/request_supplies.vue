@@ -911,6 +911,22 @@ export default {
         message: "Successfully cancelled.",
       };
     },
+ 
+    
+    async cancelRequest(ref) {
+      await axios
+        .post("/api/requestsupp/request/cancel", ref)
+        .then((result) => {
+          //if the value is true then save to database
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Request has been successfully cancelled.",
+          };
+          this.get();
+        });
+    },
 
     async completeRequest(ref) {
       await axios
