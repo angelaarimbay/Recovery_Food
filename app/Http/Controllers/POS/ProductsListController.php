@@ -59,8 +59,11 @@ class ProductsListController extends Controller
 
     public function getSalesCount()
     {
-     $count =  DB::table("tbl_pos")->select("reference_no")->groupBy('reference_no')->get();
-   $amount =  tbl_pos::where(['branch'=> auth()->user()->branch])
+        $count =  DB::table("tbl_pos")->where(['branch'=> auth()->user()->branch])
+     ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d"))) ])
+           ->select("reference_no")->groupBy('reference_no')->get();
+
+        $amount =  tbl_pos::where(['branch'=> auth()->user()->branch])
         ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime(date("Y-m-d"))),  date("Y-m-d 23:59:59", strtotime(date("Y-m-d"))) ])
                        ->get()->sum('sub_total');
         return ['count' =>  count($count) , 'amount' => number_format($amount, 2)];
