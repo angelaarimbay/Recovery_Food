@@ -802,7 +802,7 @@
                   item-key="supply_id"
                   :items-per-page="10"
                   v-model="selected"
-                 :item-selected="checkQuantity"
+                  :item-selected="checkQuantity"
                 >
                   <template
                     v-slot:[`item.data-table-select`]="{
@@ -1408,16 +1408,16 @@ export default {
       });
     },
 
-    async suppValidate(id = "") {
+    async suppValidate(id = "",edit='') {
       await axios
-        .get("/api/osupp/suppValidate", { params: { id: id } })
+        .get("/api/osupp/suppValidate", { params: { id: id.id } })
         .then((result) => {
-          if (id) {
+          if (!edit) {
             this.getQuantity = result.data + this.form.quantity;
           } else {
             this.getQuantity = result.data;
           }
-          this.getQuantity = result.data;
+       
         });
     },
 
@@ -1451,7 +1451,7 @@ export default {
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-      this.suppValidate(row.supply_name.id);
+      this.suppValidate(row.supply_name,"yes");
       this.dialog = true;
     },
 
@@ -1515,12 +1515,28 @@ export default {
     allQuantity() {
       this.quantity = this.selectedItem.quantity_available;
     },
-    checkQuantity(){
-      alert("yes");
-    },
-
 
     async processRequest() {
+      var found = 0;
+      for (var key in this.selected) {
+        if (
+          this.selected[key].quantity_available <
+          this.selected[key].quantity_requested
+        ) {
+          found += 1;
+        }
+      }
+
+      if (found > 0) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-circle",
+          iconColor: "error",
+          message: "Insufficient stocks.",
+        };
+        return;
+      }
+
       await axios
         .post("/api/osupp/request/process", {
           checked: this.selected,
@@ -1528,7 +1544,6 @@ export default {
         })
         .then((result) => {
           //if the value is true then save to database
-          console.log(result.data);
           this.snackbar = {
             active: true,
             iconText: "check",
@@ -1548,6 +1563,10 @@ export default {
     page(val) {
       this.page = val;
       this.get();
+    },
+    page1(val) {
+      this.page1 = val;
+      this.requestList();
     },
     id: {
       handler: function (v) {},

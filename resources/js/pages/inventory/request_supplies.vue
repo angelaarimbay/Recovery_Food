@@ -406,9 +406,17 @@
                     {{ item.supply_name }} {{ item.description }}</template
                   >
 
-                  <template v-slot:[`item.status`]="{ item }">
-                    {{ item.status }}</template
-                  >
+                 <template v-slot:[`item.status`]="{ item }">
+                    <div v-if="item.status == 1" class="text-warning">
+                      Pending
+                    </div>
+                    <div v-else-if="item.status == 2" class="text-success">
+                      Confirmed / For Delivery
+                    </div>
+                    <div v-else-if="item.status == 3" class="text-success">
+                      Completed
+                    </div>
+                  </template>
 
                   <template v-slot:[`item.id`]="{ item }">
                     <v-tooltip bottom>
@@ -817,10 +825,10 @@ export default {
           this.table2[check_existing].quantity =
             parseInt(this.table2[check_existing].quantity) +
             parseInt(this.quantity);
-        } else {
+        } else { 
           this.table2.push({
             id: row.id,
-            supply_name: row.supply_name + " " + row.description,
+            supply_name: row.supply_name + " " + (row.description != null?row.description:'') ,
             unit: row.unit,
             quantity: this.quantity,
             ref: "",
