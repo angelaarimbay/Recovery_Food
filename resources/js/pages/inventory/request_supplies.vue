@@ -97,110 +97,112 @@
     <!-- Main Card -->
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            style="text-transform: none"
-            depressed
-            dark
-            :small="$vuetify.breakpoint.smAndDown"
-            @click="addRequest"
-            >Add New Request</v-btn
+        <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+          <v-card-actions class="pl-0">
+            <v-btn
+              color="primary"
+              style="text-transform: none"
+              depressed
+              dark
+              :small="$vuetify.breakpoint.smAndDown"
+              @click="addRequest"
+              >Add New Request</v-btn
+            >
+          </v-card-actions>
+          <v-data-table
+            :headers="headers"
+            :items="table.data"
+            :loading="progressbar"
+            :page.sync="page"
+            ref="progress"
+            :items-per-page="itemsPerPage"
+            hide-default-footer
+            @page-count="pageCount = $event"
           >
-        </v-card-actions>
-        <v-data-table
-          :headers="headers"
-          :items="table.data"
-          :loading="progressbar"
-          :page.sync="page"
-          ref="progress"
-          :items-per-page="itemsPerPage"
-          hide-default-footer
-          @page-count="pageCount = $event"
-        >
-          <!-- Progress Bar -->
-          <v-progress-linear
-            color="red darken-2"
-            class="px-0 mx-0"
-            slot="progress"
-            indeterminate
-            rounded
-          ></v-progress-linear>
+            <!-- Progress Bar -->
+            <v-progress-linear
+              color="red darken-2"
+              class="px-0 mx-0"
+              slot="progress"
+              indeterminate
+              rounded
+            ></v-progress-linear>
 
-          <template v-slot:[`item.supply_name`]="{ item }">
-            {{ item.supply_name }} {{ item.description }}</template
-          >
+            <template v-slot:[`item.supply_name`]="{ item }">
+              {{ item.supply_name }} {{ item.description }}</template
+            >
 
-          <template v-slot:[`item.status`]="{ item }">
-            <div v-if="item.status == 1" class="text-warning">Pending</div>
-            <div v-else-if="item.status == 2" class="text-success">
-              Confirmed / For Delivery
-            </div>
-            <div v-else-if="item.status == 3" class="text-success">
-              Completed
-            </div>
-          </template>
+            <template v-slot:[`item.status`]="{ item }">
+              <div v-if="item.status == 1" class="text-warning">Pending</div>
+              <div v-else-if="item.status == 2" class="text-success">
+                Confirmed / For Delivery
+              </div>
+              <div v-else-if="item.status == 3" class="text-success">
+                Completed
+              </div>
+            </template>
 
-          <template v-slot:[`item.id`]="{ item }">
-            <div v-if="item.status == 2">
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    icon
-                    color="success darken-2"
-                    @click="completeRequest(item)"
-                    small
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                    v-on="data.on"
-                  >
-                    <v-icon>mdi-check</v-icon>
-                  </v-btn>
-                </template>
-                <span>Complete</span>
-              </v-tooltip>
-            </div>
-            <div v-else-if="item.status == 1">
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    @click="viewRequest(item)"
-                    small
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                    v-on="data.on"
-                  >
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                </template>
-                <span>Edit</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    @click="cancelRequest(item)"
-                    small
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                    v-on="data.on"
-                  >
-                    <v-icon>mdi-cancel</v-icon>
-                  </v-btn>
-                </template>
-                <span>Cancel</span>
-              </v-tooltip>
-            </div>
-          </template>
-        </v-data-table>
-        <div class="text-center pt-2">
-          <v-pagination
-            v-model="page"
-            :total-visible="7"
-            :length="table.last_page"
-            color="red darken-2"
-          ></v-pagination>
-        </div>
+            <template v-slot:[`item.id`]="{ item }">
+              <div v-if="item.status == 2">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      icon
+                      color="success darken-2"
+                      @click="completeRequest(item)"
+                      small
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                      v-on="data.on"
+                    >
+                      <v-icon>mdi-check</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Complete</span>
+                </v-tooltip>
+              </div>
+              <div v-else-if="item.status == 1">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      icon
+                      color="red darken-2"
+                      @click="viewRequest(item)"
+                      small
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                      v-on="data.on"
+                    >
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      icon
+                      color="red darken-2"
+                      @click="cancelRequest(item)"
+                      small
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                      v-on="data.on"
+                    >
+                      <v-icon>mdi-cancel</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Cancel</span>
+                </v-tooltip>
+              </div>
+            </template>
+          </v-data-table>
+          <div class="text-center pt-2">
+            <v-pagination
+              v-model="page"
+              :total-visible="7"
+              :length="table.last_page"
+              color="red darken-2"
+            ></v-pagination>
+          </div>
+        </v-container>
       </v-container>
     </v-card>
 
@@ -778,6 +780,7 @@ export default {
       });
     },
     async get() {
+      this.progressbar = true;
       await axios
         .get("/api/requestsupp/get", {
           params: {
@@ -787,6 +790,7 @@ export default {
         })
         .then((result) => {
           this.table = result.data;
+          this.progressbar = false;
         });
     },
 

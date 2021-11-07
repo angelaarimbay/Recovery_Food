@@ -1478,6 +1478,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           this.table1 = result.data;
           this.progressbar1 = false;
         });

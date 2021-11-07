@@ -116,7 +116,7 @@ class OutgoingSuppliesController extends Controller
 
     public function validateQuantity(Request $request)
     {
-        return tbl_incomingsupp::where('supply_name', $request->id)->sum('quantity') -  tbl_outgoingsupp::where('supply_name', $request->id)->sum('quantity') ;
+        return tbl_incomingsupp::where('supply_name', $request->id)->sum('quantity') - tbl_outgoingsupp::where('supply_name', $request->id)->sum('quantity') ;
     }
 
     public function getRequest(Request $t)

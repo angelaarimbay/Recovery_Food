@@ -68,19 +68,6 @@
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="pl-0">
-            <v-btn
-              color="primary"
-              style="text-transform: none"
-              depressed
-              dark
-              :small="$vuetify.breakpoint.smAndDown"
-              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 d-none"
-              @click="openDialog"
-            >
-              Add Supply
-            </v-btn>
-          </v-card-actions>
 
           <!-- Search Filters -->
           <v-list dense nav class="px-0 py-0">
