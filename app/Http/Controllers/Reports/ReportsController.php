@@ -490,7 +490,8 @@ class ReportsController extends Controller
                 $cc_a = clone $incoming_and_past;
                 $result = 0;
                 if ($c_a->sum('quantity') > 0) {
-                    $temp['onhand_a'] += number_format(($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q']), 2);
+                    $temp['onhand_a'] = number_format(($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q']), 2);
+                    $st_onhand_a += $c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q'];
                 } else {
                     $temp['onhand_a'] = 0;
                 }
@@ -502,6 +503,7 @@ class ReportsController extends Controller
                 $cc_a = clone $incoming_and_past;
                 if ($c_a->sum('quantity') > 0) {
                     $temp['average_a'] = number_format(($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['average_q']), 2);
+                    $st_average_a += $c_a->sum('amount') / $cc_a->sum('quantity') * $temp['average_q'];
                 } else {
                     $temp['average_a'] = 0;
                 }
@@ -535,6 +537,7 @@ class ReportsController extends Controller
                 $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
                 if ($aa->sum('amount') > 0) {
                     $temp['ending_a'] = number_format($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+                    $st_ending_a += $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
                     $temp['ending_a'] = 0;
                 }
@@ -544,6 +547,7 @@ class ReportsController extends Controller
                 $temp['consumption_q'] = $a->sum('quantity') - $temp['ending_q'];
                 if ($aa->sum('amount') > 0) {
                     $temp['consumption_a'] = number_format($temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+                    $st_consumption_a += $temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
                     $temp['consumption_a'] = 0;
                 }
@@ -555,6 +559,7 @@ class ReportsController extends Controller
                 $aa = clone $incoming;
                 if ($aa->sum('amount') > 0) {
                     $temp['ideal_a'] = number_format($temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+                    $st_ideal_a += $temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
                     $temp['ideal_a'] = 0;
                 }
@@ -564,6 +569,7 @@ class ReportsController extends Controller
                 $aa = clone $incoming;
                 if ($aa->sum('amount') > 0) {
                     $temp['variance_a'] = number_format($temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'))), 2);
+                    $st_variance_a += $temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')));
                 } else {
                     $temp['variance_a'] = 0;
                 }
