@@ -617,7 +617,7 @@
                       lg="3"
                       md="3"
                       sm="3"
-                      >123</v-col
+                      >{{ !isNaN(currentdata.average_q)?currentdata.average_q.toFixed(2):0 }}</v-col
                     >
                     <v-col
                       class="py-1 px-2 text-right"
