@@ -54,6 +54,7 @@
     </div>
     <p class="header">Recovery Food</p>
     <p class="header">Sales Report</p>
+    <p class="header">{{ $param['branch'] }}</p>
 
     <table style="border:none; width: 100%">
         <tr>
@@ -68,9 +69,6 @@
         <!-- Header -->
         <tr>
             <th>
-                <h6>BRANCH</h6>
-            </th>
-            <th>
                 <h6>DATE</h6>
             </th>
             <th>
@@ -83,7 +81,6 @@
         <!-- Rows -->
         @foreach ($data as $items)
             <tr>
-                <td style="width: auto"> {{ $items['branch_name_details']['branch_name'] }} </td>
                 <td style="width: auto"> {{ date('Y-m-d', strtotime($items['created_at'])) }} </td>
                 <td style="width: auto"> {{ $items['reference_no'] }} </td>
                 <td style="width: auto"> {{ $items['total_amount'] }} </td>

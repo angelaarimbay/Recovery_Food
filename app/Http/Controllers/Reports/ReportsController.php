@@ -32,90 +32,49 @@ class ReportsController extends Controller
     // Masterlist Supplies Report - OK
     public function MasterlistSuppliesReport(Request $t)
     {
-        if ($t->category == 'All') {
-            $data = []; // <----------MAIN ARRAY
-            //GET ALL THE CATEGORY THEN LOOP
-            foreach (tbl_masterlistsupp::select('category')->groupBy('category')->pluck('category') as $key => $value) {
-                $group = []; // <-------------INNER ARRAY
-                $net_p = 0; // <--sub total
-                $wvat_p = 0;
-                $wovat_p = 0;
-                //EACH CATEGORY ADD TO INNER ARRAY
-                foreach (tbl_masterlistsupp::with("category")->where("category", $value)->get() as $key1 => $value1) {
-                    $net_p += $value1->net_price;
-                    $wvat_p += $value1->with_vat;
-                    $wovat_p += $value1->without_vat;
+        //filter if all or specific
+        $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
 
-                    $ar = [
-                        'category_details' => $value1->category_details['supply_cat_name'],
-                        'supply_name' => $value1->supply_name,
-                        'description' => $value1->description,
-                        'unit' => $value1->unit,
-                        'net_price' => $value1->net_price,
-                        'with_vat' => $value1->with_vat,
-                        'vat' => $value1->vat,
-                        'without_vat' => $value1->without_vat,
-                        'exp_date' => $value1->exp_date,
-                    ];
-                    array_push($group, $ar);
-                }
-                // ADD INNER ARRAY TO MAIN ARRAY (NESTED ARRAY)
+        $data = []; // <----------MAIN ARRAY
+        //GET ALL THE CATEGORY THEN LOOP
+        foreach (tbl_masterlistsupp::whereRaw($where)->groupBy('category')->pluck('category') as $key => $value) {
+            $group = []; // <-------------INNER ARRAY
+            $net_p = 0; // <--sub total
+            $wvat_p = 0;
+            $wovat_p = 0;
+            //EACH CATEGORY ADD TO INNER ARRAY
+            foreach (tbl_masterlistsupp::with("category")->where("category", $value)->get() as $key1 => $value1) {
+                $net_p += $value1->net_price;
+                $wvat_p += $value1->with_vat;
+                $wovat_p += $value1->without_vat;
+
                 $ar = [
-                    'category_details' => '',
-                    'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
-                    'description' => '',
-                    'unit' => '',
-                    'net_price' => $net_p,
-                    'with_vat' => $wvat_p,
-                    'vat' => '',
-                    'without_vat' => $wovat_p,
-                    'exp_date' => '',
+                    'category_details' => $value1->category_details['supply_cat_name'],
+                    'supply_name' => $value1->supply_name,
+                    'description' => $value1->description,
+                    'unit' => $value1->unit,
+                    'net_price' => $value1->net_price,
+                    'with_vat' => $value1->with_vat,
+                    'vat' => $value1->vat,
+                    'without_vat' => $value1->without_vat,
+                    'exp_date' => $value1->exp_date,
                 ];
                 array_push($group, $ar);
-                array_push($data, $group);
             }
-        } else {
-            $data = []; // <----------MAIN ARRAY
-            //GET ALL THE CATEGORY THEN LOOP
-            foreach (tbl_masterlistsupp::select('category')->where("category", $t->category)->groupBy('category')->pluck('category') as $key => $value) {
-                $group = []; // <-------------INNER ARRAY
-                $net_p = 0; // <--sub total
-                $wvat_p = 0;
-                $wovat_p = 0;
-                //EACH CATEGORY ADD TO INNER ARRAY
-                foreach (tbl_masterlistsupp::with("category")->where("category", $value)->get() as $key1 => $value1) {
-                    $net_p += $value1->net_price;
-                    $wvat_p += $value1->with_vat;
-                    $wovat_p += $value1->without_vat;
-
-                    $ar = [
-                        'category_details' => $value1->category_details['supply_cat_name'],
-                        'supply_name' => $value1->supply_name,
-                        'description' => $value1->description,
-                        'unit' => $value1->unit,
-                        'net_price' => $value1->net_price,
-                        'with_vat' => $value1->with_vat,
-                        'vat' => $value1->vat,
-                        'without_vat' => $value1->without_vat,
-                        'exp_date' => $value1->exp_date,
-                    ];
-                    array_push($group, $value1);
-                }
-                // ADD INNER ARRAY TO MAIN ARRAY (NESTED ARRAY)
-                $ar = [
-                    'category_details' => '',
-                    'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
-                    'description' => '',
-                    'unit' => '',
-                    'net_price' => $net_p,
-                    'with_vat' => $wvat_p,
-                    'vat' => '',
-                    'without_vat' => $wovat_p,
-                    'exp_date' => '',
-                ];
-                array_push($group, $ar);
-                array_push($data, $group);
-            }
+            // ADD INNER ARRAY TO MAIN ARRAY (NESTED ARRAY)
+            $ar = [
+                'category_details' => '',
+                'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
+                'description' => '',
+                'unit' => '',
+                'net_price' => $net_p,
+                'with_vat' => $wvat_p,
+                'vat' => '',
+                'without_vat' => $wovat_p,
+                'exp_date' => '',
+            ];
+            array_push($group, $ar);
+            array_push($data, $group);
         }
 
         $content = [];
@@ -433,7 +392,6 @@ class ReportsController extends Controller
             $st_variance_a = 0;
 
             foreach (tbl_masterlistsupp::where("category", $value1)->get() as $key => $value) {
-
                 $temp = [];
                 $temp['row'] = $row++;
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
@@ -488,7 +446,6 @@ class ReportsController extends Controller
                 $temp['onhand_q'] = $c->sum('quantity') - $d->sum('quantity');
                 $c_a = clone $incoming_and_past;
                 $cc_a = clone $incoming_and_past;
-                $result = 0;
                 if ($c_a->sum('quantity') > 0) {
                     $temp['onhand_a'] = number_format(($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q']), 2);
                     $st_onhand_a += $c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q'];
@@ -567,7 +524,7 @@ class ReportsController extends Controller
                 //Variance
                 $temp['variance_q'] = $temp['ending_q'] - $temp['ideal_q'];
                 $aa = clone $incoming;
-                if ($aa->sum('amount') > 0) {
+                if ($temp['variance_q'] > 0) {
                     $temp['variance_a'] = number_format($temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'))), 2);
                     $st_variance_a += $temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')));
                 } else {
@@ -799,7 +756,7 @@ class ReportsController extends Controller
             case 'pdf':
                 $content['data'] = $data;
                 $content['process_by'] = auth()->user()->name;
-                $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
                 $pdf = PDF::loadView('reports.sales', $content, [], [
                     'format' => 'A4-L',
                 ]);
@@ -838,14 +795,14 @@ class ReportsController extends Controller
         sum(sub_total_discounted) as sub_total_discounted,
         branch
         ,created_at,
-        reference_no  ")->groupby(["branch", "created_at", "reference_no"])
+        reference_no")->groupby(["branch", "created_at", "reference_no"])
             ->get();
 
         switch ($t->type) {
             case 'pdf':
                 $content['data'] = $data;
                 $content['process_by'] = auth()->user()->name;
-                $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
                 $pdf = PDF::loadView('reports.transaction', $content, [], [
                     'format' => 'A4-L',
                 ]);
