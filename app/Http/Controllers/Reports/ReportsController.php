@@ -550,7 +550,7 @@ class ReportsController extends Controller
 
                 //Average ((total of last month + current month) / (quantity of last month + current month) / (current month quantity / date today))
                 $a = clone $outgoing;
-                $temp['average_q'] = number_format($a->sum('quantity') / date('d'), 2);
+                $temp['average_q'] = $a->sum('quantity') / date('d');
                 $c_a = clone $incoming_and_past;
                 $cc_a = clone $incoming_and_past;
                 if ($c_a->sum('quantity') > 0) {
@@ -576,10 +576,10 @@ class ReportsController extends Controller
                 //Trigger Point  (lead time of item * total quantity / day today) + outgoing quantity / day today
                 $a = clone $incoming_and_past;
                 $b = clone $outgoing;
-                if (($a->sum('quantity') - $b->sum('quantity')) < $value->lead_time * ($b->sum('quantity') / date('d'))) {
-                    $temp['triggerpoint'] = "Order";
+                if (($a->sum('quantity') - $b->sum('quantity')) < ($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2)) {
+                    $temp['triggerpoint'] = 'Order';
                 } else {
-                    $temp['triggerpoint'] = "Manage";
+                    $temp['triggerpoint'] = 'Manage';
                 }
 
                 //Ending
@@ -641,7 +641,7 @@ class ReportsController extends Controller
                 'beginning_q' => '',
                 'beginning_a' => number_format($st_beginning_a, 2),
                 'incoming_q' => '',
-                'incoming_a' => number_format($st_incoming_a, 2),
+                'incoming_a' => sprintf($st_incoming_a, 2),
                 'total_q' => '',
                 'total_a' => number_format($st_total_a, 2),
                 'outgoing_q' => '',
@@ -708,7 +708,7 @@ class ReportsController extends Controller
                         $temp['category'] = $value['category'];
                         $temp['supply_name'] = $value['supply_name'];
                         $temp['unit'] = $value['unit'];
-                        $temp['net_price'] = $value['net_price'] ?? 0;
+                        $temp['net_price'] = $value['net_price'];
                         $temp['beginning_q'] = $value['beginning_q'] ?? 0;
                         $temp['beginning_a'] = $value['beginning_a'] ?? 0;
                         $temp['incoming_q'] = $value['incoming_q'] ?? 0;

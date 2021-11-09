@@ -100,14 +100,14 @@ class tbl_incomingsupp extends Model
             $get_wov = $get_quantity->sum('quantity') * (($get_amount->sum('amount') / $get_quantity->sum('quantity')) - 
             tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price);
         }
-        return $get_wov;
+        return round($get_wov, 2);
     }
 
     //For with VAT
     public function getWithVatAttribute()
     {
-        $date1 = date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
-        $date2 = date("Y-m-t 23:59:59", strtotime(date("m") . '/' . date("t") . '/' . date("Y")));
+        $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
         $incoming = 0;
 
         try {
@@ -118,6 +118,6 @@ class tbl_incomingsupp extends Model
         } catch (\Throwable $th) {
             $incoming = $this->net_price;
         }
-        return $this->vatable == 0 ? number_format($incoming, 2) : number_format($this->net_price, 2);
+        return $this->vatable == 0 ? round($incoming, 2) : round($this->net_price, 2);
     }
 }
