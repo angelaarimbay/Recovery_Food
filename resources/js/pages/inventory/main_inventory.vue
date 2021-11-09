@@ -617,7 +617,7 @@
                       lg="3"
                       md="3"
                       sm="3"
-                      >{{ currentdata.average_q }}</v-col
+                      >123</v-col
                     >
                     <v-col
                       class="py-1 px-2 text-right"

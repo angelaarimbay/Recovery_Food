@@ -494,7 +494,7 @@ class ReportsController extends Controller
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
                 $temp['supply_name'] = $value->supply_name . ' ' . $value->description;
                 $temp['unit'] = $value->unit;
-                $temp['net_price'] = $value->net_price;
+                $temp['net_price'] = number_format($value->net_price, 2);
                 $temp['lead_time'] = $value->lead_time;
                 $temp['minimum_order_quantity'] = $value->minimum_order_quantity;
                 $temp['order_frequency'] = $value->order_frequency;
@@ -512,27 +512,27 @@ class ReportsController extends Controller
                 $a = clone $incoming_past;
                 $temp['beginning_q'] = $a->sum('quantity');
                 $a = clone $incoming_past;
-                $temp['beginning_a'] = number_format($a->sum('amount'), 2);
+                $temp['beginning_a'] = $a->sum('amount');
                 $st_beginning_a += $a->sum('amount'); //Sub-Total
 
                 //Incoming (total of current month)
                 $a = clone $incoming;
                 $temp['incoming_q'] = $a->sum('quantity');
                 $a = clone $incoming;
-                $temp['incoming_a'] = number_format($a->sum('amount'), 2);
+                $temp['incoming_a'] = $a->sum('amount');
                 $st_incoming_a += $a->sum('amount'); //Sub-Total
 
                 //Total (total of previous month + current month)
                 $a = clone $incoming_and_past;
                 $temp['total_q'] = $temp['beginning_q'] + $temp['incoming_q'];
-                $temp['total_a'] = number_format($a->sum('amount'), 2);
+                $temp['total_a'] = $a->sum('amount');
                 $st_total_a += $a->sum('amount'); //Sub-Total
 
                 //Outgoing (total of current month)
                 $b = clone $outgoing;
                 $temp['outgoing_q'] = $b->sum('quantity');
                 $b = clone $outgoing;
-                $temp['outgoing_a'] = number_format($b->sum('amount'), 2);
+                $temp['outgoing_a'] = $b->sum('amount');
                 $st_outgoing_a += $b->sum('amount'); //Sub-Total
 
                 //Stocks On Hand (total of previous month + current month) - outgoing
@@ -542,7 +542,7 @@ class ReportsController extends Controller
                 $c_a = clone $incoming_and_past;
                 $cc_a = clone $incoming_and_past;
                 if ($c_a->sum('quantity') > 0) {
-                    $temp['onhand_a'] = number_format(($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q']), 2);
+                    $temp['onhand_a'] = ($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q']);
                     $st_onhand_a += $c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q'];
                 } else {
                     $temp['onhand_a'] = 0;
@@ -562,15 +562,15 @@ class ReportsController extends Controller
 
                 //Order Point  (lead time of item * total quantity / day today) + outgoing quantity / current day today
                 $a = clone $outgoing;
-                $temp['orderpoint'] = number_format(($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2), 2);
+                $temp['orderpoint'] = round(($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2), 2);
 
                 //Order Point  (lead time of item * total quantity / day today) + outgoing quantity / current day today
                 $a = clone $outgoing;
                 $orderqty = $value->order_frequency * ($a->sum('quantity') / date('d'));
                 if ($orderqty < $value->minimum_order_quantity) {
-                    $temp['ordr'] = number_format($value->minimum_order_quantity, 2);
+                    $temp['ordr'] = round($value->minimum_order_quantity, 2);
                 } else {
-                    $temp['ordr'] = number_format($orderqty, 2);
+                    $temp['ordr'] = round($orderqty, 2);
                 }
 
                 //Trigger Point  (lead time of item * total quantity / day today) + outgoing quantity / day today
@@ -588,7 +588,7 @@ class ReportsController extends Controller
                 $aa = clone $incoming;
                 $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
                 if ($aa->sum('amount') > 0) {
-                    $temp['ending_a'] = number_format($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+                    $temp['ending_a'] = $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                     $st_ending_a += $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
                     $temp['ending_a'] = 0;
@@ -598,7 +598,7 @@ class ReportsController extends Controller
                 $a = clone $incoming_and_past;
                 $temp['consumption_q'] = $a->sum('quantity') - $temp['ending_q'];
                 if ($aa->sum('amount') > 0) {
-                    $temp['consumption_a'] = number_format($temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+                    $temp['consumption_a'] = $temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                     $st_consumption_a += $temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
                     $temp['consumption_a'] = 0;
@@ -610,7 +610,7 @@ class ReportsController extends Controller
                 $temp['ideal_q'] = $a->sum('quantity') - $b->sum('quantity'); //total from last month and this month - outgoing this month
                 $aa = clone $incoming;
                 if ($aa->sum('amount') > 0) {
-                    $temp['ideal_a'] = number_format($temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
+                    $temp['ideal_a'] = $temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                     $st_ideal_a += $temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
                     $temp['ideal_a'] = 0;
@@ -620,7 +620,7 @@ class ReportsController extends Controller
                 $temp['variance_q'] = $temp['ending_q'] - $temp['ideal_q'];
                 $aa = clone $incoming;
                 if ($temp['variance_q'] > 0) {
-                    $temp['variance_a'] = number_format($temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'))), 2);
+                    $temp['variance_a'] = $temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')));
                     $st_variance_a += $temp['ending_q'] - ($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')));
                 } else {
                     $temp['variance_a'] = 0;
@@ -639,28 +639,28 @@ class ReportsController extends Controller
                 'order_frequency' => '',
 
                 'beginning_q' => '',
-                'beginning_a' => number_format($st_beginning_a, 2),
+                'beginning_a' => $st_beginning_a,
                 'incoming_q' => '',
-                'incoming_a' => sprintf($st_incoming_a, 2),
+                'incoming_a' => $st_incoming_a,
                 'total_q' => '',
-                'total_a' => number_format($st_total_a, 2),
+                'total_a' => $st_total_a,
                 'outgoing_q' => '',
-                'outgoing_a' => number_format($st_outgoing_a, 2),
+                'outgoing_a' => $st_outgoing_a,
                 'onhand_q' => '',
-                'onhand_a' => number_format($st_onhand_a, 2),
+                'onhand_a' => $st_onhand_a,
                 'average_q' => '',
-                'average_a' => number_format($st_average_a, 2),
+                'average_a' => $st_average_a,
                 'orderpoint' => '',
                 'ordr' => '',
                 'triggerpoint' => '',
                 'ending_q' => '',
-                'ending_a' => number_format($st_ending_a, 2),
+                'ending_a' => $st_ending_a,
                 'consumption_q' => '',
-                'consumption_a' => number_format($st_consumption_a, 2),
+                'consumption_a' => $st_consumption_a,
                 'ideal_q' => '',
-                'ideal_a' => number_format($st_ideal_a, 2),
+                'ideal_a' => $st_ideal_a,
                 'variance_q' => '',
-                'variance_a' => number_format($st_variance_a, 2),
+                'variance_a' => $st_variance_a,
             ];
 
             $group = collect($group)->sortByDesc('triggerpoint')->ToArray();
@@ -710,30 +710,30 @@ class ReportsController extends Controller
                         $temp['unit'] = $value['unit'];
                         $temp['net_price'] = $value['net_price'];
                         $temp['beginning_q'] = $value['beginning_q'] ?? 0;
-                        $temp['beginning_a'] = $value['beginning_a'] ?? 0;
+                        $temp['beginning_a'] = round($value['beginning_a'] ?? 0, 2);
                         $temp['incoming_q'] = $value['incoming_q'] ?? 0;
-                        $temp['incoming_a'] = $value['incoming_a'] ?? 0;
+                        $temp['incoming_a'] = round($value['incoming_a'] ?? 0, 2);
                         $temp['total_q'] = $value['total_q'] ?? 0;
-                        $temp['total_a'] = $value['total_a'] ?? 0;
+                        $temp['total_a'] = round($value['total_a'] ?? 0, 2);
                         $temp['outgoing_q'] = $value['outgoing_q'] ?? 0;
-                        $temp['outgoing_a'] = $value['outgoing_a'] ?? 0;
+                        $temp['outgoing_a'] = round($value['outgoing_a'] ?? 0, 2);
                         $temp['onhand_q'] = $value['onhand_q'] ?? 0;
-                        $temp['onhand_a'] = $value['onhand_a'] ?? 0;
-                        $temp['average_q'] = $value['average_q'] ?? 0;
-                        $temp['average_a'] = $value['average_a'] ?? 0;
+                        $temp['onhand_a'] = round($value['onhand_a'] ?? 0, 2);
+                        $temp['average_q'] = round($value['average_q'] ?? 0, 2);
+                        $temp['average_a'] = round($value['average_a'] ?? 0, 2);
                         $temp['lead_time'] = $value['lead_time'] ?? 0;
-                        $temp['orderpoint'] = $value['orderpoint'] ?? 0;
+                        $temp['orderpoint'] = round($value['orderpoint'] ?? 0, 2);
                         $temp['minimum_order_quantity'] = $value['minimum_order_quantity'] ?? 0;
-                        $temp['ordr'] = $value['ordr'] ?? 0;
+                        $temp['ordr'] = round($value['ordr'] ?? 0, 2);
                         $temp['triggerpoint'] = $value['triggerpoint'] ?? 0;
                         $temp['ending_q'] = $value['ending_q'] ?? 0;
-                        $temp['ending_a'] = $value['ending_a'] ?? 0;
+                        $temp['ending_a'] = round($value['ending_a'] ?? 0, 2);
                         $temp['consumption_q'] = $value['consumption_q'] ?? 0;
-                        $temp['consumption_a'] = $value['consumption_a'] ?? 0;
+                        $temp['consumption_a'] = round($value['consumption_a'] ?? 0, 2);
                         $temp['ideal_q'] = $value['ideal_q'] ?? 0;
-                        $temp['ideal_a'] = $value['ideal_a'] ?? 0;
+                        $temp['ideal_a'] = round($value['ideal_a'] ?? 0, 2);
                         $temp['variance_q'] = $value['variance_q'] ?? 0;
-                        $temp['variance_a'] = $value['variance_a'] ?? 0;
+                        $temp['variance_a'] = round($value['variance_a'] ?? 0, 2);
                         array_push($dataitems, $temp);
                     }
                 }

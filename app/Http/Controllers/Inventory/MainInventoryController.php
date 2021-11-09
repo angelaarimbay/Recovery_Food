@@ -97,7 +97,7 @@ class MainInventoryController extends Controller
 
             //Average ((Total of previous month + current month) / (quantity of previous month + current month) / (current month quantity / current date today))
             $a = clone $outgoing;
-            $temp['average_q'] = number_format($a->sum('quantity') / date('d'), 2);
+            $temp['average_q'] = $a->sum('quantity') / date('d');
             $c_a = clone $incoming_and_past;
             $cc_a = clone $incoming_and_past;
             if ($c_a->sum('quantity') > 0) {
@@ -122,7 +122,7 @@ class MainInventoryController extends Controller
             //Trigger Point  ((lead time of item * total quantity / current day today) + (outgoing quantity / current day today))
             $a = clone $incoming_and_past;
             $b = clone $outgoing;
-            if (($a->sum('quantity') - $b->sum('quantity')) < $value->lead_time * ($b->sum('quantity') / date('d'))) {
+            if (($a->sum('quantity') - $b->sum('quantity')) < ($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2)) {
                 $temp['triggerpoint'] = 0; // order
             } else {
                 $temp['triggerpoint'] = 1; // manage

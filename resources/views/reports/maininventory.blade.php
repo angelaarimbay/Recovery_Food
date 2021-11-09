@@ -194,7 +194,7 @@
                 <tr>
                     <td style="width: 15%; text-align: left"> {!! $items['supply_name'] !!}</td>
                     <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
-                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['net_price'], 2) }} </td>
+                    <td style="width: auto; text-align: right"> {{ $items['net_price'] }} </td>
                     <td style="width: auto; text-align: right"> {{ $items['beginning_q'] ?? 0 }} </td>
                     <td style="width: auto; text-align: right"> {{ number_format((float)$items['beginning_a'] ?? 0, 2) }} </td>
                     <td style="width: auto; text-align: right"> {{ $items['incoming_q'] ?? 0 }}</td>
