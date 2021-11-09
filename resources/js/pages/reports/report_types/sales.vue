@@ -526,6 +526,14 @@ export default {
   }),
 
   created() {
+    this.dateFromSP = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      "YYYY-MM-DD"
+    );
+    this.dateUntilSP = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      "YYYY-MM-DD"
+    );
     this.getSalesReport();
     this.branchName();
 

@@ -160,7 +160,7 @@ export default {
             await axios({
               url: "/api/reports/inventorysummary/get",
               method: "GET",
-              responseType: "blob",
+              // responseType: "blob",
               params: {
                 type: type,
                 year: this.year,
@@ -168,6 +168,8 @@ export default {
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
             }).then((response) => { 
+              console.log(response.data)
+              return;
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
@@ -187,8 +189,6 @@ export default {
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
             }).then((response) => {
-              // console.log(response.data)
-              // return;
               let blob = new Blob([response.data], { type: "application/pdf" });
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {

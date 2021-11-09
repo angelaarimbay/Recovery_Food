@@ -199,6 +199,14 @@
             <template v-slot:[`item.product_full`]="{ item }"
               >{{ item.product_name }} {{ item.description }}</template
             >
+            <!-- <template v-slot:[`item.diff_quantity`]="{ item }"> 
+              <div v-if="item.diff_quantity<=5">
+                <span style="color: red"> {{ item.diff_quantity }}</span>
+              </div>
+              <div v-else-if="item.diff_quantity>=6 && item.diff_quantity <=10">
+                <span style="color: orange"> {{ item.diff_quantity }}</span>
+              </div>
+            </template> -->
             <template v-slot:[`item.exp_date`]="{ item }">
               {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
             >
@@ -549,7 +557,9 @@
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
+import template from "../template.vue";
 export default {
+  components: { template },
   middleware: "auth",
   metaInfo() {
     return { title: "Products" };
@@ -612,7 +622,7 @@ export default {
       product_name: null,
       description: null,
       price: null,
-      vat: null, 
+      vat: null,
       without_vat: null,
       exp_date: null,
     },

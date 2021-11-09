@@ -333,14 +333,10 @@
               :items="table2"
               hide-default-footer
             >
-
-
               <template v-slot:[`item.product_name.price`]="{ item }"
-                >{{ getFormatCurrency(item.product_name.price,'0,0.00') }}
-               </template
-              >
+                >{{ getFormatCurrency(item.product_name.price, "0,0.00") }}
+              </template>
 
-            
               <template v-slot:[`item.product_full`]="{ item }"
                 >{{ item.product_name.product_name }}
                 {{ item.product_name.description }}</template
@@ -488,6 +484,14 @@ export default {
   }),
 
   created() {
+    this.dateFromTP = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      "YYYY-MM-DD"
+    );
+    this.dateUntilTP = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      "YYYY-MM-DD"
+    );
     this.getTransactionReport();
     this.branchName();
   },
@@ -536,7 +540,7 @@ export default {
         this.branchlist = bran_name.data;
       });
     },
-  getFormatCurrency(e, format) {
+    getFormatCurrency(e, format) {
       const numbr = numeral(e);
       return numbr.format(format);
     },

@@ -140,7 +140,7 @@ import axios from "axios";
 export default {
   middleware: "guest",
   metaInfo() {
-    return { title: "Login" };
+    return { title: "Log In" };
   },
   data: () => ({
     user: true,

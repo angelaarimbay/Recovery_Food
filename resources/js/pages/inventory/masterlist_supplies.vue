@@ -980,7 +980,6 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          console.log(key);
           if (key == "category") {
             if (this.currentdata.category) {
               if (
@@ -1071,6 +1070,7 @@ export default {
         })
         .then((result) => {
           // If the value is true then get the data
+          
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })

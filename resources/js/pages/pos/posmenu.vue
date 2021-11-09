@@ -244,6 +244,19 @@
             class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
           >
             Enter Quantity
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  v-on="data.on"
+                  text
+                  @click="cancel"
+                  >mdi-close
+                </v-icon>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
           </v-toolbar>
           <v-card tile style="background-color: #f5f5f5">
             <v-card-text class="py-2">
@@ -251,11 +264,9 @@
                 <v-row>
                   <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
-                      >Item Selected:
-                      <strong
-                        >{{ selectedrow.product_name.product_name }}
-                      </strong></span
-                    >
+                      ><strong>Item Selected:</strong>
+                      {{ selectedrow.product_name.product_name }}
+                    </span>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -342,12 +353,16 @@
 
           <v-row no-gutters class="mt-2">
             <!-- Items Per Page -->
-            <v-col cols="6" xl="3" lg="3" md="3" class="my-auto">
+            <v-col cols="5" xl="3" lg="4" md="3" class="my-auto">
               <v-card-actions>
                 <span
                   style="color: #616161"
                   class="
-                    text-body-2 text-xl-h6 text-lg-h6 text-md-body-1 text-sm-body-1
+                    text-body-2
+                    text-xl-h6
+                    text-lg-h6
+                    text-md-body-2
+                    text-sm-body-2
                     mb-0
                   "
                   >Sales Count: {{ salescount.count }}</span
@@ -355,12 +370,16 @@
               </v-card-actions>
             </v-col>
 
-            <v-col cols="6" xl="5" lg="5" md="3" class="my-auto">
+            <v-col cols="7" xl="5" lg="4" md="4" class="my-auto">
               <v-card-actions>
                 <span
                   style="color: #616161"
                   class="
-                    text-body-2 text-xl-h6 text-lg-h6 text-md-body-1 text-sm-body-1
+                    text-body-2
+                    text-xl-h6
+                    text-lg-h6
+                    text-md-body-2
+                    text-sm-body-2
                     mb-0
                   "
                   >Total Sales: {{ salescount.amount }}</span
@@ -379,7 +398,7 @@
                   v-model="mode"
                   :items="['Walk-In', 'Take-Out']"
                   hide-details
-                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-0 mb-sm-2"
+                  class="mb-0 mb-xl-4 mb-lg-4 mb-md-0 mb-sm-2 ml-auto"
                 >
                   <template slot="label">
                     <div style="font-size: 14px">Mode</div>
@@ -529,7 +548,7 @@
                   @focus="clearD"
                   @blur="resetD"
                   autocomplete="off"
-                  :disabled="!disabled"
+                  :disabled="!payment"
                   @keydown="discountKeydown($event)"
                 >
                   <template slot="label">
@@ -760,7 +779,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
     formRulesPrice: [
       (v) => !!v || "This is required",
@@ -920,7 +939,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -1020,8 +1038,8 @@ export default {
 
     async getSalesCount() {
       await axios.get("/api/sales_report/sales_count").then((result) => {
-        this.salescount = result.data;
-
+     console.log(result.data)
+     this.salescount = result.data;
       });
     },
 

@@ -596,7 +596,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[1-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -665,7 +665,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "DATE",
+        text: "OUTGOING DATE",
         value: "outgoing_date",
         filterable: false,
         class: "black--text",
@@ -805,7 +805,7 @@ export default {
             active: true,
             iconText: "alert-circle",
             iconColor: "error",
-            message: "Insufficient stocks",
+            message: "Insufficient stocks.",
           }; 
           return;
         }
