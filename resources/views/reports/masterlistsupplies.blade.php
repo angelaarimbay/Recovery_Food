@@ -1,80 +1,145 @@
 <html>
 <style>
-    table, td, th {
-        padding: 10px;
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    table,
+    td,
+    th {
+        padding: 3px;
         border: 1px solid lightgray;
         border-collapse: collapse;
         text-align: center;
     }
-    
-    td{
-        font-size: 15px;
+
+    td {
+        font-size: 12px;
     }
-    
-    th{
-        background-color:aliceblue;
+
+    th {
+        font-size: 16px;
         color: black;
-    } 
+    }
+
     @page {
         header: page-header;
         footer: page-footer;
     }
-    .body{
+
+    .body {
         margin: 0;
         padding: 0;
         background-color: #FAFAFA;
-        font: 12pt "Tahoma";
     }
 
-    .header{
+    .header {
         text-align: center;
-        font-weight: bold;
-        font-size: 18px;
+        font-size: 12px;
         margin: 0px;
     }
-</style>
-    <body>
-    <div style="text-align: center">   
-            <img src="{{ public_path(). '/img/logo.jpg' }}" 
-                style="display: block;  margin-left: auto; margin-right: auto;  width: 130px"></img>
-    </div>
-    <p class="header">Masterlist Supplies Report</p>
-    <p class="date">Date exported:
-            {{ date("Y-m-d") }}
-    </p>
 
-        <!-- Table -->
-        <table style="width: 100%">
-            <!-- Header -->
+</style>
+
+<body>
+    <div class="row">
+        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong> <br>
+            Prepared By:
+            <strong>{{ $process_by }}</strong>
+        </div>
+    </div>
+
+    <div style="text-align: center">
+        <img src="{{ public_path() . '/img/logo.jpg' }}" style="width: 50px"></img>
+    </div>
+    <p class="header">Recovery Food</p>
+    <p class="header">Masterlist Supplies Report</p>
+    <!-- Table -->
+    <table style=" width: 100%; margin-top: 10px">
+        <!-- Header -->
+
+        @foreach ($data as $array)
             <tr>
-                <th><h6>CATEGORY</h6></th>
-                <th><h6>SUPPLY NAME</h6></th> 
-                <th><h6>UNIT</h6></th>  
-                <th><h6>NET PRICE</h6></th>
-                <th><h6>WITH VAT</h6></th>
-                <th><h6>VAT</h6></th>
-                <th><h6>WITHOUT VAT</h6></th>
-                <th><h6>EXPIRATION DATE</h6></th>
+                <td colspan="7" style="text-align: center; font-size: 17px; background-color: red; color: white">
+                    {{ $array[0]['category_details'] }}
+                </td>
             </tr>
-            <!-- Rows -->
-            @foreach ($data as $items)   
             <tr>
-                
-                <td  style="width: auto"> {{ $items['category_name'] }} </td>
-                <td  style="width: auto"> {{ $items['supply_name'] }} {{ $items['description'] }} </td>  
-                <td  style="width: auto"> {{ $items['unit'] }}  </td>
-                <td  style="width: auto"> {{ number_format($items['net_price'] ,2)}} </td>
-                <td  style="width: auto"> {{  number_format($items['with_vat'] ,2) }} </td>
-                <td  style="width: auto"> {{ number_format($items['vat'] ,2)  }} </td>
-                <td  style="width: auto"> {{ number_format($items['without_vat'] ,2)}} </td>  
-                <td  style="width: auto"> {{ ( $items['exp_date']? date("Y-m-d",strtotime( $items['exp_date'])):null) }} </td>
-            </tr>  
+                <th>
+                    <h6>SUPPLY NAME</h6>
+                </th>
+                <th>
+                    <h6>UNIT</h6>
+                </th>
+                <th>
+                    <h6>NET PRICE</h6>
+                </th>
+                <th>
+                    <h6>WITH VAT</h6>
+                </th>
+                <th>
+                    <h6>VAT</h6>
+                </th>
+                <th>
+                    <h6>WITHOUT VAT</h6>
+                </th>
+                <th>
+                    <h6>EXPIRATION DATE</h6>
+                </th>
+            </tr>
+
+            <!-- Rows -->
+            @foreach ($array as $items)
+                <tr>
+                    <td style="width: auto"> {!! $items['supply_name'] !!} {{ $items['description'] }} </td>
+                    <td style="width: auto"> {{ $items['unit'] }} </td>
+                    <td style="width: auto"> {!! $items['net_price'] ? number_format($items['net_price'], 2) : '' !!} </td>
+                    <td style="width: auto"> {!! $items['with_vat'] ? number_format($items['with_vat'], 2) : '' !!} </td>
+                    <td style="width: auto"> {{ $items['vat'] }} </td>
+                    <td style="width: auto"> {!! $items['without_vat'] ? number_format($items['without_vat'], 2) : '' !!} </td>
+                    <td style="width: auto">
+                        {{ $items['exp_date'] ? date('Y-m-d', strtotime($items['exp_date'])) : null }} </td>
+                </tr>
             @endforeach
-        </table>
-        <!-- Page Number -->
-        <htmlpagefooter name="page-footer">
-        <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>      
-        </htmlpagefooter>
-    </body>
+        @endforeach
+        {{-- <tr>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+        </tr>
+        <tr>
+
+            <td style=" border: none; width: auto"> Grand Total </td>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border-top: none;  border-left: none; border-right: none; width: auto">
+                {{ number_format($net_price, 2) }} </td>
+            <td style=" border-top: none;  border-left: none; border-right: none; width: auto">
+                {{ number_format($with_vat, 2) }} </td>
+            <td style=" border: none;width: auto"> </td>
+            <td style=" border-top: none;  border-left: none; border-right: none; width: auto">
+                {{ number_format($with_vat, 2) }} </td>
+            <td style=" border: none;width: auto"> </td>
+        </tr>
+        <tr>
+
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
+            <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+            <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
+            <td style=" border: none; width: auto"> </td>
+        </tr> --}}
+    </table>
+    <!-- Page Number -->
+    <htmlpagefooter name="page-footer">
+        <p style="bottom: 0%;">Page {PAGENO} of {nb}</p>
+    </htmlpagefooter>
+</body>
 </iframe>
+
 </html>

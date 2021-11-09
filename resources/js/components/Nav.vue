@@ -348,6 +348,18 @@
                 </v-list-item-icon>
                 <v-list-item-title>Deducted Supplies</v-list-item-title>
               </v-list-item>
+
+             <v-list-item
+                v-if="user.permissionslist.includes('Access Branch Inventory')"
+                style="text-decoration: none"
+                class="pl-8 mb-1"
+                :to="{ name: 'request-supplies' }"
+              >
+                <v-list-item-icon class="me-3">
+                  <v-icon size="16">mdi-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Supplies Request</v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-list-group>
 

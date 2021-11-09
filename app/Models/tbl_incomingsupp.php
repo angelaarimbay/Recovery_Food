@@ -12,13 +12,16 @@ class tbl_incomingsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['quantity_difference','quantity_amount','category_details','supply_name_details','supplier_details',  'fluctiation'];
+    public $appends = ['with_vat', 'process_by','quantity_difference','quantity_amount','category_details','supply_name_details','supplier_details',  'fluctiation'];
 
     public function category()
     {
         return $this->hasOne(tbl_suppcat::class, 'id', 'category');
     }
-
+    public function getProcessByAttribute()
+    {
+        return auth()->user()->name;
+    }
     public function supply_name()
     {
         return $this->hasOne(tbl_masterlistsupp::class, 'id', 'supply_name');
@@ -69,9 +72,8 @@ class tbl_incomingsupp extends Model
     public function getFluctiationAttribute()
     { //for list with vat column
         
-        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 23:59:59'));
+        $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"))); 
+        $date2 = date("Y-m-t h:i:s",strtotime(date("m").'/'.date('t').'/'.date("Y")));
 
         //get the amount from incoming
         $get_amount = tbl_incomingsupp::where("supply_name",$this->supply_name)
@@ -87,5 +89,23 @@ class tbl_incomingsupp extends Model
         } 
         return $get_wov;
     }
+
+    public function getWithVatAttribute()
+    {
+        $date1 =  date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("m") . '/' . date("t") . '/' . date("Y")));
+        $incoming = 0;
+
+        try {
+            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
+            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
+
+            $incoming =  number_format($get_specific_item_amount / $get_specific_item_quantity, 6, ".", ",");;
+        } catch (\Throwable $th) {
+            $incoming = $this->net_price;
+        }
+        return $this->vatable == 0 ?  number_format($incoming, 6, ".", ",") :  number_format($this->net_price, 6, ".", ",");
+    }
+
  
 }

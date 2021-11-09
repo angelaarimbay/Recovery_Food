@@ -255,7 +255,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
-
+            <template v-slot:[`item.supplier_full`]="{ item }"
+              >{{ item.supplier_name.supplier_name }}
+              {{ item.supplier_name.description }}</template
+            >
             <template v-slot:[`item.incoming_date`]="{ item }">
               {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
             >
@@ -285,7 +288,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -556,7 +559,7 @@ export default {
       },
       {
         text: "SUPPLIER NAME",
-        value: "supplier_name.supplier_name",
+        value: "supplier_full",
         class: "black--text",
       },
       {
@@ -647,6 +650,7 @@ export default {
         return true;
       }
       // Check if not existed
+      
       // Check each value if the same or not
       var found = 0;
       for (var key in this.form) {

@@ -306,7 +306,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -555,7 +555,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
     formRulesPrice: [
       (v) => !!v || "This is required",
@@ -631,7 +631,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "DATE",
+        text: "INCOMING DATE",
         value: "incoming_date",
         filterable: false,
         class: "black--text",
@@ -793,7 +793,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

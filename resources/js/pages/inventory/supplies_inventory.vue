@@ -45,7 +45,7 @@
             plain
             color="primary"
             v-ripple="false"
-            to="/dashboard"
+            to="/supplies_inventory"
             class="px-0"
             style="text-decoration: none; text-transform: none"
             >Home</v-btn
@@ -68,19 +68,6 @@
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="pl-0">
-            <v-btn
-              color="primary"
-              style="text-transform: none"
-              depressed
-              dark
-              :small="$vuetify.breakpoint.smAndDown"
-              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 d-none"
-              @click="openDialog"
-            >
-              Add Supply
-            </v-btn>
-          </v-card-actions>
 
           <!-- Search Filters -->
           <v-list dense nav class="px-0 py-0">
@@ -227,6 +214,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supply_name.net_price`]="{ item }"
+              >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
+            </template>
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name.supply_name }}
               {{ item.supply_name.description }}</template
@@ -260,7 +250,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -322,8 +312,10 @@
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
                         outlined
-                        clearable
                         dense
+                        autocomplete="off"
+                        @focus="clearQ"
+                        @blur="resetQ"
                         @keydown="quantityKeydown($event)"
                         counter
                         maxlength="3"
@@ -420,7 +412,7 @@ export default {
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
-      (v) => /^[0-9]+$/.test(v) || "Quantity must be valid",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -433,7 +425,7 @@ export default {
     form: {
       category: null,
       supply_name: null,
-      quantity: null,
+      quantity: 1,
     },
 
     // For comparing data
@@ -515,9 +507,7 @@ export default {
 
   // Onload
   created() {
-    if (
-      this.user.permissionslist.includes("Access Branch Inventory")
-    ) {
+    if (this.user.permissionslist.includes("Access Branch Inventory")) {
       this.get();
       this.suppCat();
     } else {
@@ -545,6 +535,18 @@ export default {
       return numbr.format(format);
     },
 
+    resetQ() {
+      if (this.form.quantity == null) {
+        this.form.quantity = 1;
+      }
+    },
+
+    clearQ() {
+      if (this.form.quantity == 1) {
+        this.form.quantity = null;
+      }
+    },
+
     // Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
@@ -567,7 +569,6 @@ export default {
         }
         // Save or update data in the table
         await axios.post("/api/suppinven/save", this.form).then((result) => {
-          console.log(result.data);
           //if the value is true then save to database
           this.snackbar = {
             active: true,
@@ -599,7 +600,6 @@ export default {
         })
         .then((result) => {
           // If the value is true then get the data
-          console.log(result.data);
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
@@ -627,7 +627,6 @@ export default {
 
     // Editing/updating of row
     edit(row) {
-      console.log(row);
       this.getQuantity = row.quantity;
       this.form.category = row.category.id;
       this.form.supply_name = row.supply_name.id;
@@ -643,7 +642,7 @@ export default {
 
     // Reset Forms
     cancel() {
-      this.$refs.form.reset();
+      this.quantity = 1;
       this.dialog = false;
     },
   },

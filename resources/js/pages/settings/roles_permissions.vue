@@ -281,6 +281,7 @@
                 depressed
                 dark
                 @click="validate('permission')"
+                :small="$vuetify.breakpoint.smAndDown"
               >
                 Save
               </v-btn>
@@ -316,7 +317,7 @@
           <v-card tile>
             <v-card-text class="py-2">
               <v-card-text>
-                Selected User : <strong>{{ username }}</strong></v-card-text
+                <strong>Selected User:</strong> {{ username }}</v-card-text
               >
               <v-data-table
                 class="px-4"
@@ -338,7 +339,7 @@
               <div class="text-center pt-2 d-none">
                 <v-pagination
                   v-model="page3"
-                  :total-visible="5"
+                  :total-visible="7"
                   :length="tableAddRoles.last_page"
                   color="red darken-2"
                 ></v-pagination>
@@ -353,6 +354,7 @@
                 depressed
                 dark
                 @click="validate('userrole')"
+                :small="$vuetify.breakpoint.smAndDown"
               >
                 Save
               </v-btn>
@@ -548,7 +550,7 @@
                 <div class="text-center pt-2">
                   <v-pagination
                     v-model="page1"
-                    :total-visible="5"
+                    :total-visible="7"
                     :length="tableRoles.last_page"
                     color="red darken-2"
                   ></v-pagination>
@@ -617,7 +619,7 @@
                 <div class="text-center pt-2">
                   <v-pagination
                     v-model="page4"
-                    :total-visible="5"
+                    :total-visible="7"
                     :length="tablePermissions.last_page"
                     color="red darken-2"
                   ></v-pagination>
@@ -692,7 +694,7 @@
                 <div class="text-center pt-2">
                   <v-pagination
                     v-model="page2"
-                    :total-visible="5"
+                    :total-visible="7"
                     :length="tableUserrole.last_page"
                     color="red darken-2"
                   ></v-pagination>
@@ -1150,7 +1152,7 @@ export default {
     },
 
     checkRolesIsValid() {
-      //if mag add ng restriction bukod dito,
+      // if mag add ng restriction bukod dito,
       // console this.selectedAddPermission tignan and index then get name, then gawa ka if else mo ung message
       // lagyan mo ng return sa loob. basta mag greater than one ndi yan prproceed.
       if (
@@ -1162,7 +1164,7 @@ export default {
           iconText: "error",
           iconColor: "danger",
           message:
-            "If Access POS is checked, you must Disabled all other permissions.",
+            "If 'Access POS' is checked, you must disable all other permissions.",
         };
         return 1;
       }

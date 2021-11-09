@@ -422,7 +422,7 @@
               <div class="text-center pt-2">
                 <v-pagination
                   v-model="page2"
-                  :total-visible="5"
+                  :total-visible="7"
                   :length="table2.last_page"
                   color="red darken-2"
                 ></v-pagination>

@@ -20,7 +20,7 @@
             plain
             color="primary"
             v-ripple="false"
-            to="/dashboard"
+            to="/supplies_inventory"
             class="px-0"
             style="text-decoration: none; text-transform: none"
             >Home</v-btn
@@ -265,6 +265,15 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.with_vat_price`]="{ item }"
+              >{{ getFormatCurrency(item.with_vat_price, "0,0.00") }}
+            </template>
+            <template v-slot:[`item.supply_name.net_price`]="{ item }"
+              >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
+            </template>
+            <template v-slot:[`item.amount`]="{ item }"
+              >{{ getFormatCurrency(item.amount, "0,0.00") }}
+            </template>
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name.supply_name }}
               {{ item.supply_name.description }}</template
@@ -281,7 +290,7 @@
           <div class="text-center pt-2">
             <v-pagination
               v-model="page"
-              :total-visible="5"
+              :total-visible="7"
               :length="table.last_page"
               color="red darken-2"
             ></v-pagination>
@@ -380,7 +389,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "AMT",
+        text: "TOTAL AMT",
         value: "amount",
         align: "right",
         filterable: false,
@@ -389,8 +398,6 @@ export default {
       {
         text: "DATE",
         value: "outgoing_date",
-        align: "center",
-        sortable: false,
         filterable: false,
         class: "black--text",
       },
@@ -458,7 +465,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar

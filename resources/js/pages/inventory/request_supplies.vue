@@ -1,0 +1,956 @@
+<template>
+  <div>
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar.active"
+      timeout="2500"
+    >
+      <span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
+      >
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
+        >
+      </template>
+    </v-snackbar>
+
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar2.active"
+      timeout="10000"
+    >
+      <span
+        ><v-icon :color="snackbar2.iconColor">{{
+          `mdi-${snackbar2.iconText}`
+        }}</v-icon></span
+      >
+      {{ snackbar2.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="action(snackbar2.type)"
+          >Yes</v-btn
+        >
+
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar2.active = false"
+          >No</v-btn
+        >
+      </template>
+    </v-snackbar>
+
+    <v-container>
+      <v-layout row wrap>
+        <span
+          class="
+            text-h6 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+            font-weight-bold
+            my-auto
+          "
+        >
+          Supplies Request
+        </span>
+        <v-spacer></v-spacer>
+
+        <!-- Breadcrumbs -->
+        <v-card-actions class="px-0 py-0">
+          <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
+            plain
+            color="primary"
+            v-ripple="false"
+            to="/supplies_inventory"
+            class="px-0"
+            style="text-decoration: none; text-transform: none"
+            >Home</v-btn
+          >
+          /
+          <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
+            text
+            disabled
+            class="px-0"
+            style="text-transform: none"
+            >Supplies Request</v-btn
+          >
+        </v-card-actions>
+      </v-layout>
+    </v-container>
+    <!-- Main Card -->
+    <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+        <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+          <v-card-actions class="pl-0">
+            <v-btn
+              color="primary"
+              style="text-transform: none"
+              depressed
+              dark
+              :small="$vuetify.breakpoint.smAndDown"
+              @click="addRequest"
+              >Add New Request</v-btn
+            >
+          </v-card-actions>
+          <v-data-table
+            :headers="headers"
+            :items="table.data"
+            :loading="progressbar"
+            :page.sync="page"
+            ref="progress"
+            :items-per-page="itemsPerPage"
+            hide-default-footer
+            @page-count="pageCount = $event"
+          >
+            <!-- Progress Bar -->
+            <v-progress-linear
+              color="red darken-2"
+              class="px-0 mx-0"
+              slot="progress"
+              indeterminate
+              rounded
+            ></v-progress-linear>
+
+            <template v-slot:[`item.supply_name`]="{ item }">
+              {{ item.supply_name }} {{ item.description }}</template
+            >
+
+            <template v-slot:[`item.status`]="{ item }">
+              <div v-if="item.status == 1" class="text-warning">Pending</div>
+              <div v-else-if="item.status == 2" class="text-success">
+                Confirmed / For Delivery
+              </div>
+              <div v-else-if="item.status == 3" class="text-success">
+                Completed
+              </div>
+            </template>
+
+            <template v-slot:[`item.id`]="{ item }">
+              <div v-if="item.status == 2">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      icon
+                      color="success darken-2"
+                      @click="completeRequest(item)"
+                      small
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                      v-on="data.on"
+                    >
+                      <v-icon>mdi-check</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Complete</span>
+                </v-tooltip>
+              </div>
+              <div v-else-if="item.status == 1">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      icon
+                      color="red darken-2"
+                      @click="viewRequest(item)"
+                      small
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                      v-on="data.on"
+                    >
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      icon
+                      color="red darken-2"
+                      @click="cancelRequest(item)"
+                      small
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                      v-on="data.on"
+                    >
+                      <v-icon>mdi-cancel</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Cancel</span>
+                </v-tooltip>
+              </div>
+            </template>
+          </v-data-table>
+          <div class="text-center pt-2">
+            <v-pagination
+              v-model="page"
+              :total-visible="7"
+              :length="table.last_page"
+              color="red darken-2"
+            ></v-pagination>
+          </div>
+        </v-container>
+      </v-container>
+    </v-card>
+
+    <v-dialog
+      v-model="dialog_list"
+      fullscreen
+      transition="dialog-bottom-transition"
+      persistent
+      no-click-animation
+    >
+      <v-toolbar
+        dense
+        dark
+        class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+      >
+        New Request
+        <v-spacer></v-spacer>
+        <v-tooltip bottom>
+          <template #activator="data">
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              v-on="data.on"
+              text
+              @click="closeRequest"
+              >mdi-close</v-icon
+            >
+          </template>
+          <span>Close</span>
+        </v-tooltip>
+      </v-toolbar>
+
+      <v-card tile height="auto" style="background-color: #f5f5f5">
+        <v-card-text class="py-2 px-2">
+          <v-row no-gutters>
+            <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
+              <v-card style="border-radius: 10px" class="pa-2">
+                <v-card
+                  dark
+                  flat
+                  height="50"
+                  color="red darken-4"
+                  style="border-radius: 10px"
+                  class="d-flex align-center justify-center"
+                >
+                  <span
+                    class="
+                      text-subtitle-2
+                      text-xl-h6
+                      text-lg-h6
+                      text-md-subtitle-1
+                      text-sm-subtitle-1
+                      mb-0 mb-0
+                    "
+                    >Supplies List</span
+                  >
+                </v-card>
+
+                <v-col
+                  cols="12"
+                  xl="6"
+                  lg="6"
+                  md="7"
+                  sm="7"
+                  class="ml-auto my-auto pa-2"
+                >
+                  <v-card-actions class="py-0 px-0">
+                    <v-text-field
+                      v-model="search1"
+                      label="Supply Name"
+                      single-line
+                      dense
+                      clearable
+                      autocomplete="off"
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          :small="$vuetify.breakpoint.smAndDown"
+                          :large="$vuetify.breakpoint.mdAndUp"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          class="mb-3"
+                          @click="searchSupp"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
+
+                <v-data-table
+                  :search="search"
+                  :loading="progressbar1"
+                  :headers="headers1"
+                  :items="table1"
+                  ref="progress"
+                >
+                  <!-- Progress Bar -->
+                  <v-progress-linear
+                    color="red darken-2"
+                    class="px-0 mx-0"
+                    slot="progress"
+                    indeterminate
+                    rounded
+                  ></v-progress-linear>
+
+                  <template v-slot:[`item.supply_name`]="{ item }">
+                    {{ item.supply_name }} {{ item.description }}</template
+                  >
+
+                  <template v-slot:[`item.id`]="{ item }">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          icon
+                          color="red darken-2"
+                          @click="validateAdd(item, 'Add')"
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          v-on="data.on"
+                        >
+                          <v-icon>mdi-arrow-right-bold</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Add to Request</span>
+                    </v-tooltip>
+                  </template>
+                </v-data-table>
+              </v-card>
+            </v-col>
+
+            <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
+              <v-card style="border-radius: 10px" class="pa-2">
+                <v-card
+                  dark
+                  flat
+                  height="50"
+                  color="red darken-4"
+                  style="border-radius: 10px"
+                  class="d-flex align-center justify-center"
+                >
+                  <span
+                    class="
+                      text-subtitle-2
+                      text-xl-h6
+                      text-lg-h6
+                      text-md-subtitle-1
+                      text-sm-subtitle-1
+                      mb-0 mb-0
+                    "
+                    >Request List</span
+                  >
+                </v-card>
+
+                <v-col
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  md="12"
+                  sm="12"
+                  class="my-0 my-xl-1 my-lg-1 my-md-1 my-sm-0 pa-2"
+                >
+                  <v-card-actions class="py-0 px-0">
+                    <v-col class="px-0" cols="4" xl="4" lg="4" md="4" sm="4">
+                      <div>No. of Items: {{ table2.length }}</div>
+                    </v-col>
+                    <v-spacer></v-spacer>
+                    <v-col
+                      class="text-right px-0"
+                      cols="8"
+                      xl="8"
+                      lg="8"
+                      md="8"
+                      sm="8"
+                    >
+                      <div v-if="ref">Reference No: {{ ref }}</div>
+                    </v-col>
+                  </v-card-actions>
+                </v-col>
+
+                <v-data-table
+                  :headers="headers2"
+                  :items="table2"
+                  :items-per-page="table2.length"
+                  hide-default-footer
+                  ref="progress"
+                >
+                  <!-- Progress Bar -->
+                  <v-progress-linear
+                    color="red darken-2"
+                    class="px-0 mx-0"
+                    slot="progress"
+                    indeterminate
+                    rounded
+                  ></v-progress-linear>
+
+                  <template v-slot:[`item.supply_name`]="{ item }">
+                    {{ item.supply_name }} {{ item.description }}</template
+                  >
+
+                 <template v-slot:[`item.status`]="{ item }">
+                    <div v-if="item.status == 1" class="text-warning">
+                      Pending
+                    </div>
+                    <div v-else-if="item.status == 2" class="text-success">
+                      Confirmed / For Delivery
+                    </div>
+                    <div v-else-if="item.status == 3" class="text-success">
+                      Completed
+                    </div>
+                  </template>
+
+                  <template v-slot:[`item.id`]="{ item }">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          icon
+                          color="red darken-2"
+                          @click="validateAdd(item, 'Update')"
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          v-on="data.on"
+                        >
+                          <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Edit</span>
+                    </v-tooltip>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          icon
+                          color="red darken-2"
+                          @click="validateAdd(item, 'Delete')"
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          v-on="data.on"
+                        >
+                          <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Delete</span>
+                    </v-tooltip>
+                  </template>
+                </v-data-table>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="error"
+                    style="text-transform: none; color: white"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                    @click="validate('cancel')"
+                    :disabled="!disabled"
+                    >Cancel</v-btn
+                  >
+                  <v-btn
+                    color="primary"
+                    style="text-transform: none"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                    @click="validate('send')"
+                    :disabled="!disabled"
+                  >
+                    Send Request</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="dialog" max-width="450px">
+      <v-toolbar
+        dense
+        dark
+        class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+      >
+        Enter Quantity
+        <v-spacer></v-spacer>
+        <v-tooltip bottom>
+          <template #activator="data">
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              v-on="data.on"
+              text
+              @click="dialog = false"
+              >mdi-close
+            </v-icon>
+          </template>
+          <span>Close</span>
+        </v-tooltip>
+      </v-toolbar>
+      <v-card tile style="background-color: #f5f5f5">
+        <v-card-text class="py-2">
+          <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+            <v-row>
+              <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                <span
+                  ><strong>Item Selected:</strong> {{ selected.supply_name }}
+                  {{ selected.description }}
+                </span>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                <v-text-field
+                  :rules="formRulesQuantity"
+                  v-model="quantity"
+                  outlined
+                  dense
+                  autocomplete="off"
+                  @focus="clearQ"
+                  @blur="resetQ"
+                  @keydown="quantityKeydown($event)"
+                  counter
+                  maxlength="3"
+                >
+                  <template slot="label">
+                    <div style="font-size: 14px">Quantity *</div>
+                  </template>
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+
+        <!-- Dialog Form Buttons -->
+        <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+          <v-spacer></v-spacer>
+          <v-btn
+            color="error"
+            depressed
+            dark
+            @click="dialog = false"
+            style="text-transform: none"
+            :small="$vuetify.breakpoint.smAndDown"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="primary"
+            depressed
+            dark
+            style="text-transform: none"
+            :small="$vuetify.breakpoint.smAndDown"
+            @click="commitAdd(selected)"
+          >
+            {{ type }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+<style>
+.v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
+</style> 
+<script>
+import axios from "axios"; // Library for sending api request
+export default {
+  middleware: "auth",
+  computed: {
+    disabled() {
+      if (this.table2.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
+  data: () => ({
+    headers: [
+      {
+        text: "REQUEST DATE",
+        value: "request_date",
+        class: "black--text",
+      },
+      {
+        text: "REFERENCE NO.",
+        value: "ref",
+        filterable: false,
+        align: "right",
+        class: "black--text",
+      },
+      {
+        text: "REQUESTED BY",
+        value: "user",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
+        value: "status",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION(S)",
+        value: "id",
+        align: "center",
+        filterable: false,
+        sortable: false,
+        class: "black--text",
+      },
+    ],
+    headers1: [
+      {
+        text: "SUPPLY NAME",
+        value: "supply_name",
+        class: "black--text",
+      },
+      {
+        text: "UNIT",
+        value: "unit",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION(S)",
+        value: "id",
+        align: "center",
+        filterable: false,
+        sortable: false,
+        class: "black--text",
+      },
+    ],
+    headers2: [
+      {
+        text: "SUPPLY NAME",
+        value: "supply_name",
+        class: "black--text",
+      },
+      {
+        text: "UNIT",
+        value: "unit",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "QTY",
+        value: "quantity",
+        filterable: false,
+        align: "right",
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
+        value: "status",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION(S)",
+        value: "id",
+        align: "center",
+        filterable: false,
+        sortable: false,
+        class: "black--text",
+      },
+    ],
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
+    ],
+    progressbar: false,
+    progressbar1: false,
+    snackbar: {
+      active: false,
+      message: "",
+    },
+    snackbar2: {
+      active: false,
+      message: "",
+    },
+    table: [],
+    table1: [],
+    table2: [],
+    quantity: 1,
+    dialog: false,
+    dialog_list: false,
+    selected: [],
+    ref: "",
+    type: "",
+    page: 1,
+    pageCount: 0,
+    itemsPerPage: 5,
+    search: "",
+    search1: "",
+  }),
+  created() {
+    this.get();
+  },
+  watch: {
+    page(val) {
+      this.page = val;
+      this.get();
+    },
+  },
+
+  methods: {
+    quantityKeydown(e) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    // Clear Value of Quantity text-field
+    clearQ() {
+      if (this.quantity == 1) {
+        this.quantity = null;
+      }
+    },
+    // Reset Value of Quantity text-field
+    resetQ() {
+      if (this.quantity == null) {
+        this.quantity = 1;
+      }
+    },
+
+    validate(type) {
+      switch (type) {
+        case "cancel":
+          this.snackbar2 = {
+            active: true,
+            iconText: "comment-question-outline",
+            iconColor: "warning",
+            message: "Do you wish to cancel?",
+            type: "cancel",
+          };
+          break;
+        case "send":
+          this.snackbar2 = {
+            active: true,
+            iconText: "comment-question-outline",
+            iconColor: "warning",
+            message: "Do you wish to send this request?",
+            type: "send",
+          };
+        default:
+          break;
+      }
+    },
+
+    action(type) {
+      switch (type) {
+        case "cancel":
+          this.clearRequest1();
+          break;
+        case "send":
+          this.storeRequest();
+          break;
+        default:
+          break;
+      }
+      this.snackbar2.active = false;
+    },
+
+    searchSupp() {
+      this.progressbar1 = true;
+      this.search = this.search1;
+      this.progressbar1 = false;
+    },
+
+    async getList() {
+      this.progressbar1 = true;
+      await axios.get("/api/requestsupp/supplies/list").then((result) => {
+        this.table1 = result.data;
+        this.progressbar1 = false;
+      });
+    },
+    async get() {
+      this.progressbar = true;
+      await axios
+        .get("/api/requestsupp/get", {
+          params: {
+            page: this.page,
+            itemsPerPage: this.itemsPerPage,
+          },
+        })
+        .then((result) => {
+          this.table = result.data;
+          this.progressbar = false;
+        });
+    },
+
+    validateAdd(row, type) {
+      this.selected = row;
+      this.type = type;
+      this.dialog = true;
+    },
+    commitAdd(row) {
+      if (this.type == "Update") {
+        this.Edit(row);
+      } else if (this.type == "Delete") {
+        this.Delete(row);
+      } else {
+        var check_existing = -1;
+        //table
+        for (var i in this.table2) {
+          if (row.id == this.table2[i].id) {
+            check_existing = this.table2.indexOf(this.table2[i]);
+          }
+        }
+
+        if (check_existing > -1) {
+          this.table2[check_existing].quantity =
+            parseInt(this.table2[check_existing].quantity) +
+            parseInt(this.quantity);
+        } else { 
+          this.table2.push({
+            id: row.id,
+            supply_name: row.supply_name + " " + (row.description != null?row.description:'') ,
+            unit: row.unit,
+            quantity: this.quantity,
+            ref: "",
+            status: 0,
+          });
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully added.",
+          };
+        }
+      }
+      this.dialog = false;
+    },
+    Delete(row) {
+      this.table2[this.table2.indexOf(row)].quantity =
+        this.table2[this.table2.indexOf(row)].quantity - this.quantity;
+      if (this.table2[this.table2.indexOf(row)].quantity <= 0) {
+        this.table2.splice(this.table2.indexOf(row), 1);
+      }
+      this.snackbar = {
+        active: true,
+        iconText: "check",
+        iconColor: "success",
+        message: "Successfully removed.",
+      };
+    },
+    Edit(row) {
+      this.table2[this.table2.indexOf(row)].quantity = this.quantity;
+    },
+
+    async storeRequest() {
+      //this is used for update request
+      if (this.ref) {
+        for (var key in this.table2) {
+          this.table2[key].ref = this.ref;
+        }
+      }
+
+      // save
+      await axios
+        .post("/api/requestsupp/supplies/save", this.table2)
+        .then((result) => {
+          //if the value is true then save to database
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Request has been successfully sent.",
+          };
+          this.clearRequest();
+          this.get();
+        });
+    },
+    addRequest() {
+      if (this.headers2.length == 5) {
+        this.headers2.splice(this.headers2.indexOf(this.headers2[3]), 1);
+      }
+      this.dialog_list = true;
+      this.getList();
+    },
+    async viewRequest(ref) {
+      this.getList();
+      await axios
+        .get("/api/requestsupp/request/list", { params: { ref: ref.ref } })
+        .then((result) => {
+          this.table2 = result.data;
+          this.dialog_list = true;
+          this.ref = ref.ref;
+        });
+    },
+    closeRequest() {
+      this.dialog_list = false;
+      this.clearRequest();
+    },
+    clearRequest() {
+      this.table2 = [];
+      this.ref = "";
+    },
+    clearRequest1() {
+      this.table2 = [];
+      this.ref = "";
+      this.snackbar = {
+        active: true,
+        iconText: "check",
+        iconColor: "success",
+        message: "Successfully cancelled.",
+      };
+    },
+ 
+    
+    async cancelRequest(ref) {
+      await axios
+        .post("/api/requestsupp/request/cancel", ref)
+        .then((result) => {
+          //if the value is true then save to database
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Request has been successfully cancelled.",
+          };
+          this.get();
+        });
+    },
+
+    async completeRequest(ref) {
+      await axios
+        .post("/api/requestsupp/request/complete", ref)
+        .then((result) => {
+          //if the value is true then save to database
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Request has been successfully completed.",
+          };
+          this.get();
+        });
+    },
+  },
+};
+</script>
+

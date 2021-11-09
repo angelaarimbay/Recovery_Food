@@ -292,7 +292,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           this.table = result.data;
           this.progressbar = false;
         });

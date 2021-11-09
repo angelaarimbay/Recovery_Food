@@ -19,7 +19,10 @@ class DeductedSuppliesController extends Controller
         if ($t->search) { // If has value
             $table = $table->where("supply_name", "like", "%".$t->search."%");
         }
-
+        if($t->dateFrom && $t->dateUntil){
+            $table = $table->whereBetween("outgoing_date",[date("Y-m-d 00:00:00",strtotime($t->dateFrom)), date("Y-m-d 23:59:59",strtotime($t->dateUntil))]);
+         } 
+         
         $return = [];
         foreach ($table->get() as $key => $value) {
             $temp = [];
