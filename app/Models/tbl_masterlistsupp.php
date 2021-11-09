@@ -28,8 +28,8 @@ class tbl_masterlistsupp extends Model
     //For with VAT
     public function getWithVatAttribute()
     {
-        $date1 = date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
-        $date2 = date("Y-m-t 23:59:59", strtotime(date("m") . '/' . date("t") . '/' . date("Y")));
+        $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
         $incoming = 0;
 
         try {
@@ -43,15 +43,14 @@ class tbl_masterlistsupp extends Model
         } catch (\Throwable $th) {
             $incoming = $this->net_price;
         }
-        return $this->vatable == 0 ? $incoming : $this->net_price;
+        return $this->vatable == 0 ? round($incoming,2) : round($this->net_price, 2);
     }
 
     //For without VAT
     public function getWithoutVatAttribute()
     {
-        $date1 = date("Y-m-d h:i:s", strtotime(date("m") . "-01-" . date("Y") . ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s", strtotime(date("m") . '/' . $date2 . '/' . date("Y") . ' 23:59:59'));
+        $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
 
         //Get the amount from incoming
         $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
@@ -74,19 +73,19 @@ class tbl_masterlistsupp extends Model
                 $get_wov = $this->net_price / $this->vat;
             }
         }
-        return $get_wov;
+        return round($get_wov, 2);
     }
 
     //For formatting net price
     public function getFormatNetPriceAttribute()
     {
-        return number_format($this->net_price, 2, ".", ",");
+        return number_format($this->net_price, 2);
     }
 
     //For formatting with VAT
     public function getFormatWithVatAttribute()
     {
-        return number_format($this->with_vat, 2, ".", ",");
+        return number_format($this->with_vat, 2);
     }
 
     //For supply categories
@@ -110,9 +109,8 @@ class tbl_masterlistsupp extends Model
     //For without vat
     public function getWithoutVatPriceAttribute()
     {
-        $date1 = date("Y-m-d h:i:s", strtotime(date("m") . "-01-" . date("Y") . ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s", strtotime(date("m") . '/' . $date2 . '/' . date("Y") . ' 23:59:59'));
+        $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
 
         //Get the amount from incoming
         $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
@@ -135,21 +133,20 @@ class tbl_masterlistsupp extends Model
                 $get_wov = $this->net_price / $this->vat;
             }
         }
-        return $get_wov;
+        return round($get_wov, 2);
     }
 
     //For with VAT
     public function getWithVatPriceAttribute()
     {
-        $date1 = date("Y-m-d h:i:s", strtotime(date("m") . "-01-" . date("Y") . ' 00:00:00'));
-        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-        $date2 = date("Y-m-d h:i:s", strtotime(date("m") . '/' . $date2 . '/' . date("Y") . ' 23:59:59'));
+        $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
 
         //Get the amount from incoming
         $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
             ->whereBetween('incoming_date', [$date1, $date2]);
         
-        $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
+        $get_quantity = tbl_incomingsupp::where("supply_name", $this->id)
             ->whereBetween('incoming_date', [$date1, $date2]);
         
         //Get average amount
@@ -157,6 +154,6 @@ class tbl_masterlistsupp extends Model
         if ($get_quantity->sum('quantity') > 0) {
             $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity');
         }
-        return $get_wov;
+        return round($get_wov, 2);
     }
 }
