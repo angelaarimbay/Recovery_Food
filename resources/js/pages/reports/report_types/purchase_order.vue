@@ -159,7 +159,22 @@ export default {
     },
   }),
 
+  created() {
+    this.dateFromPO = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      "YYYY-MM-DD"
+    );
+    this.dateUntilPO = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      "YYYY-MM-DD"
+    );
+  },
   methods: {
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+
     async get(type) {
       if (this.dateFromPO == null || this.dateUntilPO == null) {
         this.snackbar = {

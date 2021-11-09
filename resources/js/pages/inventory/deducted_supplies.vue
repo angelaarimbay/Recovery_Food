@@ -442,6 +442,7 @@ export default {
       const date = moment(e);
       return date.format(format);
     },
+    
     getFormatCurrency(e, format) {
       const numbr = numeral(e);
       return numbr.format(format);

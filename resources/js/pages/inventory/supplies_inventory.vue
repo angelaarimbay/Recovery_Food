@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -68,7 +70,6 @@
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-
           <!-- Search Filters -->
           <v-list dense nav class="px-0 py-0">
             <v-list-group no-action color="#757575">
@@ -205,6 +206,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -267,18 +269,12 @@
             >
               Deduct Supply
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="cancel"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">

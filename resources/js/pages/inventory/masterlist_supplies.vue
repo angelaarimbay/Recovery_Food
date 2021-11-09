@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -265,6 +267,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -275,7 +278,8 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.supplier_full`]="{ item }"
-              >{{ item.supplier.supplier_name }} {{ item.supplier.description }}</template
+              >{{ item.supplier.supplier_name }}
+              {{ item.supplier.description }}</template
             >
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name }} {{ item.description }}</template
@@ -348,18 +352,12 @@
             >
               Supply
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="cancel"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -793,14 +791,14 @@ export default {
       supplier: "",
       category: "",
       description: "",
-      unit:  "",
-      net_price:   "",
-      vat:   "",
+      unit: "",
+      net_price: "",
+      vat: "",
       exp_date: "",
       vatable: 0,
       lead_time: "",
-      order_frequency:  "",
-      minimum_order_quantity:  "",
+      order_frequency: "",
+      minimum_order_quantity: "",
     },
     temp_vat: null, //form.vat = this.
     vat: false,
@@ -1070,7 +1068,7 @@ export default {
         })
         .then((result) => {
           // If the value is true then get the data
-          
+
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })

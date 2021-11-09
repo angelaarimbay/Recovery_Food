@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -30,6 +32,8 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar2.iconColor">{{
@@ -68,18 +72,12 @@
         >
           Add New Role
           <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                v-on="data.on"
-                text
-                @click="cancelRoles"
-                >mdi-close
-              </v-icon>
-            </template>
-            <span>Close</span>
-          </v-tooltip>
+          <v-icon
+            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+            text
+            @click="cancelRoles"
+            >mdi-close
+          </v-icon>
         </v-toolbar>
         <v-card tile id="dialog" style="background-color: #f5f5f5">
           <v-card-text class="py-2">
@@ -160,18 +158,12 @@
         >
           Add New Permission
           <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                v-on="data.on"
-                text
-                @click="dialogPermissions = false"
-                >mdi-close
-              </v-icon>
-            </template>
-            <span>Close</span>
-          </v-tooltip>
+          <v-icon
+            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+            text
+            @click="dialogPermissions = false"
+            >mdi-close
+          </v-icon>
         </v-toolbar>
         <v-card tile style="background-color: #f5f5f5">
           <v-card-text class="py-2">
@@ -237,25 +229,19 @@
           >
             Add Role Permission(s)
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialogAddPermissions = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialogAddPermissions = false"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
 
           <v-card tile>
             <v-card-text class="py-2">
               <br />
               <v-data-table
-                class="px-4"
+                class="px-4 table-striped"
                 v-model="selectedAddPermission"
                 :items-per-page="5"
                 dense
@@ -300,27 +286,21 @@
           >
             Add User Role(s)
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="cancelUserRoles"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="cancelUserRoles"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
 
           <v-card tile>
             <v-card-text class="py-2">
               <v-card-text>
-                <strong>Selected User:</strong> {{ username }}</v-card-text
-              >
+                Selected User: <strong>{{ username }}</strong>
+              </v-card-text>
               <v-data-table
-                class="px-4"
+                class="px-4 table-striped"
                 v-model="selectedAddRoles"
                 :items-per-page="5"
                 dense
@@ -505,6 +485,7 @@
                   :loading="progressBar"
                   :headers="headersRoles"
                   :items="tableRoles.data"
+                  class="table-striped"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -594,6 +575,7 @@
                   hide-default-footer
                   :headers="headersPermissions"
                   :items="tablePermissions.data"
+                  class="table-striped"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -653,6 +635,7 @@
                   :loading="progressBar"
                   :headers="headersUserrole"
                   :items="tableUserrole.data"
+                  class="table-striped"
                 >
                   <v-progress-linear
                     v-show="progressBar"

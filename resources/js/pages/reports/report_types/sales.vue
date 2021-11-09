@@ -34,18 +34,12 @@
         >
           Preview Receipt
           <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                v-on="data.on"
-                text
-                @click="dialog1 = false"
-                >mdi-close
-              </v-icon>
-            </template>
-            <span>Close</span>
-          </v-tooltip>
+          <v-icon
+            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+            text
+            @click="dialog1 = false"
+            >mdi-close
+          </v-icon>
         </v-toolbar>
         <iframe :src="pdfview" width="100%" height="500"></iframe>
       </v-dialog>
@@ -264,6 +258,7 @@
       :items-per-page="itemsPerPage"
       hide-default-footer
       @page-count="pageCount = $event"
+      class="table-striped"
     >
       <!-- Progress Bar -->
       <v-progress-linear
@@ -311,18 +306,12 @@
         >
           Sales Report Info
           <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                v-on="data.on"
-                text
-                @click="closeViewDialog"
-                >mdi-close
-              </v-icon>
-            </template>
-            <span>Close</span>
-          </v-tooltip>
+          <v-icon
+            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+            text
+            @click="closeViewDialog"
+            >mdi-close
+          </v-icon>
         </v-toolbar>
 
         <v-card tile>
@@ -352,7 +341,7 @@
             <!-- Table -->
             <v-data-table
               dense
-              class="px-4"
+              class="px-4 table-striped"
               :items-per-page="5"
               :loading="progressbar"
               :headers="headers2"

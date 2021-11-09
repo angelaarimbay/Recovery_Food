@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -335,6 +337,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -397,18 +400,12 @@
             >
               Outgoing Supply
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="cancel"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -652,18 +649,12 @@
           >
             Branch Request(s)
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialog1 = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialog1 = false"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
 
           <v-card tile height="auto" style="background-color: #f5f5f5">
@@ -681,6 +672,7 @@
                         :items-per-page="itemsPerPage1"
                         hide-default-footer
                         @page-count="pageCount1 = $event"
+                        class="table-striped"
                       >
                         <!-- Progress Bar -->
                         <v-progress-linear
@@ -753,18 +745,12 @@
           >
             Requested Supplies List
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialog2 = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialog2 = false"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
           <v-card tile>
             <v-card-text class="py-2">
@@ -775,9 +761,11 @@
                 <v-card-actions>
                   <v-row no-gutters>
                     <v-col cols="12" xl="6" lg="6" md="6" sm="6">
-                      <strong>Requested By:</strong><br />{{ table2[0].branch }}
-                      -
-                      {{ table2[0].user }}
+                      Requested By:<br /><strong
+                        >{{ table2[0].branch }}
+                        -
+                        {{ table2[0].user }}</strong
+                      >
                     </v-col>
                     <v-col
                       :class="{ 'text-right': $vuetify.breakpoint.smAndUp }"
@@ -787,9 +775,9 @@
                       md="6"
                       sm="6"
                     >
-                      <strong>Date Requested:</strong><br />{{
+                      Date Requested:<br /><strong>{{
                         table2[0].request_date
-                      }}
+                      }}</strong>
                     </v-col>
                   </v-row>
                 </v-card-actions>
@@ -803,6 +791,7 @@
                   :items-per-page="10"
                   v-model="selected"
                   :item-selected="checkQuantity"
+                  class="table-striped"
                 >
                   <template
                     v-slot:[`item.data-table-select`]="{
@@ -812,9 +801,12 @@
                     }"
                   >
                     <v-simple-checkbox
-                      :value="item.status !== 3 && isSelected"
-                      :readonly="item.status == 3"
-                      :disabled="item.status == 3"
+                      :value="
+                        (item.status !== 3 && isSelected) ||
+                        (item.status !== 2 && isSelected)
+                      "
+                      :readonly="item.status == 3 || item.status == 2"
+                      :disabled="item.status == 3 || item.status == 2"
                       @input="select($event)"
                     ></v-simple-checkbox>
                   </template>
@@ -826,7 +818,7 @@
                     <div v-if="item.status == 1" class="text-warning">
                       Pending
                     </div>
-                    <div v-else-if="item.status == 2" class="text-success">
+                    <div v-else-if="item.status == 2" class="text-info">
                       Confirmed / For Delivery
                     </div>
                     <div v-else-if="item.status == 3" class="text-success">
@@ -879,18 +871,12 @@
           >
             Enter Quantity
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialog3 = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialog3 = false"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
           <v-card tile style="background-color: #f5f5f5">
             <v-card-text class="py-2">
@@ -898,8 +884,8 @@
                 <v-row>
                   <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
-                      ><strong>Item Selected:</strong>
-                      {{ selectedItem.supply_name }}</span
+                      >Item Selected:
+                      <strong>{{ selectedItem.supply_name }}</strong></span
                     >
                   </v-col>
                 </v-row>
@@ -1408,7 +1394,7 @@ export default {
       });
     },
 
-    async suppValidate(id = "",edit='') {
+    async suppValidate(id = "", edit = "") {
       await axios
         .get("/api/osupp/suppValidate", { params: { id: id.id } })
         .then((result) => {
@@ -1417,7 +1403,6 @@ export default {
           } else {
             this.getQuantity = result.data;
           }
-       
         });
     },
 
@@ -1451,7 +1436,7 @@ export default {
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-      this.suppValidate(row.supply_name,"yes");
+      this.suppValidate(row.supply_name, "yes");
       this.dialog = true;
     },
 

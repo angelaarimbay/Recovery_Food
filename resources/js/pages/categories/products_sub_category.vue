@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -167,6 +169,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -237,18 +240,13 @@
             >
               Product-Sub Category
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="cancel"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                v-on="data.on"
+                text
+                @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -416,6 +414,7 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
+        width: "12%",
       },
       {
         text: "PRODUCT-SUB CATEGORY",
@@ -428,6 +427,7 @@ export default {
         align: "center",
         filterable: false,
         class: "black--text",
+        width: "20%",
       },
       {
         text: "ACTION(S)",
@@ -436,6 +436,7 @@ export default {
         sortable: false,
         filterable: false,
         class: "black--text",
+        width: "20%",
       },
     ],
     page: 1,

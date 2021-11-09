@@ -1,11 +1,13 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 280px" class="pa-0">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -30,6 +32,8 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar2.iconColor">{{
@@ -58,7 +62,7 @@
       </template>
     </v-snackbar>
 
-    <v-container v-if="token == ''">
+    <v-container v-if="token == ''" class="pa-2">
       <v-row no-gutters>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2">
           <v-card elevation="6" class="pa-2">

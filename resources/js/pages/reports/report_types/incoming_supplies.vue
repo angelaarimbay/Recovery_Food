@@ -177,10 +177,23 @@ export default {
   }),
 
   created() {
+    this.incoming_from = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      "YYYY-MM-DD"
+    );
+    this.incoming_to = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      "YYYY-MM-DD"
+    );
     this.suppCat();
   },
 
   methods: {
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+
     async get(type) {
       if (
         this.category == "" ||
@@ -206,7 +219,7 @@ export default {
                 from: this.incoming_from,
                 to: this.incoming_to,
               },
-            }).then((response) => { 
+            }).then((response) => {
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
@@ -270,13 +283,15 @@ export default {
       }
     },
 
-     async suppCat() {
+    async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
-        this.suppcatlist.push({'supply_cat_name':'All','id':'All'});
-         for (var key in supp_cat.data) {
-           this.suppcatlist.push({'supply_cat_name':supp_cat.data[key]['supply_cat_name'],'id':supp_cat.data[key]['id'] });
-         }
-        
+        this.suppcatlist.push({ supply_cat_name: "All", id: "All" });
+        for (var key in supp_cat.data) {
+          this.suppcatlist.push({
+            supply_cat_name: supp_cat.data[key]["supply_cat_name"],
+            id: supp_cat.data[key]["id"],
+          });
+        }
       });
     },
   },

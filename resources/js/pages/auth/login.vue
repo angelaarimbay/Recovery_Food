@@ -112,9 +112,10 @@
       bottom
       v-model="snackbar.status"
       min-width="auto"
-      class="text-center"
+      class="text-center pb-0"
       :vertical="$vuetify.breakpoint.xsOnly"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
       ><span
         ><v-icon :color="snackbar.iconColor">{{
           `mdi-${snackbar.iconText}`

@@ -195,11 +195,25 @@ export default {
   }),
 
   created() {
+    this.outgoing_from = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      "YYYY-MM-DD"
+    );
+    this.outgoing_to = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      "YYYY-MM-DD"
+    );
+    
     this.suppCat();
     this.branchName();
   },
 
   methods: {
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+
     async get(type) {
       if (
         this.branch == "" ||
@@ -228,7 +242,7 @@ export default {
                 to: this.outgoing_to,
               },
             }).then((response) => {
-              console.log(response.data)
+              console.log(response.data);
               return;
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");

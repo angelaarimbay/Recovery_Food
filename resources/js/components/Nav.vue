@@ -349,7 +349,7 @@
                 <v-list-item-title>Deducted Supplies</v-list-item-title>
               </v-list-item>
 
-             <v-list-item
+              <v-list-item
                 v-if="user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
@@ -548,8 +548,19 @@
 </template>
 
 <style>
+::-webkit-scrollbar-track {
+  --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #E0E0E0;
+}
+
 ::-webkit-scrollbar {
-  width: 0px;
+  width: 8px;
+  background-color: #E0E0E0;
+}
+
+::-webkit-scrollbar-thumb {
+  --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #BDBDBD;
 }
 .bg-grey {
   background-color: #616161;

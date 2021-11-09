@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -282,6 +284,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -341,18 +344,12 @@
             >
               Outgoing Product
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="cancel"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -798,15 +795,14 @@ export default {
 
     // Saving data to database
     async save() {
-      if (this.$refs.form.validate()) {  
-        
+      if (this.$refs.form.validate()) {
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
             iconText: "alert-circle",
             iconColor: "error",
             message: "Insufficient stocks.",
-          }; 
+          };
           return;
         }
 
@@ -848,7 +844,7 @@ export default {
             dateUntil: this.dateUntil,
           },
         })
-        .then((result) => { 
+        .then((result) => {
           // If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
@@ -858,17 +854,17 @@ export default {
         });
     },
 
-    async prodValidate( id='') {
+    async prodValidate(id = "") {
       await axios
         .get("/api/outprod/prodValidate", {
-          params: { product_name: this.form.product_name.id, id: id  },
+          params: { product_name: this.form.product_name.id, id: id },
         })
-        .then((result) => { 
-          if(id){ 
-            this.getQuantity = (result.data + this.form.quantity);
-          }else{ 
+        .then((result) => {
+          if (id) {
+            this.getQuantity = result.data + this.form.quantity;
+          } else {
             this.getQuantity = result.data;
-          } 
+          }
         });
     },
 
@@ -895,7 +891,6 @@ export default {
         })
         .then((prod_name) => {
           this.prodnamelist = prod_name.data;
-
         });
     },
 
@@ -919,7 +914,7 @@ export default {
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-  
+
       this.dialog = true;
       this.prodValidate(row.id);
     },

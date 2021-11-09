@@ -5,6 +5,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -29,6 +31,8 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar2.iconColor">{{
@@ -118,6 +122,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -220,18 +225,12 @@
       >
         New Request
         <v-spacer></v-spacer>
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-              v-on="data.on"
-              text
-              @click="closeRequest"
-              >mdi-close</v-icon
-            >
-          </template>
-          <span>Close</span>
-        </v-tooltip>
+        <v-icon
+          class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+          text
+          @click="closeRequest"
+          >mdi-close</v-icon
+        >
       </v-toolbar>
 
       <v-card tile height="auto" style="background-color: #f5f5f5">
@@ -302,6 +301,7 @@
                   :headers="headers1"
                   :items="table1"
                   ref="progress"
+                  class="table-striped"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -392,6 +392,7 @@
                   :items-per-page="table2.length"
                   hide-default-footer
                   ref="progress"
+                  class="table-striped"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -406,7 +407,7 @@
                     {{ item.supply_name }} {{ item.description }}</template
                   >
 
-                 <template v-slot:[`item.status`]="{ item }">
+                  <template v-slot:[`item.status`]="{ item }">
                     <div v-if="item.status == 1" class="text-warning">
                       Pending
                     </div>
@@ -488,18 +489,12 @@
       >
         Enter Quantity
         <v-spacer></v-spacer>
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-              v-on="data.on"
-              text
-              @click="dialog = false"
-              >mdi-close
-            </v-icon>
-          </template>
-          <span>Close</span>
-        </v-tooltip>
+        <v-icon
+          class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+          text
+          @click="dialog = false"
+          >mdi-close
+        </v-icon>
       </v-toolbar>
       <v-card tile style="background-color: #f5f5f5">
         <v-card-text class="py-2">
@@ -507,7 +502,7 @@
             <v-row>
               <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
                 <span
-                  ><strong>Item Selected:</strong> {{ selected.supply_name }}
+                  >Item Selected: <strong>{{ selected.supply_name }}</strong>
                   {{ selected.description }}
                 </span>
               </v-col>
@@ -755,6 +750,7 @@ export default {
             message: "Do you wish to send this request?",
             type: "send",
           };
+          break;
         default:
           break;
       }
@@ -825,10 +821,13 @@ export default {
           this.table2[check_existing].quantity =
             parseInt(this.table2[check_existing].quantity) +
             parseInt(this.quantity);
-        } else { 
+        } else {
           this.table2.push({
             id: row.id,
-            supply_name: row.supply_name + " " + (row.description != null?row.description:'') ,
+            supply_name:
+              row.supply_name +
+              " " +
+              (row.description != null ? row.description : ""),
             unit: row.unit,
             quantity: this.quantity,
             ref: "",
@@ -919,8 +918,7 @@ export default {
         message: "Successfully cancelled.",
       };
     },
- 
-    
+
     async cancelRequest(ref) {
       await axios
         .post("/api/requestsupp/request/cancel", ref)

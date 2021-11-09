@@ -15,6 +15,7 @@
                         :headers="headers"
                         :data="data"
                         :items-per-page="5" 
+                        class="table-striped"
                     > 
                     </v-data-table>
                     <!-- need mo ung mga variables so add tayo JS -->

@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :right="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -167,6 +169,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -258,18 +261,12 @@
             >
               View Branch
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="closeViewDialog"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="closeViewDialog"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-container class="pt-0 px-xl-9 px-lg-9 px-md-9 px-sm-8 px-5">
@@ -379,18 +376,12 @@
             >
               Branch
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="cancel"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-card tile style="background-color: #f5f5f5">
               <v-card-text class="py-2">
@@ -760,13 +751,15 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
+        width: "8%",
       },
       { text: "BRANCH NAME", value: "branch_name", class: "black--text" },
       {
-        text: "Type",
+        text: "TYPE",
         value: "type",
         filterable: false,
         class: "black--text",
+        width: "15%",
       },
       {
         text: "STATUS",
@@ -774,6 +767,7 @@ export default {
         align: "center",
         filterable: false,
         class: "black--text",
+        width: "15%",
       },
       {
         text: "ACTION(S)",
@@ -782,6 +776,7 @@ export default {
         sortable: false,
         filterable: false,
         class: "black--text",
+        width: "15%",
       },
     ],
     page: 1,
