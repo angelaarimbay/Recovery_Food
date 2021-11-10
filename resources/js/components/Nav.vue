@@ -529,7 +529,6 @@
         <template v-slot:append>
           <v-divider class="m-0"></v-divider>
           <v-list-item
-            class="pb-1"
             color="#FFFFFF"
             style="text-decoration: none"
             @click="logout"

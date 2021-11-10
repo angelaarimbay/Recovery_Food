@@ -6,7 +6,7 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       class="pb-0"
     >
       <span
@@ -69,72 +69,98 @@
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="pl-0">
-            <v-btn
-              color="primary"
-              style="text-transform: none"
-              depressed
-              dark
-              :small="$vuetify.breakpoint.smAndDown"
-              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="openDialog"
-            >
-              Add Product Category
-            </v-btn>
-          </v-card-actions>
+          <v-card-actions class="px-0">
+            <v-row no-gutters>
+              <v-btn
+                color="primary"
+                style="text-transform: none"
+                depressed
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                @click="openDialog"
+              >
+                Add Product Category
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2"
+                    color="success"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="get"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="grey darken-4"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="filterDialog = true"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-filter-variant</v-icon></v-btn
+                  >
+                </template>
+                <span>Filter</span>
+              </v-tooltip>
+            </v-row>
 
-          <!-- Search Filters -->
-          <v-list dense nav class="px-0 py-0">
-            <v-list-group no-action color="#757575">
-              <template v-slot:activator>
-                <v-list-item-icon class="mx-0">
-                  <v-icon size="20">mdi-filter</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title
-                  style="color: #757575; font-weight: bold"
-                  class="px-3"
-                  >Search Filter</v-list-item-title
-                >
-              </template>
-
-              <v-list class="p-0">
-                <v-row no-gutters>
+            <!-- Filter Dialog -->
+            <v-dialog v-model="filterDialog" max-width="380px">
+              <v-toolbar
+                dense
+                dark
+                class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+              >
+                Filter
+                <v-spacer></v-spacer>
+                <v-icon
+                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                  text
+                  @click="filterDialog = false"
+                  >mdi-close
+                </v-icon>
+              </v-toolbar>
+              <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
+                <v-row no-gutters align="center" class="pt-2">
                   <!-- Items Per Page -->
-                  <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-                    <v-card-actions>
-                      <v-select
-                        style="max-width: 82px"
-                        dense
-                        v-model="itemsPerPage"
-                        label="Items per page"
-                        @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
-                      >
-                      </v-select>
-                    </v-card-actions>
+                  <v-col cols="4" class="pa-2">
+                    <v-select
+                      dense
+                      v-model="itemsPerPage"
+                      label="Items per page"
+                      @change="itemperpage"
+                      :items="[
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                      ]"
+                      hide-details
+                    >
+                    </v-select>
                   </v-col>
 
-                  <v-spacer></v-spacer>
-
                   <!-- Search Field -->
-                  <v-col
-                    cols="8"
-                    xl="4"
-                    lg="4"
-                    md="6"
-                    sm="8"
-                    style="max-width: 230px"
-                    class="my-auto"
-                  >
-                    <v-card-actions>
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
                       <v-text-field
                         v-model="search"
                         label="Product Category"
                         single-line
                         dense
                         clearable
+                        hide-details
                       ></v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
@@ -145,7 +171,7 @@
                             icon
                             v-on="data.on"
                             @click="get"
-                            class="mb-3"
+                            class="mt-2"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -155,9 +181,9 @@
                     </v-card-actions>
                   </v-col>
                 </v-row>
-              </v-list>
-            </v-list-group>
-          </v-list>
+              </v-card>
+            </v-dialog>
+          </v-card-actions>
 
           <!-- Table -->
           <v-data-table
@@ -232,7 +258,12 @@
 
         <!--Dialog Form-->
         <v-form ref="form">
-          <v-dialog v-model="dialog" max-width="450px">
+          <v-dialog
+            v-model="dialog"
+            max-width="450px"
+            persistent
+            no-click-animation
+          >
             <v-toolbar
               dense
               dark
@@ -247,7 +278,7 @@
                 >mdi-close
               </v-icon>
             </v-toolbar>
-            <v-card tile style="background-color: #f5f5f5">
+            <v-card tile>
               <v-card-text class="py-2">
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
@@ -276,7 +307,9 @@
                         item-value="id"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Status *</div>
+                          <div style="font-size: 14px">
+                            Status <span style="color: red">*</span>
+                          </div>
                         </template>
                       </v-select>
                     </v-col>
@@ -300,7 +333,9 @@
                         maxlength="25"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Product Category *</div>
+                          <div style="font-size: 14px">
+                            Product Category <span style="color: red">*</span>
+                          </div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -372,6 +407,7 @@ export default {
     search: "",
     button: false,
     dialog: false,
+    filterDialog: false,
     status: [
       { name: "Active", id: 1 },
       { name: "Inactive", id: 0 },

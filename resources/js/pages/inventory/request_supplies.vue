@@ -5,7 +5,7 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       class="pb-0"
     >
       <span
@@ -31,7 +31,7 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       class="pb-0"
     >
       <span
@@ -102,16 +102,35 @@
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="pl-0">
-            <v-btn
-              color="primary"
-              style="text-transform: none"
-              depressed
-              dark
-              :small="$vuetify.breakpoint.smAndDown"
-              @click="addRequest"
-              >Add New Request</v-btn
-            >
+          <v-card-actions class="px-0">
+            <v-row no-gutters>
+              <v-btn
+                color="primary"
+                style="text-transform: none"
+                depressed
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                @click="addRequest"
+                >Add New Request</v-btn
+              >
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="success"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="get"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+            </v-row>
           </v-card-actions>
           <v-data-table
             :headers="headers"
@@ -139,7 +158,7 @@
 
             <template v-slot:[`item.status`]="{ item }">
               <div v-if="item.status == 1" class="text-warning">Pending</div>
-              <div v-else-if="item.status == 2" class="text-success">
+              <div v-else-if="item.status == 2" class="text-info">
                 Confirmed / For Delivery
               </div>
               <div v-else-if="item.status == 3" class="text-success">
@@ -223,7 +242,7 @@
         dark
         class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
       >
-        New Request
+        Request
         <v-spacer></v-spacer>
         <v-icon
           class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
@@ -233,7 +252,7 @@
         >
       </v-toolbar>
 
-      <v-card tile height="auto" style="background-color: #f5f5f5">
+      <v-card tile height="auto" style="background-color: #f1ffff">
         <v-card-text class="py-2 px-2">
           <v-row no-gutters>
             <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
@@ -259,41 +278,61 @@
                   >
                 </v-card>
 
-                <v-col
-                  cols="12"
-                  xl="6"
-                  lg="6"
-                  md="7"
-                  sm="7"
-                  class="ml-auto my-auto pa-2"
-                >
-                  <v-card-actions class="py-0 px-0">
-                    <v-text-field
-                      v-model="search1"
-                      label="Supply Name"
-                      single-line
-                      dense
-                      clearable
-                      autocomplete="off"
-                    ></v-text-field>
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          :small="$vuetify.breakpoint.smAndDown"
-                          :large="$vuetify.breakpoint.mdAndUp"
-                          color="red darken-2"
-                          icon
-                          v-on="data.on"
-                          class="mb-3"
-                          @click="searchSupp"
-                        >
-                          <v-icon>mdi-magnify</v-icon></v-btn
-                        >
-                      </template>
-                      <span>Search</span>
-                    </v-tooltip>
-                  </v-card-actions>
-                </v-col>
+                <v-row no-gutters align="center">
+                  <v-col
+                    cols="8"
+                    xl="6"
+                    lg="6"
+                    md="7"
+                    sm="7"
+                    class="my-auto pa-2"
+                  >
+                    <v-card-actions class="py-0 px-0">
+                      <v-text-field
+                        v-model="search1"
+                        label="Supply Name"
+                        single-line
+                        dense
+                        clearable
+                        autocomplete="off"
+                      ></v-text-field>
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            :small="$vuetify.breakpoint.smAndDown"
+                            :large="$vuetify.breakpoint.mdAndUp"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            class="mb-3"
+                            @click="searchSupp"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
+                    </v-card-actions>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        class="mr-2 mb-3"
+                        color="success"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getList"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
+                </v-row>
 
                 <v-data-table
                   :search="search"
@@ -411,7 +450,7 @@
                     <div v-if="item.status == 1" class="text-warning">
                       Pending
                     </div>
-                    <div v-else-if="item.status == 2" class="text-success">
+                    <div v-else-if="item.status == 2" class="text-info">
                       Confirmed / For Delivery
                     </div>
                     <div v-else-if="item.status == 3" class="text-success">
@@ -461,6 +500,7 @@
                     class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                     @click="validate('cancel')"
                     :disabled="!disabled"
+                    :hidden="isHidden"
                     >Cancel</v-btn
                   >
                   <v-btn
@@ -496,7 +536,7 @@
           >mdi-close
         </v-icon>
       </v-toolbar>
-      <v-card tile style="background-color: #f5f5f5">
+      <v-card tile>
         <v-card-text class="py-2">
           <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
             <v-row>
@@ -522,7 +562,9 @@
                   maxlength="3"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Quantity *</div>
+                    <div style="font-size: 14px">
+                      Quantity <span style="color: red">*</span>
+                    </div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -687,6 +729,7 @@ export default {
       active: false,
       message: "",
     },
+    isHidden: false,
     table: [],
     table1: [],
     table2: [],
@@ -891,6 +934,41 @@ export default {
       this.getList();
     },
     async viewRequest(ref) {
+      (this.headers2 = [
+        {
+          text: "SUPPLY NAME",
+          value: "supply_name",
+          class: "black--text",
+        },
+        {
+          text: "UNIT",
+          value: "unit",
+          filterable: false,
+          class: "black--text",
+        },
+        {
+          text: "QTY",
+          value: "quantity",
+          filterable: false,
+          align: "right",
+          class: "black--text",
+        },
+        {
+          text: "STATUS",
+          value: "status",
+          filterable: false,
+          class: "black--text",
+        },
+        {
+          text: "ACTION(S)",
+          value: "id",
+          align: "center",
+          filterable: false,
+          sortable: false,
+          class: "black--text",
+        },
+      ]),
+        (this.isHidden = true);
       this.getList();
       await axios
         .get("/api/requestsupp/request/list", { params: { ref: ref.ref } })

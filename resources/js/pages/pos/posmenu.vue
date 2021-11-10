@@ -6,7 +6,7 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       class="pb-0"
     >
       <span
@@ -32,7 +32,7 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       class="pb-0"
     >
       <span
@@ -82,58 +82,110 @@
             >
           </v-card>
 
-          <v-row no-gutters class="mt-2">
-            <!-- Items Per Page -->
-            <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-              <v-card-actions>
-                <v-select
-                  style="max-width: 82px"
-                  dense
-                  v-model="itemsPerPage"
-                  label="Items"
-                  @change="itemperpage"
-                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
-                >
-                </v-select>
-              </v-card-actions>
-            </v-col>
-
+          <v-row no-gutters class="mt-7">
             <v-spacer></v-spacer>
-
-            <!-- Search Field -->
-            <v-col cols="8" xl="5" lg="5" md="7" sm="8" class="my-auto">
-              <v-card-actions>
-                <v-text-field
-                  v-model="search"
-                  label="Product Name"
-                  single-line
-                  dense
-                  clearable
-                  autocomplete="off"
-                ></v-text-field>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      :small="$vuetify.breakpoint.smAndDown"
-                      :large="$vuetify.breakpoint.mdAndUp"
-                      color="red darken-2"
-                      icon
-                      v-on="data.on"
-                      @click="get"
-                      class="mb-3"
-                    >
-                      <v-icon>mdi-magnify</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Search</span>
-                </v-tooltip>
-              </v-card-actions>
-            </v-col>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  class="mr-2"
+                  color="success"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="get"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-refresh</v-icon></v-btn
+                >
+              </template>
+              <span>Refresh</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  color="grey darken-4"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="filterDialog = true"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-filter-variant</v-icon></v-btn
+                >
+              </template>
+              <span>Filter</span>
+            </v-tooltip>
           </v-row>
+
+          <!-- Filter Dialog -->
+          <v-dialog v-model="filterDialog" max-width="380px">
+            <v-toolbar
+              dense
+              dark
+              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+            >
+              Filter
+              <v-spacer></v-spacer>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="filterDialog = false"
+                >mdi-close
+              </v-icon>
+            </v-toolbar>
+            <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
+              <v-row no-gutters align="center" class="pt-2">
+                <!-- Items Per Page -->
+                <v-col cols="4" class="pa-2">
+                  <v-select
+                    dense
+                    v-model="itemsPerPage"
+                    label="Items"
+                    @change="itemperpage"
+                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
+                    hide-details
+                  >
+                  </v-select>
+                </v-col>
+
+                <!-- Search Field -->
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      v-model="search"
+                      label="Product Name"
+                      single-line
+                      dense
+                      clearable
+                      hide-details
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          :small="$vuetify.breakpoint.smAndDown"
+                          :large="$vuetify.breakpoint.mdAndUp"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          @click="get"
+                          class="mt-2"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-dialog>
 
           <!-- Products List Table -->
           <v-data-table
-            class="prod_table table-striped"
+            class="prod_table table-striped mt-4"
             :headers="headers1"
             :items="table1.data"
             :loading="progressbar1"
@@ -244,7 +296,7 @@
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-card tile style="background-color: #f5f5f5">
+          <v-card tile>
             <v-card-text class="py-2">
               <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                 <v-row>
@@ -270,7 +322,9 @@
                       maxlength="3"
                     >
                       <template slot="label">
-                        <div style="font-size: 14px">Quantity *</div>
+                        <div style="font-size: 14px">
+                          Quantity <span style="color: red">*</span>
+                        </div>
                       </template>
                     </v-text-field>
                   </v-col>
@@ -744,6 +798,7 @@ export default {
     quantity: 1,
     disabled1: false,
     dialog: false,
+    filterDialog: false,
     selectedrow: { product_name: "" },
     totalamount: 0,
     discountedamount: 0,

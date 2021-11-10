@@ -115,7 +115,7 @@
       class="text-center pb-0"
       :vertical="$vuetify.breakpoint.xsOnly"
       timeout="2500"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       ><span
         ><v-icon :color="snackbar.iconColor">{{
           `mdi-${snackbar.iconText}`

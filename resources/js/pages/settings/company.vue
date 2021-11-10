@@ -7,7 +7,7 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       class="pb-0"
     >
       <span

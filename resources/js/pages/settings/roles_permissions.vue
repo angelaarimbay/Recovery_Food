@@ -6,7 +6,7 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       class="pb-0"
     >
       <span
@@ -32,7 +32,7 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
-      :right="$vuetify.breakpoint.smAndUp"
+      :left="$vuetify.breakpoint.smAndUp"
       class="pb-0"
     >
       <span
@@ -64,13 +64,18 @@
 
     <v-form ref="mainForm" id="mainForm">
       <!-- Role Dialog Form  -->
-      <v-dialog v-model="dialogRoles" max-width="450px">
+      <v-dialog
+        v-model="dialogRoles"
+        max-width="450px"
+        persistent
+        no-click-animation
+      >
         <v-toolbar
           dense
           dark
           class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
         >
-          Add New Role
+          Role
           <v-spacer></v-spacer>
           <v-icon
             class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
@@ -79,7 +84,7 @@
             >mdi-close
           </v-icon>
         </v-toolbar>
-        <v-card tile id="dialog" style="background-color: #f5f5f5">
+        <v-card tile id="dialog">
           <v-card-text class="py-2">
             <br />
             <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
@@ -98,7 +103,9 @@
                     maxlength="20"
                   >
                     <template slot="label">
-                      <div style="font-size: 14px">Role Name *</div>
+                      <div style="font-size: 14px">
+                        Role Name <span style="color: red">*</span>
+                      </div>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -165,7 +172,7 @@
             >mdi-close
           </v-icon>
         </v-toolbar>
-        <v-card tile style="background-color: #f5f5f5">
+        <v-card tile>
           <v-card-text class="py-2">
             <br />
             <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
@@ -181,7 +188,9 @@
                     dense
                   >
                     <template slot="label">
-                      <div style="font-size: 14px">Permission Name *</div>
+                      <div style="font-size: 14px">
+                        Permission Name <span style="color: red">*</span>
+                      </div>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -463,18 +472,25 @@
                     :small="$vuetify.breakpoint.smAndDown"
                     @click="openDialogRoles"
                   >
-                    Add New
+                    Add New Role
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="getRoles"
-                    >Refresh</v-btn
-                  >
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="success"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getRoles"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
                 </v-card-actions>
 
                 <!-- Roles List Table -->
@@ -556,15 +572,22 @@
                     Add New
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="getPermissions"
-                    >Refresh</v-btn
-                  >
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="success"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getPermissions"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
                 </v-card-actions>
 
                 <!-- Permissions List Table -->
@@ -616,15 +639,22 @@
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="getUserRoles"
-                    >Refresh</v-btn
-                  >
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="success"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getUserRoles"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
                 </v-card-actions>
 
                 <!-- User Roles Table -->
@@ -1144,10 +1174,10 @@ export default {
       ) {
         this.snackbar = {
           active: true,
-          iconText: "error",
+          iconText: "close",
           iconColor: "danger",
           message:
-            "If 'Access POS' is checked, you must disable all other permissions.",
+            "Disable all other permissions first.",
         };
         return 1;
       }

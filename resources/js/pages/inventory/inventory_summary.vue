@@ -65,45 +65,95 @@
 
     <!-- Main Card -->
     <v-card elevation="6" class="mt-2" style="border-radius: 10px">
-      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <!-- Date Picker -->
-          <v-row no-gutters>
-            <v-col cols="12" xl="4" lg="4" md="4" sm="4" class="my-auto pa-1">
-              <v-card-actions class="py-0">
-                <v-select
-                  v-model="year"
-                  item-text=""
-                  item-value="id"
-                  :items="ylist"
-                  dense
-                  label="Year"
-                  @change="get"
-                  outlined
-                  hide-details
+          <v-row no-gutters align="center" class="mb-3">
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  class="ml-auto mr-2"
+                  color="success"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="get"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-refresh</v-icon></v-btn
                 >
-                </v-select>
-              </v-card-actions>
-            </v-col>
-
-            <!-- Date Picker -->
-            <v-col cols="12" xl="4" lg="4" md="4" sm="4" class="my-auto pa-1">
-              <v-card-actions class="py-0">
-                <v-select
-                  v-model="month"
-                  item-text=""
-                  item-value="id"
-                  :items="mlist"
-                  dense
-                  label="Month"
-                  @change="get"
-                  outlined
-                  hide-details
+              </template>
+              <span>Refresh</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  color="grey darken-4"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="filterDialog = true"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-filter-variant</v-icon></v-btn
                 >
-                </v-select>
-              </v-card-actions>
-            </v-col>
+              </template>
+              <span>Filter</span>
+            </v-tooltip>
           </v-row>
+
+          <!-- Filter Dialog -->
+          <v-dialog v-model="filterDialog" max-width="380px">
+            <v-toolbar
+              dense
+              dark
+              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+            >
+              Filter
+              <v-spacer></v-spacer>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="filterDialog = false"
+                >mdi-close
+              </v-icon>
+            </v-toolbar>
+            <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
+              <v-row no-gutters align="center" justify="center" class="pt-2">
+                <!-- Date Picker -->
+                <v-col cols="5" class="pa-4">
+                  <v-select
+                    v-model="year"
+                    item-text=""
+                    item-value="id"
+                    :items="ylist"
+                    dense
+                    label="Year"
+                    @change="get"
+                    hide-details
+                  >
+                  </v-select>
+                </v-col>
+
+                <!-- Date Picker -->
+                <v-col cols="7" class="pa-4">
+                  <v-select
+                    v-model="month"
+                    item-text=""
+                    item-value="id"
+                    :items="mlist"
+                    dense
+                    label="Month"
+                    @change="get"
+                    hide-details
+                  >
+                  </v-select>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-dialog>
 
           <!-- Table -->
           <v-data-table
@@ -125,9 +175,7 @@
 
             <template slot="body.append">
               <tr class="hidden-xs-only">
-                <th class="text-uppercase">
-                  Grand Totals
-                </th>
+                <th class="text-uppercase">Grand Totals</th>
                 <td style="text-align: right; font-size: 15px">
                   {{ sumField("begining_orig") }}
                 </td>
@@ -185,6 +233,7 @@ export default {
     mlist: [],
     ylist: [],
     table: [],
+    filterDialog: false,
     headers: [
       {
         text: "SUPPLIES CATEGORY",

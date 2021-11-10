@@ -91,161 +91,200 @@
           <span>Print</span>
         </v-tooltip></v-card-actions
       >
+
       <v-row no-gutters>
-        <!-- Items Per Page -->
-        <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-          <v-card-actions>
-            <v-select
-              style="max-width: 82px"
-              dense
-              v-model="itemsPerPage"
-              label="Items per page"
-              @change="itemperpage"
-              :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
-            >
-            </v-select>
-          </v-card-actions>
-        </v-col>
-
         <v-spacer></v-spacer>
+        <v-tooltip bottom>
+          <template #activator="data">
+            <v-btn
+              class="mr-2 mb-3"
+              color="success"
+              style="text-transform: none"
+              depressed
+              :small="$vuetify.breakpoint.smAndDown"
+              dark
+              @click="getSalesReport"
+              v-on="data.on"
+              icon
+              ><v-icon>mdi-refresh</v-icon></v-btn
+            >
+          </template>
+          <span>Refresh</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="data">
+            <v-btn
+              color="grey darken-4"
+              style="text-transform: none"
+              depressed
+              :small="$vuetify.breakpoint.smAndDown"
+              dark
+              @click="filterDialog = true"
+              v-on="data.on"
+              icon
+              ><v-icon>mdi-filter-variant</v-icon></v-btn
+            >
+          </template>
+          <span>Filter</span>
+        </v-tooltip>
+      </v-row>
 
-        <!-- Search Field -->
-        <v-col
-          cols="8"
-          xl="4"
-          lg="4"
-          md="6"
-          sm="8"
-          style="max-width: 230px"
-          class="my-auto"
+      <!-- Filter Dialog -->
+      <v-dialog v-model="filterDialog" max-width="380px">
+        <v-toolbar
+          dense
+          dark
+          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
         >
-          <v-card-actions>
-            <v-text-field
-              v-model="search"
-              label="Reference No."
-              single-line
-              dense
-              clearable
-            ></v-text-field>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  :small="$vuetify.breakpoint.smAndDown"
-                  :large="$vuetify.breakpoint.mdAndUp"
-                  color="red darken-2"
-                  icon
-                  v-on="data.on"
-                  @click="getSalesReport"
-                  class="mb-3"
-                >
-                  <v-icon>mdi-magnify</v-icon></v-btn
-                >
-              </template>
-              <span>Search</span>
-            </v-tooltip>
-          </v-card-actions>
-        </v-col>
-      </v-row>
+          Filter
+          <v-spacer></v-spacer>
+          <v-icon
+            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+            text
+            @click="filterDialog = false"
+            >mdi-close
+          </v-icon>
+        </v-toolbar>
+        <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
+          <v-row no-gutters align="center" class="pt-2">
+            <!-- Items Per Page -->
+            <v-col cols="4" class="pa-2">
+              <v-select
+                dense
+                v-model="itemsPerPage"
+                label="Items per page"
+                @change="itemperpage"
+                :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
+                hide-details
+              >
+              </v-select>
+            </v-col>
 
-      <v-row
-        no-gutters
-        v-if="!this.user.permissionslist.includes('Access POS')"
-      >
-        <!-- Branch Field -->
-        <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
-          <v-card-actions class="py-0">
-            <v-select
-              :items="branchlist"
-              item-text="branch_name"
-              item-value="id"
-              class="my-0"
-              clearable
-              v-model="branch"
-              dense
-              @change="getSalesReport"
-              label="Branch"
-            >
-            </v-select>
-          </v-card-actions>
-        </v-col>
-
-        <v-spacer></v-spacer>
-
-        <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-          <v-card-actions class="py-0">
-            <v-menu
-              v-model="date1"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
+            <!-- Search Field -->
+            <v-col cols="8">
+              <v-card-actions class="px-0">
                 <v-text-field
+                  v-model="search"
+                  label="Reference No."
+                  single-line
+                  dense
+                  clearable
+                  hide-details
+                ></v-text-field>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      :small="$vuetify.breakpoint.smAndDown"
+                      :large="$vuetify.breakpoint.mdAndUp"
+                      color="red darken-2"
+                      icon
+                      v-on="data.on"
+                      @click="getSalesReport"
+                      class="mt-2"
+                    >
+                      <v-icon>mdi-magnify</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Search</span>
+                </v-tooltip>
+              </v-card-actions>
+            </v-col>
+          </v-row>
+
+          <v-row
+            no-gutters
+            v-if="!this.user.permissionslist.includes('Access POS')"
+          >
+            <!-- Branch Field -->
+            <v-col cols="12" class="pa-2">
+              <v-select
+                :items="branchlist"
+                item-text="branch_name"
+                item-value="id"
+                class="my-0"
+                clearable
+                v-model="branch"
+                dense
+                @change="getSalesReport"
+                label="Branch"
+              >
+              </v-select>
+            </v-col>
+
+            <!-- Date Picker -->
+            <v-col cols="12" class="pa-2">
+              <v-menu
+                v-model="date1"
+                :close-on-content-click="false"
+                :nudge-right="35"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="dateFromSP"
+                    label="Date From"
+                    prepend-icon="mdi-calendar-range"
+                    readonly
+                    v-on="on"
+                    class="py-0"
+                    dense
+                    clearable
+                  ></v-text-field>
+                </template>
+                <v-date-picker
                   v-model="dateFromSP"
-                  label="Date From"
-                  prepend-icon="mdi-calendar-range"
-                  readonly
-                  v-on="on"
-                  class="py-0"
-                  dense
-                  clearable
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateFromSP"
-                @input="date1 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-                @change="getSalesReport"
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
-        </v-col>
+                  @input="date1 = false"
+                  scrollable
+                  no-title
+                  color="red darken-2"
+                  dark
+                  @change="getSalesReport"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-          <v-card-actions class="py-0">
-            <v-menu
-              v-model="date2"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
+            <!-- Date Picker -->
+            <v-col cols="12" class="pa-2">
+              <v-menu
+                v-model="date2"
+                :close-on-content-click="false"
+                :nudge-right="35"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="dateUntilSP"
+                    label="Date Until"
+                    prepend-icon="mdi-calendar-range"
+                    readonly
+                    v-on="on"
+                    class="py-0"
+                    dense
+                    clearable
+                  ></v-text-field>
+                </template>
+                <v-date-picker
                   v-model="dateUntilSP"
-                  label="Date Until"
-                  prepend-icon="mdi-calendar-range"
-                  readonly
-                  v-on="on"
-                  class="py-0"
-                  dense
-                  clearable
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateUntilSP"
-                @input="date2 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-                @change="getSalesReport"
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
-        </v-col>
-      </v-row>
+                  @input="date2 = false"
+                  scrollable
+                  no-title
+                  color="red darken-2"
+                  dark
+                  @change="getSalesReport"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
     </v-container>
 
     <!-- Table -->
@@ -315,26 +354,25 @@
         </v-toolbar>
 
         <v-card tile>
-          <v-card-text class="py-2">
+          <v-card-text class="pa-2">
             <v-card-text>
               <div v-if="table2.length > 0">
-                <strong> Reference No: {{ table2[0]["reference_no"] }}</strong>
+                Reference No: <strong> {{ table2[0]["reference_no"] }}</strong>
                 <v-spacer></v-spacer>
-                <strong>
-                  Sales Amount:
-                  {{ sales_var }}
-                </strong>
+                Sales Amount:
+                <strong>{{ sales_var }} </strong>
                 <br />
-
-                <v-card-actions>
-                  Branch: {{ table2[0]["branch"]["branch_name"] }}<br />
-                  Date:
-                  {{ getFormatDate(table2[0]["created_at"], "YYYY-MM-DD")
-                  }}<br />
-                  <!-- <v-spacer></v-spacer>
+                <br />
+                Branch: <strong>{{ table2[0]["branch"]["branch_name"] }}</strong
+                ><br />
+                Date:
+                <strong>{{
+                  getFormatDate(table2[0]["created_at"], "YYYY-MM-DD")
+                }}</strong
+                ><br />
+                <!-- <v-spacer></v-spacer>
                   Mode: {{ table2[0]["mode"] }} <br />
                   Cashier: {{ table2[0]["cashier"]["name"] }} -->
-                </v-card-actions>
               </div>
             </v-card-text>
 
@@ -425,6 +463,7 @@ export default {
     prodcatlist: [],
     table: [],
     dialog1: false,
+    filterDialog: false,
     pdfview: "",
     table2: [],
     branchlist: [],
