@@ -181,6 +181,8 @@ export default {
                 to: this.dateUntilPO,
               },
             }).then((response) => {
+              
+              if (response.data.size > 0) {
               // console.log(response.data);
               // return;
               let blob = new Blob([response.data], { type: "application/pdf" });
@@ -188,6 +190,15 @@ export default {
               link.href = window.URL.createObjectURL(blob);
               link.download = "Purchase Order Report.pdf";
               link.click();
+               } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
             });
 
             break;

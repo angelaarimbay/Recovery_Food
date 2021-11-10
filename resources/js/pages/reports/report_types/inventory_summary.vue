@@ -168,13 +168,24 @@ export default {
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
             }).then((response) => { 
-              console.log(response.data)
-              return;
+               if (response.data.size > 0) {
+             // console.log(response.data)
+             // return;
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
               link.download = "Inventory Summary Report.pdf";
               link.click();
+            } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
+
             });
             break;
           case "print":

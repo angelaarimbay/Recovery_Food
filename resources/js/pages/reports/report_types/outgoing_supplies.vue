@@ -214,12 +214,15 @@ export default {
           message: "Error! Please complete the fields first.",
         };
       } else {
+
+
+
         switch (type) {
           case "pdf":
             await axios({
               url: "/api/reports/outgoingsupplies/get",
               method: "GET",
-              // responseType: "blob",
+               responseType: "blob",
               params: {
                 type: type,
                 branch: this.branch,
@@ -228,13 +231,23 @@ export default {
                 to: this.outgoing_to,
               },
             }).then((response) => {
-              console.log(response.data)
-              return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Outgoing Supplies Report.pdf";
-              link.click();
+              
+              if (response.data.size > 0) {
+                let blob = new Blob([response.data], { type: "application/pdf" });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Outgoing Supplies Report.pdf";
+                link.click();
+              } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
+
             });
             break;
           case "excel":
@@ -266,24 +279,37 @@ export default {
               method: "GET",
               responseType: "blob",
               params: {
-                type: "pdf",
+                type: "pdf", //ito ung
                 branch: this.branch,
                 category: this.category,
                 from: this.outgoing_from,
                 to: this.outgoing_to,
               },
             }).then((response) => {
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print2").contentWindow.print();
-              }, 3000);
+              if (response.data.size > 0) {
+                //pag greater than zero daw. 
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print2").contentWindow.print();
+                }, 3000);
+              } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
             });
             break;
           default:

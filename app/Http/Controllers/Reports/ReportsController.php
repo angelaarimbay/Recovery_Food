@@ -80,19 +80,23 @@ class ReportsController extends Controller
         $content = [];
         switch ($t->type) {
             case 'pdf':
-                $content['data'] = $data;
-                //TOTAL AMOUNTS BELOW THE REPORT
-                $content['net_price'] = tbl_masterlistsupp::get()->sum("net_price");
-                $content['with_vat'] = tbl_masterlistsupp::get()->sum("with_vat");
-                $content['without_vat'] = tbl_masterlistsupp::get()->sum("without_vat");
-                $content['process_by'] = auth()->user()->name;
+                if(count($data) > 0) { //nag open ka dito wlang close
+                    $content['data'] = $data;
+                    //TOTAL AMOUNTS BELOW THE REPORT
+                    $content['net_price'] = tbl_masterlistsupp::get()->sum("net_price");
+                    $content['with_vat'] = tbl_masterlistsupp::get()->sum("with_vat");
+                    $content['without_vat'] = tbl_masterlistsupp::get()->sum("without_vat");
+                    $content['process_by'] = auth()->user()->name;
 
-                $pdf = PDF::loadView('reports.masterlistsupplies', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
+                    $pdf = PDF::loadView('reports.masterlistsupplies', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
+                }else{
+                    return false;
+                }
                 break;
-            case 'excel':
+               case 'excel':
 
                 // if ($t->category == 'All') {
                 //     $data =  tbl_masterlistsupp::with("category")->get();
@@ -190,6 +194,7 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
+                if(count($data) > 0) {
                 $content['data'] = $data;
                 $content['net_price'] = tbl_incomingsupp::with("category")->whereRaw($where)
                     ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
@@ -207,6 +212,9 @@ class ReportsController extends Controller
                     'format' => 'A4-L',
                 ]);
                 return $pdf->stream();
+            }else{
+                return false;
+            }
                 break;
             case 'excel':
                 //columns
@@ -317,7 +325,10 @@ class ReportsController extends Controller
 
         $content = [];
         switch ($t->type) {
-            case 'pdf':
+            case 'pdf': 
+               if(count($data) > 0) {
+                //    if may lamang aray ung $data piprint to pdf nya. 
+     
                 $content['data'] = $data;
                 $content['net_price'] = $g_net_p;
                 $content['with_vat'] = $g_wvat_p;
@@ -329,6 +340,13 @@ class ReportsController extends Controller
                     'format' => 'A4-L',
                 ]);
                 return $pdf->stream();
+               }
+               else{
+                   //else false  return zero
+
+                   return false;
+               }
+           
                 break;
             case 'excel':
                 //columns
@@ -350,11 +368,7 @@ class ReportsController extends Controller
                     }
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Outgoing Supplies Report.xlsx");
-                break;
-
-            case 'print':
-
-                break;
+                break; 
             default:
                 # code...
                 break;
@@ -576,12 +590,16 @@ class ReportsController extends Controller
         switch ($t->type) {
 
             case 'pdf':
+                if(count($data) > 0) { 
                 $content['data'] = $return;
                 $content['process_by'] = auth()->user()->name;
                 $pdf = PDF::loadView('reports.maininventory', $content, [], [
                     'format' => 'A4-L',
                 ]);
                 return $pdf->stream();
+            }else{
+                return false;
+            }
                 break;
             case 'excel':
                 $columns = [
@@ -714,6 +732,7 @@ class ReportsController extends Controller
         //  return $data;
         switch ($t->type) {
             case 'pdf':
+                if(count($data) > 0) { 
                 $content['data'] = $data;
                 $content['process_by'] = auth()->user()->name;
 
@@ -721,6 +740,9 @@ class ReportsController extends Controller
                     'format' => 'A4-L',
                 ]);
                 return $pdf->stream();
+            }else{
+                return false;
+            }
                 break;
             case 'excel':
 
@@ -754,6 +776,7 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
+                if(count($data) > 0) { 
                 $content['data'] = $data;
                 $content['process_by'] = auth()->user()->name;
                 $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
@@ -761,6 +784,9 @@ class ReportsController extends Controller
                     'format' => 'A4-L',
                 ]);
                 return $pdf->stream();
+            }else{
+                return false;
+            }
                 break;
             case 'excel':
                 //columns
@@ -800,6 +826,7 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
+                if(count($data) > 0) { 
                 $content['data'] = $data;
                 $content['process_by'] = auth()->user()->name;
                 $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
@@ -807,6 +834,9 @@ class ReportsController extends Controller
                     'format' => 'A4-L',
                 ]);
                 return $pdf->stream();
+            }else{
+                return false;
+            }
                 break;
             case 'excel':
                 //columns
@@ -842,6 +872,7 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
+                if(count($data) > 0) { 
                 $content['data'] = $data;
                 $content['process_by'] = auth()->user()->name;
                 $content['param'] = ['from' => $t->from, 'to' => $t->to];
@@ -849,6 +880,9 @@ class ReportsController extends Controller
                     'format' => 'A4-L',
                 ]);
                 return $pdf->stream();
+            }else{
+                return false;
+            }
                 break;
             case 'excel':
                 // Columns

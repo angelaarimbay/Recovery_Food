@@ -207,11 +207,23 @@ export default {
                 to: this.incoming_to,
               },
             }).then((response) => { 
+
+               if (response.data.size > 0) {
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
               link.download = "Incoming Supplies Report.pdf";
               link.click();
+               } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
+
             });
             break;
           case "excel":
@@ -227,6 +239,7 @@ export default {
                 },
               })
               .then((response) => {
+              
                 // console.log(response.data)
                 // return;
                 let blob = new Blob([response.data], {
@@ -236,6 +249,7 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Incoming Supplies Report.xlsx";
                 link.click();
+              
               });
             break;
 
@@ -251,6 +265,7 @@ export default {
                 to: this.incoming_to,
               },
             }).then((response) => {
+               if (response.data.size > 0) {
               let blob = new Blob([response.data], { type: "application/pdf" });
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
@@ -262,6 +277,15 @@ export default {
               setTimeout(function () {
                 document.getElementById("print1").contentWindow.print();
               }, 3000);
+                 } else {
+              //pag zero daw. 
+                    this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
             });
             break;
           default:

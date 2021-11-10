@@ -127,6 +127,8 @@ export default {
               responseType: "blob",
               params: { category: this.category, type: type },
             }).then((response) => {
+
+               if (response.data.size > 0) {
               // console.log(response.data)
               // return;
               let blob = new Blob([response.data], { type: "application/pdf" });
@@ -134,6 +136,15 @@ export default {
               link.href = window.URL.createObjectURL(blob);
               link.download = "Main Inventory Report.pdf";
               link.click();
+               } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
             });
             break;
           case "print":
@@ -143,6 +154,7 @@ export default {
               responseType: "blob",
               params: { category: this.category, type: "pdf" },
             }).then((response) => {
+                
               let blob = new Blob([response.data], { type: "application/pdf" });
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
@@ -172,6 +184,7 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Main Inventory Report.xlsx";
                 link.click();
+                
               });
             break;
           default:

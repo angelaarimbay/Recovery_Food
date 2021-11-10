@@ -54,7 +54,9 @@
     </div>
     <p class="header">Recovery Food</p>
     <p class="header">Outgoing Supplies Report</p>
-    <p class="header">@if (count($data[0]) > 0) {{ $data[0][0]['branch'] }} @endif</p>
+    <p class="header">@if (count($data) > 0) {{ $data[0][0]['branch'] }}
+    
+    @endif</p>
 
     <table style="border:none; width: 100%">
         <tr>
