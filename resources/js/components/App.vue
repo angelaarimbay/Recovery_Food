@@ -35,6 +35,7 @@ export default {
   components: {
     Loading,
     ft,
+ 
   },
 
   data: () => ({
@@ -86,3 +87,6 @@ export default {
   },
 };
 </script>
+
+
+
