@@ -167,6 +167,8 @@ export default {
                 params: { category: this.category, type: type },
               })
               .then((response) => {
+                // console.log(response.data.size);
+                // return;
                 if (response.data.size > 0) {
                   // console.log(response.data)
                   let blob = new Blob([response.data], {

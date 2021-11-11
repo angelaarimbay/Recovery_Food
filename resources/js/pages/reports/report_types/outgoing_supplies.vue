@@ -300,6 +300,8 @@ export default {
                 },
               })
               .then((response) => {
+                // console.log(response.data.size);
+                // return;
                 if (response.data.size > 0) {
                   let blob = new Blob([response.data], {
                     type: "application/excel",
