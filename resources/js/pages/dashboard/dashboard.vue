@@ -146,7 +146,7 @@
           :hidden="!hiddenCard1"
         >
           <v-card
-            elevation="4"
+            elevation="5"
             style="border-radius: 10px; border-left: 13px solid #827717"
             class="pa-0"
             height="100"
@@ -192,7 +192,7 @@
           :hidden="!hiddenCard2"
         >
           <v-card
-            elevation="4"
+            elevation="5"
             style="border-radius: 10px; border-left: 13px solid #827717"
             class="pa-0"
             height="100"
@@ -238,7 +238,7 @@
           :hidden="!hiddenCard3"
         >
           <v-card
-            elevation="4"
+            elevation="5"
             style="border-radius: 10px; border-left: 13px solid #827717"
             class="pa-0"
             height="100"
@@ -284,7 +284,7 @@
           :hidden="!hiddenCard4"
         >
           <v-card
-            elevation="4"
+            elevation="5"
             style="border-radius: 10px; border-left: 13px solid #827717"
             class="pa-0"
             height="100"
@@ -382,7 +382,7 @@
       <v-row no-gutters>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
-            elevation="4"
+            elevation="5"
             style="border-radius: 10px"
             class="pa-2"
             :loading="progressbar1"
@@ -401,7 +401,7 @@
         </v-col>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
-            elevation="4"
+            elevation="5"
             style="border-radius: 10px"
             class="pa-3"
             :loading="progressbar2"

@@ -76,7 +76,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="4" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
@@ -733,7 +733,7 @@
           <v-card tile height="auto" style="background-color: #f1ffff">
             <v-card-text class="py-2 px-3">
               <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                <v-card elevation="4" class="mt-2" style="border-radius: 10px">
+                <v-card elevation="5" class="mt-2" style="border-radius: 10px">
                   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-4">
                     <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                       <v-row no-gutters>

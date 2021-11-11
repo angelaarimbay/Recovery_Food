@@ -63,7 +63,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="4" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
         v-model="tab"
