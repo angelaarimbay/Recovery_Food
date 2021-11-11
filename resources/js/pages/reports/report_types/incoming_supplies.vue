@@ -239,9 +239,8 @@ export default {
                 },
               })
               .then((response) => {
+              if (response.data.size > 0) {
               
-                // console.log(response.data)
-                // return;
                 let blob = new Blob([response.data], {
                   type: "application/excel",
                 });
@@ -249,7 +248,15 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Incoming Supplies Report.xlsx";
                 link.click();
-              
+                } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
               });
             break;
 

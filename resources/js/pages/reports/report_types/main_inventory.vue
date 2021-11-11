@@ -111,7 +111,7 @@ export default {
 
   methods: {
     async get(type) {
-      if (this.category == "") {
+      if (this.category == "")  {
         this.snackbar = {
           active: true,
           iconText: "alert",
@@ -126,12 +126,10 @@ export default {
               method: "GET",
               responseType: "blob",
               params: { category: this.category, type: type },
-            }).then((response) => {
-
+            })
+            .then((response) => {
                if (response.data.size > 0) {
-              // console.log(response.data)
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
+              let blob = new Blob([response.data], { type: "application/pdf"});
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
               link.download = "Main Inventory Report.pdf";
@@ -154,7 +152,7 @@ export default {
               responseType: "blob",
               params: { category: this.category, type: "pdf" },
             }).then((response) => {
-                
+                 if (response.data.size > 0) {
               let blob = new Blob([response.data], { type: "application/pdf" });
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
@@ -166,6 +164,15 @@ export default {
               setTimeout(function () {
                 document.getElementById("print3").contentWindow.print();
               }, 3000);
+               } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
             });
             break;
           case "excel":
@@ -176,7 +183,8 @@ export default {
                 params: { category: this.category, type: type },
               })
               .then((response) => {
-                // console.log(response.data)
+              
+              if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/excel",
                 });
@@ -184,7 +192,15 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Main Inventory Report.xlsx";
                 link.click();
-                
+                 } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
               });
             break;
           default:

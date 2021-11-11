@@ -1010,6 +1010,7 @@ export default {
     },
   },
   data: () => ({
+    checkQuantity: [],
     progressbar: false,
     progressbar1: false,
     snackbar: {

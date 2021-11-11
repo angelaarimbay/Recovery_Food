@@ -124,20 +124,20 @@ export default {
             await axios({
               url: "/api/reports/masterlistsupplies/get",
               method: "GET",
-               responseType: "blob",
+              responseType: "blob",
               params: { category: this.category, type: type },
-            }).then((response) => {  
+            }).then((response) => {
               if (response.data.size > 0) {
-              // console.log(response.data)
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Masterlist Supplies Report.pdf";
-              link.click();
-                } else {
-              //pag zero daw. 
-                  this.snackbar = {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Masterlist Supplies Report.pdf";
+                link.click();
+              } else {
+                //pag zero daw.
+                this.snackbar = {
                   active: true,
                   iconText: "information",
                   iconColor: "danger",
@@ -150,23 +150,30 @@ export default {
             await axios
               .get("/api/reports/masterlistsupplies/get", {
                 method: "GET",
-                 responseType: "arraybuffer",
+                responseType: "arraybuffer",
                 params: {
                   category: this.category,
                   type: type,
                 },
               })
               .then((response) => {
-                   if (response.data.size > 0)
-              // console.log(response.data)
-              // return;
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Masterlist Supplies Report.xlsx";
-                link.click();
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/excel",
+                  });
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Masterlist Supplies Report.xlsx";
+                  link.click();
+                } else {
+                  //pag zero daw.
+                  this.snackbar = {
+                    active: true,
+                    iconText: "information",
+                    iconColor: "danger",
+                    message: "No data found.",
+                  };
+                }
               });
             break;
           case "print":
@@ -175,7 +182,9 @@ export default {
               method: "GET",
               responseType: "blob",
               params: { category: this.category, type: "pdf" },
-            }).then((response) => { 
+            }).then((response) => {
+               if (response.data.size > 0) {
+              //wla pa to ndi nyo nilagyan. lahatin nyo na kung lalahatin.
               let blob = new Blob([response.data], { type: "application/pdf" });
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
@@ -187,6 +196,16 @@ export default {
               setTimeout(function () {
                 document.getElementById("print0").contentWindow.print();
               }, 3000);
+                link.click();
+                 } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
             });
             break;
           default:
@@ -196,11 +215,13 @@ export default {
     },
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
-        this.suppcatlist.push({'supply_cat_name':'All','id':'All'});
-         for (var key in supp_cat.data) {
-           this.suppcatlist.push({'supply_cat_name':supp_cat.data[key]['supply_cat_name'],'id':supp_cat.data[key]['id'] });
-         }
-        
+        this.suppcatlist.push({ supply_cat_name: "All", id: "All" });
+        for (var key in supp_cat.data) {
+          this.suppcatlist.push({
+            supply_cat_name: supp_cat.data[key]["supply_cat_name"],
+            id: supp_cat.data[key]["id"],
+          });
+        }
       });
     },
   },

@@ -375,6 +375,8 @@ class ReportsController extends Controller
         }
     }
 
+
+
     // Main Inventory Report - OK
     public function MainInventoryReport(Request $t)
     {
@@ -586,7 +588,7 @@ class ReportsController extends Controller
             array_push($group, $ar);
             array_push($return, $group);
         }
-
+        $content = [];
         switch ($t->type) {
 
             case 'pdf':
@@ -597,7 +599,8 @@ class ReportsController extends Controller
                     'format' => 'A4-L',
                 ]);
                 return $pdf->stream();
-            }else{
+            }
+            else{
                 return false;
             }
                 break;
@@ -745,6 +748,7 @@ class ReportsController extends Controller
             }
                 break;
             case 'excel':
+
 
                 //columns
                 $columns = [

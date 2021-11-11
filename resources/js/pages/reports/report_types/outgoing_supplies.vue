@@ -214,9 +214,6 @@ export default {
           message: "Error! Please complete the fields first.",
         };
       } else {
-
-
-
         switch (type) {
           case "pdf":
             await axios({
@@ -264,6 +261,7 @@ export default {
                 },
               })
               .then((response) => {
+                if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/excel",
                 });
@@ -271,6 +269,15 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Outgoing Supplies Report.xlsx";
                 link.click();
+                 } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
               });
             break;
           case "print":

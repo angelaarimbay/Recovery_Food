@@ -168,9 +168,9 @@ export default {
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
             }).then((response) => { 
-               if (response.data.size > 0) {
-             // console.log(response.data)
-             // return;
+              if (response.data.size > 0) {
+               
+
               let blob = new Blob([response.data], { type: "application/pdf" });
               let link = document.createElement("a");
               link.href = window.URL.createObjectURL(blob);
@@ -186,6 +186,7 @@ export default {
                 };
               }
 
+
             });
             break;
           case "print":
@@ -200,6 +201,7 @@ export default {
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
             }).then((response) => {
+              if (response.data.size > 0) {
               let blob = new Blob([response.data], { type: "application/pdf" });
               this.print = window.URL.createObjectURL(blob);
               this.snackbar = {
@@ -211,6 +213,15 @@ export default {
               setTimeout(function () {
                 document.getElementById("print4").contentWindow.print();
               }, 3000);
+               } else {
+              //pag zero daw. 
+                  this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "danger",
+                  message: "No data found.",
+                };
+              }
             });
             break;
           case "excel":
