@@ -230,7 +230,7 @@
                             icon
                             v-on="data.on"
                             @click="get"
-                            class="mt-2"
+                            class="ml-2"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -604,7 +604,7 @@
                           <tr>
                             <th
                               class="text-left pr-2"
-                              style="width: 60%"
+                              style="width: 50%"
                               v-if="form.supply_name.description"
                             >
                               Description:
@@ -612,7 +612,9 @@
                             <th>{{ form.supply_name.description }}</th>
                           </tr>
                           <tr>
-                            <th class="text-left pr-2">Net Price:</th>
+                            <th class="text-left pr-2" style="width: 50%">
+                              Net Price:
+                            </th>
                             <th>
                               {{
                                 getFormatCurrency(
@@ -623,11 +625,15 @@
                             </th>
                           </tr>
                           <tr>
-                            <th class="text-left pr-2">Unit:</th>
+                            <th class="text-left pr-2" style="width: 50%">
+                              Unit:
+                            </th>
                             <th>{{ form.supply_name.unit }}</th>
                           </tr>
                           <tr>
-                            <th class="text-left pr-2">Available Quantity:</th>
+                            <th class="text-left pr-2" style="width: 50%">
+                              Available Quantity:
+                            </th>
                             <th>{{ getQuantity }}</th>
                           </tr>
                         </table>
@@ -1485,8 +1491,6 @@ export default {
         .get("/api/osupp/suppValidate", { params: { id: id.id } })
         .then((result) => {
           if (!edit) {
-            this.form.quantity = null;
-            this.getQuantity = 0;
             this.getQuantity = result.data + this.form.quantity;
           } else {
             this.getQuantity = result.data;
@@ -1530,7 +1534,7 @@ export default {
       this.form.id = row.id;
       this.form.category = row.category.id;
       this.suppName();
-      this.form.supply_name = row.supply_name.supply_name;
+      this.form.supply_name = row.supply_name;
       this.form.quantity = row.quantity;
       this.form.requesting_branch = row.requesting_branch.id;
       this.form.outgoing_date = this.getFormatDate(

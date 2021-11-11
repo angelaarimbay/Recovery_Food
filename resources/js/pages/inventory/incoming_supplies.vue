@@ -515,20 +515,10 @@
                             Supply Name <span style="color: red">*</span>
                           </div>
                         </template>
-                        <template slot="selection" slot-scope="data">
-                          <!-- HTML that describe how select should render selected items -->
-                          {{ data.item.supply_name }}
-                          {{ data.item.description }}
-                        </template>
-                        <template slot="item.supply_name" slot-scope="data">
-                          <!-- HTML that describe how select should render items when the select is open -->
-                          {{ data.item.supply_name }}
-                          {{ data.item.description }}
-                        </template>
                       </v-autocomplete>
 
                       <v-card flat class="px-4 pb-6" v-if="form.supply_name">
-                        <table style="width: 50%; font-size: 11px">
+                        <table style="width: 100%; font-size: 11px">
                           <tr>
                             <th
                               class="text-left pr-2"
@@ -540,7 +530,9 @@
                             <th>{{ form.supply_name.description }}</th>
                           </tr>
                           <tr>
-                            <th class="text-left pr-2">Net Price:</th>
+                            <th class="text-left pr-2" style="width: 50%">
+                              Net Price:
+                            </th>
                             <th>
                               {{
                                 getFormatCurrency(
@@ -551,7 +543,9 @@
                             </th>
                           </tr>
                           <tr>
-                            <th class="text-left pr-2">Unit:</th>
+                            <th class="text-left pr-2" style="width: 50%">
+                              Unit:
+                            </th>
                             <th>{{ form.supply_name.unit }}</th>
                           </tr>
                         </table>
@@ -978,9 +972,9 @@ export default {
                   ? " " + supp_name.data[key].description
                   : ""),
               id: supp_name.data[key].id,
-              net_price:  supp_name.data[key].net_price,
-              unit:  supp_name.data[key].unit,
-              description:  supp_name.data[key].description
+              net_price: supp_name.data[key].net_price,
+              unit: supp_name.data[key].unit,
+              description: supp_name.data[key].description,
             });
           }
         });

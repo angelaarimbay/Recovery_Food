@@ -177,7 +177,7 @@
                             icon
                             v-on="data.on"
                             @click="get"
-                            class="mt-2"
+                            class="ml-2"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -700,6 +700,7 @@ export default {
     prodnamelist: [],
     branchlist: [],
     filterDialog: false,
+    quantity: 0,
 
     // Form Rules
     formRules: [(v) => !!v || "This is required"],
@@ -970,13 +971,11 @@ export default {
         });
     },
 
-    async prodValidate(id = "") {
+    async prodValidate(id = "", edit = "") {
       await axios
-        .get("/api/outprod/prodValidate", {
-          params: { product_name: this.form.product_name.id, id: id },
-        })
+        .get("/api/outprod/prodValidate", { params: { id: id.id } })
         .then((result) => {
-          if (id) {
+          if (!edit) {
             this.getQuantity = result.data + this.form.quantity;
           } else {
             this.getQuantity = result.data;
@@ -1030,9 +1029,8 @@ export default {
         row.outgoing_date,
         "YYYY-MM-DD"
       );
-
+      this.prodValidate(row.product_name, "yes");
       this.dialog = true;
-      this.prodValidate(row.id);
     },
 
     // Open Dialog Form
