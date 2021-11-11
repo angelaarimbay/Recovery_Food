@@ -99,7 +99,7 @@
       </v-layout>
     </v-container>
     <!-- Main Card -->
-    <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="4" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">

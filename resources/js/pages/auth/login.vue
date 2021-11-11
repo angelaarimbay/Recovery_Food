@@ -20,7 +20,7 @@
           class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
         >
           <v-card
-            elevation="6"
+            elevation="4"
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >

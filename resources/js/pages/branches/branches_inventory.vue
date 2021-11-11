@@ -38,7 +38,7 @@
       </v-layout>
     </v-container>
 
-    <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="4" class="mt-2" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
         v-model="tab"
