@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -85,13 +87,17 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
+                  hide-details
                   v-model="dateFromPO"
                   label="Date From"
                   prepend-icon="mdi-calendar-range"
                   readonly
                   v-on="on"
-                  class="py-0"
+                  class="py-1"
                   dense
+                  background-color="blue-grey lighten-5"
+                  flat
+                  solo
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -106,6 +112,7 @@
           </v-card-actions>
         </v-col>
 
+        <!-- Date Picker -->
         <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-menu
@@ -118,13 +125,17 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
+                  hide-details
                   v-model="dateUntilPO"
                   label="Date Until"
                   prepend-icon="mdi-calendar-range"
                   readonly
                   v-on="on"
-                  class="py-0"
+                  class="py-1"
                   dense
+                  background-color="blue-grey lighten-5"
+                  flat
+                  solo
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -143,6 +154,12 @@
     <iframe id="print8" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
+
+<style>
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
+}
+</style>
 
 <script>
 import axios from "axios"; // Library for sending api request
@@ -196,40 +213,25 @@ export default {
                 to: this.dateUntilPO,
               },
             }).then((response) => {
-              // console.log(response.data);
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Purchase Order Report.pdf";
-              link.click();
+              if (response.data.size > 0) {
+                // console.log(response.data);
+                // return;
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Purchase Order Report.pdf";
+                link.click();
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
             });
-
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/purchaseorder/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                type: "pdf",
-                from: this.dateFromPO,
-                to: this.dateUntilPO,
-              },
-            }).then((response) => {
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print8").contentWindow.print();
-              }, 3000);
-            });
-
             break;
           case "excel":
             await axios
@@ -243,14 +245,59 @@ export default {
                 },
               })
               .then((response) => {
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Purchase Order Report.xlsx";
-                link.click();
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/excel",
+                  });
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Purchase Order Report.xlsx";
+                  link.click();
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
               });
+            break;
+          case "print":
+            await axios({
+              url: "/api/reports/purchaseorder/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: "pdf",
+                from: this.dateFromPO,
+                to: this.dateUntilPO,
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print8").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
+                };
+              }
+            });
+
             break;
           default:
             break;

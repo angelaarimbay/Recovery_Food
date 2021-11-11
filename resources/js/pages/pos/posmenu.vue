@@ -136,7 +136,7 @@
               </v-icon>
             </v-toolbar>
             <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-              <v-row no-gutters align="center" class="pt-2">
+              <v-row no-gutters align="center" class="py-3">
                 <!-- Items Per Page -->
                 <v-col cols="4" class="pa-2">
                   <v-select
@@ -146,6 +146,9 @@
                     @change="itemperpage"
                     :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
                     hide-details
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   >
                   </v-select>
                 </v-col>
@@ -160,6 +163,9 @@
                       dense
                       clearable
                       hide-details
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     ></v-text-field>
                     <v-tooltip bottom>
                       <template #activator="data">
@@ -312,7 +318,6 @@
                     <v-text-field
                       :rules="formRulesQuantity"
                       v-model="quantity"
-                      outlined
                       dense
                       autocomplete="off"
                       @focus="clearQ"
@@ -320,6 +325,9 @@
                       @keydown="quantityKeydown($event)"
                       counter
                       maxlength="3"
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                       <template slot="label">
                         <div style="font-size: 14px">
@@ -731,6 +739,9 @@
 }
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
 }
 @media only screen and (min-width: 768px) {
   .v-data-table-header th {

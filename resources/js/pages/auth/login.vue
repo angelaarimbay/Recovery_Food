@@ -44,10 +44,8 @@
                     <v-text-field
                       :rules="formRulesEmail"
                       label="Email"
-                      outlined
-                      dense
+                      :dense="$vuetify.breakpoint.smAndDown"
                       clearable
-                      persistent-placeholder
                       v-model="form.email"
                       :error-messages="
                         form.errors.has('email')
@@ -55,16 +53,17 @@
                           : ''
                       "
                       prepend-icon="mdi-email"
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="12" sm="12" class="py-1">
                     <v-text-field
-                      label="Password"
-                      outlined
-                      persistent-placeholder
                       :rules="passwordRules"
-                      dense
+                      label="Password"
+                      :dense="$vuetify.breakpoint.smAndDown"
                       clearable
                       v-model="form.password"
                       :error-messages="
@@ -76,6 +75,9 @@
                       @click:append="() => (value = !value)"
                       :type="!value ? 'password' : 'text'"
                       prepend-icon="mdi-key"
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -134,6 +136,12 @@
     >
   </div>
 </template>
+
+<style>
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
+}
+</style>
 
 <script>
 import Form from "vform";

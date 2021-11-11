@@ -179,19 +179,21 @@
                 <v-row no-gutters>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6" class="py-1">
                     <v-row no-gutters>
+                      Supplies VAT
                       <v-col cols="10">
                         <v-text-field
                           :rules="formRulesVAT"
                           v-model="form1.vat"
-                          label="Supplies VAT"
                           dense
-                          outlined
                           persistent-placeholder
                           clearable
                           counter
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetSV"
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -213,19 +215,21 @@
                   </v-col>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6" class="py-1">
                     <v-row no-gutters>
+                      Products VAT
                       <v-col cols="10">
                         <v-text-field
                           :rules="formRulesVAT"
                           v-model="form2.vat"
-                          label="Products VAT"
                           dense
-                          outlined
                           clearable
                           persistent-placeholder
                           counter
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetPV"
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">

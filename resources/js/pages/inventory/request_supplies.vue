@@ -289,12 +289,16 @@
                   >
                     <v-card-actions class="py-0 px-0">
                       <v-text-field
+                        hide-details
                         v-model="search1"
                         label="Supply Name"
                         single-line
                         dense
                         clearable
                         autocomplete="off"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       ></v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
@@ -304,7 +308,7 @@
                             color="red darken-2"
                             icon
                             v-on="data.on"
-                            class="mb-3"
+                            class="ml-2"
                             @click="searchSupp"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
@@ -318,7 +322,7 @@
                   <v-tooltip bottom>
                     <template #activator="data">
                       <v-btn
-                        class="mr-2 mb-3"
+                        class="mr-2"
                         color="success"
                         style="text-transform: none"
                         depressed
@@ -340,7 +344,7 @@
                   :headers="headers1"
                   :items="table1"
                   ref="progress"
-                  class="table-striped"
+                  class="table-striped mt-2"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -552,7 +556,6 @@
                 <v-text-field
                   :rules="formRulesQuantity"
                   v-model="quantity"
-                  outlined
                   dense
                   autocomplete="off"
                   @focus="clearQ"
@@ -560,12 +563,10 @@
                   @keydown="quantityKeydown($event)"
                   counter
                   maxlength="3"
+                  background-color="blue-grey lighten-5"
+                  flat
+                  solo
                 >
-                  <template slot="label">
-                    <div style="font-size: 14px">
-                      Quantity <span style="color: red">*</span>
-                    </div>
-                  </template>
                 </v-text-field>
               </v-col>
             </v-row>

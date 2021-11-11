@@ -135,7 +135,7 @@
                 </v-icon>
               </v-toolbar>
               <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-                <v-row no-gutters align="center" class="pt-2">
+                <v-row no-gutters align="center" class="py-3">
                   <!-- Items Per Page -->
                   <v-col cols="4" class="pa-2">
                     <v-select
@@ -147,6 +147,9 @@
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                       ]"
                       hide-details
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                     </v-select>
                   </v-col>
@@ -161,6 +164,9 @@
                         dense
                         clearable
                         hide-details
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       ></v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
@@ -195,14 +201,18 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
+                          hide-details
                           v-model="dateFrom"
                           label="Date From"
                           prepend-icon="mdi-calendar-range"
                           readonly
                           v-on="on"
-                          class="py-0"
+                          class="py-1"
                           dense
                           clearable
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         ></v-text-field>
                       </template>
                       <v-date-picker
@@ -231,14 +241,18 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
+                          hide-details
                           v-model="dateUntil"
                           label="Date Until"
                           prepend-icon="mdi-calendar-range"
                           readonly
                           v-on="on"
-                          class="py-0"
+                          class="py-1"
                           dense
                           clearable
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         ></v-text-field>
                       </template>
                       <v-date-picker
@@ -377,8 +391,10 @@
                             class="py-0"
                             dense
                             clearable
-                            outlined
                             label=""
+                            background-color="blue-grey lighten-5"
+                            flat
+                            solo
                           >
                             <template slot="label">
                               <div style="font-size: 14px">
@@ -410,12 +426,14 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.invoice_number"
-                        outlined
                         clearable
                         dense
                         counter
                         @keydown="invoiceKeydown($event)"
                         maxlength="20"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -436,11 +454,13 @@
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.supplier_name"
-                        outlined
                         dense
                         :items="suppnamelist"
                         item-text="supplier_name"
                         item-value="id"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -461,12 +481,14 @@
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.amount"
-                        outlined
                         clearable
                         dense
                         @keydown="numberKeydown($event)"
                         counter
                         maxlength="15"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -523,6 +545,9 @@
 }
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
 }
 </style>
 

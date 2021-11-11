@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -124,7 +126,7 @@
           </v-icon>
         </v-toolbar>
         <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-          <v-row no-gutters align="center" class="pt-2">
+          <v-row no-gutters align="center" class="py-3">
             <!-- Items Per Page -->
             <v-col cols="4" class="pa-2">
               <v-select
@@ -134,6 +136,9 @@
                 @change="itemperpage"
                 :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
                 hide-details
+                background-color="blue-grey lighten-5"
+                flat
+                solo
               >
               </v-select>
             </v-col>
@@ -148,6 +153,9 @@
                   dense
                   clearable
                   hide-details
+                  background-color="blue-grey lighten-5"
+                  flat
+                  solo
                 ></v-text-field>
                 <v-tooltip bottom>
                   <template #activator="data">
@@ -158,7 +166,7 @@
                       icon
                       v-on="data.on"
                       @click="getTransactionReport"
-                      class="mt-2"
+                      class="ml-2"
                     >
                       <v-icon>mdi-magnify</v-icon></v-btn
                     >
@@ -171,6 +179,7 @@
             <!-- Branch Field -->
             <v-col cols="12" class="pa-2">
               <v-select
+                hide-details
                 :items="branchlist"
                 item-text="branch_name"
                 item-value="id"
@@ -180,6 +189,9 @@
                 dense
                 @change="getTransactionReport"
                 label="Branch"
+                background-color="blue-grey lighten-5"
+                flat
+                solo
               >
               </v-select>
             </v-col>
@@ -198,14 +210,18 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
+                    hide-details
                     v-model="dateFromTP"
                     label="Date From"
                     prepend-icon="mdi-calendar-range"
                     readonly
                     v-on="on"
-                    class="py-0"
+                    class="py-1"
                     dense
                     clearable
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -234,14 +250,18 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
+                    hide-details
                     v-model="dateUntilTP"
                     label="Date Until"
                     prepend-icon="mdi-calendar-range"
                     readonly
                     v-on="on"
-                    class="py-0"
+                    class="py-1"
                     dense
                     clearable
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -403,6 +423,12 @@
     <iframe id="print7" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
+
+<style>
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
+}
+</style>
 
 <script>
 import axios from "axios"; // Library for sending api request
@@ -602,36 +628,22 @@ export default {
                 type: type,
               },
             }).then((response) => {
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Transaction Report.pdf";
-              link.click();
-            });
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/transaction/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                branch: this.branch,
-                from: this.dateFromTP,
-                to: this.dateUntilTP,
-                type: "pdf",
-              },
-            }).then((response) => {
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print7").contentWindow.print();
-              }, 3000);
+              if (response.data.size > 0) {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Transaction Report.pdf";
+                link.click();
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
             });
             break;
           case "excel":
@@ -647,14 +659,59 @@ export default {
                 },
               })
               .then((response) => {
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Transaction Report.xlsx";
-                link.click();
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/excel",
+                  });
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Transaction Report.xlsx";
+                  link.click();
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
               });
+            break;
+          case "print":
+            await axios({
+              url: "/api/reports/transaction/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                branch: this.branch,
+                from: this.dateFromTP,
+                to: this.dateUntilTP,
+                type: "pdf",
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print7").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
+                };
+              }
+            });
             break;
           default:
             break;

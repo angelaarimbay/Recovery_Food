@@ -132,7 +132,7 @@
                   </v-icon>
                 </v-toolbar>
                 <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-                  <v-row no-gutters align="center" class="pt-2">
+                  <v-row no-gutters align="center" class="py-3">
                     <!-- Items Per Page -->
                     <v-col cols="4" class="pa-2">
                       <v-select
@@ -144,6 +144,9 @@
                           1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                         ]"
                         hide-details
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                       </v-select>
                     </v-col>
@@ -158,6 +161,9 @@
                           dense
                           clearable
                           hide-details
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         ></v-text-field>
                         <v-tooltip bottom>
                           <template #activator="data">
@@ -168,7 +174,7 @@
                               icon
                               v-on="data.on"
                               @click="getSupplies"
-                              class="mt-2"
+                              class="ml-2"
                             >
                               <v-icon>mdi-magnify</v-icon></v-btn
                             >
@@ -181,6 +187,7 @@
                     <!-- Branch Field -->
                     <v-col cols="12" class="pa-2">
                       <v-select
+                        hide-details
                         :items="branchlist"
                         v-model="branch1"
                         item-text="branch_name"
@@ -190,6 +197,9 @@
                         dense
                         @change="getSupplies"
                         label="Branch"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                       </v-select>
                     </v-col>
@@ -197,6 +207,7 @@
                     <!-- Category Field -->
                     <v-col cols="12" class="pa-2">
                       <v-select
+                        hide-details
                         :items="suppcatlist"
                         item-text="supply_cat_name"
                         item-value="id"
@@ -206,6 +217,9 @@
                         clearable
                         dense
                         label="Category"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                       </v-select>
                     </v-col>
@@ -312,7 +326,7 @@
                   </v-icon>
                 </v-toolbar>
                 <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-                  <v-row no-gutters align="center" class="pt-2">
+                  <v-row no-gutters align="center" class="py-3">
                     <!-- Items Per Page -->
                     <v-col cols="4" class="pa-2">
                       <v-select
@@ -324,6 +338,9 @@
                           1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                         ]"
                         hide-details
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                       </v-select>
                     </v-col>
@@ -338,6 +355,9 @@
                           dense
                           clearable
                           hide-details
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         ></v-text-field>
                         <v-tooltip bottom>
                           <template #activator="data">
@@ -361,6 +381,7 @@
                     <!-- Branch Field -->
                     <v-col cols="12" class="pa-2">
                       <v-select
+                        hide-details
                         :items="branchlist"
                         v-model="branch2"
                         item-text="branch_name"
@@ -370,6 +391,9 @@
                         dense
                         @change="getProducts"
                         label="Branch"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                       </v-select>
                     </v-col>
@@ -377,6 +401,7 @@
                     <!-- Category Field -->
                     <v-col cols="12" class="pa-2">
                       <v-select
+                        hide-details
                         :items="prodcatlist"
                         item-text="product_cat_name"
                         item-value="id"
@@ -386,6 +411,9 @@
                         clearable
                         dense
                         label="Category"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                       </v-select>
                     </v-col>
@@ -449,6 +477,9 @@
 }
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
 }
 </style>
 

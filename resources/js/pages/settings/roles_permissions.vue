@@ -95,12 +95,14 @@
                   <v-text-field
                     :rules="formRules"
                     v-model="role.name"
-                    outlined
                     clearable
                     dense
                     counter
                     @keydown="valueKeydown($event)"
                     maxlength="20"
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   >
                     <template slot="label">
                       <div style="font-size: 14px">
@@ -113,12 +115,14 @@
                   <v-text-field
                     :rules="formRulesDesc"
                     v-model="role.description"
-                    outlined
                     clearable
                     dense
                     counter
                     @keydown="valueKeydown($event)"
                     maxlength="25"
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   >
                     <template slot="label">
                       <div style="font-size: 14px">Role Description</div>
@@ -760,6 +764,9 @@
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
+}
 </style>
 
 <script>
@@ -1176,8 +1183,7 @@ export default {
           active: true,
           iconText: "close",
           iconColor: "danger",
-          message:
-            "Disable all other permissions first.",
+          message: "Disable all other permissions first.",
         };
         return 1;
       }

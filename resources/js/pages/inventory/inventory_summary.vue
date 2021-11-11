@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -121,7 +123,7 @@
               </v-icon>
             </v-toolbar>
             <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-              <v-row no-gutters align="center" justify="center" class="pt-2">
+              <v-row no-gutters align="center" justify="center" class="py-3">
                 <!-- Date Picker -->
                 <v-col cols="5" class="pa-4">
                   <v-select
@@ -133,6 +135,9 @@
                     label="Year"
                     @change="get"
                     hide-details
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   >
                   </v-select>
                 </v-col>
@@ -148,6 +153,9 @@
                     label="Month"
                     @change="get"
                     hide-details
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   >
                   </v-select>
                 </v-col>
@@ -208,6 +216,12 @@
     </v-card>
   </div>
 </template>
+
+<style>
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
+}
+</style>
 
 <script>
 import { mapGetters } from "vuex";

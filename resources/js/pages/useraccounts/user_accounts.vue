@@ -137,7 +137,7 @@
                 </v-icon>
               </v-toolbar>
               <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-                <v-row no-gutters align="center" class="pt-2">
+                <v-row no-gutters align="center" class="py-3">
                   <!-- Items Per Page -->
                   <v-col cols="4" class="pa-2">
                     <v-select
@@ -149,6 +149,9 @@
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                       ]"
                       hide-details
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                     </v-select>
                   </v-col>
@@ -163,6 +166,9 @@
                         dense
                         clearable
                         hide-details
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       ></v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
@@ -173,7 +179,7 @@
                             icon
                             v-on="data.on"
                             @click="get"
-                            class="mt-2"
+                            class="ml-2"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -262,6 +268,13 @@
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
               User
+              <v-spacer></v-spacer>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-card tile>
               <v-card-text class="py-2">
@@ -287,12 +300,14 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.first_name"
-                        outlined
                         clearable
                         dense
                         counter
                         @keydown="valueKeydown($event)"
                         maxlength="25"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -306,12 +321,14 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.last_name"
-                        outlined
                         clearable
                         dense
                         counter
                         @keydown="valueKeydown($event)"
                         maxlength="25"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -332,12 +349,14 @@
                       <v-text-field
                         :rules="formRulesEmail"
                         v-model="form.email"
-                        outlined
                         clearable
                         dense
                         counter
                         maxlength="64"
                         placeholder="johndoe@gmail.com"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -358,16 +377,18 @@
                       <v-text-field
                         :rules="formRulesNumberOnly"
                         v-model="form.phone_number"
-                        outlined
                         clearable
                         dense
                         @keydown="contactKeydown($event)"
                         maxlength="15"
-                        placeholder="+639XXXXXXXXX"
+                        counter
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
-                            Phone Number <span style="color: red">*</span>
+                            Contact Number <span style="color: red">*</span>
                           </div>
                         </template>
                       </v-text-field>
@@ -389,11 +410,13 @@
                         :type="show1 ? 'text' : 'password'"
                         @click:append="show1 = !show1"
                         @input="inputPass"
-                        outlined
                         clearable
                         dense
                         counter
                         maxlength="20"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -425,11 +448,13 @@
                         :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                         :type="show2 ? 'text' : 'password'"
                         @click:append="show2 = !show2"
-                        outlined
                         clearable
                         dense
                         counter
                         maxlength="20"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -451,11 +476,13 @@
                         class="d-none"
                         :rules="formRulesNumber"
                         :items="userrolelist"
-                        outlined
                         dense
                         small-chips
                         multiple
                         item-text="name"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -479,8 +506,10 @@
                         :items="branchlist"
                         item-text="branch_name"
                         item-value="id"
-                        outlined
                         dense
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -537,6 +566,9 @@
 }
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
 }
 </style>
 

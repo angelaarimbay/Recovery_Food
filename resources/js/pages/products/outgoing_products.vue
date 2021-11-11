@@ -135,7 +135,7 @@
                 </v-icon>
               </v-toolbar>
               <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-                <v-row no-gutters align="center" class="pt-2">
+                <v-row no-gutters align="center" class="py-3">
                   <!-- Items Per Page -->
                   <v-col cols="4" class="pa-2">
                     <v-select
@@ -147,6 +147,9 @@
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                       ]"
                       hide-details
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                     </v-select>
                   </v-col>
@@ -161,6 +164,9 @@
                         dense
                         clearable
                         hide-details
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       ></v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
@@ -184,15 +190,18 @@
                   <!-- Branch Field -->
                   <v-col cols="12" class="pa-2">
                     <v-select
+                      hide-details
                       v-model="branch"
                       :items="branchlist"
                       item-text="branch_name"
                       item-value="id"
-                      class="my-0"
                       clearable
                       dense
                       label="Branch"
                       @change="get"
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                     </v-select>
                   </v-col>
@@ -200,15 +209,18 @@
                   <!-- Category Field -->
                   <v-col cols="12" class="pa-2">
                     <v-select
+                      hide-details
                       v-model="category"
                       :items="prodcatlist"
                       item-text="product_cat_name"
                       item-value="id"
-                      class="my-0"
                       clearable
                       dense
                       label="Category"
                       @change="get"
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                     </v-select>
                   </v-col>
@@ -227,14 +239,18 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
+                          hide-details
                           v-model="dateFrom"
                           label="Date From"
                           prepend-icon="mdi-calendar-range"
                           readonly
                           v-on="on"
-                          class="py-0"
+                          class="py-1"
                           dense
                           clearable
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         ></v-text-field>
                       </template>
                       <v-date-picker
@@ -249,6 +265,7 @@
                     </v-menu>
                   </v-col>
 
+                  <!-- Date Picker -->
                   <v-col cols="12" class="pa-2">
                     <v-menu
                       v-model="date2"
@@ -262,14 +279,18 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
+                          hide-details
                           v-model="dateUntil"
                           label="Date Until"
                           prepend-icon="mdi-calendar-range"
                           readonly
                           v-on="on"
-                          class="py-0"
+                          class="py-1"
                           dense
                           clearable
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         ></v-text-field>
                       </template>
                       <v-date-picker
@@ -408,8 +429,10 @@
                             class="py-0"
                             dense
                             clearable
-                            outlined
                             label=""
+                            background-color="blue-grey lighten-5"
+                            flat
+                            solo
                           >
                             <template slot="label">
                               <div style="font-size: 14px">
@@ -441,10 +464,12 @@
                         :rules="formRulesNumberRange"
                         v-model="form.requesting_branch"
                         :items="branchlist"
-                        outlined
                         dense
                         item-text="branch_name"
                         item-value="id"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -459,11 +484,13 @@
                         :rules="formRulesNumberRange"
                         v-model="form.category"
                         :items="prodcatlist"
-                        outlined
                         dense
                         item-text="product_cat_name"
                         item-value="id"
                         @change="prodName"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -478,11 +505,13 @@
                         :rules="formRulesNumberRange"
                         v-model="form.sub_category"
                         :items="prodsubcatlist"
-                        outlined
                         dense
                         item-text="prod_sub_cat_name"
                         item-value="id"
                         @change="prodName"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -504,11 +533,13 @@
                         :rules="formRules"
                         v-model="form.product_name"
                         :items="prodnamelist"
-                        outlined
                         dense
                         item-text="product_name"
                         return-object
                         @change="prodValidate"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -529,12 +560,14 @@
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="form.quantity"
-                        outlined
                         dense
                         clearable
                         @keydown="quantityKeydown($event)"
                         counter
                         maxlength="3"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -591,6 +624,9 @@
 }
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
 }
 </style>
 

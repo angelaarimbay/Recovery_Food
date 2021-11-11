@@ -135,7 +135,7 @@
                 </v-icon>
               </v-toolbar>
               <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-                <v-row no-gutters align="center" class="pt-2">
+                <v-row no-gutters align="center" class="py-3">
                   <!-- Items Per Page -->
                   <v-col cols="4" class="pa-2">
                     <v-select
@@ -147,6 +147,9 @@
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                       ]"
                       hide-details
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                     </v-select>
                   </v-col>
@@ -161,6 +164,9 @@
                         dense
                         clearable
                         hide-details
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       ></v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
@@ -171,7 +177,7 @@
                             icon
                             v-on="data.on"
                             @click="get"
-                            class="mt-2"
+                            class="ml-2"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -184,15 +190,18 @@
                   <!-- Category Field -->
                   <v-col cols="12" class="pa-2">
                     <v-select
+                      hide-details
                       v-model="category"
                       :items="prodcatlist"
                       item-text="product_cat_name"
                       item-value="id"
-                      class="my-0"
                       clearable
                       dense
                       label="Category"
                       @change="get"
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                     </v-select>
                   </v-col>
@@ -329,11 +338,13 @@
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.status"
-                        outlined
                         dense
                         :items="status"
                         item-text="name"
                         item-value="id"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -348,10 +359,12 @@
                         :rules="formRulesNumberRange"
                         v-model="form.category"
                         :items="prodcatlist"
-                        outlined
                         dense
                         item-text="product_cat_name"
                         item-value="id"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -366,10 +379,12 @@
                         :rules="formRulesNumberRange"
                         v-model="form.sub_category"
                         :items="prodsubcatlist"
-                        outlined
                         dense
                         item-text="prod_sub_cat_name"
                         item-value="id"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -390,12 +405,14 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.product_name"
-                        outlined
                         clearable
                         dense
                         counter
                         @keydown="valueKeydown($event)"
                         maxlength="35"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -416,12 +433,14 @@
                       <v-text-field
                         :rules="formRulesDesc"
                         v-model="form.description"
-                        outlined
                         clearable
                         dense
                         counter
                         @keydown="descKeydown($event)"
                         maxlength="35"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Description</div>
@@ -429,11 +448,10 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="8" lg="8" sm="8" md="8">
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.price"
-                        outlined
                         clearable
                         dense
                         counter
@@ -441,6 +459,9 @@
                         @input="compute"
                         @click:clear="compute"
                         maxlength="15"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -450,15 +471,17 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="4" md="4">
                       <v-layout align-center>
                         <v-text-field
                           v-model="temp_vat"
-                          outlined
                           disabled
                           clearable
                           dense
                           @keydown="numberKeydown($event)"
+                          background-color="blue-grey lighten-5"
+                          flat
+                          solo
                         >
                           <template slot="label">
                             <div style="font-size: 14px">VAT</div>
@@ -487,9 +510,11 @@
                       <v-text-field
                         disabled
                         v-model="form.without_vat"
-                        outlined
                         clearable
                         dense
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">Price w/ VAT</div>
@@ -517,14 +542,17 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
+                            hide-details
                             v-model="form.exp_date"
                             label="Expiration Date"
                             readonly
                             v-on="on"
-                            class="py-0"
+                            class="py-1"
                             dense
                             clearable
-                            outlined
+                            background-color="blue-grey lighten-5"
+                            flat
+                            solo
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -585,6 +613,9 @@
 }
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
 }
 </style>
 

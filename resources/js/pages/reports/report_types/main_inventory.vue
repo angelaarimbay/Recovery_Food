@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -75,6 +77,7 @@
         <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-select
+              hide-details
               v-model="category"
               :items="suppcatlist"
               item-text="supply_cat_name"
@@ -82,6 +85,9 @@
               class="my-0"
               dense
               label="Category"
+              background-color="blue-grey lighten-5"
+              flat
+              solo
             >
             </v-select>
           </v-card-actions>
@@ -91,6 +97,12 @@
     <iframe id="print3" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
+
+<style>
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
+}
+</style>
 
 <script>
 import axios from "axios"; // Library for sending api request
@@ -127,33 +139,24 @@ export default {
               responseType: "blob",
               params: { category: this.category, type: type },
             }).then((response) => {
-              // console.log(response.data)
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Main Inventory Report.pdf";
-              link.click();
-            });
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/maininventory/get",
-              method: "GET",
-              responseType: "blob",
-              params: { category: this.category, type: "pdf" },
-            }).then((response) => {
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print3").contentWindow.print();
-              }, 3000);
+              if (response.data.size > 0) {
+                // console.log(response.data)
+                // return;
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Main Inventory Report.pdf";
+                link.click();
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
             });
             break;
           case "excel":
@@ -164,15 +167,55 @@ export default {
                 params: { category: this.category, type: type },
               })
               .then((response) => {
-                // console.log(response.data)
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Main Inventory Report.xlsx";
-                link.click();
+                if (response.data.size > 0) {
+                  // console.log(response.data)
+                  let blob = new Blob([response.data], {
+                    type: "application/excel",
+                  });
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Main Inventory Report.xlsx";
+                  link.click();
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
               });
+            break;
+          case "print":
+            await axios({
+              url: "/api/reports/maininventory/get",
+              method: "GET",
+              responseType: "blob",
+              params: { category: this.category, type: "pdf" },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print3").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
+                };
+              }
+            });
             break;
           default:
             break;
@@ -182,11 +225,13 @@ export default {
 
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
-       this.suppcatlist.push({'supply_cat_name':'All','id':'All'});
-         for (var key in supp_cat.data) {
-           this.suppcatlist.push({'supply_cat_name':supp_cat.data[key]['supply_cat_name'],'id':supp_cat.data[key]['id'] });
-         }
-        
+        this.suppcatlist.push({ supply_cat_name: "All", id: "All" });
+        for (var key in supp_cat.data) {
+          this.suppcatlist.push({
+            supply_cat_name: supp_cat.data[key]["supply_cat_name"],
+            id: supp_cat.data[key]["id"],
+          });
+        }
       });
     },
   },

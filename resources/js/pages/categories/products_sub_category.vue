@@ -135,7 +135,7 @@
                 </v-icon>
               </v-toolbar>
               <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-                <v-row no-gutters align="center" class="pt-2">
+                <v-row no-gutters align="center" class="py-3">
                   <!-- Items Per Page -->
                   <v-col cols="4" class="pa-2">
                     <v-select
@@ -148,6 +148,9 @@
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                       ]"
                       hide-details
+                      background-color="blue-grey lighten-5"
+                      flat
+                      solo
                     >
                     </v-select>
                   </v-col>
@@ -164,6 +167,9 @@
                         dense
                         clearable
                         hide-details
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       ></v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
@@ -174,7 +180,7 @@
                             icon
                             v-on="data.on"
                             @click="get"
-                            class="mt-2"
+                            class="ml-2"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -303,11 +309,13 @@
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.status"
-                        outlined
                         dense
                         :items="status"
                         item-text="name"
                         item-value="id"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -328,12 +336,14 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.prod_sub_cat_name"
-                        outlined
                         clearable
                         dense
                         counter
                         @keydown="valueKeydown($event)"
                         maxlength="25"
+                        background-color="blue-grey lighten-5"
+                        flat
+                        solo
                       >
                         <template slot="label">
                           <div style="font-size: 14px">
@@ -391,6 +401,9 @@
 }
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
 }
 </style>
 

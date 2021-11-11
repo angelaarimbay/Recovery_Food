@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -71,6 +73,7 @@
         </v-tooltip></v-card-actions
       >
       <v-row no-gutters justify="center">
+        <!-- Year -->
         <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-select
@@ -82,11 +85,15 @@
               label="Year"
               @change="get"
               hide-details
+              background-color="blue-grey lighten-5"
+              flat
+              solo
             >
             </v-select>
           </v-card-actions>
         </v-col>
 
+        <!-- Month -->
         <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
           <v-card-actions class="pb-0 pt-4">
             <v-select
@@ -98,6 +105,9 @@
               label="Month"
               @change="get"
               hide-details
+              background-color="blue-grey lighten-5"
+              flat
+              solo
             >
             </v-select>
           </v-card-actions>
@@ -107,6 +117,12 @@
     <iframe id="print4" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
+
+<style>
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
+}
+</style>
 
 <script>
 import axios from "axios"; // Library for sending api request
@@ -160,46 +176,32 @@ export default {
             await axios({
               url: "/api/reports/inventorysummary/get",
               method: "GET",
-              // responseType: "blob",
+              responseType: "blob",
               params: {
                 type: type,
                 year: this.year,
                 month:
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
-            }).then((response) => { 
-              console.log(response.data)
-              return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Inventory Summary Report.pdf";
-              link.click();
-            });
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/inventorysummary/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                type: "pdf",
-                year: this.year,
-                month:
-                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
-              },
             }).then((response) => {
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print4").contentWindow.print();
-              }, 3000);
+              if (response.data.size > 0) {
+                // console.log(response.data)
+                // return;
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Inventory Summary Report.pdf";
+                link.click();
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
             });
             break;
           case "excel":
@@ -215,16 +217,61 @@ export default {
                     1,
                 },
               })
-              .then((response) => { 
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Inventory Summary Report.xlsx";
-                link.click();
+              .then((response) => {
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/excel",
+                  });
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Inventory Summary Report.xlsx";
+                  link.click();
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
               });
 
+            break;
+          case "print":
+            await axios({
+              url: "/api/reports/inventorysummary/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: "pdf",
+                year: this.year,
+                month:
+                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print4").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
+                };
+              }
+            });
             break;
           default:
             break;

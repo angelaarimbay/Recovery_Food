@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -146,7 +148,7 @@
           </v-icon>
         </v-toolbar>
         <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-          <v-row no-gutters align="center" class="pt-2">
+          <v-row no-gutters align="center" class="py-3">
             <!-- Items Per Page -->
             <v-col cols="4" class="pa-2">
               <v-select
@@ -156,6 +158,9 @@
                 @change="itemperpage"
                 :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
                 hide-details
+                background-color="blue-grey lighten-5"
+                flat
+                solo
               >
               </v-select>
             </v-col>
@@ -170,6 +175,9 @@
                   dense
                   clearable
                   hide-details
+                  background-color="blue-grey lighten-5"
+                  flat
+                  solo
                 ></v-text-field>
                 <v-tooltip bottom>
                   <template #activator="data">
@@ -180,7 +188,7 @@
                       icon
                       v-on="data.on"
                       @click="getSalesReport"
-                      class="mt-2"
+                      class="ml-2"
                     >
                       <v-icon>mdi-magnify</v-icon></v-btn
                     >
@@ -189,15 +197,15 @@
                 </v-tooltip>
               </v-card-actions>
             </v-col>
-          </v-row>
 
-          <v-row
-            no-gutters
-            v-if="!this.user.permissionslist.includes('Access POS')"
-          >
             <!-- Branch Field -->
-            <v-col cols="12" class="pa-2">
+            <v-col
+              cols="12"
+              class="pa-2"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+            >
               <v-select
+                hide-details
                 :items="branchlist"
                 item-text="branch_name"
                 item-value="id"
@@ -207,12 +215,19 @@
                 dense
                 @change="getSalesReport"
                 label="Branch"
+                background-color="blue-grey lighten-5"
+                flat
+                solo
               >
               </v-select>
             </v-col>
 
             <!-- Date Picker -->
-            <v-col cols="12" class="pa-2">
+            <v-col
+              cols="12"
+              class="pa-2"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+            >
               <v-menu
                 v-model="date1"
                 :close-on-content-click="false"
@@ -225,14 +240,18 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
+                    hide-details
                     v-model="dateFromSP"
                     label="Date From"
                     prepend-icon="mdi-calendar-range"
                     readonly
                     v-on="on"
-                    class="py-0"
+                    class="py-1"
                     dense
                     clearable
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -248,7 +267,11 @@
             </v-col>
 
             <!-- Date Picker -->
-            <v-col cols="12" class="pa-2">
+            <v-col
+              cols="12"
+              class="pa-2"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+            >
               <v-menu
                 v-model="date2"
                 :close-on-content-click="false"
@@ -261,14 +284,18 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
+                    hide-details
                     v-model="dateUntilSP"
                     label="Date Until"
                     prepend-icon="mdi-calendar-range"
                     readonly
                     v-on="on"
-                    class="py-0"
+                    class="py-1"
                     dense
                     clearable
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
                   ></v-text-field>
                 </template>
                 <v-date-picker
@@ -441,9 +468,11 @@
 iframe:focus {
   outline: none;
 }
-
 iframe[seamless] {
   display: block;
+}
+.v-application .blue-grey.lighten-5 {
+  border: 1px solid #bdbdbd !important;
 }
 </style>
 <script>
@@ -671,43 +700,26 @@ export default {
                 type: type,
               },
             }).then((response) => {
-              // console.log(response.data);
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Sales Report.pdf";
-              link.click();
+              if (response.data.size > 0) {
+                // console.log(response.data);
+                // return;
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Sales Report.pdf";
+                link.click();
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
             });
             break;
-          case "print":
-            await axios({
-              url: "/api/reports/sales/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                branch: this.branch,
-                from: this.dateFromSP,
-                to: this.dateUntilSP,
-                type: "pdf",
-              },
-            }).then((response) => {
-              // console.log(response.data);
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print6").contentWindow.print();
-              }, 3000);
-            });
-            break;
-
           case "excel":
             await axios
               .get("/api/reports/sales/get", {
@@ -721,16 +733,63 @@ export default {
                 },
               })
               .then((response) => {
-                // console.log(respone.data);
+                if (response.data.size > 0) {
+                  // console.log(respone.data);
+                  // return;
+                  let blob = new Blob([response.data], {
+                    type: "application/excel",
+                  });
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Sales Report.xlsx";
+                  link.click();
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+            break;
+          case "print":
+            await axios({
+              url: "/api/reports/sales/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                branch: this.branch,
+                from: this.dateFromSP,
+                to: this.dateUntilSP,
+                type: "pdf",
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                // console.log(response.data);
                 // return;
                 let blob = new Blob([response.data], {
-                  type: "application/excel",
+                  type: "application/pdf",
                 });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Sales Report.xlsx";
-                link.click();
-              });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print6").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
+                };
+              }
+            });
             break;
           default:
             break;
