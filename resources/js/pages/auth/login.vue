@@ -52,7 +52,7 @@
                           ? form.errors.errors.email[0]
                           : ''
                       "
-                      prepend-icon="mdi-email"
+                      prepend-inner-icon="mdi-email"
                       background-color="blue-grey lighten-5"
                       flat
                       solo
@@ -74,7 +74,7 @@
                       :append-icon="!value ? 'mdi-eye' : 'mdi-eye-off'"
                       @click:append="() => (value = !value)"
                       :type="!value ? 'password' : 'text'"
-                      prepend-icon="mdi-key"
+                      prepend-inner-icon="mdi-key"
                       background-color="blue-grey lighten-5"
                       flat
                       solo

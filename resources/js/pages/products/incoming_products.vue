@@ -313,7 +313,7 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.product_name.product_name`]="{ item }"
+            <template v-slot:[`item.product_full`]="{ item }"
               >{{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
             >
@@ -502,6 +502,16 @@
                             Product Name <span style="color: red">*</span>
                           </div>
                         </template>
+                        <template slot="selection" slot-scope="data">
+                          <!-- HTML that describe how select should render selected items -->
+                          {{ data.item.product_name }}
+                          {{ data.item.description }}
+                        </template>
+                        <template slot="item" slot-scope="data">
+                          <!-- HTML that describe how select should render items when the select is open -->
+                          {{ data.item.product_name }}
+                          {{ data.item.description }}
+                        </template>
                       </v-autocomplete>
                     </v-col>
 
@@ -673,7 +683,7 @@ export default {
       },
       {
         text: "PRODUCT NAME",
-        value: "product_name.product_name",
+        value: "product_full",
         class: "black--text",
       },
       {

@@ -47,14 +47,14 @@ class OutgoingSuppliesController extends Controller
                  "quantity"=>$data->quantity,
                  "amount"=>$get_wov * $data->quantity,
                  "requesting_branch"=>$data->requesting_branch,
-                 "outgoing_date"=> date('Y-m-d', strtotime($data->outgoing_date).' '. date("h:i:s")),
+                 "outgoing_date"=> date('Y-m-d h:i:s', strtotime($data->outgoing_date)),
                 ]
             );
         } else {
             tbl_outgoingsupp::create($data->except(['supply_name','amount','outgoing_date']) +
             ['supply_name'=>$data->supply_name['id'],
              'amount' => $get_wov  * $data->quantity,
-             'outgoing_date' => date('Y-m-d', strtotime($data->outgoing_date).' '. date("h:i:s")),
+             'outgoing_date' => date('Y-m-d h:i:s', strtotime($data->outgoing_date) ),
             ]);
         }
         return 0;

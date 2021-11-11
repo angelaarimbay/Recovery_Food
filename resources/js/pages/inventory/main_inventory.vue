@@ -218,7 +218,7 @@
             ></v-progress-linear>
             <template v-slot:[`item.triggerpoint`]="{ item }">
               <div v-if="item.triggerpoint == 'Order'">
-                <span style="color: red; font-weight: bold">Order</span>
+                <span style="color: red">Order</span>
               </div>
               <div v-else-if="item.triggerpoint == 'Manage'" class="text-black">
                 Manage

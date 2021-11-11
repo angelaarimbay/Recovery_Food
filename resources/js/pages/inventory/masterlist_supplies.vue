@@ -86,6 +86,7 @@
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
+                    class="mr-2"
                     color="success"
                     style="text-transform: none"
                     depressed

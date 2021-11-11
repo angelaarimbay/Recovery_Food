@@ -280,7 +280,7 @@
 
                 <v-row no-gutters align="center">
                   <v-col
-                    cols="8"
+                    cols="10"
                     xl="6"
                     lg="6"
                     md="7"
@@ -525,80 +525,82 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="dialog" max-width="450px">
-      <v-toolbar
-        dense
-        dark
-        class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-      >
-        Enter Quantity
-        <v-spacer></v-spacer>
-        <v-icon
-          class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-          text
-          @click="dialog = false"
-          >mdi-close
-        </v-icon>
-      </v-toolbar>
-      <v-card tile>
-        <v-card-text class="py-2">
-          <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-            <v-row>
-              <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
-                <span
-                  >Item Selected: <strong>{{ selected.supply_name }}</strong>
-                  {{ selected.description }}
-                </span>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
-                <v-text-field
-                  :rules="formRulesQuantity"
-                  v-model="quantity"
-                  dense
-                  autocomplete="off"
-                  @focus="clearQ"
-                  @blur="resetQ"
-                  @keydown="quantityKeydown($event)"
-                  counter
-                  maxlength="3"
-                  background-color="blue-grey lighten-5"
-                  flat
-                  solo
-                >
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-
-        <!-- Dialog Form Buttons -->
-        <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+    <v-form ref="form" lazy-validation>
+      <v-dialog v-model="dialog" max-width="450px">
+        <v-toolbar
+          dense
+          dark
+          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+        >
+          Enter Quantity
           <v-spacer></v-spacer>
-          <v-btn
-            color="error"
-            depressed
-            dark
-            @click="dialog = false"
-            style="text-transform: none"
-            :small="$vuetify.breakpoint.smAndDown"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            depressed
-            dark
-            style="text-transform: none"
-            :small="$vuetify.breakpoint.smAndDown"
-            @click="commitAdd(selected)"
-          >
-            {{ type }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <v-icon
+            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+            text
+            @click="cancel"
+            >mdi-close
+          </v-icon>
+        </v-toolbar>
+        <v-card tile>
+          <v-card-text class="py-2">
+            <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+              <v-row>
+                <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <span
+                    >Item Selected: <strong>{{ selected.supply_name }}</strong>
+                    {{ selected.description }}
+                  </span>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-text-field
+                    :rules="formRulesQuantity"
+                    v-model="quantity"
+                    dense
+                    autocomplete="off"
+                    @focus="clearQ"
+                    @blur="resetQ"
+                    @keydown="quantityKeydown($event)"
+                    counter
+                    maxlength="3"
+                    background-color="blue-grey lighten-5"
+                    flat
+                    solo
+                  >
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+
+          <!-- Dialog Form Buttons -->
+          <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+            <v-spacer></v-spacer>
+            <v-btn
+              color="error"
+              depressed
+              dark
+              @click="cancel"
+              style="text-transform: none"
+              :small="$vuetify.breakpoint.smAndDown"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primary"
+              depressed
+              dark
+              style="text-transform: none"
+              :small="$vuetify.breakpoint.smAndDown"
+              @click="commitAdd(selected)"
+            >
+              {{ type }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-form>
   </div>
 </template>
 <style>
@@ -720,6 +722,11 @@ export default {
       (v) => !!v || "This is required",
       (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
+
+    form: {
+      quantity: 1,
+    },
+
     progressbar: false,
     progressbar1: false,
     snackbar: {
@@ -746,9 +753,11 @@ export default {
     search: "",
     search1: "",
   }),
+
   created() {
     this.get();
   },
+
   watch: {
     page(val) {
       this.page = val;
@@ -845,47 +854,49 @@ export default {
     validateAdd(row, type) {
       this.selected = row;
       this.type = type;
-      this.dialog = true;
+      this.openDialog();
     },
     commitAdd(row) {
-      if (this.type == "Update") {
-        this.Edit(row);
-      } else if (this.type == "Delete") {
-        this.Delete(row);
-      } else {
-        var check_existing = -1;
-        //table
-        for (var i in this.table2) {
-          if (row.id == this.table2[i].id) {
-            check_existing = this.table2.indexOf(this.table2[i]);
+      if (this.$refs.form.validate()) {
+        if (this.type == "Update") {
+          this.Edit(row);
+        } else if (this.type == "Delete") {
+          this.Delete(row);
+        } else {
+          var check_existing = -1;
+          //table
+          for (var i in this.table2) {
+            if (row.id == this.table2[i].id) {
+              check_existing = this.table2.indexOf(this.table2[i]);
+            }
+          }
+
+          if (check_existing > -1) {
+            this.table2[check_existing].quantity =
+              parseInt(this.table2[check_existing].quantity) +
+              parseInt(this.quantity);
+          } else {
+            this.table2.push({
+              id: row.id,
+              supply_name:
+                row.supply_name +
+                " " +
+                (row.description != null ? row.description : ""),
+              unit: row.unit,
+              quantity: this.quantity,
+              ref: "",
+              status: 0,
+            });
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully added.",
+            };
           }
         }
-
-        if (check_existing > -1) {
-          this.table2[check_existing].quantity =
-            parseInt(this.table2[check_existing].quantity) +
-            parseInt(this.quantity);
-        } else {
-          this.table2.push({
-            id: row.id,
-            supply_name:
-              row.supply_name +
-              " " +
-              (row.description != null ? row.description : ""),
-            unit: row.unit,
-            quantity: this.quantity,
-            ref: "",
-            status: 0,
-          });
-          this.snackbar = {
-            active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully added.",
-          };
-        }
+        this.dialog = false;
       }
-      this.dialog = false;
     },
     Delete(row) {
       this.table2[this.table2.indexOf(row)].quantity =
@@ -911,7 +922,6 @@ export default {
           this.table2[key].ref = this.ref;
         }
       }
-
       // save
       await axios
         .post("/api/requestsupp/supplies/save", this.table2)
@@ -1026,6 +1036,16 @@ export default {
           };
           this.get();
         });
+    },
+
+    openDialog() {
+      this.quantity = 1;
+      this.dialog = true;
+    },
+
+    cancel() {
+      this.quantity = 1;
+      this.dialog = false;
     },
   },
 };

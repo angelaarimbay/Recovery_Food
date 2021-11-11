@@ -546,7 +546,47 @@
                             Product Name <span style="color: red">*</span>
                           </div>
                         </template>
+                        <template slot="selection" slot-scope="data">
+                          <!-- HTML that describe how select should render selected items -->
+                          {{ data.item.product_name }}
+                          {{ data.item.description }}
+                        </template>
+                        <template slot="item" slot-scope="data">
+                          <!-- HTML that describe how select should render items when the select is open -->
+                          {{ data.item.product_name }}
+                          {{ data.item.description }}
+                        </template>
                       </v-autocomplete>
+
+                      <v-card flat class="px-4 pb-6" v-if="form.product_name">
+                        <table style="width: 100%; font-size: 11px">
+                          <tr>
+                            <th
+                              class="text-left pr-2"
+                              style="width: 60%"
+                              v-if="form.product_name.description"
+                            >
+                              Description:
+                            </th>
+                            <th>{{ form.product_name.description }}</th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2">Net Price:</th>
+                            <th>
+                              {{
+                                getFormatCurrency(
+                                  form.product_name.price,
+                                  "0,0.00"
+                                )
+                              }}
+                            </th>
+                          </tr>
+                          <tr>
+                            <th class="text-left pr-2">Available Quantity:</th>
+                            <th>{{ getQuantity }}</th>
+                          </tr>
+                        </table>
+                      </v-card>
                     </v-col>
 
                     <v-col
@@ -793,6 +833,10 @@ export default {
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
+    },
+    getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
     },
 
     // Format for everytime we call on database

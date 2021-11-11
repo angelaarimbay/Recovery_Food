@@ -86,6 +86,7 @@
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
+                    class="mr-2"
                     color="success"
                     style="text-transform: none"
                     depressed
@@ -491,7 +492,7 @@
                     </v-col>
 
                     <v-col
-                      class="pt-0 pb-6"
+                      class="py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -501,11 +502,10 @@
                       <v-autocomplete
                         :rules="formRules"
                         v-model="form.supply_name"
-                        dense
-                        hide-details
                         :items="suppnamelist"
-                        return-object
                         item-text="supply_name"
+                        return-object
+                        dense
                         background-color="blue-grey lighten-5"
                         flat
                         solo
@@ -520,22 +520,21 @@
                           {{ data.item.supply_name }}
                           {{ data.item.description }}
                         </template>
-                        <template slot="item" slot-scope="data">
+                        <template slot="item.supply_name" slot-scope="data">
                           <!-- HTML that describe how select should render items when the select is open -->
                           {{ data.item.supply_name }}
                           {{ data.item.description }}
                         </template>
                       </v-autocomplete>
 
-                      <v-card
-                        style="background-color: #f5f5f5"
-                        flat
-                        class="px-4"
-                        v-if="form.supply_name"
-                      >
+                      <v-card flat class="px-4 pb-6" v-if="form.supply_name">
                         <table style="width: 50%; font-size: 11px">
                           <tr>
-                            <th class="text-left pr-2" style="width: 50%">
+                            <th
+                              class="text-left pr-2"
+                              style="width: 50%"
+                              v-if="form.supply_name.description"
+                            >
                               Description:
                             </th>
                             <th>{{ form.supply_name.description }}</th>
@@ -970,7 +969,20 @@ export default {
           },
         })
         .then((supp_name) => {
-          this.suppnamelist = supp_name.data;
+          this.suppnamelist = [];
+          for (var key in supp_name.data) {
+            this.suppnamelist.push({
+              supply_name:
+                supp_name.data[key].supply_name +
+                (supp_name.data[key].description
+                  ? " " + supp_name.data[key].description
+                  : ""),
+              id: supp_name.data[key].id,
+              net_price:  supp_name.data[key].net_price,
+              unit:  supp_name.data[key].unit,
+              description:  supp_name.data[key].description
+            });
+          }
         });
     },
 

@@ -478,7 +478,7 @@ export default {
     checkbox4: true,
     branch: 1,
     year: new Date().getFullYear(),
-    month: new Date().toLocaleString("default", { month: "long" }),
+    month: "All",
     supp: null,
     prod: null,
     po: null,

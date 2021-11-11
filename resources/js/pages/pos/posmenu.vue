@@ -286,7 +286,7 @@
       </v-col>
 
       <!-- Quantity Dialog Form -->
-      <v-form ref="form">
+      <v-form ref="form" lazy-validation>
         <v-dialog v-model="dialog" max-width="450px">
           <v-toolbar
             dense
@@ -1090,7 +1090,6 @@ export default {
 
     async getSalesCount() {
       await axios.get("/api/sales_report/sales_count").then((result) => {
-        console.log(result.data);
         this.salescount = result.data;
       });
     },
@@ -1111,61 +1110,96 @@ export default {
     },
 
     validateQty(type) {
-      if (type == "add") {
-        var quantity = 0;
-        if (this.table2.length > 0) {
-          var indexid = -1;
-          for (var key in this.table2) {
-            //if table have value
-            if (
-              parseInt(this.selectedrow.product_name.id) ===
-              parseInt(this.table2[key].product)
-            ) {
-              indexid = this.table2.indexOf(this.table2[key]);
+      if (this.$refs.form.validate()) {
+        if (type == "add") {
+          var quantity = 0;
+          if (this.table2.length > 0) {
+            var indexid = -1;
+            for (var key in this.table2) {
+              //if table have value
+              if (
+                parseInt(this.selectedrow.product_name.id) ===
+                parseInt(this.table2[key].product)
+              ) {
+                indexid = this.table2.indexOf(this.table2[key]);
+              }
             }
-          }
 
-          if (indexid > -1) {
-            quantity =
-              parseInt(this.table2[indexid].quantity) + parseInt(this.quantity); //add current and input
-            if (parseInt(this.selectedrow.quantity_diff) < quantity) {
-              //check if greather than stocks
-              this.snackbar = {
-                active: true,
-                iconText: "alert",
-                iconColor: "error",
-                message: "Error! Please input correct quantity.",
-              };
-            } else {
-              this.table2[indexid].quantity =
+            if (indexid > -1) {
+              quantity =
                 parseInt(this.table2[indexid].quantity) +
-                parseInt(this.quantity);
-              this.table2[indexid].sub_total = numeral(
-                parseFloat(this.table2[indexid].quantity) *
-                  parseFloat(this.selectedrow.product_name.price)
-              ).format("0,0.00");
-              this.table2[indexid].temp_sub_total =
-                parseFloat(this.table2[indexid].quantity) *
-                parseFloat(this.selectedrow.product_name.price);
+                parseInt(this.quantity); //add current and input
+              if (parseInt(this.selectedrow.quantity_diff) < quantity) {
+                //check if greather than stocks
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "error",
+                  message: "Error! Please input correct quantity.",
+                };
+              } else {
+                this.table2[indexid].quantity =
+                  parseInt(this.table2[indexid].quantity) +
+                  parseInt(this.quantity);
+                this.table2[indexid].sub_total = numeral(
+                  parseFloat(this.table2[indexid].quantity) *
+                    parseFloat(this.selectedrow.product_name.price)
+                ).format("0,0.00");
+                this.table2[indexid].temp_sub_total =
+                  parseFloat(this.table2[indexid].quantity) *
+                  parseFloat(this.selectedrow.product_name.price);
 
-              this.snackbar = {
-                active: true,
-                iconText: "check",
-                iconColor: "success",
-                message: "Successfully added.",
-              };
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully added.",
+                };
+              }
+            } else {
+              if (
+                parseInt(this.selectedrow.quantity_diff) <
+                parseInt(this.quantity)
+              ) {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "error",
+                  message: "Error! Please input correct quantity.",
+                };
+              } else {
+                this.table2.push({
+                  id: this.table2.length + 1,
+                  category: this.selectedrow.category.id,
+                  sub_category: this.selectedrow.sub_category.id,
+                  product_name: {
+                    product_name: this.selectedrow.product_name.product_name,
+                  },
+                  description: this.selectedrow.product_name.description,
+                  product: this.selectedrow.product_name.id,
+                  price: numeral(this.selectedrow.product_name.price).format(
+                    "0,0.00"
+                  ),
+                  quantity: this.quantity,
+                  sub_total: numeral(
+                    this.quantity * this.selectedrow.product_name.price
+                  ).format("0,0.00"),
+                  temp_sub_total:
+                    parseFloat(this.quantity) *
+                    parseFloat(this.selectedrow.product_name.price),
+                  mode: this.mode,
+                });
+
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully added.",
+                };
+              }
             }
           } else {
-            if (
-              parseInt(this.selectedrow.quantity_diff) < parseInt(this.quantity)
-            ) {
-              this.snackbar = {
-                active: true,
-                iconText: "alert",
-                iconColor: "error",
-                message: "Error! Please input correct quantity.",
-              };
-            } else {
+            if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
               this.table2.push({
                 id: this.table2.length + 1,
                 category: this.selectedrow.category.id,
@@ -1194,76 +1228,45 @@ export default {
                 iconColor: "success",
                 message: "Successfully added.",
               };
+            } else {
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "error",
+                message: "Error! Please input correct quantity.",
+              };
             }
           }
         } else {
-          if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
-            this.table2.push({
-              id: this.table2.length + 1,
-              category: this.selectedrow.category.id,
-              sub_category: this.selectedrow.sub_category.id,
-              product_name: {
-                product_name: this.selectedrow.product_name.product_name,
-              },
-              description: this.selectedrow.product_name.description,
-              product: this.selectedrow.product_name.id,
-              price: numeral(this.selectedrow.product_name.price).format(
-                "0,0.00"
-              ),
-              quantity: this.quantity,
-              sub_total: numeral(
-                this.quantity * this.selectedrow.product_name.price
-              ).format("0,0.00"),
-              temp_sub_total:
-                parseFloat(this.quantity) *
-                parseFloat(this.selectedrow.product_name.price),
-              mode: this.mode,
-            });
+          this.table2[this.deleteindex].quantity =
+            this.table2[this.deleteindex].quantity - parseInt(this.quantity);
+          this.table2[this.deleteindex].sub_total = numeral(
+            parseFloat(this.table2[this.deleteindex].quantity) *
+              parseFloat(this.selectedrow.price)
+          ).format("0,0.00");
+          this.table2[this.deleteindex].temp_sub_total =
+            parseFloat(this.table2[this.deleteindex].quantity) *
+            parseFloat(this.selectedrow.price);
 
-            this.snackbar = {
-              active: true,
-              iconText: "check",
-              iconColor: "success",
-              message: "Successfully added.",
-            };
-          } else {
-            this.snackbar = {
-              active: true,
-              iconText: "alert",
-              iconColor: "error",
-              message: "Error! Please input correct quantity.",
-            };
+          if (this.table2[this.deleteindex].quantity <= 0) {
+            this.table2.splice(this.deleteindex, 1);
+
+            for (var key in this.table2) {
+              this.table2[key].id = this.table2.length;
+            }
           }
+
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully removed.",
+          };
         }
-      } else {
-        this.table2[this.deleteindex].quantity =
-          this.table2[this.deleteindex].quantity - parseInt(this.quantity);
-        this.table2[this.deleteindex].sub_total = numeral(
-          parseFloat(this.table2[this.deleteindex].quantity) *
-            parseFloat(this.selectedrow.price)
-        ).format("0,0.00");
-        this.table2[this.deleteindex].temp_sub_total =
-          parseFloat(this.table2[this.deleteindex].quantity) *
-          parseFloat(this.selectedrow.price);
-
-        if (this.table2[this.deleteindex].quantity <= 0) {
-          this.table2.splice(this.deleteindex, 1);
-
-          for (var key in this.table2) {
-            this.table2[key].id = this.table2.length;
-          }
-        }
-
-        this.snackbar = {
-          active: true,
-          iconText: "check",
-          iconColor: "success",
-          message: "Successfully removed.",
-        };
+        this.getTotal();
+        this.getChange();
+        this.cancel();
       }
-      this.getTotal();
-      this.getChange();
-      this.cancel();
     },
 
     validateDelete(item) {
