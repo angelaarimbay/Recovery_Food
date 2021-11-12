@@ -296,7 +296,7 @@
                         dense
                         clearable
                         autocomplete="off"
-                        background-color="blue-grey lighten-5"
+                        background-color="white"
                         flat
                         solo
                       ></v-text-field>
@@ -564,7 +564,7 @@
                     @keydown="quantityKeydown($event)"
                     counter
                     maxlength="3"
-                    background-color="blue-grey lighten-5"
+                    background-color="white"
                     flat
                     solo
                   >

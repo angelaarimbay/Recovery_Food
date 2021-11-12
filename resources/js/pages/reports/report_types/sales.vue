@@ -158,7 +158,7 @@
                 @change="itemperpage"
                 :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
                 hide-details
-                background-color="blue-grey lighten-5"
+                background-color="white"
                 flat
                 solo
               >
@@ -175,7 +175,7 @@
                   dense
                   clearable
                   hide-details
-                  background-color="blue-grey lighten-5"
+                  background-color="white"
                   flat
                   solo
                 ></v-text-field>
@@ -215,7 +215,7 @@
                 dense
                 @change="getSalesReport"
                 label="Branch"
-                background-color="blue-grey lighten-5"
+                background-color="white"
                 flat
                 solo
               >
@@ -249,7 +249,7 @@
                     class="py-1"
                     dense
                     clearable
-                    background-color="blue-grey lighten-5"
+                    background-color="white"
                     flat
                     solo
                   ></v-text-field>
@@ -293,7 +293,7 @@
                     class="py-1"
                     dense
                     clearable
-                    background-color="blue-grey lighten-5"
+                    background-color="white"
                     flat
                     solo
                   ></v-text-field>
@@ -471,8 +471,11 @@ iframe:focus {
 iframe[seamless] {
   display: block;
 }
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 <script>
@@ -721,37 +724,47 @@ export default {
             });
             break;
           case "excel":
-            await axios
-              .get("/api/reports/sales/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  branch: this.branch,
-                  from: this.dateFromSP,
-                  to: this.dateUntilSP,
-                  type: type,
-                },
-              })
-              .then((response) => {
-                if (response.data.size > 0) {
-                  // console.log(respone.data);
-                  // return;
-                  let blob = new Blob([response.data], {
-                    type: "application/excel",
+            await axios({
+              url: "/api/reports/sales/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                branch: this.branch,
+                from: this.dateFromSP,
+                to: this.dateUntilSP,
+                type: "pdf",
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/sales/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      branch: this.branch,
+                      from: this.dateFromSP,
+                      to: this.dateUntilSP,
+                      type: type,
+                    },
+                  })
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Sales Report.xlsx";
+                    link.click();
                   });
-                  let link = document.createElement("a");
-                  link.href = window.URL.createObjectURL(blob);
-                  link.download = "Sales Report.xlsx";
-                  link.click();
-                } else {
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert-box",
-                    iconColor: "warning",
-                    message: "Nothing to export.",
-                  };
-                }
-              });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
             break;
           case "print":
             await axios({

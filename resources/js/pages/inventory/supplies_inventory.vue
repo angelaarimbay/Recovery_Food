@@ -134,7 +134,7 @@
                     @change="itemperpage"
                     :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
                     hide-details
-                    background-color="blue-grey lighten-5"
+                    background-color="white"
                     flat
                     solo
                   >
@@ -151,7 +151,7 @@
                       dense
                       clearable
                       hide-details
-                      background-color="blue-grey lighten-5"
+                      background-color="white"
                       flat
                       solo
                     ></v-text-field>
@@ -195,7 +195,7 @@
                     dense
                     label="Branch"
                     @change="get"
-                    background-color="blue-grey lighten-5"
+                    background-color="white"
                     flat
                     solo
                   >
@@ -215,7 +215,7 @@
                     dense
                     label="Category"
                     @change="get"
-                    background-color="blue-grey lighten-5"
+                    background-color="white"
                     flat
                     solo
                   >
@@ -406,8 +406,11 @@
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 

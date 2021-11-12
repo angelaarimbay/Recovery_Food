@@ -85,7 +85,7 @@
               label="Year"
               @change="get"
               hide-details
-              background-color="blue-grey lighten-5"
+              background-color="white"
               flat
               solo
             >
@@ -105,7 +105,7 @@
               label="Month"
               @change="get"
               hide-details
-              background-color="blue-grey lighten-5"
+              background-color="white"
               flat
               solo
             >
@@ -119,8 +119,11 @@
 </template>
 
 <style>
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 
@@ -185,8 +188,6 @@ export default {
               },
             }).then((response) => {
               if (response.data.size > 0) {
-                // console.log(response.data)
-                // return;
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
                 });
@@ -205,37 +206,49 @@ export default {
             });
             break;
           case "excel":
-            await axios
-              .get("/api/reports/inventorysummary/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  type: type,
-                  year: this.year,
-                  month:
-                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
-                    1,
-                },
-              })
-              .then((response) => {
-                if (response.data.size > 0) {
-                  let blob = new Blob([response.data], {
-                    type: "application/excel",
+            await axios({
+              url: "/api/reports/inventorysummary/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: "pdf",
+                year: this.year,
+                month:
+                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/inventorysummary/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      type: type,
+                      year: this.year,
+                      month:
+                        new Date(
+                          Date.parse(this.month + " 1, 2020")
+                        ).getMonth() + 1,
+                    },
+                  })
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Inventory Summary Report.xlsx";
+                    link.click();
                   });
-                  let link = document.createElement("a");
-                  link.href = window.URL.createObjectURL(blob);
-                  link.download = "Inventory Summary Report.xlsx";
-                  link.click();
-                } else {
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert-box",
-                    iconColor: "warning",
-                    message: "Nothing to export.",
-                  };
-                }
-              });
-
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
             break;
           case "print":
             await axios({

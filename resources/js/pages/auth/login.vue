@@ -141,6 +141,9 @@
 .v-application .white {
   border: 1px solid #bdbdbd !important;
 }
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
 </style>
 
 <script>

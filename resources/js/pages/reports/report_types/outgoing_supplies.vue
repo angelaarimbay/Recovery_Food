@@ -85,7 +85,7 @@
               class="my-0"
               dense
               label="Branch"
-              background-color="blue-grey lighten-5"
+              background-color="white"
               flat
               solo
             >
@@ -105,7 +105,7 @@
               class="my-0"
               dense
               label="Category"
-              background-color="blue-grey lighten-5"
+              background-color="white"
               flat
               solo
             >
@@ -134,7 +134,7 @@
                   v-on="on"
                   class="py-0"
                   dense
-                  background-color="blue-grey lighten-5"
+                  background-color="white"
                   flat
                   solo
                 ></v-text-field>
@@ -171,7 +171,7 @@
                   v-on="on"
                   class="py-0"
                   dense
-                  background-color="blue-grey lighten-5"
+                  background-color="white"
                   flat
                   solo
                 ></v-text-field>
@@ -194,8 +194,11 @@
 </template>
 
 <style>
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 
@@ -292,7 +295,7 @@ export default {
               method: "GET",
               responseType: "blob",
               params: {
-                type: type,
+                type: "pdf",
                 branch: this.branch,
                 category: this.category,
                 from: this.outgoing_from,
@@ -312,8 +315,8 @@ export default {
                       to: this.outgoing_to,
                     },
                   })
-                  .then((response) => {
-                    let blob = new Blob([response.data], {
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
                       type: "application/excel",
                     });
                     let link = document.createElement("a");

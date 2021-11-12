@@ -74,28 +74,29 @@
       >
       <!-- Category Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="12" xl="2" lg="3" md="4" sm="12" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col cols="4" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               hide-details
               v-model="category"
               :items="suppcatlist"
               item-text="supply_cat_name"
               item-value="id"
-              class="my-0"
               dense
-              label="Category"
-              background-color="blue-grey lighten-5"
+              placeholder="Category"
+              background-color="grey darken-3"
+              dark
               flat
               solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
         </v-col>
 
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col cols="4" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-menu
               v-model="date1"
               :close-on-content-click="false"
@@ -108,15 +109,16 @@
                 <v-text-field
                   hide-details
                   v-model="incoming_from"
-                  label="Date From"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date From"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-1"
                   dense
-                  background-color="blue-grey lighten-5"
+                  background-color="grey darken-3"
+                  dark
                   flat
                   solo
+                  style="font-size: 12px"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -132,8 +134,8 @@
         </v-col>
 
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col cols="4" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-menu
               v-model="date2"
               :close-on-content-click="false"
@@ -146,15 +148,16 @@
                 <v-text-field
                   hide-details
                   v-model="incoming_to"
-                  label="Date Until"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date Until"
+                  prepend-inner-icon="mdi-calendar-range"
                   readonly
                   v-on="on"
-                  class="py-0"
                   dense
-                  background-color="blue-grey lighten-5"
+                  background-color="grey darken-3"
+                  dark
                   flat
                   solo
+                  style="font-size: 12px"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -175,14 +178,26 @@
 </template>
 
 <style>
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  computed: {
+    showIcon() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  },
   data: () => ({
     category: "",
     suppcatlist: [],
@@ -260,13 +275,12 @@ export default {
             });
             break;
           case "excel":
-          case "pdf":
             await axios({
               url: "/api/reports/incomingsupplies/get",
               method: "GET",
               responseType: "blob",
               params: {
-                type: type,
+                type: "pdf",
                 category: this.category,
                 from: this.incoming_from,
                 to: this.incoming_to,
@@ -284,8 +298,8 @@ export default {
                       to: this.incoming_to,
                     },
                   })
-                  .then((response) => {
-                    let blob = new Blob([response.data], {
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
                       type: "application/excel",
                     });
                     let link = document.createElement("a");

@@ -72,26 +72,26 @@
           <span>Print</span>
         </v-tooltip></v-card-actions
       >
+
       <!-- Category Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
-            <v-select
-              hide-details
-              :items="suppcatlist"
-              item-text="supply_cat_name"
-              item-value="id"
-              v-model="category"
-              class="my-0"
-              dense
-              label="Category"
-              background-color="blue-grey lighten-5"
-              flat
-              solo
-            >
-            </v-select>
-          </v-card-actions>
-        </v-col>
+        <v-card-actions class="pb-1 pt-4">
+          <v-select
+            hide-details
+            :items="suppcatlist"
+            item-text="supply_cat_name"
+            item-value="id"
+            v-model="category"
+            dense
+            placeholder="Category"
+            background-color="grey darken-3"
+            dark
+            flat
+            solo
+            style="font-size: 12px; max-width: 150px"
+          >
+          </v-select>
+        </v-card-actions>
       </v-row>
     </v-container>
     <iframe id="print0" class="d-none" :src="print" frameborder="0"></iframe>
@@ -99,8 +99,11 @@
 </template>
 
 <style>
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 
@@ -164,7 +167,7 @@ export default {
               url: "/api/reports/masterlistsupplies/get",
               method: "GET",
               responseType: "blob",
-              params: { category: this.category, type: type },
+              params: { category: this.category, type: "pdf" },
             }).then((response) => {
               if (response.data.size > 0) {
                 axios
@@ -176,8 +179,8 @@ export default {
                       type: type,
                     },
                   })
-                  .then((response) => {
-                    let blob = new Blob([response.data], {
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
                       type: "application/excel",
                     });
                     let link = document.createElement("a");

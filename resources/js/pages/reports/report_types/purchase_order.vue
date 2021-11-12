@@ -95,7 +95,7 @@
                   v-on="on"
                   class="py-1"
                   dense
-                  background-color="blue-grey lighten-5"
+                  background-color="white"
                   flat
                   solo
                 ></v-text-field>
@@ -133,7 +133,7 @@
                   v-on="on"
                   class="py-1"
                   dense
-                  background-color="blue-grey lighten-5"
+                  background-color="white"
                   flat
                   solo
                 ></v-text-field>
@@ -156,8 +156,11 @@
 </template>
 
 <style>
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 
@@ -234,34 +237,45 @@ export default {
             });
             break;
           case "excel":
-            await axios
-              .get("/api/reports/purchaseorder/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  type: type,
-                  from: this.dateFromPO,
-                  to: this.dateUntilPO,
-                },
-              })
-              .then((response) => {
-                if (response.data.size > 0) {
-                  let blob = new Blob([response.data], {
-                    type: "application/excel",
+            await axios({
+              url: "/api/reports/purchaseorder/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: "pdf",
+                from: this.dateFromPO,
+                to: this.dateUntilPO,
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/purchaseorder/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      type: type,
+                      from: this.dateFromPO,
+                      to: this.dateUntilPO,
+                    },
+                  })
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Purchase Order Report.xlsx";
+                    link.click();
                   });
-                  let link = document.createElement("a");
-                  link.href = window.URL.createObjectURL(blob);
-                  link.download = "Purchase Order Report.xlsx";
-                  link.click();
-                } else {
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert-box",
-                    iconColor: "warning",
-                    message: "Nothing to export.",
-                  };
-                }
-              });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
             break;
           case "print":
             await axios({

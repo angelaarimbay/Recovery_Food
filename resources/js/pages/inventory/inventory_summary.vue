@@ -107,57 +107,65 @@
           </v-row>
 
           <!-- Filter Dialog -->
-          <v-dialog v-model="filterDialog" max-width="380px">
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Filter
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="filterDialog = false"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-              <v-row no-gutters align="center" justify="center" class="py-3">
+          <v-dialog v-model="filterDialog" max-width="400px">
+            <v-card dark tile class="pa-2">
+              <v-toolbar dense flat class="transparent">
+                Search Filter
+                <v-spacer></v-spacer>
+                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              </v-toolbar>
+              <v-divider class="my-0"></v-divider>
+              <v-row no-gutters align="center" justify="center" class="pa-2">
                 <!-- Date Picker -->
-                <v-col cols="5" class="pa-4">
-                  <v-select
-                    v-model="year"
-                    item-text=""
-                    item-value="id"
-                    :items="ylist"
-                    dense
-                    label="Year"
-                    @change="get"
-                    hide-details
-                    background-color="blue-grey lighten-5"
-                    flat
-                    solo
-                  >
-                  </v-select>
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Year</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      v-model="year"
+                      item-text=""
+                      item-value="id"
+                      :items="ylist"
+                      dense
+                      placeholder="Year"
+                      @change="get"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
                 </v-col>
 
                 <!-- Date Picker -->
-                <v-col cols="7" class="pa-4">
-                  <v-select
-                    v-model="month"
-                    item-text=""
-                    item-value="id"
-                    :items="mlist"
-                    dense
-                    label="Month"
-                    @change="get"
-                    hide-details
-                    background-color="blue-grey lighten-5"
-                    flat
-                    solo
-                  >
-                  </v-select>
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Month</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      v-model="month"
+                      item-text=""
+                      item-value="id"
+                      :items="mlist"
+                      dense
+                      placeholder="Month"
+                      @change="get"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
                 </v-col>
               </v-row>
             </v-card>
@@ -218,8 +226,11 @@
 </template>
 
 <style>
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 

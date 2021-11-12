@@ -100,7 +100,7 @@
                     counter
                     @keydown="valueKeydown($event)"
                     maxlength="20"
-                    background-color="blue-grey lighten-5"
+                    background-color="white"
                     flat
                     solo
                   >
@@ -120,7 +120,7 @@
                     counter
                     @keydown="valueKeydown($event)"
                     maxlength="25"
-                    background-color="blue-grey lighten-5"
+                    background-color="white"
                     flat
                     solo
                   >
@@ -764,8 +764,11 @@
 .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
+}
+.v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 </style>
 

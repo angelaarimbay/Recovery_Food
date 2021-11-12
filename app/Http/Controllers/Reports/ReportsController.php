@@ -125,14 +125,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Masterlist Supplies Report.xlsx");
                 break;
-            case 'print':
-                if (count($data) > 0) {
-                } else {
-                    return false;
-                }
-                break;
             default:
-                # code...
                 break;
         }
 
@@ -238,14 +231,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Incoming Supplies Report.xlsx");
                 break;
-            case 'print':
-                if (count($data) > 0) {
-                } else {
-                    return false;
-                }
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -367,14 +353,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Outgoing Supplies Report.xlsx");
                 break;
-            case 'print':
-                if (count($data) > 0) {
-                } else {
-                    return false;
-                }
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -657,17 +636,9 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport2($dataitems, $columns), "Main Inventory Report.xlsx");
                 break;
-            case 'print':
-                if (count($data) > 0) {
-                } else {
-                    return false;
-                }
-                break;
             default:
-                # code...
                 break;
         }
-
     }
 
     // Inventory Summary Report - OK
@@ -763,17 +734,9 @@ class ReportsController extends Controller
                 ];
                 return Excel::download(new InventoryExport($data, $columns), "Inventory Summary Report.xlsx");
                 break;
-            case 'print':
-                if (count($data) > 0) {
-                } else {
-                    return false;
-                }
-                break;
             default:
-                # code...
                 break;
         }
-
     }
 
     // Sales Report - OK
@@ -817,14 +780,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Sales Report.xlsx");
                 break;
-            case 'print':
-                if (count($data) > 0) {
-                } else {
-                    return false;
-                }
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -871,14 +827,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Transaction Report.xlsx");
                 break;
-            case 'print':
-                if (count($data) > 0) {
-                } else {
-                    return false;
-                }
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -919,14 +868,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Purchase Order Report.xlsx");
                 break;
-            case 'print':
-                if (count($data) > 0) {
-                } else {
-                    return false;
-                }
-                break;
             default:
-                # code...
                 break;
         }
     }

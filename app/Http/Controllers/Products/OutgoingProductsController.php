@@ -12,6 +12,7 @@ use App\Models\tbl_prodsubcat;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class OutgoingProductsController extends Controller
 {
@@ -72,7 +73,10 @@ class OutgoingProductsController extends Controller
             $temp['category'] = $value->category_details;
             $temp['outgoing_amount'] = number_format($value->outgoing_amount, 2);
             $temp['outgoing_date'] = $value->outgoing_date;
-            $temp['product_name'] = $value->product_name_details;
+            $temp['product_name'] =
+            DB::table("tbl_masterlistprods")
+                ->selectRaw(' CONCAT(product_name , " ", COALESCE(description,"")) as product_name, category, sub_category, price, description, id')
+                ->where("id", $value->product_name)->where("status", 1)->first();
             $temp['quantity'] = $value->quantity;
             $temp['quantity_diff'] = $value->quantity_diff;
             $temp['requesting_branch'] = $value->requesting_branch_details;
@@ -95,7 +99,12 @@ class OutgoingProductsController extends Controller
 
     public function prodName(Request $t)
     {
-        return tbl_masterlistprod::where("status", 1)->where("category", $t->category)->where("sub_category", $t->sub_category)->where("status", 1)->get();
+        $data = DB::table("tbl_masterlistprods")
+            ->selectRaw(' CONCAT(product_name , " ", COALESCE(description,"")) as product_name, category, sub_category, price, description, id')
+            ->where("category", (integer) $t->category)
+            ->where("sub_category", (integer) $t->sub_category)
+            ->where("status", 1)->get();
+        return $data;
     }
 
     public function branchName()

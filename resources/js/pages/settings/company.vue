@@ -191,9 +191,9 @@
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetSV"
-                          background-color="blue-grey lighten-5"
-                          flat
-                          solo
+                      background-color="white"
+                      flat
+                      solo
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -227,9 +227,9 @@
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetPV"
-                          background-color="blue-grey lighten-5"
-                          flat
-                          solo
+                      background-color="white"
+                      flat
+                      solo
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
