@@ -53,7 +53,7 @@
                           : ''
                       "
                       prepend-inner-icon="mdi-email"
-                      background-color="blue-grey lighten-5"
+                      background-color="white"
                       flat
                       solo
                     ></v-text-field>
@@ -75,7 +75,7 @@
                       @click:append="() => (value = !value)"
                       :type="!value ? 'password' : 'text'"
                       prepend-inner-icon="mdi-key"
-                      background-color="blue-grey lighten-5"
+                      background-color="white"
                       flat
                       solo
                     ></v-text-field>
@@ -138,7 +138,7 @@
 </template>
 
 <style>
-.v-application .blue-grey.lighten-5 {
+.v-application .white {
   border: 1px solid #bdbdbd !important;
 }
 </style>

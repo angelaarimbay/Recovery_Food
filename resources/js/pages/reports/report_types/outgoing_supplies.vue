@@ -287,38 +287,49 @@ export default {
             });
             break;
           case "excel":
-            await axios
-              .get("/api/reports/outgoingsupplies/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  type: type,
-                  branch: this.branch,
-                  category: this.category,
-                  from: this.outgoing_from,
-                  to: this.outgoing_to,
-                },
-              })
-              .then((response) => {
-                // console.log(response.data.size);
-                // return;
-                if (response.data.size > 0) {
-                  let blob = new Blob([response.data], {
-                    type: "application/excel",
+            await axios({
+              url: "/api/reports/outgoingsupplies/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: type,
+                branch: this.branch,
+                category: this.category,
+                from: this.outgoing_from,
+                to: this.outgoing_to,
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/outgoingsupplies/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      type: type,
+                      branch: this.branch,
+                      category: this.category,
+                      from: this.outgoing_from,
+                      to: this.outgoing_to,
+                    },
+                  })
+                  .then((response) => {
+                    let blob = new Blob([response.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Outgoing Supplies Report.xlsx";
+                    link.click();
                   });
-                  let link = document.createElement("a");
-                  link.href = window.URL.createObjectURL(blob);
-                  link.download = "Outgoing Supplies Report.xlsx";
-                  link.click();
-                } else {
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert-box",
-                    iconColor: "warning",
-                    message: "Nothing to export.",
-                  };
-                }
-              });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
             break;
           case "print":
             await axios({

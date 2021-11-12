@@ -394,10 +394,9 @@
             <template v-slot:[`item.supply_name.net_price`]="{ item }"
               >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
             </template>
-            <template v-slot:[`item.supply_full`]="{ item }"
-              >{{ item.supply_name.supply_name }}
-              {{ item.supply_name.description }}</template
-            >
+            <template v-slot:[`item.supply_name`]="{ item }">{{
+              item.supply_name.supply_name
+            }}</template>
             <template v-slot:[`item.outgoing_date`]="{ item }">
               {{ getFormatDate(item.outgoing_date, "YYYY-MM-DD") }}</template
             >
@@ -1146,7 +1145,7 @@ export default {
       },
       {
         text: "SUPPLY NAME",
-        value: "supply_full",
+        value: "supply_name",
         class: "black--text",
       },
       {
@@ -1490,11 +1489,7 @@ export default {
       await axios
         .get("/api/osupp/suppValidate", { params: { id: id.id } })
         .then((result) => {
-          if (!edit) {
-            this.getQuantity = result.data + this.form.quantity;
-          } else {
-            this.getQuantity = result.data;
-          }
+          this.getQuantity = result.data;
         });
     },
 
@@ -1505,20 +1500,7 @@ export default {
           params: { category: this.form.category },
         })
         .then((supp_name) => {
-          this.suppnamelist = [];
-          for (var key in supp_name.data) {
-            this.suppnamelist.push({
-              supply_name:
-                supp_name.data[key].supply_name +
-                (supp_name.data[key].description
-                  ? " " + supp_name.data[key].description
-                  : ""),
-              id: supp_name.data[key].id,
-              net_price: supp_name.data[key].net_price,
-              unit: supp_name.data[key].unit,
-              description: supp_name.data[key].description,
-            });
-          }
+          this.suppnamelist = supp_name.data;
         });
     },
 

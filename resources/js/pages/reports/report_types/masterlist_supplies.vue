@@ -160,35 +160,40 @@ export default {
             });
             break;
           case "excel":
-            await axios
-              .get("/api/reports/masterlistsupplies/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  category: this.category,
-                  type: type,
-                },
-              })
-              .then((response) => {
-                if (response.data.size > 0) {
-                  // console.log(response.data)
-                  // return;
-                  let blob = new Blob([response.data], {
-                    type: "application/excel",
+            await axios({
+              url: "/api/reports/masterlistsupplies/get",
+              method: "GET",
+              responseType: "blob",
+              params: { category: this.category, type: type },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/masterlistsupplies/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      category: this.category,
+                      type: type,
+                    },
+                  })
+                  .then((response) => {
+                    let blob = new Blob([response.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Masterlist Supplies Report.xlsx";
+                    link.click();
                   });
-                  let link = document.createElement("a");
-                  link.href = window.URL.createObjectURL(blob);
-                  link.download = "Masterlist Supplies Report.xlsx";
-                  link.click();
-                } else {
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert-box",
-                    iconColor: "warning",
-                    message: "Nothing to export.",
-                  };
-                }
-              });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
             break;
           case "print":
             await axios({

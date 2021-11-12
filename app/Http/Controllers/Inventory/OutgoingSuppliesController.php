@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Inventory;
 use App\Http\Controllers\Controller;
 use App\Models\tbl_branches;
 use App\Models\tbl_incomingsupp;
-use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_outgoingsupp;
 use App\Models\tbl_requestsupp;
 use App\Models\tbl_suppcat;
@@ -13,6 +12,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class OutgoingSuppliesController extends Controller
 {
@@ -86,7 +86,10 @@ class OutgoingSuppliesController extends Controller
             $temp['outgoing_date'] = $value->outgoing_date;
             $temp['quantity'] = $value->quantity;
             $temp['requesting_branch'] = $value->requesting_branch_details;
-            $temp['supply_name'] = $value->supply_name_details;
+            $temp['supply_name'] =
+            DB::table("tbl_masterlistsupps")
+                ->selectRaw(' CONCAT(supply_name , " ", COALESCE(description,"")) as supply_name, category, net_price, unit, description, id')
+                ->where("id", $value->supply_name)->where("status", 1)->first();
             $temp['outgoing_amount'] = number_format($value->with_vat_price * $value->quantity, 2);
             $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
             $temp['without_vat_price'] = number_format($value->without_vat_price, 2);
@@ -104,7 +107,10 @@ class OutgoingSuppliesController extends Controller
 
     public function suppName(Request $t)
     {
-        return tbl_masterlistsupp::where("category", (integer) $t->category)->where("status", 1)->get();
+        $data = DB::table("tbl_masterlistsupps")
+            ->selectRaw(' CONCAT(supply_name , " ", COALESCE(description,"")) as supply_name, category, net_price, unit, description, id')
+            ->where("category", (integer) $t->category)->where("status", 1)->get();
+        return $data;
     }
 
     public function branchName()

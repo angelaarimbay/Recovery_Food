@@ -169,8 +169,8 @@ export default {
               .then((response) => {
                 // console.log(response.data.size);
                 // return;
-                if (response.data.size > 0) {
-                  // console.log(response.data)
+                // if (response.data.size > 0) {
+                 console.log(response.data)
                   let blob = new Blob([response.data], {
                     type: "application/excel",
                   });
@@ -178,14 +178,14 @@ export default {
                   link.href = window.URL.createObjectURL(blob);
                   link.download = "Main Inventory Report.xlsx";
                   link.click();
-                } else {
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert-box",
-                    iconColor: "warning",
-                    message: "Nothing to export.",
-                  };
-                }
+                // } else {
+                //   this.snackbar = {
+                //     active: true,
+                //     iconText: "alert-box",
+                //     iconColor: "warning",
+                //     message: "Nothing to export.",
+                //   };
+                // }
               });
             break;
           case "print":

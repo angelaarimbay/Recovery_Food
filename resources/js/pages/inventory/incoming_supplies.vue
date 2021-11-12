@@ -963,20 +963,7 @@ export default {
           },
         })
         .then((supp_name) => {
-          this.suppnamelist = [];
-          for (var key in supp_name.data) {
-            this.suppnamelist.push({
-              supply_name:
-                supp_name.data[key].supply_name +
-                (supp_name.data[key].description
-                  ? " " + supp_name.data[key].description
-                  : ""),
-              id: supp_name.data[key].id,
-              net_price: supp_name.data[key].net_price,
-              unit: supp_name.data[key].unit,
-              description: supp_name.data[key].description,
-            });
-          }
+          this.suppnamelist = supp_name.data;
         });
     },
 
