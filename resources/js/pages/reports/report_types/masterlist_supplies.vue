@@ -75,23 +75,25 @@
 
       <!-- Category Field -->
       <v-row no-gutters justify="center">
-        <v-card-actions class="pb-1 pt-4">
-          <v-select
-            hide-details
-            :items="suppcatlist"
-            item-text="supply_cat_name"
-            item-value="id"
-            v-model="category"
-            dense
-            placeholder="Category"
-            background-color="grey darken-3"
-            dark
-            flat
-            solo
-            style="font-size: 12px; max-width: 150px"
-          >
-          </v-select>
-        </v-card-actions>
+        <v-col cols="4" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
+            <v-select
+              hide-details
+              :items="suppcatlist"
+              item-text="supply_cat_name"
+              item-value="id"
+              v-model="category"
+              dense
+              placeholder="Category"
+              background-color="grey darken-3"
+              dark
+              flat
+              solo
+              style="font-size: 12px"
+            >
+            </v-select>
+          </v-card-actions>
+        </v-col>
       </v-row>
     </v-container>
     <iframe id="print0" class="d-none" :src="print" frameborder="0"></iframe>
@@ -99,11 +101,14 @@
 </template>
 
 <style>
-.v-application .white {
-  border: 1px solid #bdbdbd !important;
+.v-list-item__content {
+  color: white !important;
 }
-.v-input--is-focused .v-input__slot {
-  border: 1px solid #42a5f5 !important;
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 

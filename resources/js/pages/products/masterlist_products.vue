@@ -66,7 +66,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
@@ -233,7 +233,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            class="table-striped"
+            class="table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -297,7 +297,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="text-center pt-2">
+          <div class="pbutton text-center pt-2">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -335,7 +335,7 @@
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -367,7 +367,7 @@
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="tfield py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.category"
@@ -387,7 +387,7 @@
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="tfield py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.sub_category"
@@ -408,7 +408,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -436,7 +436,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -461,7 +461,7 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="8" lg="8" sm="8" md="8">
+                    <v-col class="tfield py-0" cols="12" xl="8" lg="8" sm="8" md="8">
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.price"
@@ -484,7 +484,7 @@
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="4" lg="4" sm="4" md="4">
+                    <v-col class="tfield py-0" cols="12" xl="4" lg="4" sm="4" md="4">
                       <v-layout align-center>
                         <v-text-field
                           v-model="temp_vat"
@@ -513,7 +513,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0 d-none"
+                      class="tfield py-0 d-none"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -536,7 +536,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -617,21 +617,32 @@
 </template>
 
 <style>
-.v-pagination button {
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
-.v-application .white {
+
+.v-application .tfield .white {
   border: 1px solid #bdbdbd !important;
 }
-.v-input--is-focused .v-input__slot {
+.tfield .v-input--is-focused .v-input__slot {
   border: 1px solid #42a5f5 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 

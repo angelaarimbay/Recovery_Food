@@ -76,7 +76,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
@@ -246,7 +246,13 @@
                   </v-col>
 
                   <!-- Branch Field -->
-                  <v-col cols="4"
+                  <v-col
+                    cols="4"
+                    v-if="
+                      !user.permissionslist.includes(
+                        'Access Reports - Outgoing Supplies'
+                      )
+                    "
                     ><span class="text-caption text-xl-subtitle-2"
                       >Branch</span
                     ></v-col
@@ -414,7 +420,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            class="table-striped"
+            class="tbl table-striped"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -456,7 +462,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="text-center pt-2">
+          <div class="pbutton text-center pt-2">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -494,7 +500,7 @@
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -550,7 +556,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -577,7 +583,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -605,7 +611,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -673,7 +679,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -759,7 +765,7 @@
           <v-card tile height="auto" style="background-color: #f1ffff">
             <v-card-text class="py-2 px-3">
               <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+                <v-card elevation="2" class="mt-2" style="border-radius: 10px">
                   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-4">
                     <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                       <v-row no-gutters>
@@ -791,7 +797,7 @@
                         :items-per-page="itemsPerPage1"
                         hide-default-footer
                         @page-count="pageCount1 = $event"
-                        class="table-striped"
+                        class="table-striped border"
                       >
                         <!-- Progress Bar -->
                         <v-progress-linear
@@ -909,7 +915,7 @@
                   item-key="supply_id"
                   :items-per-page="10"
                   v-model="selected"
-                  class="table-striped"
+                  class="table-striped border"
                 >
                   <template
                     v-slot:[`item.data-table-select`]="{
@@ -920,7 +926,7 @@
                   >
                     <v-simple-checkbox
                       :value="
-                        (item.status !== 3 && isSelected) ||
+                        (item.status !== 3 && isSelected) &&
                         (item.status !== 2 && isSelected)
                       "
                       :readonly="item.status == 3 || item.status == 2"
@@ -1075,28 +1081,41 @@
 </template>
 
 <style>
-.v-data-table__checkbox,
+.tbl.v-data-table__checkbox,
 .v-input--selection-controls__input .mdi-checkbox-marked,
 .v-input--selection-controls__input .mdi-minus-box {
   color: #d32f2f !important;
 }
-.v-pagination button {
+
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
-.v-application .white {
+
+.v-application .tfield .white {
   border: 1px solid #bdbdbd !important;
 }
-.v-input--is-focused .v-input__slot {
+.tfield .v-input--is-focused .v-input__slot {
   border: 1px solid #42a5f5 !important;
 }
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
 </style>
+
 
 <script>
 import { mapGetters } from "vuex";

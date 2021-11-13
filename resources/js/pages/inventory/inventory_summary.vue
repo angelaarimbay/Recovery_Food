@@ -66,7 +66,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters align="center" class="mb-3">
@@ -226,11 +226,14 @@
 </template>
 
 <style>
-.v-application .white {
-  border: 1px solid #bdbdbd !important;
+.v-list-item__content {
+  color: white !important;
 }
-.v-input--is-focused .v-input__slot {
-  border: 1px solid #42a5f5 !important;
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 
@@ -266,6 +269,7 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
+        width: "20%"
       },
       {
         text: "BEGINING INVENTORY",

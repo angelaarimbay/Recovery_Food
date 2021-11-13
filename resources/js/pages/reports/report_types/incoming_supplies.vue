@@ -149,7 +149,7 @@
                   hide-details
                   v-model="incoming_to"
                   placeholder="Date Until"
-                  prepend-inner-icon="mdi-calendar-range"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
                   dense
@@ -178,11 +178,14 @@
 </template>
 
 <style>
-.v-application .white {
-  border: 1px solid #bdbdbd !important;
+.v-list-item__content {
+  color: white !important;
 }
-.v-input--is-focused .v-input__slot {
-  border: 1px solid #42a5f5 !important;
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 
@@ -196,7 +199,7 @@ export default {
       } else {
         return false;
       }
-    }
+    },
   },
   data: () => ({
     category: "",

@@ -40,7 +40,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters>
@@ -81,63 +81,70 @@
           </v-row>
 
           <!-- Filter Dialog -->
-          <v-dialog v-model="filterDialog" max-width="380px">
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Filter
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="filterDialog = false"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <v-card tile class="px-3 py-0 px-xl-6 px-lg-6">
-              <v-row no-gutters align="center" class="py-3">
+          <v-dialog v-model="filterDialog" max-width="400px">
+            <v-card dark tile class="pa-2">
+              <v-toolbar dense flat class="transparent">
+                Search Filter
+                <v-spacer></v-spacer>
+                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              </v-toolbar>
+              <v-divider class="my-0"></v-divider>
+              <v-row no-gutters align="center" class="pa-2">
                 <!-- Items Per Page -->
-                <v-col cols="4" class="pa-2">
-                  <v-select
-                    dense
-                    v-model="itemsPerPage"
-                    label="Items per page"
-                    @change="itemperpage"
-                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
-                    hide-details
-                    background-color="white"
-                    flat
-                    solo
-                  >
-                  </v-select>
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Items / Page</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      dense
+                      v-model="itemsPerPage"
+                      @change="itemperpage"
+                      :items="[
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                      ]"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
                 </v-col>
 
                 <!-- Search Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Search</span
+                  ></v-col
+                >
                 <v-col cols="8">
-                  <v-card-actions>
+                  <v-card-actions class="px-0">
                     <v-text-field
                       v-model="search"
-                      label="Supply Name"
+                      placeholder="Supply Name"
                       single-line
                       dense
                       clearable
                       hide-details
-                      background-color="white"
+                      background-color="grey darken-3"
                       flat
                       solo
+                      style="font-size: 12px"
                     ></v-text-field>
                     <v-tooltip bottom>
                       <template #activator="data">
                         <v-btn
-                          large
-                          :small="$vuetify.breakpoint.smAndDown"
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
                           color="red darken-2"
                           icon
                           v-on="data.on"
                           @click="get"
-                          class="ml-2"
+                          class="ml-1"
                         >
                           <v-icon>mdi-magnify</v-icon></v-btn
                         >
@@ -149,54 +156,78 @@
 
                 <!-- Branch Field -->
                 <v-col
-                  cols="12"
-                  class="pa-2"
+                  cols="4"
+                  v-if="
+                    !user.permissionslist.includes(
+                      'Access Reports - Outgoing Supplies'
+                    )
+                  "
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Branch</span
+                  ></v-col
+                >
+                <v-col
+                  cols="8"
                   v-if="
                     !user.permissionslist.includes(
                       'Access Reports - Outgoing Supplies'
                     )
                   "
                 >
-                  <v-select
-                    hide-details
-                    v-model="branch"
-                    :items="branchlist"
-                    item-text="branch_name"
-                    item-value="id"
-                    class="my-0"
-                    clearable
-                    dense
-                    label="Branch"
-                    @change="get"
-                    background-color="white"
-                    flat
-                    solo
-                  >
-                  </v-select>
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="branch"
+                      :items="branchlist"
+                      item-text="branch_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Branch"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
                 </v-col>
 
                 <!-- Category Field -->
-                <v-col cols="12" class="pa-2">
-                  <v-select
-                    hide-details
-                    v-model="category"
-                    :items="suppcatlist"
-                    item-text="supply_cat_name"
-                    item-value="id"
-                    class="my-0"
-                    clearable
-                    dense
-                    label="Category"
-                    @change="get"
-                    background-color="white"
-                    flat
-                    solo
-                  >
-                  </v-select>
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Category</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="category"
+                      :items="suppcatlist"
+                      item-text="supply_cat_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Category"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
                 </v-col>
 
                 <!-- Date Picker -->
-                <v-col cols="12" class="pa-2">
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Date From</span
+                  ></v-col
+                >
+                <v-col cols="8">
                   <v-menu
                     v-model="date1"
                     :close-on-content-click="false"
@@ -208,20 +239,22 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
-                      <v-text-field
-                        hide-details
-                        v-model="dateFrom"
-                        label="Date From"
-                        prepend-icon="mdi-calendar-range"
-                        readonly
-                        v-on="on"
-                        class="py-1"
-                        dense
-                        clearable
-                        background-color="white"
-                        flat
-                        solo
-                      ></v-text-field>
+                      <v-card-actions class="px-0">
+                        <v-text-field
+                          hide-details
+                          v-model="dateFrom"
+                          placeholder="Date From"
+                          prepend-inner-icon="mdi-calendar-range"
+                          readonly
+                          v-on="on"
+                          dense
+                          clearable
+                          background-color="grey darken-3"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        ></v-text-field>
+                      </v-card-actions>
                     </template>
                     <v-date-picker
                       v-model="dateFrom"
@@ -236,7 +269,12 @@
                 </v-col>
 
                 <!-- Date Picker -->
-                <v-col cols="12" class="pa-2">
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Date Until</span
+                  ></v-col
+                >
+                <v-col cols="8">
                   <v-menu
                     v-model="date2"
                     :close-on-content-click="false"
@@ -248,20 +286,22 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
-                      <v-text-field
-                        hide-details
-                        v-model="dateUntil"
-                        label="Date Until"
-                        prepend-icon="mdi-calendar-range"
-                        readonly
-                        v-on="on"
-                        class="py-1"
-                        dense
-                        clearable
-                        background-color="white"
-                        flat
-                        solo
-                      ></v-text-field>
+                      <v-card-actions class="px-0">
+                        <v-text-field
+                          hide-details
+                          v-model="dateUntil"
+                          placeholder="Date Until"
+                          prepend-inner-icon="mdi-calendar-range"
+                          readonly
+                          v-on="on"
+                          dense
+                          clearable
+                          background-color="grey darken-3"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        ></v-text-field>
+                      </v-card-actions>
                     </template>
                     <v-date-picker
                       v-model="dateUntil"
@@ -319,7 +359,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="text-center pt-2">
+          <div class="pbutton text-center pt-2">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -334,21 +374,25 @@
 </template>
 
 <style>
-.v-pagination button {
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
-.v-application .white {
-  border: 1px solid #bdbdbd !important;
+
+.v-list-item__content {
+  color: white !important;
 }
-.v-input--is-focused .v-input__slot {
-  border: 1px solid #42a5f5 !important;
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 

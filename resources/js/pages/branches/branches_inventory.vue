@@ -38,7 +38,7 @@
       </v-layout>
     </v-container>
 
-    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
         v-model="tab"
@@ -259,7 +259,7 @@
                 :items-per-page="itemsPerPage1"
                 hide-default-footer
                 @page-count="pageCount = $event"
-                class="table-striped"
+                class="table-striped border"
               >
                 <!-- Progress Bar -->
                 <v-progress-linear
@@ -279,7 +279,7 @@
               </v-data-table>
 
               <!-- Paginate -->
-              <div class="text-center pt-2">
+              <div class="pbutton text-center pt-2">
                 <v-pagination
                   v-model="page1"
                   :length="table1.last_page"
@@ -474,7 +474,7 @@
                 :items-per-page="itemsPerPage2"
                 hide-default-footer
                 @page-count="pageCount = $event"
-                class="table-striped"
+                class="table-striped border"
               >
                 <!-- Progress Bar -->
                 <v-progress-linear
@@ -511,15 +511,25 @@
 </template>
 
 <style>
-.v-pagination button {
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 

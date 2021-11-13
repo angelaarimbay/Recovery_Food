@@ -89,7 +89,7 @@
             <br />
             <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
               <v-row>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                <v-col class="tfield py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                   <v-text-field v-model="role.id" class="d-none">
                   </v-text-field>
                   <v-text-field
@@ -111,7 +111,7 @@
                     </template>
                   </v-text-field>
                 </v-col>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                <v-col class="tfield py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                   <v-text-field
                     :rules="formRulesDesc"
                     v-model="role.description"
@@ -181,7 +181,7 @@
             <br />
             <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
               <v-row>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                <v-col class="tfield py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                   <v-text-field v-model="permission.id" class="d-none">
                   </v-text-field>
                   <v-text-field
@@ -198,7 +198,7 @@
                     </template>
                   </v-text-field>
                 </v-col>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                <v-col class="tfield py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                   <v-text-field
                     :rules="formRules"
                     v-model="permission.description"
@@ -254,7 +254,7 @@
             <v-card-text class="py-2">
               <br />
               <v-data-table
-                class="px-4 table-striped"
+                class="tbl px-4 table-striped"
                 v-model="selectedAddPermission"
                 :items-per-page="5"
                 dense
@@ -313,7 +313,7 @@
                 Selected User: <strong>{{ username }}</strong>
               </v-card-text>
               <v-data-table
-                class="px-4 table-striped"
+                class="tbl px-4 table-striped"
                 v-model="selectedAddRoles"
                 :items-per-page="5"
                 dense
@@ -329,7 +329,9 @@
                   indeterminate
                 ></v-progress-linear>
               </v-data-table>
-              <div class="text-center pt-2 d-none">
+
+              <!-- Paginate -->
+              <div class="tbl text-center pt-2 d-none">
                 <v-pagination
                   v-model="page3"
                   :total-visible="7"
@@ -392,7 +394,7 @@
       </v-container>
 
       <!-- Main Card -->
-      <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+      <v-card elevation="2" class="mt-2" style="border-radius: 10px">
         <v-tabs
           slider-size="4"
           v-model="tab"
@@ -505,7 +507,7 @@
                   :loading="progressBar"
                   :headers="headersRoles"
                   :items="tableRoles.data"
-                  class="table-striped"
+                  class="table-striped border"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -548,7 +550,9 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
-                <div class="text-center pt-2">
+
+                <!-- Paginate -->
+                <div class="tbl text-center pt-2">
                   <v-pagination
                     v-model="page1"
                     :total-visible="7"
@@ -602,7 +606,7 @@
                   hide-default-footer
                   :headers="headersPermissions"
                   :items="tablePermissions.data"
-                  class="table-striped"
+                  class="table-striped border"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -625,7 +629,8 @@
                   </template>
                 </v-data-table>
 
-                <div class="text-center pt-2">
+                <!-- Paginate -->
+                <div class="tbl text-center pt-2">
                   <v-pagination
                     v-model="page4"
                     :total-visible="7"
@@ -669,7 +674,7 @@
                   :loading="progressBar"
                   :headers="headersUserrole"
                   :items="tableUserrole.data"
-                  class="table-striped"
+                  class="table-striped border"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -708,7 +713,9 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
-                <div class="text-center pt-2">
+
+                <!-- Paginate -->
+                <div class="tbl text-center pt-2">
                   <v-pagination
                     v-model="page2"
                     :total-visible="7"
@@ -749,26 +756,38 @@
 </template>
 
 <style>
-.v-data-table__checkbox,
+.tbl.v-data-table__checkbox,
 .v-input--selection-controls__input .mdi-checkbox-marked,
 .v-input--selection-controls__input .mdi-minus-box {
   color: #d32f2f !important;
 }
-.v-pagination button {
+
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
-.v-application .white {
+
+.v-application .tfield .white {
   border: 1px solid #bdbdbd !important;
 }
-.v-input--is-focused .v-input__slot {
+.tfield .v-input--is-focused .v-input__slot {
   border: 1px solid #42a5f5 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 

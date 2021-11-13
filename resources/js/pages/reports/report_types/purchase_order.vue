@@ -75,79 +75,81 @@
 
       <v-row no-gutters justify="center">
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
-            <v-menu
-              v-model="date1"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
+        <v-col cols="6" class="px-1" style="max-width: 150px">
+          <v-menu
+            v-model="date1"
+            :close-on-content-click="false"
+            :nudge-right="35"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-card-actions class="pb-1 pt-4 px-0">
                 <v-text-field
                   hide-details
                   v-model="dateFromPO"
-                  label="Date From"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date From"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-1"
                   dense
-                  background-color="white"
+                  dark
+                  background-color="grey darken-3"
                   flat
                   solo
+                  style="font-size: 12px"
                 ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateFromPO"
-                @input="date1 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
+              </v-card-actions>
+            </template>
+            <v-date-picker
+              v-model="dateFromPO"
+              @input="date1 = false"
+              scrollable
+              no-title
+              color="red darken-2"
+              dark
+            ></v-date-picker>
+          </v-menu>
         </v-col>
 
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
-            <v-menu
-              v-model="date2"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
+        <v-col cols="6" class="px-1" style="max-width: 150px">
+          <v-menu
+            v-model="date2"
+            :close-on-content-click="false"
+            :nudge-right="35"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-card-actions class="pb-1 pt-4 px-0">
                 <v-text-field
                   hide-details
                   v-model="dateUntilPO"
-                  label="Date Until"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date Until"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-1"
                   dense
-                  background-color="white"
+                  background-color="grey darken-3"
+                  dark
                   flat
                   solo
+                  style="font-size: 12px"
                 ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateUntilPO"
-                @input="date2 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
+              </v-card-actions>
+            </template>
+            <v-date-picker
+              v-model="dateUntilPO"
+              @input="date2 = false"
+              scrollable
+              no-title
+              color="red darken-2"
+              dark
+            ></v-date-picker>
+          </v-menu>
         </v-col>
       </v-row>
     </v-container>
@@ -155,18 +157,19 @@
   </v-container>
 </template>
 
-<style>
-.v-application .white {
-  border: 1px solid #bdbdbd !important;
-}
-.v-input--is-focused .v-input__slot {
-  border: 1px solid #42a5f5 !important;
-}
-</style>
 
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  computed: {
+    showIcon() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
   data: () => ({
     dateFromPO: null,
     dateUntilPO: null,

@@ -57,7 +57,7 @@
             </v-list-item>
             <v-list-item>
               <v-list-item-title @click="logout" style="cursor: pointer"
-                >Logout
+                >Log Out
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -549,20 +549,31 @@
 <style>
 ::-webkit-scrollbar-track {
   --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  background-color: #E0E0E0;
+  width: 14px;
 }
 
 ::-webkit-scrollbar-thumb {
-  --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #BDBDBD;
+  border: 4px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  border-radius: 9999px;
+  background-color: #aaaaaa;
 }
+
 .bg-grey {
   background-color: #616161;
+}
+</style>
+
+<style scoped>
+.v-menu__content.theme--light .v-list {
+  background: white !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 

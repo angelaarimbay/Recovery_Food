@@ -65,7 +65,7 @@
       </v-container>
 
       <!-- Main Card -->
-      <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+      <v-card elevation="2" class="mt-2" style="border-radius: 10px">
         <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
           <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
             <v-row>
@@ -177,7 +177,14 @@
                   >VAT</v-card-title
                 >
                 <v-row no-gutters>
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" class="py-1">
+                  <v-col
+                    cols="12"
+                    xl="6"
+                    lg="6"
+                    md="6"
+                    sm="6"
+                    class="tfield py-1"
+                  >
                     <v-row no-gutters>
                       Supplies VAT
                       <v-col cols="10">
@@ -191,9 +198,9 @@
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetSV"
-                      background-color="white"
-                      flat
-                      solo
+                          background-color="white"
+                          flat
+                          solo
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -213,7 +220,14 @@
                       </v-col>
                     </v-row>
                   </v-col>
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" class="py-1">
+                  <v-col
+                    cols="12"
+                    xl="6"
+                    lg="6"
+                    md="6"
+                    sm="6"
+                    class="tfield py-1"
+                  >
                     <v-row no-gutters>
                       Products VAT
                       <v-col cols="10">
@@ -227,9 +241,9 @@
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetPV"
-                      background-color="white"
-                      flat
-                      solo
+                          background-color="white"
+                          flat
+                          solo
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -258,6 +272,16 @@
     </v-form>
   </div>
 </template>
+
+<style>
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+</style>
+</style>
 
 <script>
 import { mapGetters } from "vuex";

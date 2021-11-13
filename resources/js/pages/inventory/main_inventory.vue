@@ -66,7 +66,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters>
@@ -220,7 +220,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            class="table-striped"
+            class="table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -359,7 +359,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="text-center pt-2">
+          <div class="pbutton text-center pt-2">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -1002,21 +1002,34 @@
 </template>
 
 <style>
-.v-pagination button {
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
 }
-.v-application .white {
-  border: 1px solid #bdbdbd !important;
+
+.v-list-item__content {
+  color: white !important;
 }
-.v-input--is-focused .v-input__slot {
-  border: 1px solid #42a5f5 !important;
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
+</style>
+
+<style scoped>
+.v-menu__content.theme--light .v-list {
+  background: #212121;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.14;
 }
 </style>
 

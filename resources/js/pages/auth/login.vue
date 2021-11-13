@@ -20,7 +20,7 @@
           class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
         >
           <v-card
-            elevation="5"
+            elevation="2"
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
@@ -40,7 +40,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12" md="12" class="py-1">
+                  <v-col cols="12" md="12" class="py-1" id="email">
                     <v-text-field
                       :rules="formRulesEmail"
                       label="Email"
@@ -59,7 +59,7 @@
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="12" class="py-1">
+                  <v-col cols="12" sm="12" class="py-1" id="password">
                     <v-text-field
                       :rules="passwordRules"
                       label="Password"
@@ -138,10 +138,12 @@
 </template>
 
 <style>
-.v-application .white {
+.v-application #email .white,
+.v-application #password .white {
   border: 1px solid #bdbdbd !important;
 }
-.v-input--is-focused .v-input__slot {
+#email .v-input--is-focused .v-input__slot,
+#password .v-input--is-focused .v-input__slot {
   border: 1px solid #42a5f5 !important;
 }
 </style>

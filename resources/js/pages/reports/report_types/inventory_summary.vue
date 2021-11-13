@@ -74,40 +74,44 @@
       >
       <v-row no-gutters justify="center">
         <!-- Year -->
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col cols="6" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               v-model="year"
               item-text=""
               item-value="id"
               :items="ylist"
               dense
-              label="Year"
+              placeholder="Year"
               @change="get"
               hide-details
-              background-color="white"
+              background-color="grey darken-3"
+              dark
               flat
               solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
         </v-col>
 
         <!-- Month -->
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col cols="6" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               v-model="month"
               item-text=""
               item-value="id"
               :items="mlist"
               dense
-              label="Month"
+              placeholder="Month"
               @change="get"
               hide-details
-              background-color="white"
+              background-color="grey darken-3"
+              dark
               flat
               solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
@@ -119,11 +123,14 @@
 </template>
 
 <style>
-.v-application .white {
-  border: 1px solid #bdbdbd !important;
+.v-list-item__content {
+  color: white !important;
 }
-.v-input--is-focused .v-input__slot {
-  border: 1px solid #42a5f5 !important;
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 

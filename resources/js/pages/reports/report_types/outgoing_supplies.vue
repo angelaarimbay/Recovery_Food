@@ -74,48 +74,74 @@
       >
       <!-- Branch Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="3"
+          sm="6"
+          class="px-1"
+          style="max-width: 150px"
+        >
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               hide-details
               v-model="branch"
               :items="branchlist"
               item-text="branch_name"
               item-value="id"
-              class="my-0"
               dense
-              label="Branch"
-              background-color="white"
+              placeholder="Branch"
+              background-color="grey darken-3"
+              dark
               flat
               solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
         </v-col>
 
         <!-- Category Field -->
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="3"
+          sm="6"
+          class="px-1"
+          style="max-width: 150px"
+        >
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               hide-details
               v-model="category"
               :items="suppcatlist"
               item-text="supply_cat_name"
               item-value="id"
-              class="my-0"
               dense
-              label="Category"
-              background-color="white"
+              placeholder="Category"
+              background-color="grey darken-3"
+              dark
               flat
               solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
         </v-col>
 
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="3"
+          sm="6"
+          class="px-1"
+          style="max-width: 150px"
+        >
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-menu
               v-model="date1"
               :close-on-content-click="false"
@@ -128,15 +154,16 @@
                 <v-text-field
                   hide-details
                   v-model="outgoing_from"
-                  label="Date From"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date From"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-0"
                   dense
-                  background-color="white"
+                  background-color="grey darken-3"
+                  dark
                   flat
                   solo
+                  style="font-size: 12px"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -151,8 +178,17 @@
           </v-card-actions>
         </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <!-- Date Picker -->
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="3"
+          sm="6"
+          class="px-1"
+          style="max-width: 150px"
+        >
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-menu
               v-model="date2"
               :close-on-content-click="false"
@@ -165,15 +201,16 @@
                 <v-text-field
                   hide-details
                   v-model="outgoing_to"
-                  label="Date Until"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date Until"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-0"
                   dense
-                  background-color="white"
+                  background-color="grey darken-3"
+                  dark
                   flat
                   solo
+                  style="font-size: 12px"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -194,17 +231,29 @@
 </template>
 
 <style>
-.v-application .white {
-  border: 1px solid #bdbdbd !important;
+.v-list-item__content {
+  color: white !important;
 }
-.v-input--is-focused .v-input__slot {
-  border: 1px solid #42a5f5 !important;
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  computed: {
+    showIcon() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
   data: () => ({
     branch: "",
     print: "",

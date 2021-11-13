@@ -99,7 +99,7 @@
       </v-layout>
     </v-container>
     <!-- Main Card -->
-    <v-card elevation="5" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
@@ -141,7 +141,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            class="table-striped"
+            class="table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -285,7 +285,7 @@
                     lg="6"
                     md="7"
                     sm="7"
-                    class="my-auto pa-2"
+                    class="tfield my-auto pa-2"
                   >
                     <v-card-actions class="py-0 px-0">
                       <v-text-field
@@ -303,12 +303,12 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
-                            :small="$vuetify.breakpoint.smAndDown"
-                            :large="$vuetify.breakpoint.mdAndUp"
+                            small
+                            :x-small="$vuetify.breakpoint.smAndDown"
                             color="red darken-2"
                             icon
                             v-on="data.on"
-                            class="ml-2"
+                            class="ml-1"
                             @click="searchSupp"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
@@ -344,7 +344,7 @@
                   :headers="headers1"
                   :items="table1"
                   ref="progress"
-                  class="table-striped mt-2"
+                  class="table-striped mt-4"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -435,7 +435,7 @@
                   :items-per-page="table2.length"
                   hide-default-footer
                   ref="progress"
-                  class="table-striped"
+                  class="table-striped border"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -547,8 +547,11 @@
               <v-row>
                 <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
                   <span
-                    >Item Selected: <strong>{{ selected.supply_name }}</strong>
-                    {{ selected.description }}
+                    >Item Selected:
+                    <strong
+                      >{{ selected.supply_name }}
+                      {{ selected.description }}</strong
+                    >
                   </span>
                 </v-col>
               </v-row>
@@ -603,18 +606,27 @@
     </v-form>
   </div>
 </template>
+
+
 <style>
-.v-pagination button {
-  background-color: #212121 !important;
-  color: #ffffff !important;
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
 }
-.v-pagination i.v-icon.v-icon {
-  color: #ffffff !important;
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
-.v-pagination__navigation:disabled {
-  background-color: #000000 !important;
+
+.v-list-item__content {
+  color: white !important;
 }
-</style> 
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
+</style>
+
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
