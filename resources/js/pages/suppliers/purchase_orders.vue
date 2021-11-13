@@ -387,7 +387,7 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
 
@@ -416,7 +416,7 @@
                             solo
                           >
                             <template slot="label">
-                              <div style="font-size: 14px">
+                              <div style="font-size: 12px">
                                 Incoming Date
                                 <span style="color: red">*</span>
                               </div>
@@ -455,7 +455,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Invoice Number <span style="color: red">*</span>
                           </div>
                         </template>
@@ -482,7 +482,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Supplier Name <span style="color: red">*</span>
                           </div>
                         </template>
@@ -510,7 +510,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Amount <span style="color: red">*</span>
                           </div>
                         </template>

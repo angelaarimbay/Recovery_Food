@@ -347,7 +347,7 @@
                       solo
                     >
                       <template slot="label">
-                        <div style="font-size: 14px">
+                        <div style="font-size: 12px">
                           Quantity <span style="color: red">*</span>
                         </div>
                       </template>
@@ -605,7 +605,7 @@
                   @keydown="paymentKeydown($event)"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Payment</div>
+                    <div style="font-size: 12px">Payment</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -627,7 +627,7 @@
                   @keydown="discountKeydown($event)"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Discount(%)</div>
+                    <div style="font-size: 12px">Discount(%)</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -642,7 +642,7 @@
                   filled
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Change</div>
+                    <div style="font-size: 12px">Change</div>
                   </template>
                 </v-text-field>
               </v-col>

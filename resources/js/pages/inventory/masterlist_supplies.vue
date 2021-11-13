@@ -319,13 +319,9 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.supplier_full`]="{ item }"
-              >{{ item.supplier.supplier_name }}
-              {{ item.supplier.description }}</template
-            >
             <template v-slot:[`item.supply_full`]="{ item }"
               >{{ item.supply_name }} {{ item.description }}</template
-            >
+            >  
             <template v-slot:[`item.exp_date`]="{ item }">
               {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
             >
@@ -421,7 +417,7 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
 
@@ -435,9 +431,10 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Status <span style="color: red">*</span>
                           </div>
                         </template>
@@ -453,18 +450,19 @@
                       md="12"
                     >
                       <v-select
-                        :rules="formRulesNumberRange"
+                        :rules="formRules1"
                         v-model="form.supplier"
                         dense
                         :items="supplierlist"
                         item-text="supplier_name"
-                        item-value="id"
+                        return-object 
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Supplier <span style="color: red">*</span>
                           </div>
                         </template>
@@ -489,9 +487,10 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Supply Category <span style="color: red">*</span>
                           </div>
                         </template>
@@ -517,16 +516,24 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Supply Name <span style="color: red">*</span>
                           </div>
                         </template>
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="tfield py-0" cols="12" xl="7" lg="7" sm="7" md="7">
+                    <v-col
+                      class="tfield py-0"
+                      cols="12"
+                      xl="7"
+                      lg="7"
+                      sm="7"
+                      md="7"
+                    >
                       <v-text-field
                         :rules="formRulesDesc"
                         v-model="form.description"
@@ -538,14 +545,22 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Description</div>
+                          <div style="font-size: 12px">Description</div>
                         </template>
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="tfield py-0" cols="12" xl="5" lg="5" sm="5" md="5">
+                    <v-col
+                      class="tfield py-0"
+                      cols="12"
+                      xl="5"
+                      lg="5"
+                      sm="5"
+                      md="5"
+                    >
                       <v-select
                         :items="unit"
                         :rules="formRulesUnit"
@@ -554,16 +569,24 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Unit <span style="color: red">*</span>
                           </div>
                         </template>
                       </v-select>
                     </v-col>
 
-                    <v-col class="tfield py-0" cols="12" xl="7" lg="7" sm="7" md="7">
+                    <v-col
+                      class="tfield py-0"
+                      cols="12"
+                      xl="7"
+                      lg="7"
+                      sm="7"
+                      md="7"
+                    >
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.net_price"
@@ -577,16 +600,24 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Net Price <span style="color: red">*</span>
                           </div>
                         </template>
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="tfield py-0" cols="12" xl="5" lg="5" sm="5" md="5">
+                    <v-col
+                      class="tfield py-0"
+                      cols="12"
+                      xl="5"
+                      lg="5"
+                      sm="5"
+                      md="5"
+                    >
                       <v-layout align-center>
                         <v-text-field
                           :rules="formRulesVAT"
@@ -598,9 +629,10 @@
                           background-color="white"
                           flat
                           solo
+                          style="font-size: 12px"
                         >
                           <template slot="label">
-                            <div style="font-size: 14px">VAT</div>
+                            <div style="font-size: 12px">VAT</div>
                           </template>
                         </v-text-field>
 
@@ -625,12 +657,19 @@
                     >
                       <v-text-field disabled outlined clearable dense>
                         <template slot="label">
-                          <div style="font-size: 14px">Price w/o VAT</div>
+                          <div style="font-size: 12px">Price w/o VAT</div>
                         </template>
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="tfield py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="tfield py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="6"
+                      md="6"
+                    >
                       <v-text-field
                         :rules="formRulesOthers"
                         v-model="form.lead_time"
@@ -644,13 +683,21 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Lead Time</div>
+                          <div style="font-size: 12px">Lead Time</div>
                         </template>
                       </v-text-field>
                     </v-col>
-                    <v-col class="tfield py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="tfield py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="6"
+                      md="6"
+                    >
                       <v-text-field
                         :rules="formRulesOthers"
                         v-model="form.minimum_order_quantity"
@@ -662,13 +709,21 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Min Order Qty</div>
+                          <div style="font-size: 12px">Min Order Qty</div>
                         </template>
                       </v-text-field>
                     </v-col>
-                    <v-col class="tfield py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="tfield py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="6"
+                      md="6"
+                    >
                       <v-text-field
                         :rules="formRulesOthers"
                         v-model="form.order_frequency"
@@ -682,13 +737,21 @@
                         background-color="white"
                         flat
                         solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Order Frequency</div>
+                          <div style="font-size: 12px">Order Frequency</div>
                         </template>
                       </v-text-field>
                     </v-col>
-                    <v-col class="tfield py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col
+                      class="tfield py-0"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      sm="6"
+                      md="6"
+                    >
                       <v-menu
                         v-model="menu"
                         :close-on-content-click="false"
@@ -702,7 +765,7 @@
                         <template v-slot:activator="{ on }">
                           <v-text-field
                             v-model="form.exp_date"
-                            label="Expiration Date"
+                            label=""
                             readonly
                             v-on="on"
                             class="py-0"
@@ -711,7 +774,12 @@
                             background-color="white"
                             flat
                             solo
-                          ></v-text-field>
+                            style="font-size: 12px"
+                          >
+                            <template slot="label">
+                              <div style="font-size: 12px">Expiration Date</div>
+                            </template>
+                          </v-text-field>
                         </template>
                         <v-date-picker
                           v-model="form.exp_date"
@@ -852,6 +920,7 @@ export default {
           v
         ) || "This field must have a valid value",
     ],
+    formRules1: [(v) => !!v || "This is required"],
     // Form Rules
     formRulesUnit: [(v) => (!!v && v.length >= 2) || "This is required"],
     formRulesDesc: [
@@ -889,7 +958,7 @@ export default {
         { name: "Inactive", id: 0 },
       ],
       supply_name: "",
-      supplier: "",
+      supplier: null,
       category: "",
       description: "",
       unit: "",
@@ -919,7 +988,7 @@ export default {
       },
       {
         text: "SUPPLIER",
-        value: "supplier_full",
+        value: "supplier.supplier_name",
         filterable: false,
         class: "black--text",
       },
@@ -1178,7 +1247,7 @@ export default {
         });
     },
     async suppliers() {
-      await axios.get("/api/isupp/suppliers", {}).then((result) => {
+      await axios.get("/api/msupp/suppliers", {}).then((result) => {
         this.supplierlist = result.data;
       });
     },
@@ -1243,7 +1312,8 @@ export default {
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
-      this.form.supplier = row.supplier.id;
+       
+      this.form.supplier = row.supplier;
       this.form.id = row.id;
       this.form.status = row.status;
       this.form.category = row.category.id;

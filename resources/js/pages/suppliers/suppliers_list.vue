@@ -306,7 +306,7 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
 
@@ -322,7 +322,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Status <span style="color: red">*</span>
                           </div>
                         </template>
@@ -351,7 +351,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Supplier Name <span style="color: red">*</span>
                           </div>
                         </template>
@@ -380,7 +380,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Description <span style="color: red">*</span>
                           </div>
                         </template>
@@ -409,7 +409,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Contact Number <span style="color: red">*</span>
                           </div>
                         </template>
@@ -438,7 +438,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Contact Person <span style="color: red">*</span>
                           </div>
                         </template>
@@ -467,7 +467,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Address <span style="color: red">*</span>
                           </div>
                         </template>

@@ -105,7 +105,7 @@
                     solo
                   >
                     <template slot="label">
-                      <div style="font-size: 14px">
+                      <div style="font-size: 12px">
                         Role Name <span style="color: red">*</span>
                       </div>
                     </template>
@@ -125,7 +125,7 @@
                     solo
                   >
                     <template slot="label">
-                      <div style="font-size: 14px">Role Description</div>
+                      <div style="font-size: 12px">Role Description</div>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -192,7 +192,7 @@
                     dense
                   >
                     <template slot="label">
-                      <div style="font-size: 14px">
+                      <div style="font-size: 12px">
                         Permission Name <span style="color: red">*</span>
                       </div>
                     </template>
@@ -207,7 +207,7 @@
                     dense
                   >
                     <template slot="label">
-                      <div style="font-size: 14px">Permission Description</div>
+                      <div style="font-size: 12px">Permission Description</div>
                     </template>
                   </v-text-field>
                 </v-col>

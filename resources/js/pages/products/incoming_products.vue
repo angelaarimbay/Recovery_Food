@@ -414,7 +414,7 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
 
@@ -443,7 +443,7 @@
                             solo
                           >
                             <template slot="label">
-                              <div style="font-size: 14px">
+                              <div style="font-size: 12px">
                                 Incoming Date <span style="color: red">*</span>
                               </div>
                             </template>
@@ -474,7 +474,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Product Category <span style="color: red">*</span>
                           </div>
                         </template>
@@ -495,7 +495,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Sub Category <span style="color: red">*</span>
                           </div>
                         </template>
@@ -522,7 +522,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Product Name <span style="color: red">*</span>
                           </div>
                         </template>
@@ -578,7 +578,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Quantity <span style="color: red">*</span>
                           </div>
                         </template>

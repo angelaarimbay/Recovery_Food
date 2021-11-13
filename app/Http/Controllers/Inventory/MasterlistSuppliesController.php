@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Inventory;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_suppcat;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class MasterlistSuppliesController extends Controller
 {
@@ -19,41 +19,40 @@ class MasterlistSuppliesController extends Controller
     public function save(Request $data)
     {
         $table = tbl_masterlistsupp::where("status", "!=", null);
-        
-      
+
         $table_clone = clone $table;
-        if ($table_clone->where("id", $data->id)->count()>0) {
+        if ($table_clone->where("id", $data->id)->count() > 0) {
             // Update
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
-                ["status"=>$data->status,
-                 "category"=>$data->category,
-                 "supplier"=>$data->supplier,
-                 "supply_name"=>$data->supply_name,
-                 "description"=>$data->description,
-                 "unit"=>$data->unit,
-                 "net_price"=>$data->net_price,
-                 "vat"=>$data->vat,
-                 "vatable"=>$data->vatable,
-                 "exp_date"=>$data->exp_date,
-                 "lead_time"=>$data->lead_time,
-                 "order_frequency"=>$data->order_frequency,
-                 "minimum_order_quantity"=>$data->minimum_order_quantity,
+                ["status" => $data->status,
+                    "category" => $data->category,
+                    "supplier" => $data->supplier,
+                    "supply_name" => $data->supply_name,
+                    "description" => $data->description,
+                    "unit" => $data->unit,
+                    "net_price" => $data->net_price,
+                    "vat" => $data->vat,
+                    "vatable" => $data->vatable,
+                    "exp_date" => $data->exp_date,
+                    "lead_time" => $data->lead_time,
+                    "order_frequency" => $data->order_frequency,
+                    "minimum_order_quantity" => $data->minimum_order_quantity,
                 ]
             );
         } else {
-            $supply='';
+            $supply = '';
             if (is_array($data->supply_name)) {
                 $supply = $data->supply_name['supply_name'];
             } else {
                 $supply = $data->supply_name;
             }
-  
+
             // return  $data->except('supply_name') ;
             tbl_masterlistsupp::create(
                 $data->except('supply_name') +
                 [
-                 'supply_name'=>$supply] //purpose is when same item sum quantity
+                    'supply_name' => $supply]//purpose is when same item sum quantity
             );
         }
         return 0;
@@ -65,24 +64,27 @@ class MasterlistSuppliesController extends Controller
 
     public function get(Request $t)
     {
-        $where = ($t->category? "category !=0  and category=".$t->category:"category != 0");
-        
+        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0");
+
         // return $where;
         $table = tbl_masterlistsupp::with("category", 'supplier')
-        ->whereRaw($where);
- 
+            ->whereRaw($where);
+
         if ($t->search) { // If has value
-            $table = $table->where("supply_name", "like", "%".$t->search."%");
+            $table = $table->where("supply_name", "like", "%" . $t->search . "%");
         }
-        
 
         $return = [];
         foreach ($table->get() as $key => $value) {
             $temp = [];
-            $temp['row']  = $key+1;
+            $temp['row'] = $key + 1;
             $temp['id'] = $value->id;
             $temp['status'] = $value->status;
-            $temp['supplier'] = $value->supplier_name_details;
+            $temp['supplier'] =
+            $data = DB::table("tbl_supplists")
+                ->selectRaw(' CONCAT(supplier_name , " ", COALESCE(description,"")) as supplier_name, phone_number, contact_person, address, description, id')
+                ->where("id", $value->supplier)
+                ->first();
             $temp['category'] = $value->category_details;
             $temp['unit'] = $value->unit;
             $temp['vat'] = $value->vat;
@@ -99,12 +101,12 @@ class MasterlistSuppliesController extends Controller
             array_push($return, $temp);
         }
 
-        $items =   Collection::make($return);
+        $items = Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
     public function suppCat()
     {
-        return tbl_suppcat::select(["supply_cat_name","id"])->where("status", 1)->get();
+        return tbl_suppcat::select(["supply_cat_name", "id"])->where("status", 1)->get();
     }
     public function validateItem(Request $t)
     {
@@ -118,5 +120,12 @@ class MasterlistSuppliesController extends Controller
     {
         //  ->where("date", date("Y-m-d", strtotime($t->date) ) )
         return tbl_masterlistsupp::where("id", $t->id)->sum("net_price");
+    }
+    public function suppliers()
+    {
+        $data = DB::table("tbl_supplists")
+            ->selectRaw(' CONCAT(supplier_name , " ", COALESCE(description,"")) as supplier_name, description, id')
+            ->get();
+        return $data;
     }
 }

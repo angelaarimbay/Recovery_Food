@@ -420,7 +420,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
-            class="tbl table-striped"
+            class="tbl table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -433,9 +433,6 @@
             <template v-slot:[`item.supply_name.net_price`]="{ item }"
               >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
             </template>
-            <template v-slot:[`item.supply_name`]="{ item }">{{
-              item.supply_name.supply_name
-            }}</template>
             <template v-slot:[`item.outgoing_date`]="{ item }">
               {{ getFormatDate(item.outgoing_date, "YYYY-MM-DD") }}</template
             >
@@ -509,7 +506,7 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
 
@@ -538,7 +535,7 @@
                             solo
                           >
                             <template slot="label">
-                              <div style="font-size: 14px">
+                              <div style="font-size: 12px">
                                 Outgoing Date <span style="color: red">*</span>
                               </div>
                             </template>
@@ -575,7 +572,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Requesting Branch <span style="color: red">*</span>
                           </div>
                         </template>
@@ -603,7 +600,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Supply Category <span style="color: red">*</span>
                           </div>
                         </template>
@@ -631,7 +628,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Supply Name <span style="color: red">*</span>
                           </div>
                         </template>
@@ -699,7 +696,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Supply Quantity <span style="color: red">*</span>
                           </div>
                         </template>
@@ -1027,7 +1024,7 @@
                         clearable
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Quantity <span style="color: red">*</span>
                           </div>
                         </template>
@@ -1200,7 +1197,7 @@ export default {
       },
       {
         text: "SUPPLY NAME",
-        value: "supply_name",
+        value: "supply_name.supply_name",
         class: "black--text",
       },
       {

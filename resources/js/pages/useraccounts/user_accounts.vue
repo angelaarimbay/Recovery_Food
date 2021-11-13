@@ -296,7 +296,7 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -315,7 +315,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             First Name <span style="color: red">*</span>
                           </div>
                         </template>
@@ -336,7 +336,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Last Name <span style="color: red">*</span>
                           </div>
                         </template>
@@ -363,7 +363,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Email Address <span style="color: red">*</span>
                           </div>
                         </template>
@@ -391,7 +391,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Contact Number <span style="color: red">*</span>
                           </div>
                         </template>
@@ -423,7 +423,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Password <span style="color: red">*</span>
                           </div>
                         </template>
@@ -461,7 +461,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Confirm Pass <span style="color: red">*</span>
                           </div>
                         </template>
@@ -489,7 +489,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             User Role <span style="color: red">*</span>
                           </div>
                         </template>
@@ -516,7 +516,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Branch <span style="color: red">*</span>
                           </div>
                         </template>

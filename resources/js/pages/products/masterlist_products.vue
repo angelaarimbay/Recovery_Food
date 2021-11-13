@@ -344,7 +344,7 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
 
@@ -360,7 +360,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Status <span style="color: red">*</span>
                           </div>
                         </template>
@@ -380,7 +380,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Product Category <span style="color: red">*</span>
                           </div>
                         </template>
@@ -400,7 +400,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Sub Category <span style="color: red">*</span>
                           </div>
                         </template>
@@ -428,7 +428,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Product Name <span style="color: red">*</span>
                           </div>
                         </template>
@@ -456,7 +456,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Description</div>
+                          <div style="font-size: 12px">Description</div>
                         </template>
                       </v-text-field>
                     </v-col>
@@ -477,7 +477,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Price <span style="color: red">*</span>
                           </div>
                         </template>
@@ -497,7 +497,7 @@
                           solo
                         >
                           <template slot="label">
-                            <div style="font-size: 14px">VAT</div>
+                            <div style="font-size: 12px">VAT</div>
                           </template>
                         </v-text-field>
 
@@ -530,7 +530,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Price w/ VAT</div>
+                          <div style="font-size: 12px">Price w/ VAT</div>
                         </template>
                       </v-text-field>
                     </v-col>

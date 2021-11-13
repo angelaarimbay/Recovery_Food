@@ -452,7 +452,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Type <span style="color: red">*</span>
                           </div>
                         </template>
@@ -469,7 +469,7 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
 
@@ -485,7 +485,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Status <span style="color: red">*</span>
                           </div>
                         </template>
@@ -513,7 +513,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Branch Name <span style="color: red">*</span>
                           </div>
                         </template>
@@ -541,7 +541,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Location <span style="color: red">*</span>
                           </div>
                         </template>
@@ -569,7 +569,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Contact Number <span style="color: red">*</span>
                           </div>
                         </template>
@@ -596,7 +596,7 @@
                         solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">
+                          <div style="font-size: 12px">
                             Email Address <span style="color: red">*</span>
                           </div>
                         </template>
@@ -615,7 +615,7 @@
                       sm="12"
                       md="12"
                     >
-                      <div style="font-size: 14px">Image Attachment:</div>
+                      <div style="font-size: 12px">Image Attachment:</div>
                       <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
                       <!-- Check if has image, then display the image -->
                       <div v-if="form.branch_image">

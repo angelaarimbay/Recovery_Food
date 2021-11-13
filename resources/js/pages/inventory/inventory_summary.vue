@@ -178,7 +178,7 @@
             :loading="progressbar"
             hide-default-footer
             ref="progress"
-            class="mt-2 table-striped"
+            class="mt-2 table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
