@@ -152,9 +152,9 @@
               rounded
             ></v-progress-linear>
 
-            <template v-slot:[`item.supply_name`]="{ item }">
-              {{ item.supply_name }} {{ item.description }}</template
-            >
+            <template v-slot:[`item.request_date`]="{ item }">
+              {{ getFormatDate(item.request_date, "YYYY-MM-DD hh:mm:ss A") }}
+            </template>
 
             <template v-slot:[`item.status`]="{ item }">
               <div v-if="item.status == 1" class="text-warning">Pending</div>
@@ -205,7 +205,7 @@
                     <v-btn
                       icon
                       color="red darken-2"
-                      @click="cancelRequest(item)"
+                      @click="validate('cancelreq', item)"
                       small
                       :x-small="$vuetify.breakpoint.smAndDown"
                       v-on="data.on"
@@ -218,7 +218,9 @@
               </div>
             </template>
           </v-data-table>
-          <div class="text-center pt-2">
+
+          <!-- Paginate -->
+          <div class="pbutton text-center pt-2">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -344,7 +346,7 @@
                   :headers="headers1"
                   :items="table1"
                   ref="progress"
-                  class="table-striped mt-4"
+                  class="table-striped border mt-4"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -556,7 +558,7 @@
                 </v-col>
               </v-row>
               <v-row>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                <v-col class="tfield py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                   <v-text-field
                     :rules="formRulesQuantity"
                     v-model="quantity"
@@ -609,6 +611,17 @@
 
 
 <style>
+.pbutton .v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.pbutton .v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.pbutton .v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
+
 .v-application .tfield .white {
   border: 1px solid #bdbdbd !important;
 }
@@ -764,6 +777,7 @@ export default {
     itemsPerPage: 5,
     search: "",
     search1: "",
+    cancel_select: [],
   }),
 
   created() {
@@ -796,7 +810,7 @@ export default {
       }
     },
 
-    validate(type) {
+    validate(type, data = "") {
       switch (type) {
         case "cancel":
           this.snackbar2 = {
@@ -816,6 +830,16 @@ export default {
             type: "send",
           };
           break;
+        case "cancelreq":
+          this.cancel_select = data;
+          this.snackbar2 = {
+            active: true,
+            iconText: "comment-question-outline",
+            iconColor: "warning",
+            message: "Do you want to cancel?",
+            type: "cancelreq",
+          };
+          break;
         default:
           break;
       }
@@ -828,6 +852,9 @@ export default {
           break;
         case "send":
           this.storeRequest();
+          break;
+        case "cancelreq":
+          this.cancelRequest();
           break;
         default:
           break;
@@ -1019,10 +1046,13 @@ export default {
         message: "Successfully cancelled.",
       };
     },
-
-    async cancelRequest(ref) {
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+    async cancelRequest() {
       await axios
-        .post("/api/requestsupp/request/cancel", ref)
+        .post("/api/requestsupp/request/cancel", this.cancel_select)
         .then((result) => {
           //if the value is true then save to database
           this.snackbar = {

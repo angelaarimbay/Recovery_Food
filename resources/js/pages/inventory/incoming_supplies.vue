@@ -159,7 +159,7 @@
                       >Search</span
                     ></v-col
                   >
-                  <v-col cols="tfield 8">
+                  <v-col cols="8">
                     <v-card-actions class="px-0">
                       <v-text-field
                         v-model="search"
@@ -938,7 +938,6 @@ export default {
               found += 1;
             }
           } else {
-            console.log(key);
             found += 1;
           }
         }

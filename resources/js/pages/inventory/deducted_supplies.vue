@@ -328,6 +328,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear

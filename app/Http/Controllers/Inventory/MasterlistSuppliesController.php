@@ -27,7 +27,7 @@ class MasterlistSuppliesController extends Controller
             $table_clone->where("id", $data->id)->update(
                 ["status" => $data->status,
                     "category" => $data->category,
-                    "supplier" => $data->supplier,
+                    "supplier" => $data->supplier['id'],
                     "supply_name" => $data->supply_name,
                     "description" => $data->description,
                     "unit" => $data->unit,
@@ -50,9 +50,9 @@ class MasterlistSuppliesController extends Controller
 
             // return  $data->except('supply_name') ;
             tbl_masterlistsupp::create(
-                $data->except('supply_name') +
-                [
-                    'supply_name' => $supply]//purpose is when same item sum quantity
+                $data->except('supply_name', 'supplier') +
+                ['supply_name' => $supply,
+                    "supplier" => $data->supplier['id']]//purpose is when same item sum quantity
             );
         }
         return 0;
@@ -68,6 +68,7 @@ class MasterlistSuppliesController extends Controller
 
         // return $where;
         $table = tbl_masterlistsupp::with("category", 'supplier')
+            ->selectRaw("*, case when exp_date is null THEN 0 when datediff(exp_date,current_timestamp) > 8 THEN null ELSE datediff(exp_date,current_timestamp) end as days")
             ->whereRaw($where);
 
         if ($t->search) { // If has value
@@ -75,7 +76,7 @@ class MasterlistSuppliesController extends Controller
         }
 
         $return = [];
-        foreach ($table->get() as $key => $value) {
+        foreach ($table->orderByRaw("  days desc ")->get() as $key => $value) {
             $temp = [];
             $temp['row'] = $key + 1;
             $temp['id'] = $value->id;
@@ -83,8 +84,7 @@ class MasterlistSuppliesController extends Controller
             $temp['supplier'] =
             $data = DB::table("tbl_supplists")
                 ->selectRaw(' CONCAT(supplier_name , " ", COALESCE(description,"")) as supplier_name, phone_number, contact_person, address, description, id')
-                ->where("id", $value->supplier)
-                ->first();
+                ->where("id", $value->supplier)->where("status", 1)->first();
             $temp['category'] = $value->category_details;
             $temp['unit'] = $value->unit;
             $temp['vat'] = $value->vat;
@@ -98,6 +98,9 @@ class MasterlistSuppliesController extends Controller
             $temp['minimum_order_quantity'] = $value->minimum_order_quantity;
             $temp['without_vat_price'] = number_format($value->without_vat_price, 2);
             $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
+            $temp['days'] = $value->days;
+            $temp['exp_date'] = $value->exp_date;
+
             array_push($return, $temp);
         }
 
@@ -124,7 +127,7 @@ class MasterlistSuppliesController extends Controller
     public function suppliers()
     {
         $data = DB::table("tbl_supplists")
-            ->selectRaw(' CONCAT(supplier_name , " ", COALESCE(description,"")) as supplier_name, description, id')
+            ->selectRaw(' CONCAT(supplier_name , " ", COALESCE(description,"")) as supplier_name, phone_number, contact_person, address, description, id')
             ->get();
         return $data;
     }

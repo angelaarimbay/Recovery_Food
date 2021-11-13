@@ -923,8 +923,10 @@
                   >
                     <v-simple-checkbox
                       :value="
-                        (item.status !== 3 && isSelected) &&
-                        (item.status !== 2 && isSelected)
+                        item.status !== 3 &&
+                        isSelected &&
+                        item.status !== 2 &&
+                        isSelected
                       "
                       :readonly="item.status == 3 || item.status == 2"
                       :disabled="item.status == 3 || item.status == 2"

@@ -304,6 +304,8 @@
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
+            id="table1"
+            :item-class="itemRowBackground"
             :page.sync="page"
             ref="progress"
             :items-per-page="itemsPerPage"
@@ -319,12 +321,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.supply_full`]="{ item }"
+            <template v-slot:[`item.supply_name`]="{ item }"
               >{{ item.supply_name }} {{ item.description }}</template
-            >  
-            <template v-slot:[`item.exp_date`]="{ item }">
-              {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
             >
+
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -455,7 +455,7 @@
                         dense
                         :items="supplierlist"
                         item-text="supplier_name"
-                        return-object 
+                        return-object
                         background-color="white"
                         flat
                         solo
@@ -830,6 +830,12 @@
 </template>
 
 <style>
+#table1 .style-1 {
+  background-color: #ffa726;
+}
+#table1 .style-2 {
+  background-color: #E57373;
+}
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
@@ -992,40 +998,41 @@ export default {
         filterable: false,
         class: "black--text",
       },
+
       {
         text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
         class: "black--text",
       },
-      { text: "SUPPLY NAME", value: "supply_full", class: "black--text" },
-      { text: "UNIT", value: "unit", filterable: false, class: "black--text" },
+      { text: "SUPPLY NAME", value: "supply_name", class: "black--text" },
+      { text: "UNIT", value: "unit", sortable: true, class: "black--text" },
       {
         text: "NET PRICE",
         value: "format_net_price",
         align: "right",
-        filterable: false,
+        sortable: true,
         class: "black--text",
       },
       {
         text: "WITH VAT",
         value: "with_vat_price",
         align: "right",
-        filterable: false,
+        sortable: true,
         class: "black--text",
       },
       {
         text: "WITHOUT VAT",
         value: "without_vat_price",
         align: "right",
-        filterable: false,
+        sortable: true,
         class: "black--text",
       },
       {
         text: "STATUS",
         value: "status",
         align: "center",
-        filterable: false,
+        sortable: true,
         class: "black--text",
       },
       {
@@ -1079,6 +1086,18 @@ export default {
   },
 
   methods: {
+    itemRowBackground: function (item) {
+      if (item.days != null) {
+        if (item.days < 8) {
+          if (item.days < 1) {
+            return "style-2";
+          }
+
+          return "style-1";
+        }
+      }
+    },
+
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
@@ -1168,7 +1187,7 @@ export default {
             if (this.currentdata.supplier) {
               if (
                 parseInt(this.currentdata.supplier.id) !=
-                parseInt(this.form.supplier)
+                parseInt(this.form.supplier.id)
               ) {
                 found += 1;
               }
@@ -1309,10 +1328,15 @@ export default {
       this.sum();
     },
 
+    getFormatCurrency(e, format) {
+      const numbr = numeral(e);
+      return numbr.format(format);
+    },
+
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
-       
+
       this.form.supplier = row.supplier;
       this.form.id = row.id;
       this.form.status = row.status;
@@ -1320,13 +1344,14 @@ export default {
       this.form.supply_name = row.supply_name;
       this.form.description = row.description;
       this.form.unit = row.unit;
-      this.form.net_price = row.net_price;
+      this.form.net_price = this.getFormatCurrency(row.net_price, "0.00");
       this.form.vat = row.vat;
       this.vat = row.vatable == 0 ? false : true;
       this.temp_vat = row.vat;
       this.form.lead_time = row.lead_time;
       this.form.order_frequency = row.order_frequency;
       this.form.minimum_order_quantity = row.minimum_order_quantity;
+
       this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
 
       this.dialog = true;
