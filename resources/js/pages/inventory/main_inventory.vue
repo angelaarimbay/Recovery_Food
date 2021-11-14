@@ -212,6 +212,7 @@
 
           <!-- Table -->
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
@@ -241,10 +242,6 @@
             <template v-slot:[`item.net_price`]="{ item }"
               >{{ getFormatCurrency(item.net_price, "0,0.00") }}
             </template>
-            <template v-slot:[`item.supply_full`]="{ item }"
-              >{{ item.supply_name.supply_name }}
-              {{ item.supply_name.description }}</template
-            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -369,12 +366,8 @@
           </div>
 
           <v-dialog v-model="viewdialog" max-width="900px">
-            <v-card id="dialog" class="bgcolor">
-              <v-toolbar
-                dense
-                dark
-                class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-              >
+            <v-card tile id="dialog" class="pa-3">
+              <v-toolbar dark dense flat rounded class="red darken-3">
                 Main Inventory
                 <v-spacer></v-spacer>
                 <v-icon
@@ -385,610 +378,606 @@
                 </v-icon>
               </v-toolbar>
 
-              <v-card flat tile max-height="500" style="overflow-y: auto">
-                <v-card-text class="py-2">
-                  <v-card-text>
-                    <!-- Data -->
-                    <v-row>
-                      <v-col class="px-2">
-                        Category: <strong>{{ currentdata.category }}</strong>
-                        <br />
-                        Supply Name:
-                        <strong
-                          >{{ currentdata.supply_name }}
-                          {{ currentdata.description }}</strong
-                        >
-                        <br />
-                        Unit: <strong>{{ currentdata.unit }}</strong> <br />
-                        Net Price:
-                        <strong>{{
-                          getFormatCurrency(currentdata.net_price, "0,0.00")
-                        }}</strong>
-                        <br />
-                      </v-col>
-                    </v-row>
-                    <v-row
-                      class="border rounded"
-                      :class="{
-                        'text-caption': $vuetify.breakpoint.smAndDown,
-                      }"
+              <v-card-text class="py-2">
+                <!-- Data -->
+                <v-row>
+                  <v-col class="px-0">
+                    Category: <strong>{{ currentdata.category }}</strong>
+                    <br />
+                    Supply Name:
+                    <strong
+                      >{{ currentdata.supply_name }}
+                      {{ currentdata.description }}</strong
                     >
-                      <v-col cols="12" xl="6" lg="6" md="6" sm="6">
-                        <v-row>
-                          <v-col
-                            class="py-1 px-0"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                          ></v-col>
-                          <v-col
-                            class="
-                              py-1
-                              px-0
-                              text-uppercase
-                              font-weight-bold
-                              text-center
-                            "
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            Qty
-                          </v-col>
-                          <v-col
-                            class="
-                              py-1
-                              px-0
-                              text-uppercase
-                              font-weight-bold
-                              text-center
-                            "
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            Value
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Beginning Inventory</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.begining_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.begining_a }}</v-col
-                          >
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Incoming Supplies</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.incoming_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.incoming_a }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Total Stocks</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.total_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.total_a }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Outgoing Supplies</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.outgoing_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.outgoing_a }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Stocks On Hand</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.onhand_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.onhand_a }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Average Daily Usage</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.average_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.average_a }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Lead Time</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          ></v-col>
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.lead_time }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Order Point</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          ></v-col>
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.orderpoint }}
-                          </v-col>
-                        </v-row>
+                    <br />
+                    Unit: <strong>{{ currentdata.unit }}</strong> <br />
+                    Net Price:
+                    <strong>{{
+                      getFormatCurrency(currentdata.net_price, "0,0.00")
+                    }}</strong>
+                    <br />
+                  </v-col>
+                </v-row>
+                <v-row
+                  :class="{
+                    'text-caption': $vuetify.breakpoint.smAndDown,
+                  }"
+                >
+                  <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                    <v-row>
+                      <v-col
+                        class="py-1 px-0"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                      ></v-col>
+                      <v-col
+                        class="
+                          py-1
+                          px-0
+                          text-uppercase
+                          font-weight-bold
+                          text-center
+                        "
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        Qty
                       </v-col>
-                      <v-col cols="12" xl="6" lg="6" md="6" sm="6">
-                        <v-row>
-                          <v-col
-                            class="py-1 hidden-sm-and-down"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                          ></v-col>
-                          <v-col
-                            class="
-                              py-1
-                              px-0
-                              text-uppercase
-                              font-weight-bold
-                              text-center
-                              hidden-sm-and-down
-                            "
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            Qty
-                          </v-col>
-                          <v-col
-                            class="
-                              py-1
-                              px-0
-                              text-uppercase
-                              font-weight-bold
-                              text-center
-                              hidden-sm-and-down
-                            "
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            Value
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Minimum Order Qty</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          ></v-col>
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.minimum_order_quantity }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Order Qty</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          ></v-col>
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.ordr }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Order Frequency</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          ></v-col>
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.order_frequency }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Trigger Point</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          ></v-col>
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.triggerpoint }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Ending Inventory</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.ending_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.ending_a }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Consumption</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.consumption_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.consumption_a }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Ideal Inventory</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.ideal_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.ideal_a }}
-                          </v-col>
-                        </v-row>
-                        <v-row>
-                          <v-col
-                            class="py-1 px-2 text-uppercase font-weight-bold"
-                            cols="6"
-                            xl="6"
-                            lg="6"
-                            md="6"
-                            sm="6"
-                            >Variance</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                            >{{ currentdata.variance_q }}</v-col
-                          >
-                          <v-col
-                            class="py-1 px-2 text-right"
-                            cols="3"
-                            xl="3"
-                            lg="3"
-                            md="3"
-                            sm="3"
-                          >
-                            {{ currentdata.variance_a }}
-                          </v-col>
-                        </v-row>
+                      <v-col
+                        class="
+                          py-1
+                          px-0
+                          text-uppercase
+                          font-weight-bold
+                          text-center
+                        "
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        Value
                       </v-col>
                     </v-row>
-                  </v-card-text>
-                </v-card-text>
-              </v-card>
-
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Beginning Inventory</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.begining_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.begining_a }}</v-col
+                      >
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Incoming Supplies</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.incoming_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.incoming_a }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Total Stocks</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.total_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.total_a }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Outgoing Supplies</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.outgoing_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.outgoing_a }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Stocks On Hand</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.onhand_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.onhand_a }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Average Daily Usage</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.average_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.average_a }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Lead Time</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      ></v-col>
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.lead_time }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Order Point</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      ></v-col>
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.orderpoint }}
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                    <v-row>
+                      <v-col
+                        class="py-1 hidden-sm-and-down"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                      ></v-col>
+                      <v-col
+                        class="
+                          py-1
+                          px-0
+                          text-uppercase
+                          font-weight-bold
+                          text-center
+                          hidden-sm-and-down
+                        "
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        Qty
+                      </v-col>
+                      <v-col
+                        class="
+                          py-1
+                          px-0
+                          text-uppercase
+                          font-weight-bold
+                          text-center
+                          hidden-sm-and-down
+                        "
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        Value
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Minimum Order Qty</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      ></v-col>
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.minimum_order_quantity }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Order Qty</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      ></v-col>
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.ordr }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Order Frequency</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      ></v-col>
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.order_frequency }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Trigger Point</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      ></v-col>
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.triggerpoint }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Ending Inventory</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.ending_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.ending_a }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Consumption</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.consumption_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.consumption_a }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Ideal Inventory</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.ideal_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.ideal_a }}
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col
+                        class="py-1 px-2 text-uppercase font-weight-bold"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        md="6"
+                        sm="6"
+                        >Variance</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                        >{{ currentdata.variance_q }}</v-col
+                      >
+                      <v-col
+                        class="py-1 px-2 text-right"
+                        cols="3"
+                        xl="3"
+                        lg="3"
+                        md="3"
+                        sm="3"
+                      >
+                        {{ currentdata.variance_a }}
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-divider class="mt-4 mb-0"></v-divider>
+              <!-- Dialog Form Buttons -->
+              <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
-                  style="text-transform: none"
-                  :small="$vuetify.breakpoint.smAndDown"
                   depressed
+                  :small="$vuetify.breakpoint.smAndDown"
                   dark
                   @click="closeViewDialog"
+                  text
                 >
                   Close
                 </v-btn>
@@ -1002,15 +991,28 @@
 </template>
 
 <style>
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-list-item__content {

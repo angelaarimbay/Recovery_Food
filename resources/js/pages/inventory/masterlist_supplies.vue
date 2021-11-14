@@ -67,7 +67,7 @@
 
     <!-- Main Card -->
     <v-card elevation="2" class="mt-2" style="border-radius: 10px">
-      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-0">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
@@ -324,7 +324,6 @@
             <template v-slot:[`item.supply_name`]="{ item }"
               >{{ item.supply_name }} {{ item.description }}</template
             >
-
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -335,8 +334,8 @@
 
               <v-chip
                 style="justify-content: center"
-                :style="widthSize"
-                :small="$vuetify.breakpoint.smAndDown"
+                small
+                :x-small="$vuetify.breakpoint.smAndDown"
                 :color="
                   item.status == '1'
                     ? '#43A047'
@@ -346,7 +345,7 @@
                 "
                 dark
               >
-                {{ item.status == 1 ? "Active" : "Inactive" }}
+                {{ item.status == 1 ? "Available" : "Unavailable" }}
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
@@ -380,423 +379,436 @@
         </v-container>
 
         <!--Dialog Form-->
-
         <v-form ref="form">
           <v-dialog
             v-model="dialog"
-            max-width="450px"
+            max-width="700px"
             persistent
             no-click-animation
           >
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Supply
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="cancel"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <v-card tile>
-              <v-card-text class="py-2">
-                <br />
-                <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                  <v-row>
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 12px">ID</div>
-                        </template>
-                      </v-text-field>
-
-                      <v-select
-                        :rules="formRulesNumberRange"
-                        v-model="form.status"
-                        dense
-                        :items="status"
-                        item-text="name"
-                        item-value="id"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
+            <v-card tile class="pa-3">
+              <v-toolbar dark dense flat rounded class="red darken-3">
+                Supply
+                <v-spacer></v-spacer>
+                <v-icon text @click="cancel">mdi-close </v-icon>
+              </v-toolbar>
+              <v-container class="px-1">
+                <v-row no-gutters>
+                  <v-col
+                    cols="12"
+                    xl="6"
+                    lg="6"
+                    md="6"
+                    sm="12"
+                    class="pl-0 pr-0 pr-lg-2 pr-md-2 pr-sm-2 py-4"
+                  >
+                    <v-row>
+                      <v-col
+                        class="tfield py-0"
+                        cols="12"
+                        xl="12"
+                        lg="12"
+                        sm="12"
+                        md="12"
                       >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Status <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
+                        <v-text-field v-model="form.id" class="d-none" dense>
+                          <template slot="label">
+                            <div style="font-size: 12px">ID</div>
+                          </template>
+                        </v-text-field>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-select
-                        :rules="formRules1"
-                        v-model="form.supplier"
-                        dense
-                        :items="supplierlist"
-                        item-text="supplier_name"
-                        return-object
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Supplier <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-select
-                        :rules="formRulesNumberRange"
-                        v-model="form.category"
-                        :items="suppcatlist"
-                        dense
-                        item-text="supply_cat_name"
-                        item-value="id"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Supply Category <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.supply_name"
-                        clearable
-                        dense
-                        counter
-                        @keydown="valueKeydown($event)"
-                        maxlength="35"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Supply Name <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="7"
-                      lg="7"
-                      sm="7"
-                      md="7"
-                    >
-                      <v-text-field
-                        :rules="formRulesDesc"
-                        v-model="form.description"
-                        clearable
-                        dense
-                        counter
-                        @keydown="descKeydown($event)"
-                        maxlength="35"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">Description</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="5"
-                      lg="5"
-                      sm="5"
-                      md="5"
-                    >
-                      <v-select
-                        :items="unit"
-                        :rules="formRulesUnit"
-                        v-model="form.unit"
-                        dense
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Unit <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="7"
-                      lg="7"
-                      sm="7"
-                      md="7"
-                    >
-                      <v-text-field
-                        :rules="formRulesPrice"
-                        v-model="form.net_price"
-                        clearable
-                        dense
-                        counter
-                        @keydown="numberKeydown($event)"
-                        @input="compute"
-                        @click:clear="compute"
-                        maxlength="15"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Net Price <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="5"
-                      lg="5"
-                      sm="5"
-                      md="5"
-                    >
-                      <v-layout align-center>
-                        <v-text-field
-                          :rules="formRulesVAT"
-                          v-model="temp_vat"
-                          disabled
-                          clearable
+                        <v-select
+                          :rules="formRulesNumberRange"
+                          v-model="form.status"
                           dense
-                          @keydown="numberKeydown($event)"
+                          :items="status"
+                          item-text="name"
+                          item-value="id"
                           background-color="white"
                           flat
                           solo
                           style="font-size: 12px"
                         >
                           <template slot="label">
-                            <div style="font-size: 12px">VAT</div>
+                            <div style="font-size: 12px">
+                              Status <span style="color: red">*</span>
+                            </div>
+                          </template>
+                        </v-select>
+                      </v-col>
+
+                      <v-col
+                        class="tfield py-0"
+                        cols="12"
+                        xl="12"
+                        lg="12"
+                        sm="12"
+                        md="12"
+                      >
+                        <v-select
+                          :rules="formRules1"
+                          v-model="form.supplier"
+                          dense
+                          :items="supplierlist"
+                          item-text="supplier_name"
+                          return-object
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">
+                              Supplier <span style="color: red">*</span>
+                            </div>
+                          </template>
+                        </v-select>
+                      </v-col>
+
+                      <v-col
+                        class="tfield py-0"
+                        cols="12"
+                        xl="12"
+                        lg="12"
+                        sm="12"
+                        md="12"
+                      >
+                        <v-select
+                          :rules="formRulesNumberRange"
+                          v-model="form.category"
+                          :items="suppcatlist"
+                          dense
+                          item-text="supply_cat_name"
+                          item-value="id"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">
+                              Supply Category <span style="color: red">*</span>
+                            </div>
+                          </template>
+                        </v-select>
+                      </v-col>
+
+                      <v-col
+                        class="tfield py-0"
+                        cols="12"
+                        xl="12"
+                        lg="12"
+                        sm="12"
+                        md="12"
+                      >
+                        <v-text-field
+                          :rules="formRules"
+                          v-model="form.supply_name"
+                          clearable
+                          dense
+                          counter
+                          @keydown="valueKeydown($event)"
+                          maxlength="35"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">
+                              Supply Name <span style="color: red">*</span>
+                            </div>
                           </template>
                         </v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-col>
 
-                        <v-checkbox
-                          :disabled="!disabled"
-                          v-model="vat"
-                          hide-details
-                          class="shrink pt-0 mt-0 mb-7 ml-3"
-                          color="red darken-3"
-                          @change="compute"
-                        ></v-checkbox>
-                      </v-layout>
-                    </v-col>
+                  <v-col
+                    cols="12"
+                    xl="6"
+                    lg="6"
+                    md="6"
+                    sm="12"
+                    class="pl-0 pl-xl-2 pl-lg-2 pl-md-2 pl-sm-2 pr-0 py-4"
+                  >
+                    <v-row>
+                      <v-col
+                        class="tfield py-0 pr-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <v-text-field
+                          :rules="formRulesDesc"
+                          v-model="form.description"
+                          clearable
+                          dense
+                          counter
+                          @keydown="descKeydown($event)"
+                          maxlength="35"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">Description</div>
+                          </template>
+                        </v-text-field>
+                      </v-col>
+                      <v-col
+                        class="tfield py-0 pl-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <v-select
+                          :items="unit"
+                          :rules="formRulesUnit"
+                          v-model="form.unit"
+                          dense
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">
+                              Unit <span style="color: red">*</span>
+                            </div>
+                          </template>
+                        </v-select>
+                      </v-col>
 
-                    <v-col
-                      class="tfield py-0 d-none"
-                      cols="8"
-                      xl="8"
-                      lg="8"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field disabled outlined clearable dense>
-                        <template slot="label">
-                          <div style="font-size: 12px">Price w/o VAT</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <v-col
+                        class="tfield py-0 pr-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <v-text-field
+                          :rules="formRulesPrice"
+                          v-model="form.net_price"
+                          clearable
+                          dense
+                          counter
+                          @keydown="numberKeydown($event)"
+                          @input="compute"
+                          @click:clear="compute"
+                          maxlength="15"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">
+                              Net Price <span style="color: red">*</span>
+                            </div>
+                          </template>
+                        </v-text-field>
+                      </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-text-field
-                        :rules="formRulesOthers"
-                        v-model="form.lead_time"
-                        clearable
-                        dense
-                        counter
-                        @keydown="numberKeydown($event)"
-                        @input="compute"
-                        @click:clear="compute"
-                        maxlength="5"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
+                      <v-col
+                        class="tfield py-0 pl-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
                       >
-                        <template slot="label">
-                          <div style="font-size: 12px">Lead Time</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-text-field
-                        :rules="formRulesOthers"
-                        v-model="form.minimum_order_quantity"
-                        clearable
-                        dense
-                        counter
-                        @keydown="numberKeydown($event)"
-                        maxlength="5"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">Min Order Qty</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-text-field
-                        :rules="formRulesOthers"
-                        v-model="form.order_frequency"
-                        clearable
-                        dense
-                        counter
-                        @keydown="numberKeydown($event)"
-                        @input="compute"
-                        @click:clear="compute"
-                        maxlength="5"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">Order Frequency</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
-                    >
-                      <v-menu
-                        v-model="menu"
-                        :close-on-content-click="false"
-                        :nudge-right="35"
-                        lazy
-                        transition="scale-transition"
-                        offset-y
-                        full-width
-                        min-width="290px"
-                      >
-                        <template v-slot:activator="{ on }">
+                        <v-layout align-center>
                           <v-text-field
-                            v-model="form.exp_date"
-                            label=""
-                            readonly
-                            v-on="on"
-                            class="py-0"
-                            dense
+                            :rules="formRulesVAT"
+                            v-model="temp_vat"
+                            disabled
                             clearable
+                            dense
+                            @keydown="numberKeydown($event)"
                             background-color="white"
                             flat
                             solo
                             style="font-size: 12px"
                           >
                             <template slot="label">
-                              <div style="font-size: 12px">Expiration Date</div>
+                              <div style="font-size: 12px">VAT</div>
                             </template>
                           </v-text-field>
-                        </template>
-                        <v-date-picker
-                          v-model="form.exp_date"
-                          @input="menu = false"
-                          scrollable
-                          no-title
-                          color="red darken-2"
-                          dark
-                        ></v-date-picker>
-                      </v-menu>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
 
+                          <v-checkbox
+                            :disabled="!disabled"
+                            v-model="vat"
+                            hide-details
+                            class="shrink pt-0 mt-0 mb-7 ml-3"
+                            color="red darken-3"
+                            @change="compute"
+                          ></v-checkbox>
+                        </v-layout>
+                      </v-col>
+
+                      <v-col
+                        class="tfield py-0 d-none"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <v-text-field disabled outlined clearable dense>
+                          <template slot="label">
+                            <div style="font-size: 12px">Price w/o VAT</div>
+                          </template>
+                        </v-text-field>
+                      </v-col>
+
+                      <v-col
+                        class="tfield py-0 pr-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <v-text-field
+                          :rules="formRulesOthers"
+                          v-model="form.lead_time"
+                          clearable
+                          dense
+                          counter
+                          @keydown="numberKeydown($event)"
+                          @input="compute"
+                          @click:clear="compute"
+                          maxlength="5"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">Lead Time</div>
+                          </template>
+                        </v-text-field>
+                      </v-col>
+                      <v-col
+                        class="tfield py-0 pl-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <v-text-field
+                          :rules="formRulesOthers"
+                          v-model="form.minimum_order_quantity"
+                          clearable
+                          dense
+                          counter
+                          @keydown="numberKeydown($event)"
+                          maxlength="5"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">Min Order Qty</div>
+                          </template>
+                        </v-text-field>
+                      </v-col>
+                      <v-col
+                        class="tfield py-0 pr-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <v-text-field
+                          :rules="formRulesOthers"
+                          v-model="form.order_frequency"
+                          clearable
+                          dense
+                          counter
+                          @keydown="numberKeydown($event)"
+                          @input="compute"
+                          @click:clear="compute"
+                          maxlength="5"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">Order Frequency</div>
+                          </template>
+                        </v-text-field>
+                      </v-col>
+                      <v-col
+                        class="tfield py-0 pl-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <v-menu
+                          v-model="menu"
+                          :close-on-content-click="false"
+                          :nudge-right="35"
+                          lazy
+                          transition="scale-transition"
+                          offset-y
+                          full-width
+                          min-width="290px"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-text-field
+                              :prepend-inner-icon="
+                                showIcon ? 'mdi-calendar-range' : ''
+                              "
+                              v-model="form.exp_date"
+                              label=""
+                              readonly
+                              v-on="on"
+                              class="py-0"
+                              dense
+                              clearable
+                              background-color="white"
+                              flat
+                              solo
+                              style="font-size: 12px"
+                            >
+                              <template slot="label">
+                                <div style="font-size: 12px">
+                                  Expiration Date
+                                </div>
+                              </template>
+                            </v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="form.exp_date"
+                            @input="menu = false"
+                            scrollable
+                            no-title
+                            color="red darken-2"
+                            dark
+                          ></v-date-picker>
+                        </v-menu>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-divider class="my-0"></v-divider>
               <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+              <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -804,8 +816,8 @@
                   :disabled="button"
                   dark
                   @click="cancel"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Cancel
                 </v-btn>
@@ -815,8 +827,8 @@
                   :disabled="button"
                   dark
                   @click="save"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Save
                 </v-btn>
@@ -831,20 +843,34 @@
 
 <style>
 #table1 .style-1 {
-  background-color: #ffa726;
+  color: #fb8c00;
 }
 #table1 .style-2 {
-  background-color: #E57373;
+  color: #e53935;
 }
+
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-application .tfield .white {
@@ -905,8 +931,8 @@ export default {
     ],
     filterDialog: false,
     status: [
-      { name: "Active", id: 1 },
-      { name: "Inactive", id: 0 },
+      { name: "Available", id: 1 },
+      { name: "Unavailable", id: 0 },
     ],
     supply_id: "",
     disable: "",
@@ -960,8 +986,8 @@ export default {
     form: {
       id: null,
       status: [
-        { name: "Active", id: 1 },
-        { name: "Inactive", id: 0 },
+        { name: "Available", id: 1 },
+        { name: "Unavailable", id: 0 },
       ],
       supply_name: "",
       supplier: null,
@@ -998,7 +1024,6 @@ export default {
         filterable: false,
         class: "black--text",
       },
-
       {
         text: "CATEGORY",
         value: "category.supply_cat_name",
@@ -1054,21 +1079,18 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
-    disabled() {
-      if (this.form.net_price !== null) {
+    showIcon() {
+      if (this.$vuetify.breakpoint.smAndUp) {
         return true;
       } else {
         return false;
       }
     },
-    widthSize() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return { width: "65px" };
-        case "sm":
-          return { width: "65px" };
-        default:
-          return { width: "72px" };
+    disabled() {
+      if (this.form.net_price !== null) {
+        return true;
+      } else {
+        return false;
       }
     },
   },
@@ -1092,7 +1114,6 @@ export default {
           if (item.days < 1) {
             return "style-2";
           }
-
           return "style-1";
         }
       }
@@ -1191,6 +1212,13 @@ export default {
               ) {
                 found += 1;
               }
+            }
+          } else if (key == "net_price") {
+            if (
+              this.getFormatCurrency(this.currentdata.net_price, "0.00") !=
+              this.getFormatCurrency(this.form.net_price, "0.00")
+            ) {
+              found += 1;
             }
           } else {
             found += 1;

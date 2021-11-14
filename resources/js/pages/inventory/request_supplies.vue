@@ -110,6 +110,7 @@
                 depressed
                 dark
                 :small="$vuetify.breakpoint.smAndDown"
+                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                 @click="addRequest"
                 >Add New Request</v-btn
               >
@@ -133,6 +134,7 @@
             </v-row>
           </v-card-actions>
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
@@ -287,21 +289,26 @@
                     lg="6"
                     md="7"
                     sm="7"
-                    class="tfield my-auto pa-2"
+                    class="my-auto pa-2"
                   >
                     <v-card-actions class="py-0 px-0">
                       <v-text-field
                         hide-details
                         v-model="search1"
-                        label="Supply Name"
                         single-line
                         dense
                         clearable
                         autocomplete="off"
-                        background-color="white"
+                        background-color="grey darken-3"
+                        dark
                         flat
                         solo
-                      ></v-text-field>
+                        style="font-size: 12px"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 12px">Supply Name</div>
+                        </template>
+                      </v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
@@ -341,6 +348,7 @@
                 </v-row>
 
                 <v-data-table
+                  id="table1"
                   :search="search"
                   :loading="progressbar1"
                   :headers="headers1"
@@ -415,7 +423,12 @@
                 >
                   <v-card-actions class="py-0 px-0">
                     <v-col class="px-0" cols="4" xl="4" lg="4" md="4" sm="4">
-                      <div>No. of Items: {{ table2.length }}</div>
+                      <div>
+                        <span style="color: #616161"
+                          >No. of Items:
+                          <strong>{{ table2.length }}</strong></span
+                        >
+                      </div>
                     </v-col>
                     <v-spacer></v-spacer>
                     <v-col
@@ -426,12 +439,17 @@
                       md="8"
                       sm="8"
                     >
-                      <div v-if="ref">Reference No: {{ ref }}</div>
+                      <div v-if="ref">
+                        <span style="color: #616161"
+                          >Reference No: <strong>{{ ref }}</strong></span
+                        >
+                      </div>
                     </v-col>
                   </v-card-actions>
                 </v-col>
 
                 <v-data-table
+                  id="table1"
                   :headers="headers2"
                   :items="table2"
                   :items-per-page="table2.length"
@@ -527,27 +545,19 @@
       </v-card>
     </v-dialog>
 
+    <!-- Quantity Dialog Form -->
     <v-form ref="form" lazy-validation>
       <v-dialog v-model="dialog" max-width="450px">
-        <v-toolbar
-          dense
-          dark
-          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-        >
-          Enter Quantity
-          <v-spacer></v-spacer>
-          <v-icon
-            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-            text
-            @click="cancel"
-            >mdi-close
-          </v-icon>
-        </v-toolbar>
-        <v-card tile>
-          <v-card-text class="py-2">
-            <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+        <v-card tile class="pa-3">
+          <v-toolbar dark dense flat rounded class="red darken-3">
+            Enter Quantity
+            <v-spacer></v-spacer>
+            <v-icon text @click="cancel">mdi-close </v-icon>
+          </v-toolbar>
+          <v-card-text class="px-0 py-0">
+            <v-container class="px-2">
               <v-row>
-                <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
                   <span
                     >Item Selected:
                     <strong
@@ -557,8 +567,15 @@
                   </span>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col class="tfield py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+              <v-row class="mt-0">
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
                   <v-text-field
                     :rules="formRulesQuantity"
                     v-model="quantity"
@@ -572,23 +589,29 @@
                     background-color="white"
                     flat
                     solo
+                    style="font-size: 12px"
                   >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Quantity <span style="color: red">*</span>
+                      </div>
+                    </template>
                   </v-text-field>
                 </v-col>
               </v-row>
             </v-container>
           </v-card-text>
-
+          <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+          <v-card-actions class="px-0 pb-0">
             <v-spacer></v-spacer>
             <v-btn
               color="error"
               depressed
               dark
               @click="cancel"
-              style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
+              text
             >
               Cancel
             </v-btn>
@@ -596,9 +619,9 @@
               color="primary"
               depressed
               dark
-              style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
               @click="commitAdd(selected)"
+              text
             >
               {{ type }}
             </v-btn>
@@ -611,15 +634,28 @@
 
 
 <style>
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-application .tfield .white {

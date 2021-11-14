@@ -198,6 +198,7 @@
 
           <!-- Products List Table -->
           <v-data-table
+            id="table2"
             class="prod_table table-striped mt-4"
             :headers="headers1"
             :items="table1.data"
@@ -269,24 +270,18 @@
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <iframe :src="pdfview" width="100%" height="500"></iframe>
+          <iframe :src="pdfview" width="500" height="500"></iframe>
         </v-dialog>
 
-        <v-dialog v-model="dialog2" max-width="1050px">
-          <v-toolbar
-            dense
-            dark
-            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-          >
-            Current Month Sales History
-            <v-spacer></v-spacer>
-            <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-              text
-              @click="dialog2 = false"
-              >mdi-close
-            </v-icon>
-          </v-toolbar>
+        <!-- Dialog Form -->
+        <v-dialog v-model="dialog2" max-width="900px">
+          <v-card tile class="pt-3 pl-3 pr-3 pb-0 mb-0">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Current Month Sales History
+              <v-spacer></v-spacer>
+              <v-icon text @click="dialog2 = false">mdi-close </v-icon>
+            </v-toolbar>
+          </v-card>
           <v-card tile> <salesreport v-if="renderComponent" /></v-card>
           <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
         </v-dialog>
@@ -295,25 +290,16 @@
       <!-- Quantity Dialog Form -->
       <v-form ref="form" lazy-validation>
         <v-dialog v-model="dialog" max-width="450px">
-          <v-toolbar
-            dense
-            dark
-            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-          >
-            Enter Quantity
-            <v-spacer></v-spacer>
-            <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-              text
-              @click="cancel"
-              >mdi-close
-            </v-icon>
-          </v-toolbar>
-          <v-card tile>
-            <v-card-text class="py-2">
-              <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Enter Quantity
+              <v-spacer></v-spacer>
+              <v-icon text @click="cancel">mdi-close </v-icon>
+            </v-toolbar>
+            <v-card-text class="px-0 py-0">
+              <v-container class="px-2">
                 <v-row>
-                  <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
                       >Item Selected:
                       <strong
@@ -323,7 +309,7 @@
                     </span>
                   </v-col>
                 </v-row>
-                <v-row>
+                <v-row class="mt-0">
                   <v-col
                     class="tfield py-0"
                     cols="12"
@@ -345,6 +331,7 @@
                       background-color="white"
                       flat
                       solo
+                      style="font-size: 12px"
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
@@ -356,9 +343,9 @@
                 </v-row>
               </v-container>
             </v-card-text>
-
+            <v-divider class="my-0"></v-divider>
             <!-- Dialog Form Buttons -->
-            <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+            <v-card-actions class="px-0 pb-0">
               <v-spacer></v-spacer>
               <v-btn
                 color="error"
@@ -366,8 +353,8 @@
                 :disabled="button"
                 dark
                 @click="cancel"
-                style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
+                text
               >
                 Cancel
               </v-btn>
@@ -377,9 +364,9 @@
                 :disabled="button"
                 dark
                 v-if="dialog_add"
-                style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
                 @click="validateQty('add')"
+                text
               >
                 Save
               </v-btn>
@@ -485,6 +472,7 @@
 
           <!-- Order List Table -->
           <v-data-table
+            id="table2"
             class="ord_table table-striped"
             :headers="headers2"
             :items="table2"
@@ -757,6 +745,9 @@
 </template>
 
 <style>
+#table2 .v-data-table-header th {
+  white-space: nowrap;
+}
 @media only screen and (min-width: 768px) {
   .v-data-table-header th {
     font-size: 12px !important;
@@ -779,12 +770,15 @@
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-application .tfield .white {

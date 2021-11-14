@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 280px; max-width: 1500px">
     <v-container>
       <!-- Snackbar -->
       <v-snackbar
@@ -173,6 +173,7 @@
 
           <!-- Table -->
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table"
             :loading="progressbar"
@@ -226,6 +227,16 @@
 </template>
 
 <style>
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .v-list-item__content {
   color: white !important;
 }
@@ -269,7 +280,7 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
-        width: "20%"
+        width: "15%",
       },
       {
         text: "BEGINING INVENTORY",

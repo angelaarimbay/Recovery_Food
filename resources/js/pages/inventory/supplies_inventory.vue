@@ -253,6 +253,7 @@
 
           <!-- Table -->
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
@@ -322,73 +323,51 @@
             persistent
             no-click-animation
           >
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Deduct Supply
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="cancel"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <v-card tile>
-              <v-card-text class="py-2">
-                <br />
-                <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                  <v-row>
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 12px">ID</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+            <v-card tile class="pa-3">
+              <v-toolbar dark dense flat rounded class="red darken-3">
+                Deduct Supply
+                <v-spacer></v-spacer>
+                <v-icon text @click="cancel">mdi-close </v-icon>
+              </v-toolbar>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRulesQuantity"
-                        v-model="form.quantity"
-                        outlined
-                        dense
-                        autocomplete="off"
-                        @focus="clearQ"
-                        @blur="resetQ"
-                        @keydown="quantityKeydown($event)"
-                        counter
-                        maxlength="3"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Quantity <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+              <v-container class="px-1">
+                <v-row class="py-4">
+                  <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <v-text-field v-model="form.id" class="d-none" dense>
+                      <template slot="label">
+                        <div style="font-size: 12px">ID</div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
+                  <v-col class="tfield py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <v-text-field
+                      :rules="formRulesQuantity"
+                      v-model="form.quantity"
+                      dense
+                      autocomplete="off"
+                      @focus="clearQ"
+                      @blur="resetQ"
+                      @keydown="quantityKeydown($event)"
+                      counter
+                      maxlength="3"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Quantity <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-divider class="my-0"></v-divider>
               <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+              <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -396,8 +375,8 @@
                   :disabled="button"
                   dark
                   @click="cancel"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Cancel
                 </v-btn>
@@ -407,8 +386,8 @@
                   :disabled="button"
                   dark
                   @click="save"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Save
                 </v-btn>
@@ -422,15 +401,28 @@
 </template>
 
 <style>
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-list-item__content {

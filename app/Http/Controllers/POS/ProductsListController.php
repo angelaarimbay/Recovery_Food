@@ -46,11 +46,11 @@ class ProductsListController extends Controller
             $data['row'] = $row++;
             $data['category'] = tbl_prodcat::where("id", $value->category)->first();
             $data['outgoing_amount'] = number_format($value->outgoing_amount, 2);
-            $data['product_name'] =   tbl_masterlistprod::where("id", $value->product_name)->first();
+            $data['product_name'] = tbl_masterlistprod::where("id", $value->product_name);
             $data['price'] =  number_format(tbl_masterlistprod::where("id", $value->product_name)->first()->price, 2);
             $data['quantity'] = $value->quantity;
             $data['quantity_diff'] = $value->quantity_diff;
-            $data['sub_category'] =tbl_prodsubcat::where("id", $value->sub_category)->first();
+            $data['sub_category'] = tbl_prodsubcat::where("id", $value->sub_category)->first();
             array_push($return_data, $data);
         }
         $items = Collection::make($return_data);
