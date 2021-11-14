@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -73,70 +75,81 @@
 
       <v-row no-gutters justify="center">
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
-            <v-menu
-              v-model="date1"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
+        <v-col cols="6" class="px-1" style="max-width: 150px">
+          <v-menu
+            v-model="date1"
+            :close-on-content-click="false"
+            :nudge-right="35"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-card-actions class="pb-1 pt-4 px-0">
                 <v-text-field
+                  hide-details
                   v-model="dateFromPO"
-                  label="Date From"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date From"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-0"
                   dense
+                  dark
+                  background-color="grey darken-3"
+                  flat
+                  solo
+                  style="font-size: 12px"
                 ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateFromPO"
-                @input="date1 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
+              </v-card-actions>
+            </template>
+            <v-date-picker
+              v-model="dateFromPO"
+              @input="date1 = false"
+              scrollable
+              no-title
+              color="red darken-2"
+              dark
+            ></v-date-picker>
+          </v-menu>
         </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
-            <v-menu
-              v-model="date2"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
+        <!-- Date Picker -->
+        <v-col cols="6" class="px-1" style="max-width: 150px">
+          <v-menu
+            v-model="date2"
+            :close-on-content-click="false"
+            :nudge-right="35"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-card-actions class="pb-1 pt-4 px-0">
                 <v-text-field
+                  hide-details
                   v-model="dateUntilPO"
-                  label="Date Until"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date Until"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-0"
                   dense
+                  background-color="grey darken-3"
+                  dark
+                  flat
+                  solo
+                  style="font-size: 12px"
                 ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateUntilPO"
-                @input="date2 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
+              </v-card-actions>
+            </template>
+            <v-date-picker
+              v-model="dateUntilPO"
+              @input="date2 = false"
+              scrollable
+              no-title
+              color="red darken-2"
+              dark
+            ></v-date-picker>
+          </v-menu>
         </v-col>
       </v-row>
     </v-container>
@@ -144,9 +157,19 @@
   </v-container>
 </template>
 
+
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  computed: {
+    showIcon() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
   data: () => ({
     dateFromPO: null,
     dateUntilPO: null,
@@ -159,7 +182,22 @@ export default {
     },
   }),
 
+  created() {
+    this.dateFromPO = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      "YYYY-MM-DD"
+    );
+    this.dateUntilPO = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      "YYYY-MM-DD"
+    );
+  },
   methods: {
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+
     async get(type) {
       if (this.dateFromPO == null || this.dateUntilPO == null) {
         this.snackbar = {
@@ -181,26 +219,66 @@ export default {
                 to: this.dateUntilPO,
               },
             }).then((response) => {
-              
               if (response.data.size > 0) {
-              // console.log(response.data);
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Purchase Order Report.pdf";
-              link.click();
-               } else {
-              //pag zero daw. 
-                  this.snackbar = {
+                // console.log(response.data);
+                // return;
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Purchase Order Report.pdf";
+                link.click();
+              } else {
+                this.snackbar = {
                   active: true,
-                  iconText: "information",
-                  iconColor: "danger",
-                  message: "No data found.",
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
                 };
               }
             });
-
+            break;
+          case "excel":
+            await axios({
+              url: "/api/reports/purchaseorder/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: "pdf",
+                from: this.dateFromPO,
+                to: this.dateUntilPO,
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/purchaseorder/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      type: type,
+                      from: this.dateFromPO,
+                      to: this.dateUntilPO,
+                    },
+                  })
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Purchase Order Report.xlsx";
+                    link.click();
+                  });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
             break;
           case "print":
             await axios({
@@ -213,40 +291,30 @@ export default {
                 to: this.dateUntilPO,
               },
             }).then((response) => {
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print8").contentWindow.print();
-              }, 3000);
+              if (response.data.size > 0) {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print8").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
+                };
+              }
             });
 
-            break;
-          case "excel":
-            await axios
-              .get("/api/reports/purchaseorder/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  type: type,
-                  from: this.dateFromPO,
-                  to: this.dateUntilPO,
-                },
-              })
-              .then((response) => {
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Purchase Order Report.xlsx";
-                link.click();
-              });
             break;
           default:
             break;

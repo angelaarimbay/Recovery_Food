@@ -52,6 +52,7 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('msupp/suppCat', 'Inventory\MasterlistSuppliesController@suppCat');
     Route::get('msupp/validateItem', 'Inventory\MasterlistSuppliesController@validateItem');
     Route::get('msupp/sum', 'Inventory\MasterlistSuppliesController@sum');
+    Route::get('msupp/suppliers', 'Inventory\MasterlistSuppliesController@suppliers');
 
     // Incoming Supplies
     Route::post('isupp/save', 'Inventory\IncomingSuppliesController@save');

@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -61,7 +63,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
         v-model="tab"

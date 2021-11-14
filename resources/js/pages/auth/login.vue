@@ -20,7 +20,7 @@
           class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
         >
           <v-card
-            elevation="6"
+            elevation="2"
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >
@@ -40,31 +40,30 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col cols="12" md="12" class="py-1">
+                  <v-col cols="12" md="12" class="py-1" id="email">
                     <v-text-field
                       :rules="formRulesEmail"
                       label="Email"
-                      outlined
-                      dense
+                      :dense="$vuetify.breakpoint.smAndDown"
                       clearable
-                      persistent-placeholder
                       v-model="form.email"
                       :error-messages="
                         form.errors.has('email')
                           ? form.errors.errors.email[0]
                           : ''
                       "
-                      prepend-icon="mdi-email"
+                      prepend-inner-icon="mdi-email"
+                      background-color="white"
+                      flat
+                      solo
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="12" class="py-1">
+                  <v-col cols="12" sm="12" class="py-1" id="password">
                     <v-text-field
-                      label="Password"
-                      outlined
-                      persistent-placeholder
                       :rules="passwordRules"
-                      dense
+                      label="Password"
+                      :dense="$vuetify.breakpoint.smAndDown"
                       clearable
                       v-model="form.password"
                       :error-messages="
@@ -75,7 +74,10 @@
                       :append-icon="!value ? 'mdi-eye' : 'mdi-eye-off'"
                       @click:append="() => (value = !value)"
                       :type="!value ? 'password' : 'text'"
-                      prepend-icon="mdi-key"
+                      prepend-inner-icon="mdi-key"
+                      background-color="white"
+                      flat
+                      solo
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -112,9 +114,10 @@
       bottom
       v-model="snackbar.status"
       min-width="auto"
-      class="text-center"
+      class="text-center pb-0"
       :vertical="$vuetify.breakpoint.xsOnly"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
       ><span
         ><v-icon :color="snackbar.iconColor">{{
           `mdi-${snackbar.iconText}`
@@ -133,6 +136,17 @@
     >
   </div>
 </template>
+
+<style>
+.v-application #email .white,
+.v-application #password .white {
+  border: 1px solid #bdbdbd !important;
+}
+#email .v-input--is-focused .v-input__slot,
+#password .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+</style>
 
 <script>
 import Form from "vform";

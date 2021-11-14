@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -64,86 +66,123 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="6" class="mt-2" style="border-radius: 10px">
-      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="pl-0">
-            <v-btn
-              color="primary"
-              style="text-transform: none"
-              depressed
-              dark
-              :small="$vuetify.breakpoint.smAndDown"
-              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-              @click="openDialog"
-            >
-              Add Product
-            </v-btn>
-          </v-card-actions>
+          <v-card-actions class="px-0">
+            <v-row no-gutters>
+              <v-btn
+                color="primary"
+                style="text-transform: none"
+                depressed
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                @click="openDialog"
+              >
+                Add Product
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2"
+                    color="success"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="get"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="grey darken-4"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="filterDialog = true"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-filter-variant</v-icon></v-btn
+                  >
+                </template>
+                <span>Filter</span>
+              </v-tooltip>
+            </v-row>
 
-          <!-- Search Filters -->
-          <v-list dense nav class="px-0 py-0">
-            <v-list-group no-action color="#757575">
-              <template v-slot:activator>
-                <v-list-item-icon class="mx-0">
-                  <v-icon size="20">mdi-filter</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title
-                  style="color: #757575; font-weight: bold"
-                  class="px-3"
-                  >Search Filter</v-list-item-title
-                >
-              </template>
-
-              <v-list class="p-0">
-                <v-row no-gutters>
+            <!-- Filter Dialog -->
+            <v-dialog v-model="filterDialog" max-width="400px">
+              <v-card dark tile class="pa-2">
+                <v-toolbar dense flat class="transparent">
+                  Search Filter
+                  <v-spacer></v-spacer>
+                  <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+                </v-toolbar>
+                <v-divider class="my-0"></v-divider>
+                <v-row no-gutters align="center" class="pa-2">
                   <!-- Items Per Page -->
-                  <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-                    <v-card-actions>
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Items / Page</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
                       <v-select
-                        style="max-width: 82px"
                         dense
                         v-model="itemsPerPage"
-                        label="Items per page"
                         @change="itemperpage"
                         :items="[
                           1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                         ]"
+                        hide-details
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
                       >
                       </v-select>
                     </v-card-actions>
                   </v-col>
 
-                  <v-spacer></v-spacer>
-
                   <!-- Search Field -->
-                  <v-col
-                    cols="8"
-                    xl="4"
-                    lg="4"
-                    md="6"
-                    sm="8"
-                    style="max-width: 230px"
-                    class="my-auto"
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Search</span
+                    ></v-col
                   >
-                    <v-card-actions>
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
                       <v-text-field
                         v-model="search"
-                        label="Product Name"
+                        placeholder="Product Name"
                         single-line
                         dense
                         clearable
+                        hide-details
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
                       ></v-text-field>
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-btn
-                            large
-                            :small="$vuetify.breakpoint.smAndDown"
+                            small
+                            :x-small="$vuetify.breakpoint.smAndDown"
                             color="red darken-2"
                             icon
                             v-on="data.on"
                             @click="get"
-                            class="mb-3"
+                            class="ml-1"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -152,30 +191,37 @@
                       </v-tooltip>
                     </v-card-actions>
                   </v-col>
-                </v-row>
 
-                <!-- Category Field -->
-                <v-row no-gutters>
-                  <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
-                    <v-card-actions class="py-0">
+                  <!-- Category Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Category</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
                       <v-select
+                        hide-details
                         v-model="category"
                         :items="prodcatlist"
                         item-text="product_cat_name"
                         item-value="id"
-                        class="my-0"
                         clearable
                         dense
-                        label="Category"
+                        placeholder="Category"
                         @change="get"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
                       >
                       </v-select>
                     </v-card-actions>
                   </v-col>
                 </v-row>
-              </v-list>
-            </v-list-group>
-          </v-list>
+              </v-card>
+            </v-dialog>
+          </v-card-actions>
 
           <!-- Table -->
           <v-data-table
@@ -187,6 +233,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -250,7 +297,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="text-center pt-2">
+          <div class="pbutton text-center pt-2">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -262,7 +309,12 @@
 
         <!-- Dialog Form -->
         <v-form ref="form">
-          <v-dialog v-model="dialog" max-width="450px">
+          <v-dialog
+            v-model="dialog"
+            max-width="450px"
+            persistent
+            no-click-animation
+          >
             <v-toolbar
               dense
               dark
@@ -270,26 +322,20 @@
             >
               Product
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="cancel"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
-            <v-card tile style="background-color: #f5f5f5">
+            <v-card tile>
               <v-card-text class="py-2">
                 <br />
                 <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                   <v-row>
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -298,59 +344,71 @@
                     >
                       <v-text-field v-model="form.id" class="d-none" dense>
                         <template slot="label">
-                          <div style="font-size: 14px">ID</div>
+                          <div style="font-size: 12px">ID</div>
                         </template>
                       </v-text-field>
 
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.status"
-                        outlined
                         dense
                         :items="status"
                         item-text="name"
                         item-value="id"
+                        background-color="white"
+                        flat
+                        solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Status *</div>
+                          <div style="font-size: 12px">
+                            Status <span style="color: red">*</span>
+                          </div>
                         </template>
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="tfield py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.category"
                         :items="prodcatlist"
-                        outlined
                         dense
                         item-text="product_cat_name"
                         item-value="id"
+                        background-color="white"
+                        flat
+                        solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Product Category *</div>
+                          <div style="font-size: 12px">
+                            Product Category <span style="color: red">*</span>
+                          </div>
                         </template>
                       </v-select>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="tfield py-0" cols="12" xl="6" lg="6" sm="6" md="6">
                       <v-select
                         :rules="formRulesNumberRange"
                         v-model="form.sub_category"
                         :items="prodsubcatlist"
-                        outlined
                         dense
                         item-text="prod_sub_cat_name"
                         item-value="id"
+                        background-color="white"
+                        flat
+                        solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Sub Category *</div>
+                          <div style="font-size: 12px">
+                            Sub Category <span style="color: red">*</span>
+                          </div>
                         </template>
                       </v-select>
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -360,21 +418,25 @@
                       <v-text-field
                         :rules="formRules"
                         v-model="form.product_name"
-                        outlined
                         clearable
                         dense
                         counter
                         @keydown="valueKeydown($event)"
                         maxlength="35"
+                        background-color="white"
+                        flat
+                        solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Product Name *</div>
+                          <div style="font-size: 12px">
+                            Product Name <span style="color: red">*</span>
+                          </div>
                         </template>
                       </v-text-field>
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -384,24 +446,25 @@
                       <v-text-field
                         :rules="formRulesDesc"
                         v-model="form.description"
-                        outlined
                         clearable
                         dense
                         counter
                         @keydown="descKeydown($event)"
                         maxlength="35"
+                        background-color="white"
+                        flat
+                        solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Description</div>
+                          <div style="font-size: 12px">Description</div>
                         </template>
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="tfield py-0" cols="12" xl="8" lg="8" sm="8" md="8">
                       <v-text-field
                         :rules="formRulesPrice"
                         v-model="form.price"
-                        outlined
                         clearable
                         dense
                         counter
@@ -409,25 +472,32 @@
                         @input="compute"
                         @click:clear="compute"
                         maxlength="15"
+                        background-color="white"
+                        flat
+                        solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Price *</div>
+                          <div style="font-size: 12px">
+                            Price <span style="color: red">*</span>
+                          </div>
                         </template>
                       </v-text-field>
                     </v-col>
 
-                    <v-col class="py-0" cols="12" xl="6" lg="6" sm="6" md="6">
+                    <v-col class="tfield py-0" cols="12" xl="4" lg="4" sm="4" md="4">
                       <v-layout align-center>
                         <v-text-field
                           v-model="temp_vat"
-                          outlined
                           disabled
                           clearable
                           dense
                           @keydown="numberKeydown($event)"
+                          background-color="white"
+                          flat
+                          solo
                         >
                           <template slot="label">
-                            <div style="font-size: 14px">VAT</div>
+                            <div style="font-size: 12px">VAT</div>
                           </template>
                         </v-text-field>
 
@@ -443,7 +513,7 @@
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0 d-none"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -453,18 +523,20 @@
                       <v-text-field
                         disabled
                         v-model="form.without_vat"
-                        outlined
                         clearable
                         dense
+                        background-color="white"
+                        flat
+                        solo
                       >
                         <template slot="label">
-                          <div style="font-size: 14px">Price w/ VAT</div>
+                          <div style="font-size: 12px">Price w/ VAT</div>
                         </template>
                       </v-text-field>
                     </v-col>
 
                     <v-col
-                      class="py-0"
+                      class="tfield py-0"
                       cols="12"
                       xl="12"
                       lg="12"
@@ -483,14 +555,17 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
+                            hide-details
                             v-model="form.exp_date"
                             label="Expiration Date"
                             readonly
                             v-on="on"
-                            class="py-0"
+                            class="py-1"
                             dense
                             clearable
-                            outlined
+                            background-color="white"
+                            flat
+                            solo
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -542,15 +617,32 @@
 </template>
 
 <style>
-.v-pagination button {
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+}
+
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 
@@ -582,6 +674,7 @@ export default {
     table: [],
     prodcatlist: [],
     prodsubcatlist: [],
+    filterDialog: false,
     date: null,
     menu: false,
 

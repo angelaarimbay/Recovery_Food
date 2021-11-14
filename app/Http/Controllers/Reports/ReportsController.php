@@ -36,6 +36,8 @@ class ReportsController extends Controller
         $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
 
         $data = []; // <----------MAIN ARRAY
+
+        //code...
         //GET ALL THE CATEGORY THEN LOOP
         foreach (tbl_masterlistsupp::whereRaw($where)->groupBy('category')->pluck('category') as $key => $value) {
             $group = []; // <-------------INNER ARRAY
@@ -76,11 +78,10 @@ class ReportsController extends Controller
             array_push($group, $ar);
             array_push($data, $group);
         }
-
         $content = [];
         switch ($t->type) {
             case 'pdf':
-                if(count($data) > 0) { //nag open ka dito wlang close
+                if (count($data) > 0) {
                     $content['data'] = $data;
                     //TOTAL AMOUNTS BELOW THE REPORT
                     $content['net_price'] = tbl_masterlistsupp::get()->sum("net_price");
@@ -92,18 +93,17 @@ class ReportsController extends Controller
                         'format' => 'A4-L',
                     ]);
                     return $pdf->stream();
-                }else{
+                } else {
                     return false;
                 }
-                break;
-               case 'excel':
 
+                break;
+            case 'excel':
                 // if ($t->category == 'All') {
                 //     $data =  tbl_masterlistsupp::with("category")->get();
                 // } else {
                 //     $data =  tbl_masterlistsupp::with("category")->where("category", $t->category)->get();
                 // }
-
                 //columns
                 $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'VAT', 'WITHOUT VAT', 'EXPIRATION DATE'];
                 //data
@@ -125,17 +125,10 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Masterlist Supplies Report.xlsx");
                 break;
-            case 'print':
-                $content['data'] = $data;
-                $pdf = PDF::loadView('reports.masterlistsupplies', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
-                break;
             default:
-                # code...
                 break;
         }
+
     }
 
     // Incoming Supplies Report - OK
@@ -147,6 +140,7 @@ class ReportsController extends Controller
 
         $data = []; // <----------MAIN ARRAY
         //GET ALL THE CATEGORY THEN LOOP
+
         foreach (tbl_incomingsupp::whereRaw($where)
             ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
             ->groupBy('category')->pluck('category') as $key => $value) {
@@ -194,27 +188,27 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
-                if(count($data) > 0) {
-                $content['data'] = $data;
-                $content['net_price'] = tbl_incomingsupp::with("category")->whereRaw($where)
-                    ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-                    ->get()->sum("net_price");
-                $content['with_vat'] = tbl_incomingsupp::with("category")->whereRaw($where)
-                    ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-                    ->get()->sum("with_vat");
-                $content['quantity_amount'] = tbl_incomingsupp::with("category")->whereRaw($where)
-                    ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-                    ->get()->sum("quantity_amount");
-                $content['process_by'] = auth()->user()->name;
-                $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                if (count($data) > 0) {
+                    $content['data'] = $data;
+                    $content['net_price'] = tbl_incomingsupp::with("category")->whereRaw($where)
+                        ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+                        ->get()->sum("net_price");
+                    $content['with_vat'] = tbl_incomingsupp::with("category")->whereRaw($where)
+                        ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+                        ->get()->sum("with_vat");
+                    $content['quantity_amount'] = tbl_incomingsupp::with("category")->whereRaw($where)
+                        ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+                        ->get()->sum("quantity_amount");
+                    $content['process_by'] = auth()->user()->name;
+                    $content['param'] = ['from' => $t->from, 'to' => $t->to];
 
-                $pdf = PDF::loadView('reports.incomingsupplies', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
-            }else{
-                return false;
-            }
+                    $pdf = PDF::loadView('reports.incomingsupplies', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
+                } else {
+                    return false;
+                }
                 break;
             case 'excel':
                 //columns
@@ -237,11 +231,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Incoming Supplies Report.xlsx");
                 break;
-            case 'print':
-
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -325,28 +315,22 @@ class ReportsController extends Controller
 
         $content = [];
         switch ($t->type) {
-            case 'pdf': 
-               if(count($data) > 0) {
-                //    if may lamang aray ung $data piprint to pdf nya. 
-     
-                $content['data'] = $data;
-                $content['net_price'] = $g_net_p;
-                $content['with_vat'] = $g_wvat_p;
-                $content['quantity'] = $g_quantity;
-                $content['quantity_amount'] = $g_total_p;
-                $content['process_by'] = auth()->user()->name;
-                $content['param'] = ['from' => $t->from, 'to' => $t->to];
-                $pdf = PDF::loadView('reports.outgoingsupplies', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
-               }
-               else{
-                   //else false  return zero
-
-                   return false;
-               }
-           
+            case 'pdf':
+                if (count($data) > 0) {
+                    $content['data'] = $data;
+                    $content['net_price'] = $g_net_p;
+                    $content['with_vat'] = $g_wvat_p;
+                    $content['quantity'] = $g_quantity;
+                    $content['quantity_amount'] = $g_total_p;
+                    $content['process_by'] = auth()->user()->name;
+                    $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                    $pdf = PDF::loadView('reports.outgoingsupplies', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
+                } else {
+                    return false;
+                }
                 break;
             case 'excel':
                 //columns
@@ -368,14 +352,11 @@ class ReportsController extends Controller
                     }
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Outgoing Supplies Report.xlsx");
-                break; 
+                break;
             default:
-                # code...
                 break;
         }
     }
-
-
 
     // Main Inventory Report - OK
     public function MainInventoryReport(Request $t)
@@ -394,6 +375,7 @@ class ReportsController extends Controller
         $return = [];
         $row = 1;
 
+        //code...
         foreach (tbl_masterlistsupp::select('category')->whereRaw($where)->groupBy('category')->pluck('category') as $key1 => $value1) {
             $group = [];
             $st_beginning_a = 0;
@@ -588,21 +570,19 @@ class ReportsController extends Controller
             array_push($group, $ar);
             array_push($return, $group);
         }
-        $content = [];
-        switch ($t->type) {
 
+        switch ($t->type) {
             case 'pdf':
-                if(count($data) > 0) { 
-                $content['data'] = $return;
-                $content['process_by'] = auth()->user()->name;
-                $pdf = PDF::loadView('reports.maininventory', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
-            }
-            else{
-                return false;
-            }
+                if (count($data) > 0) {
+                    $content['data'] = $return;
+                    $content['process_by'] = auth()->user()->name;
+                    $pdf = PDF::loadView('reports.maininventory', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
+                } else {
+                    return false;
+                }
                 break;
             case 'excel':
                 $columns = [
@@ -656,10 +636,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport2($dataitems, $columns), "Main Inventory Report.xlsx");
                 break;
-            case 'print':
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -676,6 +653,7 @@ class ReportsController extends Controller
         $date2 = date("Y-m-t 23:59:59", strtotime($t->year . '-' . $t->month . '-' . date("t")));
 
         $data = [];
+
         foreach (tbl_suppcat::all() as $key => $value) {
             $temp = [];
             $temp['category'] = $value->supply_cat_name;
@@ -735,21 +713,19 @@ class ReportsController extends Controller
         //  return $data;
         switch ($t->type) {
             case 'pdf':
-                if(count($data) > 0) { 
-                $content['data'] = $data;
-                $content['process_by'] = auth()->user()->name;
+                if (count($data) > 0) {
+                    $content['data'] = $data;
+                    $content['process_by'] = auth()->user()->name;
 
-                $pdf = PDF::loadView('reports.inventorysummary', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
-            }else{
-                return false;
-            }
+                    $pdf = PDF::loadView('reports.inventorysummary', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
+                } else {
+                    return false;
+                }
                 break;
             case 'excel':
-
-
                 //columns
                 $columns = [
                     'SUPPLIES CATEGORY', 'BEGINNING INVENTORY', 'PURCHASES', 'TOTAL STOCKS',
@@ -758,10 +734,7 @@ class ReportsController extends Controller
                 ];
                 return Excel::download(new InventoryExport($data, $columns), "Inventory Summary Report.xlsx");
                 break;
-            case 'print':
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -780,17 +753,17 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
-                if(count($data) > 0) { 
-                $content['data'] = $data;
-                $content['process_by'] = auth()->user()->name;
-                $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
-                $pdf = PDF::loadView('reports.sales', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
-            }else{
-                return false;
-            }
+                if (count($data) > 0) {
+                    $content['data'] = $data;
+                    $content['process_by'] = auth()->user()->name;
+                    $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
+                    $pdf = PDF::loadView('reports.sales', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
+                } else {
+                    return false;
+                }
                 break;
             case 'excel':
                 //columns
@@ -807,11 +780,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Sales Report.xlsx");
                 break;
-            case 'print':
-
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -830,17 +799,17 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
-                if(count($data) > 0) { 
-                $content['data'] = $data;
-                $content['process_by'] = auth()->user()->name;
-                $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
-                $pdf = PDF::loadView('reports.transaction', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
-            }else{
-                return false;
-            }
+                if (count($data) > 0) {
+                    $content['data'] = $data;
+                    $content['process_by'] = auth()->user()->name;
+                    $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
+                    $pdf = PDF::loadView('reports.transaction', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
+                } else {
+                    return false;
+                }
                 break;
             case 'excel':
                 //columns
@@ -858,11 +827,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Transaction Report.xlsx");
                 break;
-            case 'print':
-
-                break;
             default:
-                # code...
                 break;
         }
     }
@@ -876,17 +841,17 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
-                if(count($data) > 0) { 
-                $content['data'] = $data;
-                $content['process_by'] = auth()->user()->name;
-                $content['param'] = ['from' => $t->from, 'to' => $t->to];
-                $pdf = PDF::loadView('reports.purchaseorder', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
-            }else{
-                return false;
-            }
+                if (count($data) > 0) {
+                    $content['data'] = $data;
+                    $content['process_by'] = auth()->user()->name;
+                    $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                    $pdf = PDF::loadView('reports.purchaseorder', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
+                } else {
+                    return false;
+                }
                 break;
             case 'excel':
                 // Columns
@@ -903,11 +868,7 @@ class ReportsController extends Controller
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Purchase Order Report.xlsx");
                 break;
-            case 'print':
-
-                break;
             default:
-                # code...
                 break;
         }
     }

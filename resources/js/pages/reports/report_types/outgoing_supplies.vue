@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -72,40 +74,74 @@
       >
       <!-- Branch Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="3"
+          sm="6"
+          class="px-1"
+          style="max-width: 150px"
+        >
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
+              hide-details
               v-model="branch"
               :items="branchlist"
               item-text="branch_name"
               item-value="id"
-              class="my-0"
               dense
-              label="Branch"
+              placeholder="Branch"
+              background-color="grey darken-3"
+              dark
+              flat
+              solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
         </v-col>
 
         <!-- Category Field -->
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="3"
+          sm="6"
+          class="px-1"
+          style="max-width: 150px"
+        >
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
+              hide-details
               v-model="category"
               :items="suppcatlist"
               item-text="supply_cat_name"
               item-value="id"
-              class="my-0"
               dense
-              label="Category"
+              placeholder="Category"
+              background-color="grey darken-3"
+              dark
+              flat
+              solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
         </v-col>
 
         <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="3"
+          sm="6"
+          class="px-1"
+          style="max-width: 150px"
+        >
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-menu
               v-model="date1"
               :close-on-content-click="false"
@@ -116,13 +152,18 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
+                  hide-details
                   v-model="outgoing_from"
-                  label="Date From"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date From"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-0"
                   dense
+                  background-color="grey darken-3"
+                  dark
+                  flat
+                  solo
+                  style="font-size: 12px"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -137,8 +178,17 @@
           </v-card-actions>
         </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <!-- Date Picker -->
+        <v-col
+          cols="6"
+          xl="3"
+          lg="3"
+          md="3"
+          sm="6"
+          class="px-1"
+          style="max-width: 150px"
+        >
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-menu
               v-model="date2"
               :close-on-content-click="false"
@@ -149,13 +199,18 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
+                  hide-details
                   v-model="outgoing_to"
-                  label="Date Until"
-                  prepend-icon="mdi-calendar-range"
+                  placeholder="Date Until"
+                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
                   readonly
                   v-on="on"
-                  class="py-0"
                   dense
+                  background-color="grey darken-3"
+                  dark
+                  flat
+                  solo
+                  style="font-size: 12px"
                 ></v-text-field>
               </template>
               <v-date-picker
@@ -175,9 +230,30 @@
   </v-container>
 </template>
 
+<style>
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
+</style>
+
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  computed: {
+    showIcon() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
   data: () => ({
     branch: "",
     print: "",
@@ -195,11 +271,25 @@ export default {
   }),
 
   created() {
+    this.outgoing_from = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      "YYYY-MM-DD"
+    );
+    this.outgoing_to = this.getFormatDate(
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+      "YYYY-MM-DD"
+    );
+
     this.suppCat();
     this.branchName();
   },
 
   methods: {
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+
     async get(type) {
       if (
         this.branch == "" ||
@@ -219,7 +309,7 @@ export default {
             await axios({
               url: "/api/reports/outgoingsupplies/get",
               method: "GET",
-               responseType: "blob",
+              responseType: "blob",
               params: {
                 type: type,
                 branch: this.branch,
@@ -228,65 +318,33 @@ export default {
                 to: this.outgoing_to,
               },
             }).then((response) => {
-              
               if (response.data.size > 0) {
-                let blob = new Blob([response.data], { type: "application/pdf" });
+                // console.log(response.data);
+                // return;
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
                 let link = document.createElement("a");
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Outgoing Supplies Report.pdf";
                 link.click();
               } else {
-              //pag zero daw. 
-                  this.snackbar = {
+                this.snackbar = {
                   active: true,
-                  iconText: "information",
-                  iconColor: "danger",
-                  message: "No data found.",
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
                 };
               }
-
             });
             break;
           case "excel":
-            await axios
-              .get("/api/reports/outgoingsupplies/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  type: type,
-                  branch: this.branch,
-                  category: this.category,
-                  from: this.outgoing_from,
-                  to: this.outgoing_to,
-                },
-              })
-              .then((response) => {
-                if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Outgoing Supplies Report.xlsx";
-                link.click();
-                 } else {
-              //pag zero daw. 
-                  this.snackbar = {
-                  active: true,
-                  iconText: "information",
-                  iconColor: "danger",
-                  message: "No data found.",
-                };
-              }
-              });
-            break;
-          case "print":
             await axios({
               url: "/api/reports/outgoingsupplies/get",
               method: "GET",
               responseType: "blob",
               params: {
-                type: "pdf", //ito ung
+                type: "pdf",
                 branch: this.branch,
                 category: this.category,
                 from: this.outgoing_from,
@@ -294,7 +352,51 @@ export default {
               },
             }).then((response) => {
               if (response.data.size > 0) {
-                //pag greater than zero daw. 
+                axios
+                  .get("/api/reports/outgoingsupplies/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      type: type,
+                      branch: this.branch,
+                      category: this.category,
+                      from: this.outgoing_from,
+                      to: this.outgoing_to,
+                    },
+                  })
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Outgoing Supplies Report.xlsx";
+                    link.click();
+                  });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
+            break;
+          case "print":
+            await axios({
+              url: "/api/reports/outgoingsupplies/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: "pdf",
+                branch: this.branch,
+                category: this.category,
+                from: this.outgoing_from,
+                to: this.outgoing_to,
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
                 });
@@ -309,12 +411,11 @@ export default {
                   document.getElementById("print2").contentWindow.print();
                 }, 3000);
               } else {
-              //pag zero daw. 
-                  this.snackbar = {
+                this.snackbar = {
                   active: true,
-                  iconText: "information",
-                  iconColor: "danger",
-                  message: "No data found.",
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
                 };
               }
             });

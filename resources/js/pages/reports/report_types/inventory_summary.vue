@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -71,33 +73,45 @@
         </v-tooltip></v-card-actions
       >
       <v-row no-gutters justify="center">
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <!-- Year -->
+        <v-col cols="6" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               v-model="year"
               item-text=""
               item-value="id"
               :items="ylist"
               dense
-              label="Year"
+              placeholder="Year"
               @change="get"
               hide-details
+              background-color="grey darken-3"
+              dark
+              flat
+              solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
         </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="6" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <!-- Month -->
+        <v-col cols="6" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               v-model="month"
               item-text=""
               item-value="id"
               :items="mlist"
               dense
-              label="Month"
+              placeholder="Month"
               @change="get"
               hide-details
+              background-color="grey darken-3"
+              dark
+              flat
+              solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
@@ -107,6 +121,18 @@
     <iframe id="print4" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
+
+<style>
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
+</style>
 
 <script>
 import axios from "axios"; // Library for sending api request
@@ -160,33 +186,75 @@ export default {
             await axios({
               url: "/api/reports/inventorysummary/get",
               method: "GET",
-              // responseType: "blob",
+              responseType: "blob",
               params: {
                 type: type,
                 year: this.year,
                 month:
                   new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
               },
-            }).then((response) => { 
+            }).then((response) => {
               if (response.data.size > 0) {
-               
-
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Inventory Summary Report.pdf";
-              link.click();
-            } else {
-              //pag zero daw. 
-                  this.snackbar = {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Inventory Summary Report.pdf";
+                link.click();
+              } else {
+                this.snackbar = {
                   active: true,
-                  iconText: "information",
-                  iconColor: "danger",
-                  message: "No data found.",
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
                 };
               }
-
-
+            });
+            break;
+          case "excel":
+            await axios({
+              url: "/api/reports/inventorysummary/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                type: "pdf",
+                year: this.year,
+                month:
+                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/inventorysummary/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      type: type,
+                      year: this.year,
+                      month:
+                        new Date(
+                          Date.parse(this.month + " 1, 2020")
+                        ).getMonth() + 1,
+                    },
+                  })
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Inventory Summary Report.xlsx";
+                    link.click();
+                  });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
             });
             break;
           case "print":
@@ -202,51 +270,28 @@ export default {
               },
             }).then((response) => {
               if (response.data.size > 0) {
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print4").contentWindow.print();
-              }, 3000);
-               } else {
-              //pag zero daw. 
-                  this.snackbar = {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
                   active: true,
                   iconText: "information",
-                  iconColor: "danger",
-                  message: "No data found.",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print4").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
                 };
               }
             });
-            break;
-          case "excel":
-            await axios
-              .get("/api/reports/inventorysummary/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  type: type,
-                  year: this.year,
-                  month:
-                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
-                    1,
-                },
-              })
-              .then((response) => { 
-                let blob = new Blob([response.data], {
-                  type: "application/excel",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Inventory Summary Report.xlsx";
-                link.click();
-              });
-
             break;
           default:
             break;

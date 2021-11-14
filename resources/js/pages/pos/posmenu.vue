@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -30,6 +32,8 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar2.iconColor">{{
@@ -78,58 +82,123 @@
             >
           </v-card>
 
-          <v-row no-gutters class="mt-2">
-            <!-- Items Per Page -->
-            <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-              <v-card-actions>
-                <v-select
-                  style="max-width: 82px"
-                  dense
-                  v-model="itemsPerPage"
-                  label="Items"
-                  @change="itemperpage"
-                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
-                >
-                </v-select>
-              </v-card-actions>
-            </v-col>
-
+          <v-row no-gutters class="mt-7">
             <v-spacer></v-spacer>
-
-            <!-- Search Field -->
-            <v-col cols="8" xl="5" lg="5" md="7" sm="8" class="my-auto">
-              <v-card-actions>
-                <v-text-field
-                  v-model="search"
-                  label="Product Name"
-                  single-line
-                  dense
-                  clearable
-                  autocomplete="off"
-                ></v-text-field>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      :small="$vuetify.breakpoint.smAndDown"
-                      :large="$vuetify.breakpoint.mdAndUp"
-                      color="red darken-2"
-                      icon
-                      v-on="data.on"
-                      @click="get"
-                      class="mb-3"
-                    >
-                      <v-icon>mdi-magnify</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Search</span>
-                </v-tooltip>
-              </v-card-actions>
-            </v-col>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  class="mr-2"
+                  color="success"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="get"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-refresh</v-icon></v-btn
+                >
+              </template>
+              <span>Refresh</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  color="grey darken-4"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="filterDialog = true"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-filter-variant</v-icon></v-btn
+                >
+              </template>
+              <span>Filter</span>
+            </v-tooltip>
           </v-row>
+
+          <!-- Filter Dialog -->
+          <v-dialog v-model="filterDialog" max-width="400px">
+            <v-card dark tile class="pa-2">
+              <v-toolbar dense flat class="transparent">
+                Search Filter
+                <v-spacer></v-spacer>
+                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              </v-toolbar>
+              <v-divider class="my-0"></v-divider>
+              <v-row no-gutters align="center" class="pa-2">
+                <!-- Items Per Page -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Items / Page</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      dense
+                      v-model="itemsPerPage"
+                      @change="itemperpage"
+                      :items="[
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                      ]"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Search Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Search</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      v-model="search"
+                      placeholder="Product Name"
+                      single-line
+                      dense
+                      clearable
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          @click="get"
+                          class="ml-1"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-dialog>
 
           <!-- Products List Table -->
           <v-data-table
-            class="prod_table"
+            class="prod_table table-striped mt-4"
             :headers="headers1"
             :items="table1.data"
             :loading="progressbar1"
@@ -175,7 +244,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="text-center pt-2">
+          <div class="pbutton text-center pt-2">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -193,18 +262,12 @@
           >
             Preview Receipt
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialog1 = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialog1 = false"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
           <iframe :src="pdfview" width="100%" height="500"></iframe>
         </v-dialog>
@@ -217,18 +280,12 @@
           >
             Current Month Sales History
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialog2 = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialog2 = false"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
           <v-card tile> <salesreport v-if="renderComponent" /></v-card>
           <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
@@ -236,7 +293,7 @@
       </v-col>
 
       <!-- Quantity Dialog Form -->
-      <v-form ref="form">
+      <v-form ref="form" lazy-validation>
         <v-dialog v-model="dialog" max-width="450px">
           <v-toolbar
             dense
@@ -245,36 +302,39 @@
           >
             Enter Quantity
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="cancel"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="cancel"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-          <v-card tile style="background-color: #f5f5f5">
+          <v-card tile>
             <v-card-text class="py-2">
               <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
                 <v-row>
                   <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
-                      ><strong>Item Selected:</strong>
-                      {{ selectedrow.product_name.product_name }}
+                      >Item Selected:
+                      <strong
+                        >{{ selectedrow.product_name.product_name }}
+                        {{ selectedrow.product_name.description }}</strong
+                      >
                     </span>
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
                     <v-text-field
                       :rules="formRulesQuantity"
                       v-model="quantity"
-                      outlined
                       dense
                       autocomplete="off"
                       @focus="clearQ"
@@ -282,9 +342,14 @@
                       @keydown="quantityKeydown($event)"
                       counter
                       maxlength="3"
+                      background-color="white"
+                      flat
+                      solo
                     >
                       <template slot="label">
-                        <div style="font-size: 14px">Quantity *</div>
+                        <div style="font-size: 12px">
+                          Quantity <span style="color: red">*</span>
+                        </div>
                       </template>
                     </v-text-field>
                   </v-col>
@@ -390,19 +455,29 @@
             <v-spacer></v-spacer>
 
             <!-- Mode Field -->
-            <v-col cols="12" xl="4" lg="4" md="5" sm="4" class="my-auto">
+            <v-col
+              cols="12"
+              xl="4"
+              lg="4"
+              md="5"
+              sm="4"
+              class="my-auto text-center"
+              style="max-width: 150px"
+            >
               <v-card-actions>
                 <v-select
-                  outlined
                   dense
                   v-model="mode"
                   :items="['Walk-In', 'Take-Out']"
                   hide-details
+                  placeholder="Mode"
                   class="mb-0 mb-xl-4 mb-lg-4 mb-md-0 mb-sm-2 ml-auto"
+                  background-color="grey darken-3"
+                  dark
+                  flat
+                  solo
+                  style="font-size: 12px"
                 >
-                  <template slot="label">
-                    <div style="font-size: 14px">Mode</div>
-                  </template>
                 </v-select>
               </v-card-actions>
             </v-col>
@@ -410,7 +485,7 @@
 
           <!-- Order List Table -->
           <v-data-table
-            class="ord_table"
+            class="ord_table table-striped"
             :headers="headers2"
             :items="table2"
             height="230"
@@ -530,7 +605,7 @@
                   @keydown="paymentKeydown($event)"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Payment</div>
+                    <div style="font-size: 12px">Payment</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -552,7 +627,7 @@
                   @keydown="discountKeydown($event)"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Discount(%)</div>
+                    <div style="font-size: 12px">Discount(%)</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -567,7 +642,7 @@
                   filled
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Change</div>
+                    <div style="font-size: 12px">Change</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -682,16 +757,6 @@
 </template>
 
 <style>
-.v-pagination button {
-  background-color: #212121 !important;
-  color: #ffffff !important;
-}
-.v-pagination i.v-icon.v-icon {
-  color: #ffffff !important;
-}
-.v-pagination__navigation:disabled {
-  background-color: #000000 !important;
-}
 @media only screen and (min-width: 768px) {
   .v-data-table-header th {
     font-size: 12px !important;
@@ -709,6 +774,34 @@
   .ord_table td {
     font-size: 17px !important;
   }
+}
+
+.pbutton .v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.pbutton .v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.pbutton .v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
+
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 
@@ -758,6 +851,7 @@ export default {
     quantity: 1,
     disabled1: false,
     dialog: false,
+    filterDialog: false,
     selectedrow: { product_name: "" },
     totalamount: 0,
     discountedamount: 0,
@@ -1038,8 +1132,7 @@ export default {
 
     async getSalesCount() {
       await axios.get("/api/sales_report/sales_count").then((result) => {
-     console.log(result.data)
-     this.salescount = result.data;
+        this.salescount = result.data;
       });
     },
 
@@ -1059,61 +1152,96 @@ export default {
     },
 
     validateQty(type) {
-      if (type == "add") {
-        var quantity = 0;
-        if (this.table2.length > 0) {
-          var indexid = -1;
-          for (var key in this.table2) {
-            //if table have value
-            if (
-              parseInt(this.selectedrow.product_name.id) ===
-              parseInt(this.table2[key].product)
-            ) {
-              indexid = this.table2.indexOf(this.table2[key]);
+      if (this.$refs.form.validate()) {
+        if (type == "add") {
+          var quantity = 0;
+          if (this.table2.length > 0) {
+            var indexid = -1;
+            for (var key in this.table2) {
+              //if table have value
+              if (
+                parseInt(this.selectedrow.product_name.id) ===
+                parseInt(this.table2[key].product)
+              ) {
+                indexid = this.table2.indexOf(this.table2[key]);
+              }
             }
-          }
 
-          if (indexid > -1) {
-            quantity =
-              parseInt(this.table2[indexid].quantity) + parseInt(this.quantity); //add current and input
-            if (parseInt(this.selectedrow.quantity_diff) < quantity) {
-              //check if greather than stocks
-              this.snackbar = {
-                active: true,
-                iconText: "alert",
-                iconColor: "error",
-                message: "Error! Please input correct quantity.",
-              };
-            } else {
-              this.table2[indexid].quantity =
+            if (indexid > -1) {
+              quantity =
                 parseInt(this.table2[indexid].quantity) +
-                parseInt(this.quantity);
-              this.table2[indexid].sub_total = numeral(
-                parseFloat(this.table2[indexid].quantity) *
-                  parseFloat(this.selectedrow.product_name.price)
-              ).format("0,0.00");
-              this.table2[indexid].temp_sub_total =
-                parseFloat(this.table2[indexid].quantity) *
-                parseFloat(this.selectedrow.product_name.price);
+                parseInt(this.quantity); //add current and input
+              if (parseInt(this.selectedrow.quantity_diff) < quantity) {
+                //check if greather than stocks
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "error",
+                  message: "Error! Please input correct quantity.",
+                };
+              } else {
+                this.table2[indexid].quantity =
+                  parseInt(this.table2[indexid].quantity) +
+                  parseInt(this.quantity);
+                this.table2[indexid].sub_total = numeral(
+                  parseFloat(this.table2[indexid].quantity) *
+                    parseFloat(this.selectedrow.product_name.price)
+                ).format("0,0.00");
+                this.table2[indexid].temp_sub_total =
+                  parseFloat(this.table2[indexid].quantity) *
+                  parseFloat(this.selectedrow.product_name.price);
 
-              this.snackbar = {
-                active: true,
-                iconText: "check",
-                iconColor: "success",
-                message: "Successfully added.",
-              };
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully added.",
+                };
+              }
+            } else {
+              if (
+                parseInt(this.selectedrow.quantity_diff) <
+                parseInt(this.quantity)
+              ) {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "error",
+                  message: "Error! Please input correct quantity.",
+                };
+              } else {
+                this.table2.push({
+                  id: this.table2.length + 1,
+                  category: this.selectedrow.category.id,
+                  sub_category: this.selectedrow.sub_category.id,
+                  product_name: {
+                    product_name: this.selectedrow.product_name.product_name,
+                  },
+                  description: this.selectedrow.product_name.description,
+                  product: this.selectedrow.product_name.id,
+                  price: numeral(this.selectedrow.product_name.price).format(
+                    "0,0.00"
+                  ),
+                  quantity: this.quantity,
+                  sub_total: numeral(
+                    this.quantity * this.selectedrow.product_name.price
+                  ).format("0,0.00"),
+                  temp_sub_total:
+                    parseFloat(this.quantity) *
+                    parseFloat(this.selectedrow.product_name.price),
+                  mode: this.mode,
+                });
+
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully added.",
+                };
+              }
             }
           } else {
-            if (
-              parseInt(this.selectedrow.quantity_diff) < parseInt(this.quantity)
-            ) {
-              this.snackbar = {
-                active: true,
-                iconText: "alert",
-                iconColor: "error",
-                message: "Error! Please input correct quantity.",
-              };
-            } else {
+            if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
               this.table2.push({
                 id: this.table2.length + 1,
                 category: this.selectedrow.category.id,
@@ -1142,76 +1270,45 @@ export default {
                 iconColor: "success",
                 message: "Successfully added.",
               };
+            } else {
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "error",
+                message: "Error! Please input correct quantity.",
+              };
             }
           }
         } else {
-          if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
-            this.table2.push({
-              id: this.table2.length + 1,
-              category: this.selectedrow.category.id,
-              sub_category: this.selectedrow.sub_category.id,
-              product_name: {
-                product_name: this.selectedrow.product_name.product_name,
-              },
-              description: this.selectedrow.product_name.description,
-              product: this.selectedrow.product_name.id,
-              price: numeral(this.selectedrow.product_name.price).format(
-                "0,0.00"
-              ),
-              quantity: this.quantity,
-              sub_total: numeral(
-                this.quantity * this.selectedrow.product_name.price
-              ).format("0,0.00"),
-              temp_sub_total:
-                parseFloat(this.quantity) *
-                parseFloat(this.selectedrow.product_name.price),
-              mode: this.mode,
-            });
+          this.table2[this.deleteindex].quantity =
+            this.table2[this.deleteindex].quantity - parseInt(this.quantity);
+          this.table2[this.deleteindex].sub_total = numeral(
+            parseFloat(this.table2[this.deleteindex].quantity) *
+              parseFloat(this.selectedrow.price)
+          ).format("0,0.00");
+          this.table2[this.deleteindex].temp_sub_total =
+            parseFloat(this.table2[this.deleteindex].quantity) *
+            parseFloat(this.selectedrow.price);
 
-            this.snackbar = {
-              active: true,
-              iconText: "check",
-              iconColor: "success",
-              message: "Successfully added.",
-            };
-          } else {
-            this.snackbar = {
-              active: true,
-              iconText: "alert",
-              iconColor: "error",
-              message: "Error! Please input correct quantity.",
-            };
+          if (this.table2[this.deleteindex].quantity <= 0) {
+            this.table2.splice(this.deleteindex, 1);
+
+            for (var key in this.table2) {
+              this.table2[key].id = this.table2.length;
+            }
           }
+
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully removed.",
+          };
         }
-      } else {
-        this.table2[this.deleteindex].quantity =
-          this.table2[this.deleteindex].quantity - parseInt(this.quantity);
-        this.table2[this.deleteindex].sub_total = numeral(
-          parseFloat(this.table2[this.deleteindex].quantity) *
-            parseFloat(this.selectedrow.price)
-        ).format("0,0.00");
-        this.table2[this.deleteindex].temp_sub_total =
-          parseFloat(this.table2[this.deleteindex].quantity) *
-          parseFloat(this.selectedrow.price);
-
-        if (this.table2[this.deleteindex].quantity <= 0) {
-          this.table2.splice(this.deleteindex, 1);
-
-          for (var key in this.table2) {
-            this.table2[key].id = this.table2.length;
-          }
-        }
-
-        this.snackbar = {
-          active: true,
-          iconText: "check",
-          iconColor: "success",
-          message: "Successfully removed.",
-        };
+        this.getTotal();
+        this.getChange();
+        this.cancel();
       }
-      this.getTotal();
-      this.getChange();
-      this.cancel();
     },
 
     validateDelete(item) {

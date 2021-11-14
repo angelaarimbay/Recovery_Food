@@ -7,6 +7,8 @@
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -64,46 +66,110 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="6" class="mt-2" style="border-radius: 10px">
-      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <!-- Date Picker -->
-          <v-row no-gutters>
-            <v-col cols="12" xl="4" lg="4" md="4" sm="4" class="my-auto pa-1">
-              <v-card-actions class="py-0">
-                <v-select
-                  v-model="year"
-                  item-text=""
-                  item-value="id"
-                  :items="ylist"
-                  dense
-                  label="Year"
-                  @change="get"
-                  outlined
-                  hide-details
+          <v-row no-gutters align="center" class="mb-3">
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  class="ml-auto mr-2"
+                  color="success"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="get"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-refresh</v-icon></v-btn
                 >
-                </v-select>
-              </v-card-actions>
-            </v-col>
-
-            <!-- Date Picker -->
-            <v-col cols="12" xl="4" lg="4" md="4" sm="4" class="my-auto pa-1">
-              <v-card-actions class="py-0">
-                <v-select
-                  v-model="month"
-                  item-text=""
-                  item-value="id"
-                  :items="mlist"
-                  dense
-                  label="Month"
-                  @change="get"
-                  outlined
-                  hide-details
+              </template>
+              <span>Refresh</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  color="grey darken-4"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="filterDialog = true"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-filter-variant</v-icon></v-btn
                 >
-                </v-select>
-              </v-card-actions>
-            </v-col>
+              </template>
+              <span>Filter</span>
+            </v-tooltip>
           </v-row>
+
+          <!-- Filter Dialog -->
+          <v-dialog v-model="filterDialog" max-width="400px">
+            <v-card dark tile class="pa-2">
+              <v-toolbar dense flat class="transparent">
+                Search Filter
+                <v-spacer></v-spacer>
+                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              </v-toolbar>
+              <v-divider class="my-0"></v-divider>
+              <v-row no-gutters align="center" justify="center" class="pa-2">
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Year</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      v-model="year"
+                      item-text=""
+                      item-value="id"
+                      :items="ylist"
+                      dense
+                      placeholder="Year"
+                      @change="get"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Month</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      v-model="month"
+                      item-text=""
+                      item-value="id"
+                      :items="mlist"
+                      dense
+                      placeholder="Month"
+                      @change="get"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-dialog>
 
           <!-- Table -->
           <v-data-table
@@ -112,6 +178,7 @@
             :loading="progressbar"
             hide-default-footer
             ref="progress"
+            class="mt-2 table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -124,9 +191,7 @@
 
             <template slot="body.append">
               <tr class="hidden-xs-only">
-                <th class="text-uppercase">
-                  Grand Totals
-                </th>
+                <th class="text-uppercase">Grand Totals</th>
                 <td style="text-align: right; font-size: 15px">
                   {{ sumField("begining_orig") }}
                 </td>
@@ -160,6 +225,18 @@
   </div>
 </template>
 
+<style>
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
+</style>
+
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -184,6 +261,7 @@ export default {
     mlist: [],
     ylist: [],
     table: [],
+    filterDialog: false,
     headers: [
       {
         text: "SUPPLIES CATEGORY",
@@ -191,6 +269,7 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
+        width: "20%"
       },
       {
         text: "BEGINING INVENTORY",
