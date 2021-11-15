@@ -251,6 +251,7 @@
 
               <!-- Table -->
               <v-data-table
+                id="table1"
                 :headers="headers1"
                 :items="table1.data"
                 :loading="progressbar"
@@ -466,6 +467,7 @@
 
               <!-- Table -->
               <v-data-table
+                id="table1"
                 :headers="headers2"
                 :items="table2.data"
                 :loading="progressbar"
@@ -511,15 +513,28 @@
 </template>
 
 <style>
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-list-item__content {

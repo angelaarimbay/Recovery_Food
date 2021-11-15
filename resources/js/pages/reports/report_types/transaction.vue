@@ -308,6 +308,7 @@
 
     <!-- Table -->
     <v-data-table
+      id="table1"
       :headers="headers"
       :items="table.data"
       :loading="progressbar"
@@ -353,97 +354,114 @@
       ></v-pagination>
     </div>
 
+    <!-- View Transaction Report Info Form -->
     <v-dialog v-model="viewdialog" max-width="900px">
-      <v-card id="dialog" class="bgcolor">
-        <v-toolbar
-          dense
-          dark
-          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-        >
-          Sales Report Info
+      <v-card tile class="pa-3">
+        <v-toolbar dark dense flat rounded class="red darken-3">
+          Transaction Report Info
           <v-spacer></v-spacer>
-          <v-icon
-            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-            text
-            @click="closeViewDialog"
-            >mdi-close
-          </v-icon>
+          <v-icon text @click="closeViewDialog">mdi-close </v-icon>
         </v-toolbar>
-
-        <v-card tile>
-          <v-card-text class="py-2">
-            <v-card-text>
-              <div v-if="table2.length > 0">
-                <strong> Reference No: {{ table2[0]["reference_no"] }}</strong>
-                <v-spacer></v-spacer>
-                <strong>
+        <v-card-text class="px-0">
+          <v-card-text>
+            <div v-if="table2.length > 0">
+              <v-row no-gutters>
+                <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pb-2">
+                  Reference No: <strong>{{ table2[0]["reference_no"] }}</strong>
+                  <br />
                   Bill Total:
-                  {{ sales_var }}
-                </strong>
-                <br />
-
-                <v-card-actions>
-                  Branch: {{ table2[0]["branch"]["branch_name"] }}<br />
+                  <strong>{{ sales_var }} </strong>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col
+                  cols="12"
+                  xl="6"
+                  lg="6"
+                  md="6"
+                  sm="12"
+                  class="pb-2"
+                  :class="{ 'text-right': $vuetify.breakpoint.smAndUp }"
+                >
+                  Branch:
+                  <strong>{{ table2[0]["branch"]["branch_name"] }}</strong>
+                  <br />
                   Date:
-                  {{ getFormatDate(table2[0]["created_at"], "YYYY-MM-DD")
-                  }}<br />
-                  <v-spacer></v-spacer>
-                  Mode: {{ table2[0]["mode"] }} <br />
-                  Cashier: {{ table2[0]["cashier"]["name"] }}
-                </v-card-actions>
+                  <strong>{{
+                    getFormatDate(table2[0]["created_at"], "YYYY-MM-DD")
+                  }}</strong></v-col
+                >
+              </v-row>
 
-                <v-card-actions>
-                  Payment: {{ table2[0]["payment"] }} <br />
-                  Discount: {{ table2[0]["discount"] }}% <br />
-                  Change: {{ table2[0]["change"] }} <br />
-                </v-card-actions>
-              </div>
-            </v-card-text>
-
-            <!-- Table -->
-            <v-data-table
-              dense
-              class="px-4 table-striped"
-              :items-per-page="5"
-              :loading="progressbar"
-              :headers="headers2"
-              :items="table2"
-              hide-default-footer
-            >
-              <template v-slot:[`item.product_name.price`]="{ item }"
-                >{{ getFormatCurrency(item.product_name.price, "0,0.00") }}
-              </template>
-
-              <template v-slot:[`item.product_full`]="{ item }"
-                >{{ item.product_name.product_name }}
-                {{ item.product_name.description }}</template
-              >
-              <template v-slot:[`item.created_at`]="{ item }">
-                {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
-              >
-              <v-progress-linear
-                v-show="progressbar"
-                slot="progress"
-                color="red darken-2"
-                indeterminate
-              ></v-progress-linear>
-            </v-data-table>
+              <v-row no-gutters>
+                <v-col class="pb-2" cols="12" xl="6" lg="6" md="6" sm="12">
+                  Payment: <strong>{{ table2[0]["payment"] }}</strong
+                  ><br />
+                  Discount: <strong>{{ table2[0]["discount"] }}%</strong><br />
+                  Change: <strong>{{ table2[0]["change"] }}</strong>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col
+                  cols="12"
+                  xl="6"
+                  lg="6"
+                  md="6"
+                  sm="12"
+                  class="pb-2"
+                  :class="{ 'text-right': $vuetify.breakpoint.smAndUp }"
+                >
+                  Mode: <strong>{{ table2[0]["mode"] }}</strong
+                  ><br />
+                  Cashier: <strong>{{ table2[0]["cashier"]["name"] }}</strong>
+                </v-col>
+              </v-row>
+            </div>
           </v-card-text>
 
-          <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="error"
-              style="text-transform: none"
-              :small="$vuetify.breakpoint.smAndDown"
-              depressed
-              dark
-              @click="closeViewDialog"
+          <!-- Table -->
+          <v-data-table
+            id="table1"
+            dense
+            class="px-4 table-striped border"
+            :items-per-page="5"
+            :loading="progressbar"
+            :headers="headers2"
+            :items="table2"
+            hide-default-footer
+          >
+            <template v-slot:[`item.product_name.price`]="{ item }"
+              >{{ getFormatCurrency(item.product_name.price, "0,0.00") }}
+            </template>
+
+            <template v-slot:[`item.product_name.product_name`]="{ item }"
+              >{{ item.product_name.product_name }}
+              {{ item.product_name.description }}</template
             >
-              Close
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+            <template v-slot:[`item.created_at`]="{ item }">
+              {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
+            >
+            <v-progress-linear
+              v-show="progressbar"
+              slot="progress"
+              color="red darken-2"
+              indeterminate
+            ></v-progress-linear>
+          </v-data-table>
+        </v-card-text>
+        <v-divider class="my-0"></v-divider>
+        <!-- Dialog Form Buttons -->
+        <v-card-actions class="px-0 pb-0">
+          <v-spacer></v-spacer>
+          <v-btn
+            color="error"
+            :small="$vuetify.breakpoint.smAndDown"
+            depressed
+            dark
+            @click="closeViewDialog"
+            text
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <iframe id="print7" class="d-none" :src="print" frameborder="0"></iframe>
@@ -451,6 +469,27 @@
 </template>
 
 <style>
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
+.pbutton .v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+}
+.pbutton .v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.pbutton .v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+}
+
 .v-list-item__content {
   color: white !important;
 }
@@ -532,7 +571,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -545,7 +584,7 @@ export default {
     headers2: [
       {
         text: "PRODUCT(S)",
-        value: "product_full",
+        value: "product_name.product_name",
         filterable: false,
         class: "black--text",
       },

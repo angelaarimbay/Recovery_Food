@@ -141,8 +141,6 @@
           </v-list-item>
         </template>
 
-        <v-divider class="m-0"></v-divider>
-
         <v-list nav dense>
           <v-list-item
             v-if="user.permissionslist.includes('Access Dashboard')"
@@ -549,18 +547,19 @@
 <style>
 ::-webkit-scrollbar-track {
   --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #e0e0e0;
+  background-color: transparent
 }
 
 ::-webkit-scrollbar {
-  width: 14px;
+  width: 15px;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   border: 4px solid rgba(0, 0, 0, 0);
   background-clip: padding-box;
   border-radius: 9999px;
-  background-color: #aaaaaa;
+  background-color: #424242;
 }
 
 .bg-grey {

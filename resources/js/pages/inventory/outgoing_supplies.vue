@@ -138,7 +138,7 @@
                 <v-tooltip bottom>
                   <template #activator="data">
                     <v-btn
-                      class="mr-2"
+                      class="mr-1"
                       color="success"
                       style="text-transform: none"
                       depressed
@@ -412,6 +412,7 @@
 
           <!-- Table -->
           <v-data-table
+            id="table1"
             :headers="myheaders"
             :items="table.data"
             :loading="progressbar"
@@ -477,237 +478,233 @@
             persistent
             no-click-animation
           >
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Outgoing Supply
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="cancel"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <v-card tile>
-              <v-card-text class="py-2">
-                <br />
-                <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                  <v-row>
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 12px">ID</div>
-                        </template>
-                      </v-text-field>
+            <v-card tile class="pa-3">
+              <v-toolbar dark dense flat rounded class="red darken-3">
+                Outgoing Supply
+                <v-spacer></v-spacer>
+                <v-icon text @click="cancel">mdi-close </v-icon>
+              </v-toolbar>
+              <v-container class="px-1">
+                <v-row class="py-4">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field v-model="form.id" class="d-none" dense>
+                      <template slot="label">
+                        <div style="font-size: 12px">ID</div>
+                      </template>
+                    </v-text-field>
 
-                      <v-menu
-                        v-model="date3"
-                        :close-on-content-click="false"
-                        :nudge-right="35"
-                        lazy
-                        transition="scale-transition"
-                        offset-y
-                        full-width
-                        min-width="290px"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <v-text-field
-                            :rules="formRules"
-                            v-model="form.outgoing_date"
-                            readonly
-                            v-on="on"
-                            class="py-0"
-                            dense
-                            clearable
-                            label=""
-                            background-color="white"
-                            flat
-                            solo
-                          >
-                            <template slot="label">
-                              <div style="font-size: 12px">
-                                Outgoing Date <span style="color: red">*</span>
-                              </div>
-                            </template>
-                          </v-text-field>
-                        </template>
-                        <v-date-picker
+                    <v-menu
+                      v-model="date3"
+                      :close-on-content-click="false"
+                      :nudge-right="35"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          :prepend-inner-icon="
+                            showIcon ? 'mdi-calendar-range' : ''
+                          "
+                          :rules="formRules"
                           v-model="form.outgoing_date"
-                          @input="date3 = false"
-                          scrollable
-                          no-title
-                          color="red darken-2"
-                          dark
-                        ></v-date-picker>
-                      </v-menu>
-                    </v-col>
+                          readonly
+                          v-on="on"
+                          class="py-0"
+                          dense
+                          clearable
+                          label=""
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">
+                              Outgoing Date <span style="color: red">*</span>
+                            </div>
+                          </template>
+                        </v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="form.outgoing_date"
+                        @input="date3 = false"
+                        scrollable
+                        no-title
+                        color="red darken-2"
+                        dark
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-select
+                      :rules="formRulesNumberRange"
+                      v-model="form.requesting_branch"
+                      :items="branchlist"
+                      dense
+                      item-text="branch_name"
+                      item-value="id"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-select
-                        :rules="formRulesNumberRange"
-                        v-model="form.requesting_branch"
-                        :items="branchlist"
-                        dense
-                        item-text="branch_name"
-                        item-value="id"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Requesting Branch <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Requesting Branch <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-select>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-select
+                      :rules="formRulesNumberRange"
+                      v-model="form.category"
+                      :items="suppcatlist"
+                      dense
+                      item-text="supply_cat_name"
+                      item-value="id"
+                      @change="suppName"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-select
-                        :rules="formRulesNumberRange"
-                        v-model="form.category"
-                        :items="suppcatlist"
-                        dense
-                        item-text="supply_cat_name"
-                        item-value="id"
-                        @change="suppName"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Supply Category <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Supply Category <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-select>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-autocomplete
+                      :rules="formRules"
+                      v-model="form.supply_name"
+                      :items="suppnamelist"
+                      dense
+                      item-text="supply_name"
+                      return-object
+                      @change="suppValidate"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-autocomplete
-                        :rules="formRules"
-                        v-model="form.supply_name"
-                        :items="suppnamelist"
-                        dense
-                        item-text="supply_name"
-                        return-object
-                        @change="suppValidate"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Supply Name <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-autocomplete>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Supply Name <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-autocomplete>
 
-                      <v-card flat class="px-4 pb-6" v-if="form.supply_name">
-                        <table style="width: 100%; font-size: 11px">
-                          <tr>
-                            <th
-                              class="text-left pr-2"
-                              style="width: 50%"
-                              v-if="form.supply_name.description"
-                            >
-                              Description:
-                            </th>
-                            <th>{{ form.supply_name.description }}</th>
-                          </tr>
-                          <tr>
-                            <th class="text-left pr-2" style="width: 50%">
-                              Net Price:
-                            </th>
-                            <th>
-                              {{
-                                getFormatCurrency(
-                                  form.supply_name.net_price,
-                                  "0,0.00"
-                                )
-                              }}
-                            </th>
-                          </tr>
-                          <tr>
-                            <th class="text-left pr-2" style="width: 50%">
-                              Unit:
-                            </th>
-                            <th>{{ form.supply_name.unit }}</th>
-                          </tr>
-                          <tr>
-                            <th class="text-left pr-2" style="width: 50%">
-                              Available Quantity:
-                            </th>
-                            <th>{{ getQuantity }}</th>
-                          </tr>
-                        </table>
-                      </v-card>
-                    </v-col>
+                    <v-card flat class="px-4 pb-6" v-if="form.supply_name">
+                      <table style="width: 100%; font-size: 11px">
+                        <tr>
+                          <th
+                            class="text-left pr-2"
+                            style="width: 50%"
+                            v-if="form.supply_name.description"
+                          >
+                            Description:
+                          </th>
+                          <th>{{ form.supply_name.description }}</th>
+                        </tr>
+                        <tr>
+                          <th class="text-left pr-2" style="width: 50%">
+                            Net Price:
+                          </th>
+                          <th>
+                            {{
+                              getFormatCurrency(
+                                form.supply_name.net_price,
+                                "0,0.00"
+                              )
+                            }}
+                          </th>
+                        </tr>
+                        <tr>
+                          <th class="text-left pr-2" style="width: 50%">
+                            Unit:
+                          </th>
+                          <th>{{ form.supply_name.unit }}</th>
+                        </tr>
+                        <tr>
+                          <th class="text-left pr-2" style="width: 50%">
+                            Available Quantity:
+                          </th>
+                          <th>{{ getQuantity }}</th>
+                        </tr>
+                      </table>
+                    </v-card>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRulesQuantity"
+                      v-model="form.quantity"
+                      clearable
+                      dense
+                      @keydown="quantityKeydown($event)"
+                      counter
+                      maxlength="3"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field
-                        :rules="formRulesQuantity"
-                        v-model="form.quantity"
-                        clearable
-                        dense
-                        @keydown="quantityKeydown($event)"
-                        counter
-                        maxlength="3"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Supply Quantity <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Supply Quantity <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-divider class="my-0"></v-divider>
               <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+              <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -715,8 +712,8 @@
                   :disabled="button"
                   dark
                   @click="cancel"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Cancel
                 </v-btn>
@@ -726,8 +723,8 @@
                   :disabled="button"
                   dark
                   @click="save"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Save
                 </v-btn>
@@ -786,6 +783,7 @@
                         </v-tooltip>
                       </v-row>
                       <v-data-table
+                        id="table1"
                         :headers="headers1"
                         :items="table1.data"
                         :loading="progressbar1"
@@ -794,7 +792,7 @@
                         :items-per-page="itemsPerPage1"
                         hide-default-footer
                         @page-count="pageCount1 = $event"
-                        class="table-striped border"
+                        class="mt-2 table-striped border"
                       >
                         <!-- Progress Bar -->
                         <v-progress-linear
@@ -846,7 +844,8 @@
                     </v-container>
                   </v-container>
                 </v-card>
-                <div class="text-center pt-2">
+                <!-- Paginate -->
+                <div class="pbutton text-center pt-2">
                   <v-pagination
                     v-model="page1"
                     :total-visible="7"
@@ -859,28 +858,17 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialog2" width="950">
-          <v-toolbar
-            dense
-            dark
-            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-          >
-            Requested Supplies List
-            <v-spacer></v-spacer>
-            <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-              text
-              @click="dialog2 = false"
-              >mdi-close
-            </v-icon>
-          </v-toolbar>
-          <v-card tile>
-            <v-card-text class="py-2">
-              <v-container
-                v-if="table2.length > 0"
-                class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0"
-              >
-                <v-card-actions>
+        <!-- View Requested Supplies List Form -->
+        <v-dialog v-model="dialog2" width="900px">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Requested Supplies List
+              <v-spacer></v-spacer>
+              <v-icon text @click="dialog2 = false">mdi-close </v-icon>
+            </v-toolbar>
+            <v-card-text class="px-0">
+              <v-card-text>
+                <div class="px-0" v-if="table2.length > 0">
                   <v-row no-gutters>
                     <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                       Requested By:<br /><strong
@@ -902,108 +890,103 @@
                       }}</strong>
                     </v-col>
                   </v-row>
-                </v-card-actions>
+                </div>
+              </v-card-text>
 
-                <v-data-table
-                  :headers="headers2"
-                  show-select
-                  :items="table2"
-                  dense
-                  item-key="supply_id"
-                  :items-per-page="10"
-                  v-model="selected"
-                  class="table-striped border"
+              <v-data-table
+                id="table1"
+                :headers="headers2"
+                show-select
+                :items="table2"
+                dense
+                item-key="supply_id"
+                :items-per-page="10"
+                v-model="selected"
+                class="table-striped border"
+              >
+                <template
+                  v-slot:[`item.data-table-select`]="{
+                    item,
+                    isSelected,
+                    select,
+                  }"
                 >
-                  <template
-                    v-slot:[`item.data-table-select`]="{
-                      item,
-                      isSelected,
-                      select,
-                    }"
-                  >
-                    <v-simple-checkbox
-                      :value="
-                        item.status !== 3 &&
-                        isSelected &&
-                        item.status !== 2 &&
-                        isSelected
-                      "
-                      :readonly="item.status == 3 || item.status == 2"
-                      :disabled="item.status == 3 || item.status == 2"
-                      @input="select($event)"
-                    ></v-simple-checkbox>
-                  </template>
-                  <template v-slot:[`item.supply_name`]="{ item }">
-                    {{ item.supply_name }} {{ item.description }}</template
-                  >
+                  <v-simple-checkbox
+                    :value="
+                      item.status !== 3 &&
+                      isSelected &&
+                      item.status !== 2 &&
+                      isSelected
+                    "
+                    :readonly="item.status == 3 || item.status == 2"
+                    :disabled="item.status == 3 || item.status == 2"
+                    @input="select($event)"
+                  ></v-simple-checkbox>
+                </template>
+                <template v-slot:[`item.supply_name`]="{ item }">
+                  {{ item.supply_name }} {{ item.description }}</template
+                >
 
-                  <template v-slot:[`item.status`]="{ item }">
-                    <div v-if="item.status == 1" class="text-warning">
-                      Pending
-                    </div>
-                    <div v-else-if="item.status == 2" class="text-info">
-                      Confirmed / For Delivery
-                    </div>
-                    <div v-else-if="item.status == 3" class="text-success">
-                      Completed
-                    </div>
-                  </template>
+                <template v-slot:[`item.status`]="{ item }">
+                  <div v-if="item.status == 1" class="text-warning">
+                    Pending
+                  </div>
+                  <div v-else-if="item.status == 2" class="text-info">
+                    Confirmed / For Delivery
+                  </div>
+                  <div v-else-if="item.status == 3" class="text-success">
+                    Completed
+                  </div>
+                </template>
 
-                  <template v-slot:[`item.supply_id`]="{ item }">
-                    <div v-if="item.status == 1">
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            icon
-                            color="red darken-2"
-                            @click="editRequest(item)"
-                            :x-small="$vuetify.breakpoint.smAndDown"
-                            v-on="data.on"
-                          >
-                            <v-icon>mdi-pencil</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Edit</span>
-                      </v-tooltip>
-                    </div>
-                  </template>
-                </v-data-table>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    style="text-transform: none"
-                    :small="$vuetify.breakpoint.smAndDown"
-                    color="primary"
-                    @click="processRequest"
-                    :disabled="!disabled"
-                  >
-                    Approve Request
-                  </v-btn>
-                </v-card-actions>
-              </v-container>
+                <template v-slot:[`item.supply_id`]="{ item }">
+                  <div v-if="item.status == 1">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          icon
+                          color="red darken-2"
+                          @click="editRequest(item)"
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          v-on="data.on"
+                        >
+                          <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Edit</span>
+                    </v-tooltip>
+                  </div>
+                </template>
+              </v-data-table>
             </v-card-text>
+            <v-divider class="my-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="px-0 pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                color="primary"
+                @click="processRequest"
+                :disabled="!disabled"
+                text
+              >
+                Approve Request
+              </v-btn>
+            </v-card-actions>
           </v-card>
         </v-dialog>
 
         <!-- Quantity Dialog Form -->
         <v-dialog v-model="dialog3" max-width="450px">
-          <v-toolbar
-            dense
-            dark
-            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-          >
-            Enter Quantity
-            <v-spacer></v-spacer>
-            <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-              text
-              @click="dialog3 = false"
-              >mdi-close
-            </v-icon>
-          </v-toolbar>
-          <v-card tile>
-            <v-card-text class="py-2">
-              <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Enter Quantity
+              <v-spacer></v-spacer>
+              <v-icon text @click="dialog3 = false">mdi-close </v-icon>
+            </v-toolbar>
+            <v-card-text class="px-0 py-0">
+              <v-container class="px-2">
                 <v-row>
                   <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
@@ -1013,17 +996,27 @@
                   </v-col>
                 </v-row>
                 <v-row class="mt-0">
-                  <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
                     <v-card-actions class="px-0">
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="quantity"
-                        outlined
                         dense
                         autocomplete="off"
                         @keydown="quantityKeydown($event)"
                         class="mr-2"
                         clearable
+                        background-color="white"
+                        flat
+                        solo
+                        style="font-size: 12px"
                       >
                         <template slot="label">
                           <div style="font-size: 12px">
@@ -1045,9 +1038,9 @@
                 </v-row>
               </v-container>
             </v-card-text>
-
+            <v-divider class="my-0"></v-divider>
             <!-- Dialog Form Buttons -->
-            <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+            <v-card-actions class="px-0 pb-0">
               <v-spacer></v-spacer>
               <v-btn
                 color="error"
@@ -1055,8 +1048,8 @@
                 :disabled="button"
                 dark
                 @click="dialog3 = false"
-                style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
+                text
               >
                 Cancel
               </v-btn>
@@ -1065,9 +1058,9 @@
                 depressed
                 :disabled="button"
                 dark
-                style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
                 @click="updateQuantity(selectedItem)"
+                text
               >
                 OK
               </v-btn>
@@ -1086,15 +1079,28 @@
   color: #d32f2f !important;
 }
 
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-application .tfield .white {
@@ -1128,6 +1134,13 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
+    showIcon() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     disabled() {
       if (this.selected.length == 0) {
         return false;
@@ -1250,7 +1263,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -1295,7 +1308,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         filterable: false,
@@ -1337,7 +1350,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "supply_id",
         align: "center",
         filterable: false,

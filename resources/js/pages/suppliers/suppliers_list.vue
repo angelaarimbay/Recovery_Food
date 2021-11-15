@@ -198,6 +198,7 @@
 
           <!-- Table -->
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
@@ -216,7 +217,7 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.supplier_full`]="{ item }"
+            <template v-slot:[`item.supplier_name`]="{ item }"
               >{{ item.supplier_name }} {{ item.description }}</template
             >
             <template v-slot:[`item.count`]="{ item }">
@@ -225,8 +226,8 @@
             <template v-slot:[`item.status`]="{ item }">
               <v-chip
                 style="justify-content: center"
-                :style="widthSize"
-                :small="$vuetify.breakpoint.smAndDown"
+                small
+                :x-small="$vuetify.breakpoint.smAndDown"
                 :color="
                   item.status == '1'
                     ? '#43A047'
@@ -236,7 +237,7 @@
                 "
                 dark
               >
-                {{ item.status == 1 ? "Active" : "Inactive" }}
+                {{ item.status == 1 ? "Available" : "Unavailable" }}
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
@@ -277,208 +278,203 @@
             persistent
             no-click-animation
           >
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Supplier
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="cancel"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <v-card tile>
-              <v-card-text class="py-2">
-                <br />
-                <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                  <v-row>
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+            <v-card tile class="pa-3">
+              <v-toolbar dark dense flat rounded class="red darken-3">
+                Supplier
+                <v-spacer></v-spacer>
+                <v-icon text @click="cancel">mdi-close </v-icon>
+              </v-toolbar>
+              <v-container class="px-1">
+                <v-row class="py-4">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field v-model="form.id" class="d-none" dense>
+                      <template slot="label">
+                        <div style="font-size: 12px">ID</div>
+                      </template>
+                    </v-text-field>
+
+                    <v-select
+                      :rules="formRulesNumberRange"
+                      v-model="form.status"
+                      dense
+                      :items="status"
+                      item-text="name"
+                      item-value="id"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 12px">ID</div>
-                        </template>
-                      </v-text-field>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Status <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-select>
+                  </v-col>
 
-                      <v-select
-                        :rules="formRulesNumberRange"
-                        v-model="form.status"
-                        dense
-                        :items="status"
-                        item-text="name"
-                        item-value="id"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Status <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRules"
+                      v-model="form.supplier_name"
+                      label=""
+                      clearable
+                      dense
+                      counter
+                      @keydown="valueKeydown($event)"
+                      maxlength="35"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.supplier_name"
-                        label=""
-                        clearable
-                        dense
-                        counter
-                        @keydown="valueKeydown($event)"
-                        maxlength="35"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Supplier Name <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Supplier Name <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRulesDesc"
+                      v-model="form.description"
+                      label=""
+                      clearable
+                      dense
+                      counter
+                      @keydown="descKeydown($event)"
+                      maxlength="35"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field
-                        :rules="formRulesDesc"
-                        v-model="form.description"
-                        label=""
-                        clearable
-                        dense
-                        counter
-                        @keydown="descKeydown($event)"
-                        maxlength="35"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Description <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Description <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRulesNumberOnly"
+                      v-model="form.phone_number"
+                      label=""
+                      clearable
+                      dense
+                      counter
+                      @keydown="contactKeydown($event)"
+                      maxlength="15"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                      v-mask="mask"
                     >
-                      <v-text-field
-                        :rules="formRulesNumberOnly"
-                        v-model="form.phone_number"
-                        label=""
-                        clearable
-                        dense
-                        counter
-                        @keydown="contactKeydown($event)"
-                        maxlength="15"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Contact Number <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Contact Number <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRules"
+                      v-model="form.contact_person"
+                      label=""
+                      clearable
+                      dense
+                      counter
+                      @keydown="valueKeydown($event)"
+                      maxlength="35"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.contact_person"
-                        label=""
-                        clearable
-                        dense
-                        counter
-                        @keydown="valueKeydown($event)"
-                        maxlength="35"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Contact Person <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Contact Person <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRules"
+                      v-model="form.address"
+                      label=""
+                      clearable
+                      dense
+                      counter
+                      @keydown="valueKeydown($event)"
+                      maxlength="35"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.address"
-                        label=""
-                        clearable
-                        dense
-                        counter
-                        @keydown="valueKeydown($event)"
-                        maxlength="35"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Address <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Address <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-divider class="my-0"></v-divider>
               <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+              <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -486,8 +482,8 @@
                   :disabled="button"
                   dark
                   @click="cancel"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Cancel
                 </v-btn>
@@ -497,8 +493,8 @@
                   :disabled="button"
                   dark
                   @click="save"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Save
                 </v-btn>
@@ -512,15 +508,28 @@
 </template>
 
 <style>
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-application .tfield .white {
@@ -542,6 +551,8 @@
 </style>
 
 <script>
+const PHONE_NUMBER = "(####) ###-####";
+const TELEPHONE_NUMBER = "(###) ###-####";
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
@@ -560,8 +571,8 @@ export default {
     dialog: false,
     filterDialog: false,
     status: [
-      { name: "Active", id: 1 },
-      { name: "Inactive", id: 0 },
+      { name: "Available", id: 1 },
+      { name: "Unavailable", id: 0 },
     ],
     table: [],
 
@@ -587,9 +598,6 @@ export default {
     ],
     formRulesNumberOnly: [
       (v) => !!v || "This field is required",
-      (v) =>
-        /^(?:([+])(?!\1{1}))*([0-9]{7,12})+$/.test(v) ||
-        "This field only accepts valid contact number",
       (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
 
@@ -616,9 +624,9 @@ export default {
         filterable: false,
         class: "black--text",
       },
-      { text: "SUPPLIER NAME", value: "supplier_full", class: "black--text" },
+      { text: "SUPPLIER NAME", value: "supplier_name", class: "black--text" },
       {
-        text: "PHONE NUMBER",
+        text: "CONTACT NUMBER",
         value: "phone_number",
         filterable: false,
         class: "black--text",
@@ -638,12 +646,11 @@ export default {
       {
         text: "STATUS",
         value: "status",
-        align: "center",
         filterable: false,
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -661,14 +668,14 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
-    widthSize() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return { width: "65px" };
-        case "sm":
-          return { width: "65px" };
-        default:
-          return { width: "72px" };
+    mask() {
+      return this.isNumber ? PHONE_NUMBER : TELEPHONE_NUMBER;
+    },
+    isNumber() {
+      if (this.form.phone_number !== null) {
+        return this.form.phone_number
+          ? this.form.phone_number.substr(1, 2) === "09"
+          : this.form.phone_number === null;
       }
     },
   },
@@ -694,7 +701,7 @@ export default {
       }
     },
     contactKeydown(e) {
-      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>'\/?-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },

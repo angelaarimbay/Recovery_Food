@@ -197,6 +197,7 @@
 
           <!-- Table -->
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
@@ -227,8 +228,8 @@
             <template v-slot:[`item.status`]="{ item }">
               <v-chip
                 style="justify-content: center"
-                :style="widthSize"
-                :small="$vuetify.breakpoint.smAndDown"
+                small
+                :x-small="$vuetify.breakpoint.smAndDown"
                 :color="
                   item.status == '1'
                     ? '#43A047'
@@ -238,7 +239,7 @@
                 "
                 dark
               >
-                {{ item.status == 1 ? "Active" : "Inactive" }}
+                {{ item.status == 1 ? "Available" : "Unavailable" }}
               </v-chip>
             </template>
             <template v-slot:[`item.id`]="{ item }">
@@ -290,22 +291,13 @@
         <!-- View Dialog Form -->
         <v-form ref="form">
           <v-dialog v-model="viewdialog" max-width="500px">
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              View Branch
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="closeViewDialog"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <v-card tile>
-              <v-container class="pt-0 px-xl-9 px-lg-9 px-md-9 px-sm-8 px-5">
+            <v-card tile class="pa-3">
+              <v-toolbar dark dense flat rounded class="red darken-3">
+                View Branch
+                <v-spacer></v-spacer>
+                <v-icon text @click="closeViewDialog">mdi-close </v-icon>
+              </v-toolbar>
+              <v-container class="px-1 py-0">
                 <v-card-title
                   class="
                     text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -320,7 +312,7 @@
                 </v-card-title>
                 <v-img
                   :src="form.branch_image"
-                  class="border mx-auto mb-4"
+                  class="mx-auto mb-4"
                   contain
                   max-width="480px"
                   max-height="300px"
@@ -332,7 +324,7 @@
                     text-lg-subtitle-1
                     text-md-subtitle-1
                     text-sm-subtitle-1
-                    px-0
+                    px-1
                     py-1
                     my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
                   "
@@ -356,7 +348,7 @@
                     text-lg-subtitle-1
                     text-md-subtitle-1
                     text-sm-subtitle-1
-                    px-0
+                    px-1
                     py-1
                     my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
                   "
@@ -380,7 +372,7 @@
                     text-lg-subtitle-1
                     text-md-subtitle-1
                     text-sm-subtitle-1
-                    px-0
+                    px-1
                     py-1
                     my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
                   "
@@ -410,291 +402,275 @@
             persistent
             no-click-animation
           >
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Branch
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="cancel"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <v-card tile>
-              <v-card-text class="py-2">
-                <br />
-                <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                  <v-row>
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
+            <v-card tile class="pa-3">
+              <v-toolbar dark dense flat rounded class="red darken-3">
+                Branch
+                <v-spacer></v-spacer>
+                <v-icon text @click="cancel">mdi-close </v-icon>
+              </v-toolbar>
+              <v-container class="px-1">
+                <v-row class="py-4">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
+                  >
+                    <v-select
+                      :rules="formRulesBasic"
+                      v-model="form.type"
+                      dense
+                      :items="[
+                        { name: 'Branch', id: '0' },
+                        { name: 'Warehouse', id: '1' },
+                      ]"
+                      item-text="name"
+                      item-value="id"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-select
-                        :rules="formRulesBasic"
-                        v-model="form.type"
-                        dense
-                        :items="[
-                          { name: 'Branch', id: '0' },
-                          { name: 'Warehouse', id: '1' },
-                        ]"
-                        item-text="name"
-                        item-value="id"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Type <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Type <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-select>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="6"
-                      lg="6"
-                      sm="6"
-                      md="6"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
+                  >
+                    <v-text-field v-model="form.id" class="d-none" dense>
+                      <template slot="label">
+                        <div style="font-size: 12px">ID</div>
+                      </template>
+                    </v-text-field>
+
+                    <v-select
+                      :rules="formRulesNumberRange"
+                      v-model="form.status"
+                      dense
+                      :items="status"
+                      item-text="name"
+                      item-value="id"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 12px">ID</div>
-                        </template>
-                      </v-text-field>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Status <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-select>
+                  </v-col>
 
-                      <v-select
-                        :rules="formRulesNumberRange"
-                        v-model="form.status"
-                        dense
-                        :items="status"
-                        item-text="name"
-                        item-value="id"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Status <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-select>
-                    </v-col>
-
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRules"
+                      v-model="form.branch_name"
+                      clearable
+                      dense
+                      counter
+                      @keydown="valueKeydown($event)"
+                      maxlength="35"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.branch_name"
-                        clearable
-                        dense
-                        counter
-                        @keydown="valueKeydown($event)"
-                        maxlength="35"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Branch Name <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Branch Name <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRules"
+                      v-model="form.location"
+                      clearable
+                      dense
+                      counter
+                      @keydown="valueKeydown($event)"
+                      maxlength="35"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field
-                        :rules="formRules"
-                        v-model="form.location"
-                        clearable
-                        dense
-                        counter
-                        @keydown="valueKeydown($event)"
-                        maxlength="35"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Location <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Location <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRulesNumberOnly"
+                      v-model="form.phone_number"
+                      clearable
+                      dense
+                      counter
+                      @keydown="contactKeydown($event)"
+                      maxlength="15"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                      v-mask="mask"
                     >
-                      <v-text-field
-                        :rules="formRulesNumberOnly"
-                        v-model="form.phone_number"
-                        clearable
-                        dense
-                        counter
-                        @keydown="contactKeydown($event)"
-                        maxlength="15"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Contact Number <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Contact Number <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                    <v-col
-                      class="tfield py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRulesEmail"
+                      v-model="form.email_add"
+                      clearable
+                      dense
+                      counter
+                      maxlength="64"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
                     >
-                      <v-text-field
-                        :rules="formRulesEmail"
-                        v-model="form.email_add"
-                        clearable
-                        dense
-                        counter
-                        maxlength="64"
-                        background-color="white"
-                        flat
-                        solo
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">
-                            Email Address <span style="color: red">*</span>
-                          </div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Email Address <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                    <v-col class="py-0">
-                      <hr class="mt-0" />
-                    </v-col>
+                  <v-col
+                    class="py-0 px-4"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <div style="font-size: 12px">Image Attachment:</div>
+                    <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
+                    <!-- Check if has image, then display the image -->
+                    <div v-if="form.branch_image">
+                      <v-row no-gutters>
+                        <v-col cols="11">
+                          <a
+                            :href="'/storage/branches/' + form.branch_image"
+                            style="text-decoration: none"
+                            download
+                          >
+                            {{ tempfile }}
+                          </a>
+                        </v-col>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <div style="font-size: 12px">Image Attachment:</div>
-                      <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
-                      <!-- Check if has image, then display the image -->
-                      <div v-if="form.branch_image">
-                        <v-row no-gutters>
-                          <v-col cols="11">
-                            <a
-                              :href="'/storage/branches/' + form.branch_image"
-                              style="text-decoration: none"
-                              download
-                            >
-                              {{ tempfile }}
-                            </a>
-                          </v-col>
+                        <v-col cols="1" class="text-center">
+                          <v-tooltip bottom>
+                            <template #activator="data">
+                              <v-icon
+                                v-on="data.on"
+                                color="red darken-2"
+                                v-if="form.branch_image"
+                                @click="deletefile"
+                                >mdi-delete</v-icon
+                              >
+                            </template>
+                            <span>Remove Image</span>
+                          </v-tooltip>
+                        </v-col>
+                      </v-row>
+                    </div>
 
-                          <v-col cols="1" class="text-center">
-                            <v-tooltip bottom>
-                              <template #activator="data">
-                                <v-icon
-                                  v-on="data.on"
-                                  color="red darken-2"
-                                  v-if="form.branch_image"
-                                  @click="deletefile"
-                                  >mdi-delete</v-icon
-                                >
-                              </template>
-                              <span>Remove Image</span>
-                            </v-tooltip>
-                          </v-col>
-                        </v-row>
-                      </div>
+                    <!-- Progressbar for uploading -->
+                    <v-progress-linear
+                      v-show="loading"
+                      slot="progress"
+                      color="red darken-2"
+                      indeterminate
+                    ></v-progress-linear>
 
-                      <!-- Progressbar for uploading -->
-                      <v-progress-linear
-                        v-show="loading"
-                        slot="progress"
-                        color="red darken-2"
-                        indeterminate
-                      ></v-progress-linear>
+                    <!-- Upload button -->
+                    <v-btn
+                      outlined
+                      color="grey darken-1"
+                      class="btn-block"
+                      style="text-transform: none"
+                      @click="clickupload"
+                      ><v-icon>mdi-upload</v-icon> Upload Image
+                    </v-btn>
 
-                      <!-- Upload button -->
-                      <v-btn
-                        outlined
-                        color="grey darken-1"
-                        class="btn-block"
-                        style="text-transform: none"
-                        @click="clickupload"
-                        ><v-icon>mdi-upload</v-icon> Upload Image
-                      </v-btn>
-
-                      <!-- For uploading  -->
-                      <input
-                        ref="uploader"
-                        clearable
-                        accept="image/*"
-                        class="d-none"
-                        type="file"
-                        @change="attachment"
-                      />
-                    </v-col>
-                    <v-col
-                      class="py-1"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        style="display: none"
-                        v-model="form.branch_image"
-                        label="Document"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
+                    <!-- For uploading  -->
+                    <input
+                      ref="uploader"
+                      clearable
+                      accept="image/*"
+                      class="d-none"
+                      type="file"
+                      @change="attachment"
+                    />
+                  </v-col>
+                  <v-col class="py-1" cols="12" xl="12" lg="12" sm="12" md="4">
+                    <v-text-field
+                      style="display: none"
+                      v-model="form.branch_image"
+                      label="Document"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-divider class="my-0"></v-divider>
               <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+              <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -702,8 +678,8 @@
                   :disabled="button"
                   dark
                   @click="cancel"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Cancel
                 </v-btn>
@@ -713,8 +689,8 @@
                   :disabled="button"
                   dark
                   @click="save"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Save
                 </v-btn>
@@ -728,15 +704,28 @@
 </template>
 
 <style>
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
 .pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
 .pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
 
 .v-application .tfield .white {
@@ -758,6 +747,8 @@
 </style>
 
 <script>
+const PHONE_NUMBER = "(####) ###-####";
+const TELEPHONE_NUMBER = "(###) ###-####";
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
@@ -779,8 +770,8 @@ export default {
     viewdialog: false,
     filterDialog: false,
     status: [
-      { name: "Active", id: 1 },
-      { name: "Inactive", id: 0 },
+      { name: "Available", id: 1 },
+      { name: "Unavailable", id: 0 },
     ],
     tempfile: "", // for uploading
     table: [],
@@ -808,9 +799,6 @@ export default {
     ],
     formRulesNumberOnly: [
       (v) => !!v || "This field is required",
-      (v) =>
-        /^(?:([+])(?!\1{1}))*([0-9]{7,12})+$/.test(v) ||
-        "This field only accepts valid contact number",
       (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
 
@@ -846,7 +834,6 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
-        width: "8%",
       },
       { text: "BRANCH NAME", value: "branch_name", class: "black--text" },
       {
@@ -854,24 +841,20 @@ export default {
         value: "type",
         filterable: false,
         class: "black--text",
-        width: "15%",
       },
       {
         text: "STATUS",
         value: "status",
-        align: "center",
         filterable: false,
         class: "black--text",
-        width: "15%",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
         filterable: false,
         class: "black--text",
-        width: "15%",
       },
     ],
     page: 1,
@@ -884,14 +867,14 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
-    widthSize() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return { width: "65px" };
-        case "sm":
-          return { width: "65px" };
-        default:
-          return { width: "72px" };
+    mask() {
+      return this.isNumber ? PHONE_NUMBER : TELEPHONE_NUMBER;
+    },
+    isNumber() {
+      if (this.form.phone_number !== null) {
+        return this.form.phone_number
+          ? this.form.phone_number.substr(1, 2) === "09"
+          : this.form.phone_number === null;
       }
     },
   },
@@ -912,7 +895,7 @@ export default {
       }
     },
     contactKeydown(e) {
-      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>'\/?-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
