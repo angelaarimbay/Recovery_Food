@@ -553,6 +553,7 @@
                       flat
                       solo
                       style="font-size: 12px"
+                      v-mask="mask"
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
@@ -746,6 +747,8 @@
 </style>
 
 <script>
+const PHONE_NUMBER = "(####) ###-####";
+const TELEPHONE_NUMBER = "(###) ###-####";
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
@@ -796,9 +799,6 @@ export default {
     ],
     formRulesNumberOnly: [
       (v) => !!v || "This field is required",
-      (v) =>
-        /^(?:([+])(?!\1{1}))*([0-9]{7,12})+$/.test(v) ||
-        "This field only accepts valid contact number",
       (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
 
@@ -834,7 +834,6 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
-        width: "8%",
       },
       { text: "BRANCH NAME", value: "branch_name", class: "black--text" },
       {
@@ -842,15 +841,12 @@ export default {
         value: "type",
         filterable: false,
         class: "black--text",
-        width: "15%",
       },
       {
         text: "STATUS",
         value: "status",
-        align: "center",
         filterable: false,
         class: "black--text",
-        width: "15%",
       },
       {
         text: "ACTION(S)",
@@ -859,7 +855,6 @@ export default {
         sortable: false,
         filterable: false,
         class: "black--text",
-        width: "15%",
       },
     ],
     page: 1,
@@ -872,6 +867,16 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
+    mask() {
+      return this.isNumber ? PHONE_NUMBER : TELEPHONE_NUMBER;
+    },
+    isNumber() {
+      if (this.form.phone_number !== null) {
+        return this.form.phone_number
+          ? this.form.phone_number.substr(1, 2) === "09"
+          : this.form.phone_number === null;
+      }
+    },
   },
 
   // Onload
@@ -890,7 +895,7 @@ export default {
       }
     },
     contactKeydown(e) {
-      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>'\/?-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },

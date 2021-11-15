@@ -493,7 +493,6 @@ export default {
       {
         text: "STATUS",
         value: "status",
-        align: "center",
         filterable: false,
         class: "black--text",
       },

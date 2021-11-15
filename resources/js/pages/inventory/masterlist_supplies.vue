@@ -67,7 +67,7 @@
 
     <!-- Main Card -->
     <v-card elevation="2" class="mt-2" style="border-radius: 10px">
-      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-0">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
@@ -1379,8 +1379,9 @@ export default {
       this.form.lead_time = row.lead_time;
       this.form.order_frequency = row.order_frequency;
       this.form.minimum_order_quantity = row.minimum_order_quantity;
-
-      this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
+      this.form.exp_date = row.exp_date
+        ? this.getFormatDate(row.exp_date, "YYYY-MM-DD")
+        : "";
 
       this.dialog = true;
       this.compute();

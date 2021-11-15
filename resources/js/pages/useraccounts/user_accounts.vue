@@ -397,6 +397,7 @@
                       flat
                       solo
                       style="font-size: 12px"
+                      v-mask="mask"
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
@@ -615,6 +616,8 @@
 </style>
 
 <script>
+const PHONE_NUMBER = "(####) ###-####";
+const TELEPHONE_NUMBER = "(###) ###-####";
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
@@ -626,6 +629,17 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
+    mask() {
+      return this.isNumber ? PHONE_NUMBER : TELEPHONE_NUMBER;
+    },
+    isNumber() {
+      if (this.form.phone_number !== null) {
+        return this.form.phone_number
+          ? this.form.phone_number.substr(1, 2) === "09"
+          : this.form.phone_number === null;
+      }
+    },
+
     inputPass() {
       if (this.form.password == null || this.form.password.length == 0) {
         this.form.confirmPass = null;
@@ -667,9 +681,6 @@ export default {
     ],
     formRulesNumberOnly: [
       (v) => !!v || "This field is required",
-      (v) =>
-        /^(?:([+])(?!\1{1}))*([0-9]{7,12})+$/.test(v) ||
-        "This field only accepts valid contact number",
       (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
     formRulesNumberRange: [
@@ -756,7 +767,7 @@ export default {
       }
     },
     contactKeydown(e) {
-      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>'\/?-]/.test(e.key)) {
+      if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
