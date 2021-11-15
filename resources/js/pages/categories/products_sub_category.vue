@@ -499,7 +499,7 @@ export default {
         width: "20%",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,

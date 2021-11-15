@@ -1262,7 +1262,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -1307,7 +1307,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         filterable: false,
@@ -1349,7 +1349,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "supply_id",
         align: "center",
         filterable: false,

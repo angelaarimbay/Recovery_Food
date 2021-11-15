@@ -852,7 +852,7 @@ export default {
       },
       { text: "ROLE DESCRIPTION", value: "description", class: "black--text" },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -874,7 +874,7 @@ export default {
         class: "black--text",
       },
       { text: "DESCRIPTION", value: "description", class: "black--text" },
-      { text: "ACTION(S)", value: "id", class: "black--text" },
+      { text: "ACTION", value: "id", class: "black--text" },
     ],
     permission: { name: "", description: "", id: "" },
     // --------------------------------------------------user role
@@ -890,7 +890,7 @@ export default {
       },
       { text: "CURRENT ROLE(S)", value: "roles.name", class: "black--text" },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,

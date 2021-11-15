@@ -1061,7 +1061,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
