@@ -1152,6 +1152,10 @@ export default {
     itemperpage() {
       this.page = 1;
       this.get();
+
+   
+
+
     },
 
     // Format for everytime we call on database
@@ -1159,8 +1163,8 @@ export default {
     compare() {
       // Compare exsiting data vs edited data
       // If nothing change then no request
-      if (!this.currentdata) {
-        return true;
+      if (!this.currentdata)  {
+       return true; 
       }
       // Check if not existed
       // Check each value if the same or not
@@ -1175,13 +1179,19 @@ export default {
               ) {
                 found += 1;
               }
+
+              
             }
           } else if (key == "exp_date") {
             if (
               this.getFormatDate(this.currentdata.exp_date, "YYYY-MM-DD") !=
               this.getFormatDate(this.form.exp_date, "YYYY-MM-DD")
+              
+             
             ) {
               found += 1;
+
+
             }
           } else if (key == "supplier") {
             if (this.currentdata.supplier) {
