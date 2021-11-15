@@ -45,7 +45,7 @@ class ReportsController extends Controller
             $wvat_p = 0;
             $wovat_p = 0;
             //EACH CATEGORY ADD TO INNER ARRAY
-            foreach (tbl_masterlistsupp::with("category")->where("category", $value)->get() as $key1 => $value1) {
+            foreach (tbl_masterlistsupp::with("category")->where("category", $value)->orderBy("exp_date","asc")->get() as $key1 => $value1) {
                 $net_p += $value1->net_price;
                 $wvat_p += $value1->with_vat;
                 $wovat_p += $value1->without_vat;

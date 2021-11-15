@@ -934,12 +934,16 @@ export default {
     commitAdd(row) {
       if (this.$refs.form.validate()) {
         if (this.type == "Update") {
-          this.Edit(row);
-        } else if (this.type == "Delete") {
-          this.Delete(row);
-        } else {
+          this.Edit(row);}
+          
+          else if (this.type == "Delete") {
+          this.Delete(row);}
+          
+          else  {
           var check_existing = -1;
           //table
+          
+
           for (var i in this.table2) {
             if (row.id == this.table2[i].id) {
               check_existing = this.table2.indexOf(this.table2[i]);
@@ -967,11 +971,14 @@ export default {
               iconText: "check",
               iconColor: "success",
               message: "Successfully added.",
-            };
+            };           
           }
+        
+      
         }
         this.dialog = false;
       }
+      
     },
     Delete(row) {
       this.table2[this.table2.indexOf(row)].quantity =
@@ -1121,10 +1128,30 @@ export default {
       this.dialog = true;
     },
 
+
     cancel() {
       this.quantity = 1;
       this.dialog = false;
     },
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   },
 };
 </script>

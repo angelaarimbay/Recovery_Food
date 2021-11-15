@@ -1200,19 +1200,13 @@ export default {
               ) {
                 found += 1;
               }
-
-              
             }
           } else if (key == "exp_date") {
             if (
               this.getFormatDate(this.currentdata.exp_date, "YYYY-MM-DD") !=
               this.getFormatDate(this.form.exp_date, "YYYY-MM-DD")
-              
-             
             ) {
               found += 1;
-
-
             }
           } else if (key == "supplier") {
             if (this.currentdata.supplier) {
