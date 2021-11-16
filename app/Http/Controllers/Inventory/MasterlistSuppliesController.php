@@ -68,7 +68,7 @@ class MasterlistSuppliesController extends Controller
 
         // return $where;
         $table = tbl_masterlistsupp::with("category", "supplier")
-            ->selectRaw("*, case when exp_date is null THEN null when datediff(exp_date,current_timestamp) > 8 THEN null ELSE datediff(exp_date,current_timestamp) end as days")
+            ->selectRaw("*, case when exp_date is null THEN null when datediff(exp_date,current_timestamp) > 7 THEN null ELSE datediff(exp_date,current_timestamp) end as days")
             ->whereRaw($where);
 
         if ($t->search) { // If has value

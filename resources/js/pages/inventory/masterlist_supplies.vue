@@ -322,27 +322,39 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.supply_name`]="{ item }"
-              >{{ item.supply_name }} {{ item.description
-              }}<v-icon
-                :hidden="
-                  item.days < 1 && item.days > 1 && item.days < 8
-                    ? true
-                    : item.days == null
-                    ? false
-                    : ''
-                "
-                :color="
-                  item.days < 1
-                    ? 'red'
-                    : item.days > 1 && item.days < 8
-                    ? 'orange'
-                    : ''
-                "
-                >mdi-alert-circle</v-icon
-              ></template
-            >
+              >{{ item.supply_name }} {{ item.description }}
+            </template>
             <template v-slot:[`item.count`]="{ item }">
-              {{ item.row }}</template
+              <v-tooltip bottom>
+                <template #activator="data"
+                  ><v-icon
+                    v-on="data.on"
+                    :hidden="
+                      item.days != null
+                        ? item.days < 8
+                          ? item.days < 1
+                            ? false
+                            : false
+                          : false
+                        : true
+                    "
+                    :color="
+                      item.days != null
+                        ? item.days < 8
+                          ? item.days < 1
+                            ? 'red'
+                            : 'orange'
+                          : ''
+                        : ''
+                    "
+                    >mdi-alert-circle
+                  </v-icon></template
+                >
+                <span v-if="item.days > 1 && item.days < 8"
+                  >Near to Expire</span
+                >
+                <span v-else-if="item.days < 1">Expired</span> </v-tooltip
+              >{{ item.row }}</template
             >
             <template v-slot:[`item.status`]="{ item }">
               <!-- <small> Lead time: {{ item.lead_time }} /
@@ -1034,6 +1046,7 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
+        width: "20%"
       },
       {
         text: "SUPPLIER",

@@ -54,14 +54,12 @@ class tbl_incomingsupp extends Model
 
     // For Main Inventory
     public function getQuantityAmountAttribute()
-    {
-        try {
-        $incoming = DB::table("tbl_incomingsupps")->where("supply_name", $this->supply_name)->sum("amount");
-        $outgoing = DB::table("tbl_masterlistsupps")->where("id", $this->supply_name)->first()->net_price  * DB::table("tbl_outgoingsupps")->where("supply_name", $this->supply_name)->sum("quantity");
-        return ceil($incoming - $outgoing);
-            } catch (\Throwable $th) {
-               return 0;
-            }
+    { 
+        $date1 =  date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("m") . '/' . date("t") . '/' . date("Y")));
+        $incoming = tbl_incomingsupp::where("id", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))])->sum("amount");
+        return  $incoming  ;
+ 
     
     }
     public function getNetPriceAttribute()

@@ -533,7 +533,7 @@
                     :small="$vuetify.breakpoint.smAndDown"
                     class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                     @click="validate('send')"
-                    :disabled="!disabled"
+                    :disabled="!disabled || !disabled2"
                   >
                     Send Request</v-btn
                   >
@@ -688,6 +688,20 @@ export default {
         return false;
       }
     },
+    disabled2() {
+      for (var key in this.temp_data) {
+        for (var key1 in this.temp_data[key]) {
+          console.log(this.temp_data[key][key1]);
+          console.log(this.table2[key][key1]);
+          if (
+            this.temp_data[key][key1] != this.table2[key][key1] ||
+            this.temp_data.length != this.table2.length
+          ) {
+            return true;
+          }
+        }
+      }
+    },
   },
   data: () => ({
     headers: [
@@ -788,6 +802,7 @@ export default {
       quantity: 1,
     },
 
+    temp_data: [],
     progressbar: false,
     progressbar1: false,
     snackbar: {
@@ -1059,6 +1074,7 @@ export default {
       await axios
         .get("/api/requestsupp/request/list", { params: { ref: ref.ref } })
         .then((result) => {
+          this.temp_data = JSON.parse(JSON.stringify(result.data));
           this.table2 = result.data;
           this.dialog_list = true;
           this.ref = ref.ref;
