@@ -867,10 +867,8 @@ export default {
 
   methods: {
     itemRowBackground: function (item) {
-      console.log(item.days);
       if (item.days != null) {
         if (item.days < 8) {
-          console.log("yes");
           if (item.days < 1) {
             return "style-2";
           }

@@ -545,9 +545,14 @@
 </template>
 
 <style>
+/* For Chrome, Microsoft Edge */
+html {
+  overflow-y: initial !important;
+}
+
 ::-webkit-scrollbar-track {
   --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #424242;
+  background-color: #fafafa;
 }
 
 ::-webkit-scrollbar {
@@ -556,10 +561,16 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  border: 4px solid rgba(0, 0, 0, 0);
+  border: 2px solid rgba(0, 0, 0, 0);
   background-clip: padding-box;
   border-radius: 9999px;
-  background-color: #757575;
+  background-color: #9e9e9e;
+}
+/* For Chrome, Microsoft Edge */
+
+/* For FireFox */
+html {
+  scrollbar-color: #9e9e9e #fafafa;
 }
 
 .bg-grey {

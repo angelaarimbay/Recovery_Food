@@ -299,13 +299,13 @@
             </v-bottom-sheet> -->
           </v-card-actions>
 
+          <!-- :item-class="itemRowBackground" -->
           <!-- Table -->
           <v-data-table
             id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
-            :item-class="itemRowBackground"
             :page.sync="page"
             ref="progress"
             :items-per-page="itemsPerPage"
@@ -322,7 +322,24 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.supply_name`]="{ item }"
-              >{{ item.supply_name }} {{ item.description }}</template
+              >{{ item.supply_name }} {{ item.description
+              }}<v-icon
+                :hidden="
+                  item.days < 1 && item.days > 1 && item.days < 8
+                    ? true
+                    : item.days == null
+                    ? false
+                    : ''
+                "
+                :color="
+                  item.days < 1
+                    ? 'red'
+                    : item.days > 1 && item.days < 8
+                    ? 'orange'
+                    : ''
+                "
+                >mdi-alert-circle</v-icon
+              ></template
             >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
@@ -842,12 +859,12 @@
 </template>
 
 <style>
-#table1 .style-1 {
+/* #table1 .style-1 {
   color: #fb8c00;
 }
 #table1 .style-2 {
   color: #e53935;
-}
+} */
 
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -1108,17 +1125,16 @@ export default {
   },
 
   methods: {
-    itemRowBackground: function (item) {
-      console.log(item.days);
-      if (item.days != null) {
-        if (item.days < 8) {
-          if (item.days < 1) {
-            return "style-2";
-          }
-          return "style-1";
-        }
-      }
-    },
+    // itemRowBackground: function (item) {
+    //   if (item.days != null) {
+    //     if (item.days < 8) {
+    //       if (item.days < 1) {
+    //         return "style-2";
+    //       }
+    //       return "style-1";
+    //     }
+    //   }
+    // },
 
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
@@ -1365,7 +1381,6 @@ export default {
     // Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
-
       this.form.supplier = row.supplier;
       this.form.id = row.id;
       this.form.status = row.status;

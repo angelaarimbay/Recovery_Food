@@ -101,7 +101,7 @@
                           outlined
                           color="grey darken-1"
                           class="btn-block"
-                          style="text-transform: none"
+                          style="text-transform: none; font-size: 12px"
                           @click="clickupload"
                           :small="$vuetify.breakpoint.smAndDown"
                         >
@@ -138,8 +138,12 @@
                   type="file"
                   @change="uploaddocument"
                 />
-                <div class="pt-2" v-if="form.attachment">
-                  Image Attachment:
+                <div
+                  style="font-size: 12px"
+                  class="pt-2"
+                  v-if="form.attachment"
+                >
+                  <span>Image Attachment:</span>
                   <v-row no-gutters justify="center" align="center">
                     <v-col cols="10">
                       <a :href="temppath" download>
@@ -151,7 +155,6 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-icon
-                            large
                             v-on="data.on"
                             color="red darken-2"
                             class="text-center"
@@ -186,7 +189,7 @@
                     class="tfield py-1"
                   >
                     <v-row no-gutters>
-                      Supplies VAT
+                      <span style="font-size: 12px">Supplies VAT</span>
                       <v-col cols="10">
                         <v-text-field
                           :rules="formRulesVAT"
@@ -201,6 +204,7 @@
                           background-color="white"
                           flat
                           solo
+                          style="font-size: 12px"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -229,7 +233,7 @@
                     class="tfield py-1"
                   >
                     <v-row no-gutters>
-                      Products VAT
+                      <span style="font-size: 12px">Products VAT</span>
                       <v-col cols="10">
                         <v-text-field
                           :rules="formRulesVAT"
@@ -244,6 +248,7 @@
                           background-color="white"
                           flat
                           solo
+                          style="font-size: 12px"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
