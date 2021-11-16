@@ -301,10 +301,10 @@
 
           <!-- Table -->
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
-            id="table1"
             :item-class="itemRowBackground"
             :page.sync="page"
             ref="progress"
@@ -1109,6 +1109,7 @@ export default {
 
   methods: {
     itemRowBackground: function (item) {
+      console.log(item.days);
       if (item.days != null) {
         if (item.days < 8) {
           if (item.days < 1) {

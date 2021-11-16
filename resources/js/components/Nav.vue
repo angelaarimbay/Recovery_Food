@@ -547,19 +547,19 @@
 <style>
 ::-webkit-scrollbar-track {
   --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: transparent
+  background-color: #424242;
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
-  background-color: transparent;
+  height: 12px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-thumb {
   border: 4px solid rgba(0, 0, 0, 0);
   background-clip: padding-box;
   border-radius: 9999px;
-  background-color: #424242;
+  background-color: #757575;
 }
 
 .bg-grey {

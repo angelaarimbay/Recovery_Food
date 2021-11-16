@@ -229,6 +229,7 @@
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
+            :item-class="itemRowBackground"
             :page.sync="page"
             ref="progress"
             :items-per-page="itemsPerPage"
@@ -255,9 +256,6 @@
                 <span style="color: orange"> {{ item.diff_quantity }}</span>
               </div>
             </template> -->
-            <template v-slot:[`item.exp_date`]="{ item }">
-              {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
-            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -650,6 +648,13 @@
 </template>
 
 <style>
+#table1 .style-1 {
+  color: #fb8c00;
+}
+#table1 .style-2 {
+  color: #e53935;
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
@@ -861,6 +866,19 @@ export default {
   },
 
   methods: {
+    itemRowBackground: function (item) {
+      console.log(item.days);
+      if (item.days != null) {
+        if (item.days < 8) {
+          console.log("yes");
+          if (item.days < 1) {
+            return "style-2";
+          }
+          return "style-1";
+        }
+      }
+    },
+
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
@@ -1036,7 +1054,9 @@ export default {
       this.vat = true;
       this.temp_vat = row.vat;
       this.form.without_vat = row.without_vat;
-      this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
+      this.form.exp_date = row.exp_date
+        ? this.getFormatDate(row.exp_date, "YYYY-MM-DD")
+        : "";
 
       this.dialog = true;
       this.compute();

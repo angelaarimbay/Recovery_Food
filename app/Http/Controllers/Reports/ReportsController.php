@@ -45,7 +45,7 @@ class ReportsController extends Controller
             $wvat_p = 0;
             $wovat_p = 0;
             //EACH CATEGORY ADD TO INNER ARRAY
-            foreach (tbl_masterlistsupp::with("category")->where("category", $value)->get() as $key1 => $value1) {
+            foreach (tbl_masterlistsupp::with("category")->where("category", $value)->orderBy("exp_date", "desc")->get() as $key1 => $value1) {
                 $net_p += $value1->net_price;
                 $wvat_p += $value1->with_vat;
                 $wovat_p += $value1->without_vat;
@@ -140,6 +140,9 @@ class ReportsController extends Controller
 
         $data = []; // <----------MAIN ARRAY
         //GET ALL THE CATEGORY THEN LOOP
+        $g_net_p = 0;
+        $g_wvat_p = 0;
+        $g_total_p = 0;
 
         foreach (tbl_incomingsupp::whereRaw($where)
             ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
@@ -152,9 +155,15 @@ class ReportsController extends Controller
             foreach (tbl_incomingsupp::with("category")->where("category", $value)
                 ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                 ->get() as $key1 => $value1) {
+
                 $net_p += $value1->supply_name_details['net_price'];
                 $wvat_p += $value1->with_vat;
                 $total_p += $value1->quantity_amount;
+
+                $g_net_p += $value1->supply_name_details['net_price'];
+                $g_wvat_p += $value1->with_vat;
+                $g_total_p += $value1->quantity_amount;
+
                 $ar = [
                     'category_details' => $value1->category_details['supply_cat_name'],
                     'supply_name' => $value1->supply_name_details['supply_name'],
@@ -186,19 +195,14 @@ class ReportsController extends Controller
             // return $data;
         }
 
+        $content = [];
         switch ($t->type) {
             case 'pdf':
                 if (count($data) > 0) {
                     $content['data'] = $data;
-                    $content['net_price'] = tbl_incomingsupp::with("category")->whereRaw($where)
-                        ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-                        ->get()->sum("net_price");
-                    $content['with_vat'] = tbl_incomingsupp::with("category")->whereRaw($where)
-                        ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-                        ->get()->sum("with_vat");
-                    $content['quantity_amount'] = tbl_incomingsupp::with("category")->whereRaw($where)
-                        ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-                        ->get()->sum("quantity_amount");
+                    $content['net_price'] = $g_net_p;
+                    $content['with_vat'] = $g_wvat_p;
+                    $content['quantity_amount'] = $g_total_p;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to];
 
@@ -573,16 +577,12 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
-                if (count($data) > 0) {
-                    $content['data'] = $return;
-                    $content['process_by'] = auth()->user()->name;
-                    $pdf = PDF::loadView('reports.maininventory', $content, [], [
-                        'format' => 'A4-L',
-                    ]);
-                    return $pdf->stream();
-                } else {
-                    return false;
-                }
+                $content['data'] = $return;
+                $content['process_by'] = auth()->user()->name;
+                $pdf = PDF::loadView('reports.maininventory', $content, [], [
+                    'format' => 'A4-L',
+                ]);
+                return $pdf->stream();
                 break;
             case 'excel':
                 $columns = [
