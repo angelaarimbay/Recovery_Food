@@ -121,7 +121,7 @@
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
-            <td style=" border: none; width: auto"> </td>
+            <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
         </tr>
         <tr>

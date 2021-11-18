@@ -85,10 +85,10 @@
                 <v-row>
                   <v-col cols="12">
                     <v-btn
+                      :large="$vuetify.breakpoint.mdAndUp"
                       type="submit"
                       dark
                       block
-                      large
                       color="red darken-2"
                       class="
                         text-subtitle-1
@@ -97,7 +97,6 @@
                         text-md-h6
                         text-sm-h6
                       "
-                      :loading="form.busy"
                       @click="login"
                       style="text-transform: none"
                       >Log In</v-btn
@@ -196,7 +195,6 @@ export default {
           "E-mail must be valid",
       ]),
         (this.passwordRules = [(v) => !!v || "This is required"]);
-      this.login();
     },
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {

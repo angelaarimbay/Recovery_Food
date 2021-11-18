@@ -329,7 +329,7 @@
       <!-- Graphs -->
       <v-row no-gutters>
         <v-spacer></v-spacer>
-        <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12">
           <v-row no-gutters class="mb-3">
             <v-select
               :items="branchlist"
@@ -354,7 +354,7 @@
               label="Year"
               @change="getProductsGraph"
               hide-details
-              style="width: 100px; font-size: 12px; color: white"
+              style="width: 100px; font-size: 12px"
               class="pa-1"
               dense
               solo

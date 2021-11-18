@@ -278,7 +278,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="pbutton text-center pt-2">
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -599,10 +599,10 @@
                     sm="12"
                     md="12"
                   >
-                    <div style="font-size: 12px">Image Attachment:</div>
+                    <span style="font-size: 12px">Image Attachment:</span>
                     <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
                     <!-- Check if has image, then display the image -->
-                    <div v-if="form.branch_image">
+                    <div style="font-size: 12px" v-if="form.branch_image">
                       <v-row no-gutters>
                         <v-col cols="11">
                           <a
@@ -644,7 +644,7 @@
                       outlined
                       color="grey darken-1"
                       class="btn-block"
-                      style="text-transform: none"
+                      style="text-transform: none; font-size: 12px"
                       @click="clickupload"
                       ><v-icon>mdi-upload</v-icon> Upload Image
                     </v-btn>

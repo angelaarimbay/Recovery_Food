@@ -67,8 +67,8 @@ class MasterlistSuppliesController extends Controller
         $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0");
 
         // return $where;
-        $table = tbl_masterlistsupp::with("category", 'supplier')
-            ->selectRaw("*, case when exp_date is null THEN null when datediff(exp_date,current_timestamp) > 8 THEN null ELSE datediff(exp_date,current_timestamp) end as days")
+        $table = tbl_masterlistsupp::with("category", "supplier")
+            ->selectRaw("*, case when exp_date is null THEN null when datediff(exp_date,current_timestamp) > 7 THEN null ELSE datediff(exp_date,current_timestamp) end as days")
             ->whereRaw($where);
 
         if ($t->search) { // If has value
@@ -100,10 +100,8 @@ class MasterlistSuppliesController extends Controller
             $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
             $temp['days'] = $value->days;
             $temp['exp_date'] = $value->exp_date;
-
             array_push($return, $temp);
         }
-
         $items = Collection::make($return);
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }

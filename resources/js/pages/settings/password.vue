@@ -65,7 +65,7 @@
     <v-container v-if="token == ''" class="pa-2">
       <v-row no-gutters>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2">
-          <v-card elevation="2" class="pa-2">
+          <v-card elevation="2" class="pa-2" style="border-radius: 10px">
             <v-card-text>
               <v-card flat>
                 <v-row>
@@ -84,16 +84,21 @@
                   </v-col>
                 </v-row>
                 <br />
-                <v-form ref="form">
+                <v-form ref="form" id="password">
                   <v-text-field
+                    :dense="$vuetify.breakpoint.smAndDown"
                     :rules="rules.passwordRules"
                     :append-icon="!value1 ? 'mdi-eye' : 'mdi-eye-off'"
                     @click:append="() => (value1 = !value1)"
                     :type="!value1 ? 'password' : 'text'"
                     label="New Password"
                     v-model="form.password"
+                    background-color="white"
+                    flat
+                    solo
                   ></v-text-field>
                   <v-text-field
+                    :dense="$vuetify.breakpoint.smAndDown"
                     :rules="[
                       form.password === form.confirmation ||
                         'Password must match',
@@ -103,16 +108,19 @@
                     :type="!value ? 'password' : 'text'"
                     label="Confirm Password"
                     v-model="form.confirmation"
+                    background-color="white"
+                    flat
+                    solo
                   ></v-text-field>
 
                   <v-btn
+                    :large="$vuetify.breakpoint.mdAndUp"
                     class="
                       text-subtitle-1
                       text-xl-h5
                       text-lg-h5
                       text-md-h6
-                      text-sm-h6text-white
-                      mt-2
+                      text-sm-h6
                     "
                     color="primary"
                     style="text-transform: none"
@@ -127,7 +135,7 @@
         </v-col>
 
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2">
-          <v-card elevation="2" class="pa-2">
+          <v-card elevation="2" class="pa-2" style="border-radius: 10px">
             <v-card-text>
               <b> Tips for setting up a strong password:</b> <br />
               <v-icon size="10">mdi-circle</v-icon> Use a unique password that
@@ -147,6 +155,16 @@
     </v-container>
   </div>
 </template>
+
+<style>
+.v-application #password .white {
+  border: 1px solid #bdbdbd !important;
+}
+#password .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+</style>
+
 <script>
 import Form from "vform";
 import axios from "axios";

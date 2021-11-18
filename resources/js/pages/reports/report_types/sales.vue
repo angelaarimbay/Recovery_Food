@@ -1,6 +1,11 @@
 <template>
   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
     <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+      <!-- Progress Circular -->
+      <v-overlay :value="overlay">
+        <v-progress-circular size="55" color="red darken-2" indeterminate>
+        </v-progress-circular>
+      </v-overlay>
       <!-- Snackbar -->
       <v-snackbar
         :vertical="$vuetify.breakpoint.xsOnly"
@@ -383,7 +388,7 @@
     </v-data-table>
 
     <!-- Paginate -->
-    <div class="pbutton text-center pt-2">
+    <div class="pbutton text-center pt-7">
       <v-pagination
         v-model="page"
         :total-visible="7"
@@ -418,7 +423,7 @@
                   lg="6"
                   md="6"
                   sm="12"
-                  :class="{'text-right' : $vuetify.breakpoint.smAndUp}"
+                  :class="{ 'text-right': $vuetify.breakpoint.smAndUp }"
                 >
                   Branch:
                   <strong>{{ table2[0]["branch"]["branch_name"] }}</strong
@@ -450,9 +455,12 @@
               >{{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
             >
-            <template v-slot:[`item.product_name.price`]="{ item }">
+            <template v-slot:[`item.price`]="{ item }">
               {{
-                getFormatCurrency(item.product_name.price, "0,0.00")
+                getFormatCurrency(
+                  item.sub_total_discounted / item.quantity,
+                  "0,0.00"
+                )
               }}</template
             >
             <template v-slot:[`item.created_at`]="{ item }">
@@ -566,6 +574,7 @@ export default {
     viewdialog: false,
     date1: false,
     date2: false,
+    overlay: false,
     dateFromSP: null,
     dateUntilSP: null,
     page: 1,
@@ -626,7 +635,7 @@ export default {
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.price",
+        value: "price",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -753,6 +762,7 @@ export default {
           message: "Error! Please complete the fields first.",
         };
       } else {
+        this.overlay = true;
         switch (type) {
           case "pdf":
             await axios({
@@ -776,6 +786,12 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Sales Report.pdf";
                 link.click();
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully exported.",
+                };
               } else {
                 this.snackbar = {
                   active: true,
@@ -818,6 +834,12 @@ export default {
                     link.href = window.URL.createObjectURL(blob);
                     link.download = "Sales Report.xlsx";
                     link.click();
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully exported.",
+                    };
                   });
               } else {
                 this.snackbar = {
@@ -870,6 +892,7 @@ export default {
           default:
             break;
         }
+        this.overlay = false;
       }
     },
 

@@ -1,6 +1,11 @@
 <template>
   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
     <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+      <!-- Progress Circular -->
+      <v-overlay :value="overlay">
+        <v-progress-circular size="55" color="red darken-2" indeterminate>
+        </v-progress-circular>
+      </v-overlay>
       <!-- Snackbar -->
       <v-snackbar
         :vertical="$vuetify.breakpoint.xsOnly"
@@ -123,6 +128,7 @@ export default {
       active: false,
       message: "",
     },
+    overlay: false,
   }),
 
   created() {
@@ -139,6 +145,7 @@ export default {
           message: "Error! Please select a category first.",
         };
       } else {
+        this.overlay = true;
         switch (type) {
           case "pdf":
             await axios({
@@ -157,6 +164,12 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Masterlist Supplies Report.pdf";
                 link.click();
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully exported.",
+                };
               } else {
                 this.snackbar = {
                   active: true,
@@ -192,6 +205,12 @@ export default {
                     link.href = window.URL.createObjectURL(blob);
                     link.download = "Masterlist Supplies Report.xlsx";
                     link.click();
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully exported.",
+                    };
                   });
               } else {
                 this.snackbar = {
@@ -237,6 +256,7 @@ export default {
           default:
             break;
         }
+        this.overlay = false;
       }
     },
     async suppCat() {

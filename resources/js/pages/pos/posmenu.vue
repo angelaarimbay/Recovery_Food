@@ -74,15 +74,12 @@
             class="d-flex align-center justify-center"
           >
             <span
-              class="
-                text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5
-                mb-0 mb-0
-              "
+              class="text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 mb-0"
               >Products List</span
             >
           </v-card>
 
-          <v-row no-gutters class="mt-7">
+          <v-row no-gutters class="mt-2" style="height: 60px" align="center">
             <v-spacer></v-spacer>
             <v-tooltip bottom>
               <template #activator="data">
@@ -199,7 +196,7 @@
           <!-- Products List Table -->
           <v-data-table
             id="table2"
-            class="prod_table table-striped mt-4"
+            class="prod_table table-striped border mt-4"
             :headers="headers1"
             :items="table1.data"
             :loading="progressbar1"
@@ -217,7 +214,7 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.product_full`]="{ item }">
+            <template v-slot:[`item.product_name.product_name`]="{ item }">
               {{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
             >
@@ -245,7 +242,14 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="pbutton text-center pt-2">
+          <div
+            class="
+              pbutton
+              text-center
+              pt-7
+              pb-xl-4 pb-lg-4 pb-md-4 pb-sm-3 pb-3
+            "
+          >
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -281,8 +285,9 @@
               <v-spacer></v-spacer>
               <v-icon text @click="dialog2 = false">mdi-close </v-icon>
             </v-toolbar>
+
+            <salesreport v-if="renderComponent" />
           </v-card>
-          <v-card tile> <salesreport v-if="renderComponent" /></v-card>
           <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
         </v-dialog>
       </v-col>
@@ -304,7 +309,8 @@
                       >Item Selected:
                       <strong
                         >{{ selectedrow.product_name.product_name }}
-                        {{ selectedrow.product_name.description }}</strong
+                        {{ selectedrow.product_name.description }}
+                        {{ selectedrow.description }}</strong
                       >
                     </span>
                   </v-col>
@@ -319,6 +325,7 @@
                     md="12"
                   >
                     <v-text-field
+                      class="centered-input"
                       :rules="formRulesQuantity"
                       v-model="quantity"
                       dense
@@ -331,10 +338,10 @@
                       background-color="white"
                       flat
                       solo
-                      style="font-size: 12px"
+                      style="font-size: 22px"
                     >
                       <template slot="label">
-                        <div style="font-size: 12px">
+                        <div style="font-size: 18px">
                           Quantity <span style="color: red">*</span>
                         </div>
                       </template>
@@ -376,9 +383,9 @@
                 v-else
                 :disabled="button"
                 dark
-                style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
                 @click="validateQty('delete')"
+                text
               >
                 Remove
               </v-btn>
@@ -403,8 +410,7 @@
             >
           </v-card>
 
-          <v-row no-gutters class="mt-2">
-            <!-- Items Per Page -->
+          <v-row no-gutters class="mt-2" style="height: 60px" align="center">
             <v-col cols="5" xl="3" lg="4" md="3" class="my-auto">
               <v-card-actions>
                 <span
@@ -463,7 +469,7 @@
                   dark
                   flat
                   solo
-                  style="font-size: 12px"
+                  style="font-size: 16px"
                 >
                 </v-select>
               </v-card-actions>
@@ -473,7 +479,7 @@
           <!-- Order List Table -->
           <v-data-table
             id="table2"
-            class="ord_table table-striped"
+            class="ord_table table-striped border mt-4"
             :headers="headers2"
             :items="table2"
             height="230"
@@ -516,7 +522,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <!-- <div class="text-center pt-2">
+          <!-- <div class="text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -576,6 +582,7 @@
             <v-row align="center" justify="center">
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  class="centered-input"
                   :rules="formRulesPrice"
                   ref="payment"
                   v-model="payment"
@@ -589,17 +596,19 @@
                   @blur="resetP"
                   persistent-placeholder
                   autocomplete="off"
-                  :disabled="!disabled"
+                  :disabled="disabled"
                   @keydown="paymentKeydown($event)"
+                  style="font-size: 22px"
                 >
                   <template slot="label">
-                    <div style="font-size: 12px">Payment</div>
+                    <div style="font-size: 18px">Payment</div>
                   </template>
                 </v-text-field>
               </v-col>
 
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  class="centered-input"
                   :rules="formRulesDiscount"
                   v-model="discount"
                   @input="getChange($event)"
@@ -613,24 +622,27 @@
                   autocomplete="off"
                   :disabled="!payment"
                   @keydown="discountKeydown($event)"
+                  style="font-size: 22px"
                 >
                   <template slot="label">
-                    <div style="font-size: 12px">Discount(%)</div>
+                    <div style="font-size: 18px">Discount(%)</div>
                   </template>
                 </v-text-field>
               </v-col>
 
               <v-col cols="12" xl="4" lg="4" md="12" sm="12" class="pb-0">
                 <v-text-field
+                  class="centered-input"
                   v-model="change"
                   outlined
                   dense
                   disabled
                   hide-details
                   filled
+                  style="font-size: 22px"
                 >
                   <template slot="label">
-                    <div style="font-size: 12px">Change</div>
+                    <div style="font-size: 18px">Change</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -662,9 +674,9 @@
                           v-on="data.on"
                           block
                           @click="getReceipt"
-                          color="blue-grey lighten-2"
+                          color="blue-grey darken-1"
                           style="text-transform: none; color: white"
-                          :disabled="!disabled1"
+                          :disabled="disabled1"
                         >
                           <v-icon large>mdi-printer</v-icon>
                         </v-btn>
@@ -684,7 +696,7 @@
                             color: white;
                             font-size: 17px;
                           "
-                          :disabled="!disabled"
+                          :disabled="disabled"
                           @click="validate('void')"
                         >
                           <v-icon large>mdi-do-not-disturb</v-icon>
@@ -701,7 +713,7 @@
                           block
                           color="blue darken-2"
                           style="text-transform: none; color: white"
-                          :disabled="!disabled"
+                          :disabled="disabled"
                           @click="validate('new')"
                         >
                           <v-icon large>mdi-new-box</v-icon>
@@ -727,7 +739,7 @@
                       block
                       color="green darken-3"
                       style="text-transform: none; color: white"
-                      :disabled="!disabled"
+                      :disabled="disabled"
                       @click="validate('save')"
                     >
                       <v-icon large>mdi-cart</v-icon>
@@ -745,6 +757,10 @@
 </template>
 
 <style>
+.centered-input input {
+  text-align: center;
+}
+
 #table2 .v-data-table-header th {
   white-space: nowrap;
 }
@@ -815,14 +831,19 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
-    disabled() {
-      if (this.table2.length > 0) {
-        return true;
-      } else {
-        this.payment = 0;
-        this.discount = 0;
-        this.change = 0;
-        return false;
+    disabled2() {
+      for (var key in this.temp_data) {
+        console.log(this.temp_data.data);
+        console.log(this.table2);
+
+        for (var key1 in this.temp_data[key]) {
+          if (this.temp_data[key][key1] != this.table2[key][key1]) {
+            alert("d magkatulad");
+            return true;
+          } else {
+            alert("magkatulad");
+          }
+        }
       }
     },
   },
@@ -843,12 +864,13 @@ export default {
     button: false,
     mode: "",
     quantity: 1,
-    disabled1: false,
+    disabled: true,
+    disabled1: true,
     dialog: false,
     filterDialog: false,
     selectedrow: { product_name: "" },
-    totalamount: 0,
-    discountedamount: 0,
+    totalamount: numeral(0).format("0,0.00"),
+    discountedamount: numeral(0).format("0,0.00"),
     payment: 0,
     discount: 0,
     change: 0,
@@ -857,6 +879,7 @@ export default {
     salescount: 0,
     table1: [],
     table2: [],
+    temp_data: [],
     prodcatlist: [],
     reference_no: "",
     prodsubcatlist: [],
@@ -894,7 +917,7 @@ export default {
 
       {
         text: "PRODUCT NAME",
-        value: "product_full",
+        value: "product_name.product_name",
         class: "black--text",
         class: "black--text",
       },
@@ -1027,6 +1050,7 @@ export default {
           },
         })
         .then((result) => {
+          this.temp_data = JSON.parse(JSON.stringify(result.data));
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -1079,7 +1103,6 @@ export default {
             message: "Do you want to void the order?",
             type: "void",
           };
-          this.disabled1 = false;
           break;
         case "new":
           this.snackbar2 = {
@@ -1089,7 +1112,6 @@ export default {
             message: "Do you want to make new order?",
             type: "new",
           };
-          this.disabled1 = false;
           break;
         default:
           break;
@@ -1103,10 +1125,15 @@ export default {
           .post("/api/pos/prodlist/save", this.table2)
           .then((result) => {
             this.reference_no = result.data.reference_no;
-
             this.get();
             this.getSalesCount();
-            this.disabled1 = true;
+            this.disabled1 = false; //for printer
+            this.disabled = true;
+            (this.table2 = []), (this.payment = 0);
+            this.discount = 0;
+            this.change = 0;
+            this.totalamount = numeral(0).format("0,0.00");
+            this.discountedamount = numeral(0).format("0,0.00");
             this.snackbar = {
               active: true,
               iconText: "check",
@@ -1160,7 +1187,6 @@ export default {
                 indexid = this.table2.indexOf(this.table2[key]);
               }
             }
-
             if (indexid > -1) {
               quantity =
                 parseInt(this.table2[indexid].quantity) +
@@ -1171,7 +1197,7 @@ export default {
                   active: true,
                   iconText: "alert",
                   iconColor: "error",
-                  message: "Error! Please input correct quantity.",
+                  message: "Insufficient stocks.",
                 };
               } else {
                 this.table2[indexid].quantity =
@@ -1201,7 +1227,7 @@ export default {
                   active: true,
                   iconText: "alert",
                   iconColor: "error",
-                  message: "Error! Please input correct quantity.",
+                  message: "Insufficient stocks.",
                 };
               } else {
                 this.table2.push({
@@ -1264,12 +1290,14 @@ export default {
                 iconColor: "success",
                 message: "Successfully added.",
               };
+              this.disabled = false;
+              this.disabled1 = true;
             } else {
               this.snackbar = {
                 active: true,
                 iconText: "alert",
                 iconColor: "error",
-                message: "Error! Please input correct quantity.",
+                message: "Insufficient stocks.",
               };
             }
           }
@@ -1292,6 +1320,12 @@ export default {
             }
           }
 
+          if (this.table2.length > 0) {
+            this.disabled = false;
+            this.disabled1 = true;
+          } else {
+            this.disabled = true;
+          }
           this.snackbar = {
             active: true,
             iconText: "check",
@@ -1299,6 +1333,9 @@ export default {
             message: "Successfully removed.",
           };
         }
+        this.payment = 0;
+        this.discount = 0;
+        this.change = 0;
         this.getTotal();
         this.getChange();
         this.cancel();
@@ -1513,6 +1550,10 @@ export default {
     },
 
     voidOrder() {
+      this.payment = 0;
+      this.discount = 0;
+      this.change = 0;
+      this.disabled = true;
       this.table2 = [];
       this.getTotal();
       this.mode = null;
@@ -1525,6 +1566,10 @@ export default {
     },
 
     newOrder() {
+      this.payment = 0;
+      this.discount = 0;
+      this.change = 0;
+      this.disabled = true;
       this.table2 = [];
       this.reference_no = "";
       this.getTotal();

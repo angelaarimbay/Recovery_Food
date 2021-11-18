@@ -93,7 +93,7 @@ class OutgoingSuppliesController extends Controller
             $temp['outgoing_amount'] = number_format($value->with_vat_price * $value->quantity, 2);
             $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
             $temp['without_vat_price'] = number_format($value->without_vat_price, 2);
-            $temp['fluctiation'] = number_format($value->fluctiation, 2);
+            $temp['fluctuation'] = number_format($value->fluctuation, 2);
             array_push($return, $temp);
         }
         $items = Collection::make($return);

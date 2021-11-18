@@ -120,9 +120,9 @@ class MainInventoryController extends Controller
             $a = clone $incoming_and_past;
             $b = clone $outgoing;
             if (($a->sum('quantity') - $b->sum('quantity')) < $value->lead_time * ($b->sum('quantity') / date('d'))) {
-                $temp['triggerpoint'] = "Order";
+                $temp['triggerpoint'] =  0; // order
             } else {
-                $temp['triggerpoint'] = "Manage";
+                $temp['triggerpoint'] =  1 ;// manage
             }
 
             $a = clone $incoming_and_past;
@@ -166,7 +166,7 @@ class MainInventoryController extends Controller
         }
 
         $items = Collection::make($return);
-        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+        return new LengthAwarePaginator(collect($items)->sortBy('triggerpoint')->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
     public function suppCat()

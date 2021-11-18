@@ -305,7 +305,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="pbutton text-center pt-2">
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -340,7 +340,14 @@
                     </v-text-field>
                   </v-col>
 
-                  <v-col class="tfield py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
                     <v-text-field
                       :rules="formRulesQuantity"
                       v-model="form.quantity"
@@ -423,6 +430,13 @@
 .pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
   height: 30px;
+}
+
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
 }
 
 .v-list-item__content {
@@ -615,9 +629,9 @@ export default {
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
-            iconText: "close",
-            iconColor: "danger",
-            message: "Insufficient quantity.",
+            iconText: "alert-circle",
+            iconColor: "error",
+            message: "Insufficient stocks.",
           };
           return;
         }

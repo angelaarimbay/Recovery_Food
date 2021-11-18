@@ -545,21 +545,36 @@
 </template>
 
 <style>
+/* For Chrome, Microsoft Edge */
+html {
+  overflow-y: initial !important;
+}
+
+.v-navigation-drawer ::-webkit-scrollbar {
+  width: 0px;
+}
+
 ::-webkit-scrollbar-track {
   --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: transparent
+  background-color: #fafafa;
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
-  background-color: transparent;
+  height: 12px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-thumb {
-  border: 4px solid rgba(0, 0, 0, 0);
+  border: 2px solid rgba(0, 0, 0, 0);
   background-clip: padding-box;
   border-radius: 9999px;
-  background-color: #424242;
+  background-color: #9e9e9e;
+}
+/* For Chrome, Microsoft Edge */
+
+/* For FireFox */
+html {
+  scrollbar-color: #9e9e9e #fafafa;
 }
 
 .bg-grey {
@@ -602,6 +617,10 @@ export default {
   },
 
   methods: {
+    reloadPage() {
+      window.location.reload();
+    },
+
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
         if (result.data.path) {
@@ -616,6 +635,7 @@ export default {
 
       // Redirect to login.
       this.$router.push({ name: "login" });
+      this.reloadPage();
     },
   },
 };

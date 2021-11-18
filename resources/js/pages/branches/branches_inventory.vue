@@ -280,7 +280,7 @@
               </v-data-table>
 
               <!-- Paginate -->
-              <div class="pbutton text-center pt-2">
+              <div class="pbutton text-center pt-7">
                 <v-pagination
                   v-model="page1"
                   :length="table1.last_page"
@@ -496,7 +496,7 @@
               </v-data-table>
 
               <!-- Paginate -->
-              <div class="text-center pt-2">
+              <div class="pbutton text-center pt-7">
                 <v-pagination
                   v-model="page2"
                   :total-visible="7"

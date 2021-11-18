@@ -16,7 +16,20 @@ class RequestSuppliesController extends Controller
 
     public function getSuppliesList(Request $request)
     {
-        return tbl_masterlistsupp::all();
+        $where = ($request->category ? "category !=0  and category=" . $request->category : "category != 0");
+
+        // return $where;
+        $table = tbl_masterlistsupp::with("category", "supplier")
+            ->selectRaw("*, case when exp_date is null THEN null when datediff(exp_date,current_timestamp) > 7 THEN null ELSE datediff(exp_date,current_timestamp) end as days")
+            ->whereRaw($where);
+
+        if ($request->search) { //we will be using wherehas if this portion is in relationship
+            // if not. just use where
+            $table = $table->where('supply_name', 'like', "%" . $request->search . "%");
+          
+        }
+
+        return $table->get();
     }
 
     public function get(Request $t)
@@ -110,7 +123,7 @@ class RequestSuppliesController extends Controller
             $temp = [];
             $temp['id'] = $value->supply_name;
             $temp['supply_name'] = $value->supply_name_details['supply_name'] . ' ' . $value->supply_name_details['description'];
-            $temp['unit'] = $value->supply_name_details['supply_name'];
+            $temp['unit'] = $value->supply_name_details['unit'];
             $temp['quantity'] = $value->quantity;
             $temp['status'] = $value->status;
             array_push($return, $temp);

@@ -245,6 +245,35 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.product_name`]="{ item }"
+              ><v-tooltip bottom>
+                <template #activator="data"
+                  ><v-icon
+                    v-on="data.on"
+                    :hidden="
+                      item.days != null
+                        ? item.days < 8
+                          ? item.days < 1
+                            ? false
+                            : false
+                          : false
+                        : true
+                    "
+                    :color="
+                      item.days != null
+                        ? item.days < 8
+                          ? item.days < 1
+                            ? 'red'
+                            : 'orange'
+                          : ''
+                        : ''
+                    "
+                    >mdi-alert-circle
+                  </v-icon></template
+                >
+                <span v-if="item.days >= 1 && item.days < 8"
+                  >Near to Expire</span
+                >
+                <span v-else-if="item.days < 1">Expired</span> </v-tooltip
               >{{ item.product_name }} {{ item.description }}</template
             >
             <!-- <template v-slot:[`item.diff_quantity`]="{ item }"> 
@@ -255,9 +284,6 @@
                 <span style="color: orange"> {{ item.diff_quantity }}</span>
               </div>
             </template> -->
-            <template v-slot:[`item.exp_date`]="{ item }">
-              {{ getFormatDate(item.exp_date, "MM/DD/YYYY") }}</template
-            >
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -298,7 +324,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="pbutton text-center pt-2">
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -650,6 +676,13 @@
 </template>
 
 <style>
+/* #table1 .style-1 {
+  color: #fb8c00;
+}
+#table1 .style-2 {
+  color: #e53935;
+} */
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
@@ -861,6 +894,17 @@ export default {
   },
 
   methods: {
+    // itemRowBackground: function (item) {
+    //   if (item.days != null) {
+    //     if (item.days < 8) {
+    //       if (item.days < 1) {
+    //         return "style-2";
+    //       }
+    //       return "style-1";
+    //     }
+    //   }
+    // },
+
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
@@ -1036,7 +1080,9 @@ export default {
       this.vat = true;
       this.temp_vat = row.vat;
       this.form.without_vat = row.without_vat;
-      this.form.exp_date = this.getFormatDate(row.exp_date, "YYYY-MM-DD");
+      this.form.exp_date = row.exp_date
+        ? this.getFormatDate(row.exp_date, "YYYY-MM-DD")
+        : "";
 
       this.dialog = true;
       this.compute();

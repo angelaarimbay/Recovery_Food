@@ -216,7 +216,7 @@
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
-            :page.sync="page"
+            :page.sync="page" 
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -232,10 +232,10 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.triggerpoint`]="{ item }">
-              <div v-if="item.triggerpoint == 'Order'">
+              <div v-if="item.triggerpoint == 0">
                 <span style="color: red">Order</span>
               </div>
-              <div v-else-if="item.triggerpoint == 'Manage'" class="text-black">
+              <div v-else-if="item.triggerpoint ==  1" class="text-black">
                 Manage
               </div>
             </template>
@@ -356,7 +356,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="pbutton text-center pt-2">
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
