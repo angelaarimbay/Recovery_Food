@@ -161,6 +161,12 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Main Inventory Report.pdf";
                 link.click();
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully exported.",
+                };
               } else {
                 this.snackbar = {
                   active: true,
@@ -193,6 +199,12 @@ export default {
                     link.href = window.URL.createObjectURL(blob);
                     link.download = "Main Inventory Report.xlsx";
                     link.click();
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully exported.",
+                    };
                   });
               } else {
                 this.snackbar = {
@@ -211,6 +223,8 @@ export default {
               responseType: "blob",
               params: { category: this.category, type: "pdf" },
             }).then((response) => {
+              // console.log(response.data);
+              // return;
               if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",

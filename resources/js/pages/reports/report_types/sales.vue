@@ -388,7 +388,7 @@
     </v-data-table>
 
     <!-- Paginate -->
-    <div class="pbutton text-center pt-2">
+    <div class="pbutton text-center pt-7">
       <v-pagination
         v-model="page"
         :total-visible="7"
@@ -455,9 +455,12 @@
               >{{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
             >
-            <template v-slot:[`item.product_name.price`]="{ item }">
+            <template v-slot:[`item.price`]="{ item }">
               {{
-                getFormatCurrency(item.product_name.price, "0,0.00")
+                getFormatCurrency(
+                  item.sub_total_discounted / item.quantity,
+                  "0,0.00"
+                )
               }}</template
             >
             <template v-slot:[`item.created_at`]="{ item }">
@@ -632,7 +635,7 @@ export default {
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.price",
+        value: "price",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -732,6 +735,7 @@ export default {
       await axios("/api/sales_report/info", {
         params: { reference_no: item.reference_no },
       }).then((result) => {
+        console.log(result.data);
         this.table2 = result.data;
         this.sales_var = numeral(
           this.table2.reduce((a, b) => a + b.sub_total_discounted, 0)
@@ -783,6 +787,12 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Sales Report.pdf";
                 link.click();
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully exported.",
+                };
               } else {
                 this.snackbar = {
                   active: true,
@@ -825,6 +835,12 @@ export default {
                     link.href = window.URL.createObjectURL(blob);
                     link.download = "Sales Report.xlsx";
                     link.click();
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully exported.",
+                    };
                   });
               } else {
                 this.snackbar = {

@@ -460,7 +460,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="pbutton text-center pt-2">
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -802,7 +802,14 @@
                           indeterminate
                           rounded
                         ></v-progress-linear>
-
+                        <template v-slot:[`item.request_date`]="{ item }">
+                          {{
+                            getFormatDate(
+                              item.request_date,
+                              "YYYY-MM-DD hh:mm A"
+                            )
+                          }}
+                        </template>
                         <template v-slot:[`item.supply_name`]="{ item }">
                           {{ item.supply_name }}
                           {{ item.description }}</template
@@ -845,7 +852,7 @@
                   </v-container>
                 </v-card>
                 <!-- Paginate -->
-                <div class="pbutton text-center pt-2">
+                <div class="pbutton text-center pt-7">
                   <v-pagination
                     v-model="page1"
                     :total-visible="7"
@@ -886,7 +893,10 @@
                       sm="6"
                     >
                       Date Requested:<br /><strong>{{
-                        table2[0].request_date
+                        getFormatDate(
+                          table2[0].request_date,
+                          "YYYY-MM-DD hh:mm A"
+                        )
                       }}</strong>
                     </v-col>
                   </v-row>

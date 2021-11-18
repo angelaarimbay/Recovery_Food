@@ -534,6 +534,7 @@ class ReportsController extends Controller
                 }
                 array_push($group, $temp);
             }
+            
 
             // ito ung sub total na row, lagay mo ung declared variable mo kanina.
             // may sample na jan ha dalwa.
@@ -571,10 +572,15 @@ class ReportsController extends Controller
                 'variance_q' => '',
                 'variance_a' => number_format($st_variance_a, 2),
             ];
+
+            
+            $group = collect($group)->sortByDesc('triggerpoint')->ToArray();
             array_push($group, $ar);
             array_push($return, $group);
-        }
 
+        }
+ 
+ 
         switch ($t->type) {
             case 'pdf':
                 $content['data'] = $return;

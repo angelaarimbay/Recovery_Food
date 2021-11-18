@@ -350,7 +350,7 @@
     </v-data-table>
 
     <!-- Paginate -->
-    <div class="pbutton text-center pt-2">
+    <div class="pbutton text-center pt-7">
       <v-pagination
         v-model="page"
         :total-visible="7"
@@ -714,6 +714,12 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Transaction Report.pdf";
                 link.click();
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully exported.",
+                };
               } else {
                 this.snackbar = {
                   active: true,
@@ -756,6 +762,12 @@ export default {
                     link.href = window.URL.createObjectURL(blob);
                     link.download = "Transaction Report.xlsx";
                     link.click();
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully exported.",
+                    };
                   });
               } else {
                 this.snackbar = {

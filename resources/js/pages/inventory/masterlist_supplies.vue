@@ -322,10 +322,7 @@
               rounded
             ></v-progress-linear>
             <template v-slot:[`item.supply_name`]="{ item }"
-              >{{ item.supply_name }} {{ item.description }}
-            </template>
-            <template v-slot:[`item.count`]="{ item }">
-              <v-tooltip bottom>
+              ><v-tooltip bottom>
                 <template #activator="data"
                   ><v-icon
                     v-on="data.on"
@@ -350,11 +347,14 @@
                     >mdi-alert-circle
                   </v-icon></template
                 >
-                <span v-if="item.days > 1 && item.days < 8"
+                <span v-if="item.days >= 1 && item.days < 8"
                   >Near to Expire</span
                 >
                 <span v-else-if="item.days < 1">Expired</span> </v-tooltip
-              >{{ item.row }}</template
+              >{{ item.supply_name }} {{ item.description }}
+            </template>
+            <template v-slot:[`item.count`]="{ item }">
+              {{ item.row }}</template
             >
             <template v-slot:[`item.status`]="{ item }">
               <!-- <small> Lead time: {{ item.lead_time }} /
@@ -397,7 +397,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="pbutton text-center pt-2">
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -1046,7 +1046,6 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
-        width: "20%"
       },
       {
         text: "SUPPLIER",

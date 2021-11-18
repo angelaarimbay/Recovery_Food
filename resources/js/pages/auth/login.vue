@@ -195,7 +195,6 @@ export default {
           "E-mail must be valid",
       ]),
         (this.passwordRules = [(v) => !!v || "This is required"]);
-      this.login();
     },
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {

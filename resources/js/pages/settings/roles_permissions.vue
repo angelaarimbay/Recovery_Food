@@ -323,7 +323,7 @@
             </v-data-table>
 
             <!-- Paginate -->
-            <div class="pbutton tbl text-center pt-2 d-none">
+            <div class="pbutton tbl text-center pt-7 d-none">
               <v-pagination
                 v-model="page3"
                 :total-visible="7"
@@ -458,7 +458,7 @@
         <v-tabs-items v-model="tab">
           <v-tab-item>
             <!-- Roles List -->
-            <v-container class="py-0">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <!-- Buttons -->
@@ -469,6 +469,7 @@
                     dark
                     :small="$vuetify.breakpoint.smAndDown"
                     @click="openDialogRoles"
+                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                   >
                     Add New Role
                   </v-btn>
@@ -544,7 +545,7 @@
                 </v-data-table>
 
                 <!-- Paginate -->
-                <div class="tbl pbutton text-center pt-2">
+                <div class="tbl pbutton text-center pt-7">
                   <v-pagination
                     v-model="page1"
                     :total-visible="7"
@@ -558,7 +559,7 @@
 
           <v-tab-item class="d-none">
             <!-- Permissions List -->
-            <v-container class="py-0">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <v-btn
@@ -568,8 +569,9 @@
                     :small="$vuetify.breakpoint.smAndDown"
                     dark
                     @click="dialogPermissions = true"
+                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                   >
-                    Add New
+                    Add New Permission
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-tooltip bottom>
@@ -622,7 +624,7 @@
                 </v-data-table>
 
                 <!-- Paginate -->
-                <div class="tbl pbutton text-center pt-2">
+                <div class="tbl pbutton text-center pt-7">
                   <v-pagination
                     v-model="page4"
                     :total-visible="7"
@@ -636,7 +638,7 @@
 
           <v-tab-item>
             <!-- User Roles -->
-            <v-container class="py-0">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <v-spacer></v-spacer>
@@ -707,7 +709,7 @@
                 </v-data-table>
 
                 <!-- Paginate -->
-                <div class="tbl pbutton text-center pt-2">
+                <div class="tbl pbutton text-center pt-7">
                   <v-pagination
                     v-model="page2"
                     :total-visible="7"

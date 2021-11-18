@@ -155,7 +155,7 @@
             ></v-progress-linear>
 
             <template v-slot:[`item.request_date`]="{ item }">
-              {{ getFormatDate(item.request_date, "YYYY-MM-DD hh:mm:ss A") }}
+              {{ getFormatDate(item.request_date, "YYYY-MM-DD hh:mm A") }}
             </template>
 
             <template v-slot:[`item.status`]="{ item }">
@@ -222,7 +222,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="pbutton text-center pt-2">
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -294,7 +294,7 @@
                     <v-card-actions class="py-0 px-0">
                       <v-text-field
                         hide-details
-                        v-model="search1"
+                        v-model="search"
                         single-line
                         dense
                         clearable
@@ -318,7 +318,7 @@
                             icon
                             v-on="data.on"
                             class="ml-1"
-                            @click="searchSupp"
+                            @click="getList"
                           >
                             <v-icon>mdi-magnify</v-icon></v-btn
                           >
@@ -349,7 +349,6 @@
 
                 <v-data-table
                   id="table1"
-                  :search="search"
                   :loading="progressbar1"
                   :headers="headers1"
                   :items="table1"
@@ -523,7 +522,7 @@
                     :small="$vuetify.breakpoint.smAndDown"
                     class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                     @click="validate('cancel')"
-                    :disabled="!disabled"
+                    :disabled="disabled"
                     :hidden="isHidden"
                     >Cancel</v-btn
                   >
@@ -532,8 +531,11 @@
                     style="text-transform: none"
                     :small="$vuetify.breakpoint.smAndDown"
                     class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                    @click="validate('send')"
-                    :disabled="!disabled || !disabled2"
+                    @click="
+                      validate('send');
+                      disabled2();
+                    "
+                    :disabled="disabled"
                   >
                     Send Request</v-btn
                   >
@@ -681,13 +683,6 @@ import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
   computed: {
-    disabled() {
-      if (this.table2.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     disabled2() {
       for (var key in this.temp_data) {
         for (var key1 in this.temp_data[key]) {
@@ -801,7 +796,7 @@ export default {
     form: {
       quantity: 1,
     },
-
+    disabled: true,
     temp_data: [],
     progressbar: false,
     progressbar1: false,
@@ -827,7 +822,6 @@ export default {
     pageCount: 0,
     itemsPerPage: 5,
     search: "",
-    search1: "",
     cancel_select: [],
   }),
 
@@ -906,6 +900,7 @@ export default {
           break;
         case "cancelreq":
           this.cancelRequest();
+
           break;
         default:
           break;
@@ -913,18 +908,16 @@ export default {
       this.snackbar2.active = false;
     },
 
-    searchSupp() {
-      this.progressbar1 = true;
-      this.search = this.search1;
-      this.progressbar1 = false;
-    },
-
     async getList() {
       this.progressbar1 = true;
-      await axios.get("/api/requestsupp/supplies/list").then((result) => {
-        this.table1 = result.data;
-        this.progressbar1 = false;
-      });
+      await axios
+        .get("/api/requestsupp/supplies/list", {
+          params: { search: this.search },
+        })
+        .then((result) => {
+          this.table1 = result.data;
+          this.progressbar1 = false;
+        });
     },
     async get() {
       this.progressbar = true;
@@ -985,6 +978,7 @@ export default {
             };
           }
         }
+        this.disabled = false;
         this.dialog = false;
       }
     },
@@ -994,6 +988,7 @@ export default {
       if (this.table2[this.table2.indexOf(row)].quantity <= 0) {
         this.table2.splice(this.table2.indexOf(row), 1);
       }
+
       this.snackbar = {
         active: true,
         iconText: "check",
@@ -1031,6 +1026,7 @@ export default {
       if (this.headers2.length == 5) {
         this.headers2.splice(this.headers2.indexOf(this.headers2[3]), 1);
       }
+      this.disabled = true;
       this.dialog_list = true;
       this.getList();
     },
@@ -1074,6 +1070,7 @@ export default {
       await axios
         .get("/api/requestsupp/request/list", { params: { ref: ref.ref } })
         .then((result) => {
+          console.log(result.data);
           this.temp_data = JSON.parse(JSON.stringify(result.data));
           this.table2 = result.data;
           this.dialog_list = true;
@@ -1082,6 +1079,7 @@ export default {
     },
     closeRequest() {
       this.dialog_list = false;
+      this.disabled = true;
       this.clearRequest();
     },
     clearRequest() {
@@ -1090,6 +1088,12 @@ export default {
     },
     clearRequest1() {
       this.table2 = [];
+      console.log(this.table2.length);
+      if (this.table2.length > 0) {
+        this.disabled = false;
+      } else {
+        this.disabled = true;
+      }
       this.ref = "";
       this.snackbar = {
         active: true,

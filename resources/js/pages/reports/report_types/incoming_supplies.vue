@@ -274,6 +274,12 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = "Incoming Supplies Report.pdf";
                 link.click();
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully exported.",
+                };
               } else {
                 this.snackbar = {
                   active: true,
@@ -316,6 +322,12 @@ export default {
                     link.href = window.URL.createObjectURL(blob);
                     link.download = "Incoming Supplies Report.xlsx";
                     link.click();
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully exported.",
+                    };
                   });
               } else {
                 this.snackbar = {
