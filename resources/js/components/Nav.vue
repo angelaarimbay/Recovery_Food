@@ -57,7 +57,7 @@
             </v-list-item>
             <v-list-item>
               <v-list-item-title @click="logout" style="cursor: pointer"
-                >Logout
+                >Log Out
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -140,8 +140,6 @@
             </v-list-item-title>
           </v-list-item>
         </template>
-
-        <v-divider class="m-0"></v-divider>
 
         <v-list nav dense>
           <v-list-item
@@ -349,7 +347,7 @@
                 <v-list-item-title>Deducted Supplies</v-list-item-title>
               </v-list-item>
 
-             <v-list-item
+              <v-list-item
                 v-if="user.permissionslist.includes('Access Branch Inventory')"
                 style="text-decoration: none"
                 class="pl-8 mb-1"
@@ -529,7 +527,6 @@
         <template v-slot:append>
           <v-divider class="m-0"></v-divider>
           <v-list-item
-            class="pb-1"
             color="#FFFFFF"
             style="text-decoration: none"
             @click="logout"
@@ -548,11 +545,49 @@
 </template>
 
 <style>
-::-webkit-scrollbar {
+/* For Chrome, Microsoft Edge */
+html {
+  overflow-y: initial !important;
+}
+
+.v-navigation-drawer ::-webkit-scrollbar {
   width: 0px;
 }
+
+::-webkit-scrollbar-track {
+  --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #fafafa;
+}
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  border-radius: 9999px;
+  background-color: #9e9e9e;
+}
+/* For Chrome, Microsoft Edge */
+
+/* For FireFox */
+html {
+  scrollbar-color: #9e9e9e #fafafa;
+}
+
 .bg-grey {
   background-color: #616161;
+}
+</style>
+
+<style scoped>
+.v-menu__content.theme--light .v-list {
+  background: white !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 
@@ -582,6 +617,10 @@ export default {
   },
 
   methods: {
+    reloadPage() {
+      window.location.reload();
+    },
+
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
         if (result.data.path) {
@@ -596,6 +635,7 @@ export default {
 
       // Redirect to login.
       this.$router.push({ name: "login" });
+      this.reloadPage();
     },
   },
 };

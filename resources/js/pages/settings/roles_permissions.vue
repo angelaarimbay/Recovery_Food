@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -30,6 +32,8 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar2.iconColor">{{
@@ -58,82 +62,90 @@
       </template>
     </v-snackbar>
 
+    <!-- Role Dialog Form -->
     <v-form ref="mainForm" id="mainForm">
-      <!-- Role Dialog Form  -->
-      <v-dialog v-model="dialogRoles" max-width="450px">
-        <v-toolbar
-          dense
-          dark
-          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-        >
-          Add New Role
-          <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                v-on="data.on"
-                text
-                @click="cancelRoles"
-                >mdi-close
-              </v-icon>
-            </template>
-            <span>Close</span>
-          </v-tooltip>
-        </v-toolbar>
-        <v-card tile id="dialog" style="background-color: #f5f5f5">
-          <v-card-text class="py-2">
-            <br />
-            <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-              <v-row>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
-                  <v-text-field v-model="role.id" class="d-none">
-                  </v-text-field>
-                  <v-text-field
-                    :rules="formRules"
-                    v-model="role.name"
-                    outlined
-                    clearable
-                    dense
-                    counter
-                    @keydown="valueKeydown($event)"
-                    maxlength="20"
-                  >
-                    <template slot="label">
-                      <div style="font-size: 14px">Role Name *</div>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
-                  <v-text-field
-                    :rules="formRulesDesc"
-                    v-model="role.description"
-                    outlined
-                    clearable
-                    dense
-                    counter
-                    @keydown="valueKeydown($event)"
-                    maxlength="25"
-                  >
-                    <template slot="label">
-                      <div style="font-size: 14px">Role Description</div>
-                    </template>
-                  </v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-
-          <!-- Role Dialog Form Button  -->
-          <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+      <v-dialog
+        v-model="dialogRoles"
+        max-width="450px"
+        persistent
+        no-click-animation
+      >
+        <v-card tile class="pa-3">
+          <v-toolbar dark dense flat rounded class="red darken-3">
+            Role
+            <v-spacer></v-spacer>
+            <v-icon text @click="cancelRoles">mdi-close </v-icon>
+          </v-toolbar>
+          <v-container class="px-1">
+            <v-row class="py-4">
+              <v-col
+                class="tfield py-0"
+                cols="12"
+                xl="12"
+                lg="12"
+                sm="12"
+                md="12"
+              >
+                <v-text-field v-model="role.id" class="d-none"> </v-text-field>
+                <v-text-field
+                  :rules="formRules"
+                  v-model="role.name"
+                  clearable
+                  dense
+                  counter
+                  @keydown="valueKeydown($event)"
+                  maxlength="20"
+                  background-color="white"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">
+                      Role Name <span style="color: red">*</span>
+                    </div>
+                  </template>
+                </v-text-field>
+              </v-col>
+              <v-col
+                class="tfield py-0"
+                cols="12"
+                xl="12"
+                lg="12"
+                sm="12"
+                md="12"
+              >
+                <v-text-field
+                  :rules="formRulesDesc"
+                  v-model="role.description"
+                  clearable
+                  dense
+                  counter
+                  @keydown="valueKeydown($event)"
+                  maxlength="25"
+                  background-color="white"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">Role Description</div>
+                  </template>
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-divider class="my-0"></v-divider>
+          <!-- Dialog Form Buttons -->
+          <v-card-actions class="px-0 pb-0">
             <v-spacer></v-spacer>
             <v-btn
               color="error"
               depressed
               dark
               @click="cancelRoles"
-              style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
+              text
             >
               Cancel
             </v-btn>
@@ -142,8 +154,8 @@
               depressed
               dark
               @click="storeRoles"
-              style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
+              text
             >
               Save
             </v-btn>
@@ -153,73 +165,74 @@
 
       <!-- Permission Dialog Form -->
       <v-dialog v-model="dialogPermissions" max-width="450px">
-        <v-toolbar
-          dense
-          dark
-          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-        >
-          Add New Permission
-          <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                v-on="data.on"
-                text
-                @click="dialogPermissions = false"
-                >mdi-close
-              </v-icon>
-            </template>
-            <span>Close</span>
-          </v-tooltip>
-        </v-toolbar>
-        <v-card tile style="background-color: #f5f5f5">
-          <v-card-text class="py-2">
-            <br />
-            <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-              <v-row>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
-                  <v-text-field v-model="permission.id" class="d-none">
-                  </v-text-field>
-                  <v-text-field
-                    :rules="formRules"
-                    v-model="permission.name"
-                    outlined
-                    clearable
-                    dense
-                  >
-                    <template slot="label">
-                      <div style="font-size: 14px">Permission Name *</div>
-                    </template>
-                  </v-text-field>
-                </v-col>
-                <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
-                  <v-text-field
-                    :rules="formRules"
-                    v-model="permission.description"
-                    outlined
-                    clearable
-                    dense
-                  >
-                    <template slot="label">
-                      <div style="font-size: 14px">Permission Description</div>
-                    </template>
-                  </v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-
-          <!-- Permission Dialog Form Button -->
-          <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+        <v-card tile class="pa-3">
+          <v-toolbar dark dense flat rounded class="red darken-3">
+            Add New Permission
+            <v-spacer></v-spacer>
+            <v-icon text @click="dialogPermissions = false">mdi-close </v-icon>
+          </v-toolbar>
+          <v-container class="px-1">
+            <v-row class="py-4">
+              <v-col
+                class="tfield py-0"
+                cols="12"
+                xl="12"
+                lg="12"
+                sm="12"
+                md="12"
+              >
+                <v-text-field v-model="permission.id" class="d-none">
+                </v-text-field>
+                <v-text-field
+                  :rules="formRules"
+                  v-model="permission.name"
+                  clearable
+                  background-color="white"
+                  flat
+                  solo
+                  dense
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">
+                      Permission Name <span style="color: red">*</span>
+                    </div>
+                  </template>
+                </v-text-field>
+              </v-col>
+              <v-col
+                class="tfield py-0"
+                cols="12"
+                xl="12"
+                lg="12"
+                sm="12"
+                md="12"
+              >
+                <v-text-field
+                  :rules="formRules"
+                  v-model="permission.description"
+                  outlined
+                  clearable
+                  dense
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">Permission Description</div>
+                  </template>
+                </v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-divider class="my-0"></v-divider>
+          <!-- Dialog Form Buttons -->
+          <v-card-actions class="px-0 pb-0">
             <v-spacer></v-spacer>
             <v-btn
               color="primary"
               depressed
               dark
               @click="validate('permission')"
-              style="text-transform: none"
               :small="$vuetify.breakpoint.smAndDown"
+              text
             >
               Save
             </v-btn>
@@ -228,138 +241,112 @@
       </v-dialog>
 
       <!-- Add Permission To Role Dialog -->
-      <v-dialog v-model="dialogAddPermissions" max-width="900px">
-        <v-card id="dialog" class="bgcolor">
-          <v-toolbar
-            dense
-            dark
-            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-          >
+      <v-dialog v-model="dialogAddPermissions" max-width="700px">
+        <v-card tile class="pa-3">
+          <v-toolbar dark dense flat rounded class="red darken-3">
             Add Role Permission(s)
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialogAddPermissions = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialogAddPermissions = false"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-
-          <v-card tile>
-            <v-card-text class="py-2">
-              <br />
-              <v-data-table
-                class="px-4"
-                v-model="selectedAddPermission"
-                :items-per-page="5"
-                dense
-                :loading="progressBar"
-                :headers="headersAddPermissions"
-                :items="tablePermissions"
-                show-select
-              >
-                <v-progress-linear
-                  v-show="progressBar"
-                  slot="progress"
-                  color="red darken-2"
-                  indeterminate
-                ></v-progress-linear>
-              </v-data-table>
-            </v-card-text>
-
-            <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                style="text-transform: none"
-                depressed
-                dark
-                @click="validate('permission')"
-                :small="$vuetify.breakpoint.smAndDown"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+          <v-container class="px-0">
+            <v-data-table
+              id="table1"
+              class="tbl px-4 table-striped border"
+              v-model="selectedAddPermission"
+              :items-per-page="5"
+              dense
+              :loading="progressBar"
+              :headers="headersAddPermissions"
+              :items="tablePermissions"
+              show-select
+            >
+              <v-progress-linear
+                v-show="progressBar"
+                slot="progress"
+                color="red darken-2"
+                indeterminate
+              ></v-progress-linear>
+            </v-data-table>
+          </v-container>
+          <v-divider class="my-0"></v-divider>
+          <!-- Dialog Form Buttons -->
+          <v-card-actions class="px-0 pb-0">
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              depressed
+              dark
+              @click="validate('permission')"
+              :small="$vuetify.breakpoint.smAndDown"
+              text
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
 
-      <!-- Add User To Role Dialog -->
-      <v-dialog v-model="dialogAddRoles" max-width="900px">
-        <v-card id="dialog" class="bgcolor">
-          <v-toolbar
-            dense
-            dark
-            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-          >
+      <!-- Add User Role Dialog -->
+      <v-dialog v-model="dialogAddRoles" max-width="700px">
+        <v-card tile class="pa-3">
+          <v-toolbar dark dense flat rounded class="red darken-3">
             Add User Role(s)
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="cancelUserRoles"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon text @click="cancelUserRoles">mdi-close </v-icon>
           </v-toolbar>
-
-          <v-card tile>
-            <v-card-text class="py-2">
-              <v-card-text>
-                <strong>Selected User:</strong> {{ username }}</v-card-text
-              >
-              <v-data-table
-                class="px-4"
-                v-model="selectedAddRoles"
-                :items-per-page="5"
-                dense
-                :loading="progressBar"
-                :headers="headersAddRoles"
-                :items="tableAddRoles.data"
-                show-select
-              >
-                <v-progress-linear
-                  v-show="progressBar"
-                  slot="progress"
-                  color="red darken-2"
-                  indeterminate
-                ></v-progress-linear>
-              </v-data-table>
-              <div class="text-center pt-2 d-none">
-                <v-pagination
-                  v-model="page3"
-                  :total-visible="7"
-                  :length="tableAddRoles.last_page"
-                  color="red darken-2"
-                ></v-pagination>
-              </div>
+          <v-card-text class="px-0">
+            <v-card-text>
+              Selected User: <strong>{{ username }}</strong>
             </v-card-text>
+            <v-data-table
+              id="table1"
+              class="tbl px-4 table-striped border"
+              v-model="selectedAddRoles"
+              :items-per-page="5"
+              dense
+              :loading="progressBar"
+              :headers="headersAddRoles"
+              :items="tableAddRoles.data"
+              show-select
+            >
+              <v-progress-linear
+                v-show="progressBar"
+                slot="progress"
+                color="red darken-2"
+                indeterminate
+              ></v-progress-linear>
+            </v-data-table>
 
-            <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                style="text-transform: none"
-                depressed
-                dark
-                @click="validate('userrole')"
-                :small="$vuetify.breakpoint.smAndDown"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+            <!-- Paginate -->
+            <div class="pbutton tbl text-center pt-7 d-none">
+              <v-pagination
+                v-model="page3"
+                :total-visible="7"
+                :length="tableAddRoles.last_page"
+                color="red darken-2"
+              ></v-pagination>
+            </div>
+          </v-card-text>
+          <v-divider class="my-0"></v-divider>
+          <!-- Dialog Form Buttons -->
+          <v-card-actions class="px-0 pb-0">
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              depressed
+              dark
+              @click="validate('userrole')"
+              :small="$vuetify.breakpoint.smAndDown"
+              text
+            >
+              Save
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
 
@@ -399,7 +386,7 @@
       </v-container>
 
       <!-- Main Card -->
-      <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+      <v-card elevation="2" class="mt-2" style="border-radius: 10px">
         <v-tabs
           slider-size="4"
           v-model="tab"
@@ -471,7 +458,7 @@
         <v-tabs-items v-model="tab">
           <v-tab-item>
             <!-- Roles List -->
-            <v-container class="py-0">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <!-- Buttons -->
@@ -482,19 +469,27 @@
                     dark
                     :small="$vuetify.breakpoint.smAndDown"
                     @click="openDialogRoles"
+                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                   >
-                    Add New
+                    Add New Role
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="getRoles"
-                    >Refresh</v-btn
-                  >
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="success"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getRoles"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
                 </v-card-actions>
 
                 <!-- Roles List Table -->
@@ -505,6 +500,7 @@
                   :loading="progressBar"
                   :headers="headersRoles"
                   :items="tableRoles.data"
+                  class="table-striped border"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -547,7 +543,9 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
-                <div class="text-center pt-2">
+
+                <!-- Paginate -->
+                <div class="tbl pbutton text-center pt-7">
                   <v-pagination
                     v-model="page1"
                     :total-visible="7"
@@ -561,7 +559,7 @@
 
           <v-tab-item class="d-none">
             <!-- Permissions List -->
-            <v-container class="py-0">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <v-btn
@@ -571,19 +569,27 @@
                     :small="$vuetify.breakpoint.smAndDown"
                     dark
                     @click="dialogPermissions = true"
+                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                   >
-                    Add New
+                    Add New Permission
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="getPermissions"
-                    >Refresh</v-btn
-                  >
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="success"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getPermissions"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
                 </v-card-actions>
 
                 <!-- Permissions List Table -->
@@ -594,6 +600,7 @@
                   hide-default-footer
                   :headers="headersPermissions"
                   :items="tablePermissions.data"
+                  class="table-striped border"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -616,7 +623,8 @@
                   </template>
                 </v-data-table>
 
-                <div class="text-center pt-2">
+                <!-- Paginate -->
+                <div class="tbl pbutton text-center pt-7">
                   <v-pagination
                     v-model="page4"
                     :total-visible="7"
@@ -630,19 +638,26 @@
 
           <v-tab-item>
             <!-- User Roles -->
-            <v-container class="py-0">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
               <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                 <v-card-actions class="px-0">
                   <v-spacer></v-spacer>
-                  <v-btn
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="getUserRoles"
-                    >Refresh</v-btn
-                  >
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="success"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getUserRoles"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
                 </v-card-actions>
 
                 <!-- User Roles Table -->
@@ -653,6 +668,7 @@
                   :loading="progressBar"
                   :headers="headersUserrole"
                   :items="tableUserrole.data"
+                  class="table-striped border"
                 >
                   <v-progress-linear
                     v-show="progressBar"
@@ -691,7 +707,9 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
-                <div class="text-center pt-2">
+
+                <!-- Paginate -->
+                <div class="tbl pbutton text-center pt-7">
                   <v-pagination
                     v-model="page2"
                     :total-visible="7"
@@ -732,20 +750,54 @@
 </template>
 
 <style>
-.v-data-table__checkbox,
+.tbl.v-data-table__checkbox,
 .v-input--selection-controls__input .mdi-checkbox-marked,
 .v-input--selection-controls__input .mdi-minus-box {
   color: #d32f2f !important;
 }
-.v-pagination button {
+
+#table1 .v-data-table-header th,
+#table .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th,
+#table .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td,
+#table td {
+  font-size: 12px !important;
+}
+
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
+}
+
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 
@@ -802,7 +854,7 @@ export default {
       },
       { text: "ROLE DESCRIPTION", value: "description", class: "black--text" },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -824,7 +876,7 @@ export default {
         class: "black--text",
       },
       { text: "DESCRIPTION", value: "description", class: "black--text" },
-      { text: "ACTION(S)", value: "id", class: "black--text" },
+      { text: "ACTION", value: "id", class: "black--text" },
     ],
     permission: { name: "", description: "", id: "" },
     // --------------------------------------------------user role
@@ -840,7 +892,7 @@ export default {
       },
       { text: "CURRENT ROLE(S)", value: "roles.name", class: "black--text" },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -1161,10 +1213,9 @@ export default {
       ) {
         this.snackbar = {
           active: true,
-          iconText: "error",
+          iconText: "close",
           iconColor: "danger",
-          message:
-            "If 'Access POS' is checked, you must disable all other permissions.",
+          message: "Disable all other permissions first.",
         };
         return 1;
       }

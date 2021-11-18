@@ -1,12 +1,19 @@
 <template>
   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
     <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+      <!-- Progress Circular -->
+      <v-overlay :value="overlay">
+        <v-progress-circular size="55" color="red darken-2" indeterminate>
+        </v-progress-circular>
+      </v-overlay>
       <!-- Snackbar -->
       <v-snackbar
         :vertical="$vuetify.breakpoint.xsOnly"
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -34,18 +41,12 @@
         >
           Preview Receipt
           <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                v-on="data.on"
-                text
-                @click="dialog1 = false"
-                >mdi-close
-              </v-icon>
-            </template>
-            <span>Close</span>
-          </v-tooltip>
+          <v-icon
+            class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+            text
+            @click="dialog1 = false"
+            >mdi-close
+          </v-icon>
         </v-toolbar>
         <iframe :src="pdfview" width="100%" height="500"></iframe>
       </v-dialog>
@@ -97,165 +98,259 @@
           <span>Print</span>
         </v-tooltip></v-card-actions
       >
+
       <v-row no-gutters>
-        <!-- Items Per Page -->
-        <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-          <v-card-actions>
-            <v-select
-              style="max-width: 82px"
-              dense
-              v-model="itemsPerPage"
-              label="Items per page"
-              @change="itemperpage"
-              :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
-            >
-            </v-select>
-          </v-card-actions>
-        </v-col>
-
         <v-spacer></v-spacer>
-
-        <!-- Search Field -->
-        <v-col
-          cols="8"
-          xl="4"
-          lg="4"
-          md="6"
-          sm="8"
-          style="max-width: 230px"
-          class="my-auto"
-        >
-          <v-card-actions>
-            <v-text-field
-              v-model="search"
-              label="Reference No."
-              single-line
-              dense
-              clearable
-            ></v-text-field>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  :small="$vuetify.breakpoint.smAndDown"
-                  :large="$vuetify.breakpoint.mdAndUp"
-                  color="red darken-2"
-                  icon
-                  v-on="data.on"
-                  @click="getSalesReport"
-                  class="mb-3"
-                >
-                  <v-icon>mdi-magnify</v-icon></v-btn
-                >
-              </template>
-              <span>Search</span>
-            </v-tooltip>
-          </v-card-actions>
-        </v-col>
+        <v-tooltip bottom>
+          <template #activator="data">
+            <v-btn
+              class="mr-2 mb-3"
+              color="success"
+              style="text-transform: none"
+              depressed
+              :small="$vuetify.breakpoint.smAndDown"
+              dark
+              @click="getSalesReport"
+              v-on="data.on"
+              icon
+              ><v-icon>mdi-refresh</v-icon></v-btn
+            >
+          </template>
+          <span>Refresh</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="data">
+            <v-btn
+              color="grey darken-4"
+              style="text-transform: none"
+              depressed
+              :small="$vuetify.breakpoint.smAndDown"
+              dark
+              @click="filterDialog = true"
+              v-on="data.on"
+              icon
+              ><v-icon>mdi-filter-variant</v-icon></v-btn
+            >
+          </template>
+          <span>Filter</span>
+        </v-tooltip>
       </v-row>
 
-      <v-row
-        no-gutters
-        v-if="!this.user.permissionslist.includes('Access POS')"
-      >
-        <!-- Branch Field -->
-        <v-col cols="12" xl="2" lg="2" md="3" sm="12" class="my-auto">
-          <v-card-actions class="py-0">
-            <v-select
-              :items="branchlist"
-              item-text="branch_name"
-              item-value="id"
-              class="my-0"
-              clearable
-              v-model="branch"
-              dense
-              @change="getSalesReport"
-              label="Branch"
+      <!-- Filter Dialog -->
+      <v-dialog v-model="filterDialog" max-width="400px">
+        <v-card dark tile class="pa-2">
+          <v-toolbar dense flat class="transparent">
+            Search Filter
+            <v-spacer></v-spacer>
+            <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+          </v-toolbar>
+          <v-divider class="my-0"></v-divider>
+          <v-row no-gutters align="center" class="pa-2">
+            <!-- Items Per Page -->
+            <v-col cols="4"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Items / Page</span
+              ></v-col
             >
-            </v-select>
-          </v-card-actions>
-        </v-col>
+            <v-col cols="8">
+              <v-card-actions class="px-0">
+                <v-select
+                  dense
+                  v-model="itemsPerPage"
+                  @change="itemperpage"
+                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
+                  hide-details
+                  background-color="grey darken-3"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                </v-select>
+              </v-card-actions>
+            </v-col>
 
-        <v-spacer></v-spacer>
-
-        <!-- Date Picker -->
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-          <v-card-actions class="py-0">
-            <v-menu
-              v-model="date1"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
+            <!-- Search Field -->
+            <v-col cols="4"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Search</span
+              ></v-col
             >
-              <template v-slot:activator="{ on }">
+            <v-col cols="8">
+              <v-card-actions class="px-0">
                 <v-text-field
+                  v-model="search"
+                  placeholder="Reference No."
+                  single-line
+                  dense
+                  clearable
+                  hide-details
+                  background-color="grey darken-3"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                ></v-text-field>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      small
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                      color="red darken-2"
+                      icon
+                      v-on="data.on"
+                      @click="getSalesReport"
+                      class="ml-1"
+                    >
+                      <v-icon>mdi-magnify</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Search</span>
+                </v-tooltip>
+              </v-card-actions>
+            </v-col>
+
+            <!-- Branch Field -->
+            <v-col
+              cols="4"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Branch</span
+              ></v-col
+            >
+            <v-col
+              cols="8"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+            >
+              <v-card-actions class="px-0">
+                <v-select
+                  hide-details
+                  :items="branchlist"
+                  item-text="branch_name"
+                  item-value="id"
+                  clearable
+                  v-model="branch"
+                  dense
+                  @change="getSalesReport"
+                  placeholder="Branch"
+                  background-color="grey darken-3"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                </v-select>
+              </v-card-actions>
+            </v-col>
+
+            <!-- Date Picker -->
+            <v-col
+              cols="4"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Date From</span
+              ></v-col
+            >
+            <v-col
+              cols="8"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+            >
+              <v-menu
+                v-model="date1"
+                :close-on-content-click="false"
+                :nudge-right="35"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      hide-details
+                      v-model="dateFromSP"
+                      placeholder="Date From"
+                      prepend-inner-icon="mdi-calendar-range"
+                      readonly
+                      v-on="on"
+                      dense
+                      clearable
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                  </v-card-actions>
+                </template>
+                <v-date-picker
                   v-model="dateFromSP"
-                  label="Date From"
-                  prepend-icon="mdi-calendar-range"
-                  readonly
-                  v-on="on"
-                  class="py-0"
-                  dense
-                  clearable
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateFromSP"
-                @input="date1 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-                @change="getSalesReport"
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
-        </v-col>
+                  @input="date1 = false"
+                  scrollable
+                  no-title
+                  color="red darken-2"
+                  dark
+                  @change="getSalesReport"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
 
-        <v-col cols="6" xl="2" lg="3" md="3" sm="6" class="my-auto">
-          <v-card-actions class="py-0">
-            <v-menu
-              v-model="date2"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
+            <!-- Date Picker -->
+            <v-col
+              cols="4"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Date Until</span
+              ></v-col
             >
-              <template v-slot:activator="{ on }">
-                <v-text-field
+            <v-col
+              cols="8"
+              v-if="!this.user.permissionslist.includes('Access POS')"
+            >
+              <v-menu
+                v-model="date2"
+                :close-on-content-click="false"
+                :nudge-right="35"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      hide-details
+                      v-model="dateUntilSP"
+                      label="Date Until"
+                      prepend-inner-icon="mdi-calendar-range"
+                      readonly
+                      v-on="on"
+                      dense
+                      clearable
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                  </v-card-actions>
+                </template>
+                <v-date-picker
                   v-model="dateUntilSP"
-                  label="Date Until"
-                  prepend-icon="mdi-calendar-range"
-                  readonly
-                  v-on="on"
-                  class="py-0"
-                  dense
-                  clearable
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="dateUntilSP"
-                @input="date2 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-                @change="getSalesReport"
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
-        </v-col>
-      </v-row>
+                  @input="date2 = false"
+                  scrollable
+                  no-title
+                  color="red darken-2"
+                  dark
+                  @change="getSalesReport"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-dialog>
     </v-container>
 
     <!-- Table -->
     <v-data-table
+      id="table1"
       :headers="myheaders"
       :items="table.data"
       :loading="progressbar"
@@ -264,6 +359,7 @@
       :items-per-page="itemsPerPage"
       hide-default-footer
       @page-count="pageCount = $event"
+      class="table-striped border"
     >
       <!-- Progress Bar -->
       <v-progress-linear
@@ -292,7 +388,7 @@
     </v-data-table>
 
     <!-- Paginate -->
-    <div class="text-center pt-2">
+    <div class="pbutton text-center pt-7">
       <v-pagination
         v-model="page"
         :total-visible="7"
@@ -301,124 +397,158 @@
       ></v-pagination>
     </div>
 
-    <!-- Add User To Role Dialog -->
+    <!-- View Sales Report Form -->
     <v-dialog v-model="viewdialog" max-width="900px">
-      <v-card id="dialog" class="bgcolor">
-        <v-toolbar
-          dense
-          dark
-          class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-        >
+      <v-card tile class="pa-3">
+        <v-toolbar dark dense flat rounded class="red darken-3">
           Sales Report Info
           <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                v-on="data.on"
-                text
-                @click="closeViewDialog"
-                >mdi-close
-              </v-icon>
-            </template>
-            <span>Close</span>
-          </v-tooltip>
+          <v-icon text @click="closeViewDialog">mdi-close </v-icon>
         </v-toolbar>
-
-        <v-card tile>
-          <v-card-text class="py-2">
-            <v-card-text>
-              <div v-if="table2.length > 0">
-                <strong> Reference No: {{ table2[0]["reference_no"] }}</strong>
-                <v-spacer></v-spacer>
-                <strong>
+        <v-card-text class="px-0">
+          <v-card-text>
+            <div v-if="table2.length > 0">
+              <v-row no-gutters>
+                <v-col class="pb-2" cols="12" xl="6" lg="6" md="6" sm="12">
+                  Reference No:
+                  <strong> {{ table2[0]["reference_no"] }}</strong>
+                  <br />
                   Sales Amount:
-                  {{ sales_var }}
-                </strong>
-                <br />
-
-                <v-card-actions>
-                  Branch: {{ table2[0]["branch"]["branch_name"] }}<br />
+                  <strong>{{ sales_var }} </strong>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col
+                  cols="12"
+                  xl="6"
+                  lg="6"
+                  md="6"
+                  sm="12"
+                  :class="{ 'text-right': $vuetify.breakpoint.smAndUp }"
+                >
+                  Branch:
+                  <strong>{{ table2[0]["branch"]["branch_name"] }}</strong
+                  ><br />
                   Date:
-                  {{ getFormatDate(table2[0]["created_at"], "YYYY-MM-DD")
-                  }}<br />
-                  <!-- <v-spacer></v-spacer>
+                  <strong>{{
+                    getFormatDate(table2[0]["created_at"], "YYYY-MM-DD")
+                  }}</strong> </v-col
+                ><br />
+                <!-- <v-spacer></v-spacer>
                   Mode: {{ table2[0]["mode"] }} <br />
                   Cashier: {{ table2[0]["cashier"]["name"] }} -->
-                </v-card-actions>
-              </div>
-            </v-card-text>
-
-            <!-- Table -->
-            <v-data-table
-              dense
-              class="px-4"
-              :items-per-page="5"
-              :loading="progressbar"
-              :headers="headers2"
-              :items="table2"
-              hide-default-footer
-            >
-              <template v-slot:[`item.product_full`]="{ item }"
-                >{{ item.product_name.product_name }}
-                {{ item.product_name.description }}</template
-              >
-              <template v-slot:[`item.product_name.price`]="{ item }">
-                {{
-                  getFormatCurrency(item.product_name.price, "0,0.00")
-                }}</template
-              >
-              <template v-slot:[`item.created_at`]="{ item }">
-                {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
-              >
-
-              <v-progress-linear
-                v-show="progressbar"
-                slot="progress"
-                color="red darken-2"
-                indeterminate
-              ></v-progress-linear>
-            </v-data-table>
+              </v-row>
+            </div>
           </v-card-text>
 
-          <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="error"
-              style="text-transform: none"
-              :small="$vuetify.breakpoint.smAndDown"
-              depressed
-              dark
-              @click="closeViewDialog"
+          <!-- Table -->
+          <v-data-table
+            id="table1"
+            dense
+            class="px-4 table-striped border"
+            :items-per-page="5"
+            :loading="progressbar"
+            :headers="headers2"
+            :items="table2"
+            hide-default-footer
+          >
+            <template v-slot:[`item.product_name.product_name`]="{ item }"
+              >{{ item.product_name.product_name }}
+              {{ item.product_name.description }}</template
             >
-              Close
-            </v-btn>
-            <v-btn
-              @click="getReceipt(table2[0]['reference_no'])"
-              color="#00794b"
-              style="text-transform: none"
-              :small="$vuetify.breakpoint.smAndDown"
-              depressed
-              dark
+            <template v-slot:[`item.price`]="{ item }">
+              {{
+                getFormatCurrency(
+                  item.sub_total_discounted / item.quantity,
+                  "0,0.00"
+                )
+              }}</template
             >
-              Print
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+            <template v-slot:[`item.created_at`]="{ item }">
+              {{ getFormatDate(item.created_at, "YYYY-MM-DD") }}</template
+            >
+
+            <v-progress-linear
+              v-show="progressbar"
+              slot="progress"
+              color="red darken-2"
+              indeterminate
+            ></v-progress-linear>
+          </v-data-table>
+        </v-card-text>
+        <v-divider class="my-0"></v-divider>
+        <!-- Dialog Form Buttons -->
+        <v-card-actions class="px-0 pb-0">
+          <v-spacer></v-spacer>
+          <v-btn
+            color="error"
+            :small="$vuetify.breakpoint.smAndDown"
+            depressed
+            dark
+            @click="closeViewDialog"
+            text
+          >
+            Close
+          </v-btn>
+          <v-btn
+            @click="getReceipt(table2[0]['reference_no'])"
+            color="#00794b"
+            :small="$vuetify.breakpoint.smAndDown"
+            depressed
+            dark
+            text
+          >
+            Print
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <iframe id="print6" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
+
 <style>
 iframe:focus {
   outline: none;
 }
-
 iframe[seamless] {
   display: block;
 }
+
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
+.pbutton .v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
+}
+.pbutton .v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.pbutton .v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+  height: 30px;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
 </style>
+
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -436,6 +566,7 @@ export default {
     prodcatlist: [],
     table: [],
     dialog1: false,
+    filterDialog: false,
     pdfview: "",
     table2: [],
     branchlist: [],
@@ -443,6 +574,7 @@ export default {
     viewdialog: false,
     date1: false,
     date2: false,
+    overlay: false,
     dateFromSP: null,
     dateUntilSP: null,
     page: 1,
@@ -484,7 +616,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -497,13 +629,13 @@ export default {
     headers2: [
       {
         text: "PRODUCT(S)",
-        value: "product_full",
+        value: "product_name.product_name",
         filterable: false,
         class: "black--text",
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.price",
+        value: "price",
         align: "right",
         filterable: false,
         class: "black--text",
@@ -630,6 +762,7 @@ export default {
           message: "Error! Please complete the fields first.",
         };
       } else {
+        this.overlay = true;
         switch (type) {
           case "pdf":
             await axios({
@@ -643,13 +776,79 @@ export default {
                 type: type,
               },
             }).then((response) => {
-              // console.log(response.data);
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Sales Report.pdf";
-              link.click();
+              if (response.data.size > 0) {
+                // console.log(response.data);
+                // return;
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Sales Report.pdf";
+                link.click();
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully exported.",
+                };
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
+            break;
+          case "excel":
+            await axios({
+              url: "/api/reports/sales/get",
+              method: "GET",
+              responseType: "blob",
+              params: {
+                branch: this.branch,
+                from: this.dateFromSP,
+                to: this.dateUntilSP,
+                type: "pdf",
+              },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/sales/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      branch: this.branch,
+                      from: this.dateFromSP,
+                      to: this.dateUntilSP,
+                      type: type,
+                    },
+                  })
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Sales Report.xlsx";
+                    link.click();
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully exported.",
+                    };
+                  });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
             });
             break;
           case "print":
@@ -664,49 +863,36 @@ export default {
                 type: "pdf",
               },
             }).then((response) => {
-              // console.log(response.data);
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print6").contentWindow.print();
-              }, 3000);
-            });
-            break;
-
-          case "excel":
-            await axios
-              .get("/api/reports/sales/get", {
-                method: "GET",
-                responseType: "arraybuffer",
-                params: {
-                  branch: this.branch,
-                  from: this.dateFromSP,
-                  to: this.dateUntilSP,
-                  type: type,
-                },
-              })
-              .then((response) => {
-                // console.log(respone.data);
+              if (response.data.size > 0) {
+                // console.log(response.data);
                 // return;
                 let blob = new Blob([response.data], {
-                  type: "application/excel",
+                  type: "application/pdf",
                 });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Sales Report.xlsx";
-                link.click();
-              });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print6").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
+                };
+              }
+            });
             break;
           default:
             break;
         }
+        this.overlay = false;
       }
     },
 

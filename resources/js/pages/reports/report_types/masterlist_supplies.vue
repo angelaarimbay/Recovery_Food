@@ -1,12 +1,19 @@
 <template>
   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
     <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+      <!-- Progress Circular -->
+      <v-overlay :value="overlay">
+        <v-progress-circular size="55" color="red darken-2" indeterminate>
+        </v-progress-circular>
+      </v-overlay>
       <!-- Snackbar -->
       <v-snackbar
         :vertical="$vuetify.breakpoint.xsOnly"
         min-width="auto"
         v-model="snackbar.active"
         timeout="2500"
+        class="text-center pb-0"
+        :left="$vuetify.breakpoint.smAndUp"
       >
         <span
           ><v-icon :color="snackbar.iconColor">{{
@@ -70,18 +77,24 @@
           <span>Print</span>
         </v-tooltip></v-card-actions
       >
+
       <!-- Category Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="6" xl="2" lg="3" md="4" sm="6" class="my-auto">
-          <v-card-actions class="pb-0 pt-4">
+        <v-col cols="4" class="px-1" style="max-width: 150px">
+          <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
+              hide-details
               :items="suppcatlist"
               item-text="supply_cat_name"
               item-value="id"
               v-model="category"
-              class="my-0"
               dense
-              label="Category"
+              placeholder="Category"
+              background-color="grey darken-3"
+              dark
+              flat
+              solo
+              style="font-size: 12px"
             >
             </v-select>
           </v-card-actions>
@@ -91,6 +104,18 @@
     <iframe id="print0" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
+
+<style>
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
+</style>
 
 <script>
 import axios from "axios"; // Library for sending api request
@@ -103,6 +128,7 @@ export default {
       active: false,
       message: "",
     },
+    overlay: false,
   }),
 
   created() {
@@ -119,44 +145,82 @@ export default {
           message: "Error! Please select a category first.",
         };
       } else {
+        this.overlay = true;
         switch (type) {
           case "pdf":
             await axios({
               url: "/api/reports/masterlistsupplies/get",
               method: "GET",
-               responseType: "blob",
+              responseType: "blob",
               params: { category: this.category, type: type },
-            }).then((response) => {  
-              // console.log(response.data)
-              // return;
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              let link = document.createElement("a");
-              link.href = window.URL.createObjectURL(blob);
-              link.download = "Masterlist Supplies Report.pdf";
-              link.click();
-            });
-            break;
-          case "excel":
-            await axios
-              .get("/api/reports/masterlistsupplies/get", {
-                method: "GET",
-                 responseType: "arraybuffer",
-                params: {
-                  category: this.category,
-                  type: type,
-                },
-              })
-              .then((response) => {
-              // console.log(response.data)
-              // return;
+            }).then((response) => {
+              if (response.data.size > 0) {
+                // console.log(response.data)
+                // return;
                 let blob = new Blob([response.data], {
-                  type: "application/excel",
+                  type: "application/pdf",
                 });
                 let link = document.createElement("a");
                 link.href = window.URL.createObjectURL(blob);
-                link.download = "Masterlist Supplies Report.xlsx";
+                link.download = "Masterlist Supplies Report.pdf";
                 link.click();
-              });
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully exported.",
+                };
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
+            break;
+          case "excel":
+            await axios({
+              url: "/api/reports/masterlistsupplies/get",
+              method: "GET",
+              responseType: "blob",
+              params: { category: this.category, type: "pdf" },
+            }).then((response) => {
+              if (response.data.size > 0) {
+                axios
+                  .get("/api/reports/masterlistsupplies/get", {
+                    method: "GET",
+                    responseType: "arraybuffer",
+                    params: {
+                      category: this.category,
+                      type: type,
+                    },
+                  })
+                  .then((res) => {
+                    let blob = new Blob([res.data], {
+                      type: "application/excel",
+                    });
+                    let link = document.createElement("a");
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "Masterlist Supplies Report.xlsx";
+                    link.click();
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully exported.",
+                    };
+                  });
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to export.",
+                };
+              }
+            });
             break;
           case "print":
             await axios({
@@ -164,32 +228,46 @@ export default {
               method: "GET",
               responseType: "blob",
               params: { category: this.category, type: "pdf" },
-            }).then((response) => { 
-              let blob = new Blob([response.data], { type: "application/pdf" });
-              this.print = window.URL.createObjectURL(blob);
-              this.snackbar = {
-                active: true,
-                iconText: "information",
-                iconColor: "primary",
-                message: "Printing... Please wait.",
-              };
-              setTimeout(function () {
-                document.getElementById("print0").contentWindow.print();
-              }, 3000);
+            }).then((response) => {
+              if (response.data.size > 0) {
+                let blob = new Blob([response.data], {
+                  type: "application/pdf",
+                });
+                this.print = window.URL.createObjectURL(blob);
+                this.snackbar = {
+                  active: true,
+                  iconText: "information",
+                  iconColor: "primary",
+                  message: "Printing... Please wait.",
+                };
+                setTimeout(function () {
+                  document.getElementById("print0").contentWindow.print();
+                }, 3000);
+              } else {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert-box",
+                  iconColor: "warning",
+                  message: "Nothing to print.",
+                };
+              }
             });
             break;
           default:
             break;
         }
+        this.overlay = false;
       }
     },
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
-        this.suppcatlist.push({'supply_cat_name':'All','id':'All'});
-         for (var key in supp_cat.data) {
-           this.suppcatlist.push({'supply_cat_name':supp_cat.data[key]['supply_cat_name'],'id':supp_cat.data[key]['id'] });
-         }
-        
+        this.suppcatlist.push({ supply_cat_name: "All", id: "All" });
+        for (var key in supp_cat.data) {
+          this.suppcatlist.push({
+            supply_cat_name: supp_cat.data[key]["supply_cat_name"],
+            id: supp_cat.data[key]["id"],
+          });
+        }
       });
     },
   },

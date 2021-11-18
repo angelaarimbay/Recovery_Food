@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -30,6 +32,8 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar2.iconColor">{{
@@ -70,66 +74,129 @@
             class="d-flex align-center justify-center"
           >
             <span
-              class="
-                text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5
-                mb-0 mb-0
-              "
+              class="text-h6 text-xl-h4 text-lg-h4 text-md-h5 text-sm-h5 mb-0"
               >Products List</span
             >
           </v-card>
 
-          <v-row no-gutters class="mt-2">
-            <!-- Items Per Page -->
-            <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-              <v-card-actions>
-                <v-select
-                  style="max-width: 82px"
-                  dense
-                  v-model="itemsPerPage"
-                  label="Items"
-                  @change="itemperpage"
-                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
-                >
-                </v-select>
-              </v-card-actions>
-            </v-col>
-
+          <v-row no-gutters class="mt-2" style="height: 60px" align="center">
             <v-spacer></v-spacer>
-
-            <!-- Search Field -->
-            <v-col cols="8" xl="5" lg="5" md="7" sm="8" class="my-auto">
-              <v-card-actions>
-                <v-text-field
-                  v-model="search"
-                  label="Product Name"
-                  single-line
-                  dense
-                  clearable
-                  autocomplete="off"
-                ></v-text-field>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      :small="$vuetify.breakpoint.smAndDown"
-                      :large="$vuetify.breakpoint.mdAndUp"
-                      color="red darken-2"
-                      icon
-                      v-on="data.on"
-                      @click="get"
-                      class="mb-3"
-                    >
-                      <v-icon>mdi-magnify</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Search</span>
-                </v-tooltip>
-              </v-card-actions>
-            </v-col>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  class="mr-2"
+                  color="success"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="get"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-refresh</v-icon></v-btn
+                >
+              </template>
+              <span>Refresh</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  color="grey darken-4"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="filterDialog = true"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-filter-variant</v-icon></v-btn
+                >
+              </template>
+              <span>Filter</span>
+            </v-tooltip>
           </v-row>
+
+          <!-- Filter Dialog -->
+          <v-dialog v-model="filterDialog" max-width="400px">
+            <v-card dark tile class="pa-2">
+              <v-toolbar dense flat class="transparent">
+                Search Filter
+                <v-spacer></v-spacer>
+                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              </v-toolbar>
+              <v-divider class="my-0"></v-divider>
+              <v-row no-gutters align="center" class="pa-2">
+                <!-- Items Per Page -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Items / Page</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      dense
+                      v-model="itemsPerPage"
+                      @change="itemperpage"
+                      :items="[
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                      ]"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Search Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Search</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      v-model="search"
+                      placeholder="Product Name"
+                      single-line
+                      dense
+                      clearable
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          @click="get"
+                          class="ml-1"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-dialog>
 
           <!-- Products List Table -->
           <v-data-table
-            class="prod_table"
+            id="table2"
+            class="prod_table table-striped border mt-4"
             :headers="headers1"
             :items="table1.data"
             :loading="progressbar1"
@@ -147,7 +214,7 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.product_full`]="{ item }">
+            <template v-slot:[`item.product_name.product_name`]="{ item }">
               {{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
             >
@@ -175,7 +242,14 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="text-center pt-2">
+          <div
+            class="
+              pbutton
+              text-center
+              pt-7
+              pb-xl-4 pb-lg-4 pb-md-4 pb-sm-3 pb-3
+            "
+          >
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -193,88 +267,67 @@
           >
             Preview Receipt
             <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialog1 = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialog1 = false"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-          <iframe :src="pdfview" width="100%" height="500"></iframe>
+          <iframe :src="pdfview" width="500" height="500"></iframe>
         </v-dialog>
 
-        <v-dialog v-model="dialog2" max-width="1050px">
-          <v-toolbar
-            dense
-            dark
-            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-          >
-            Current Month Sales History
-            <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="dialog2 = false"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
-          </v-toolbar>
-          <v-card tile> <salesreport v-if="renderComponent" /></v-card>
+        <!-- Dialog Form -->
+        <v-dialog v-model="dialog2" max-width="900px">
+          <v-card tile class="pt-3 pl-3 pr-3 pb-0 mb-0">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Current Month Sales History
+              <v-spacer></v-spacer>
+              <v-icon text @click="dialog2 = false">mdi-close </v-icon>
+            </v-toolbar>
+
+            <salesreport v-if="renderComponent" />
+          </v-card>
           <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
         </v-dialog>
       </v-col>
 
       <!-- Quantity Dialog Form -->
-      <v-form ref="form">
+      <v-form ref="form" lazy-validation>
         <v-dialog v-model="dialog" max-width="450px">
-          <v-toolbar
-            dense
-            dark
-            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-          >
-            Enter Quantity
-            <v-spacer></v-spacer>
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  v-on="data.on"
-                  text
-                  @click="cancel"
-                  >mdi-close
-                </v-icon>
-              </template>
-              <span>Close</span>
-            </v-tooltip>
-          </v-toolbar>
-          <v-card tile style="background-color: #f5f5f5">
-            <v-card-text class="py-2">
-              <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Enter Quantity
+              <v-spacer></v-spacer>
+              <v-icon text @click="cancel">mdi-close </v-icon>
+            </v-toolbar>
+            <v-card-text class="px-0 py-0">
+              <v-container class="px-2">
                 <v-row>
-                  <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
                     <span
-                      ><strong>Item Selected:</strong>
-                      {{ selectedrow.product_name.product_name }}
+                      >Item Selected:
+                      <strong
+                        >{{ selectedrow.product_name.product_name }}
+                        {{ selectedrow.product_name.description }}
+                        {{ selectedrow.description }}</strong
+                      >
                     </span>
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                <v-row class="mt-0">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
                     <v-text-field
+                      class="centered-input"
                       :rules="formRulesQuantity"
                       v-model="quantity"
-                      outlined
                       dense
                       autocomplete="off"
                       @focus="clearQ"
@@ -282,18 +335,24 @@
                       @keydown="quantityKeydown($event)"
                       counter
                       maxlength="3"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 22px"
                     >
                       <template slot="label">
-                        <div style="font-size: 14px">Quantity *</div>
+                        <div style="font-size: 18px">
+                          Quantity <span style="color: red">*</span>
+                        </div>
                       </template>
                     </v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
             </v-card-text>
-
+            <v-divider class="my-0"></v-divider>
             <!-- Dialog Form Buttons -->
-            <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+            <v-card-actions class="px-0 pb-0">
               <v-spacer></v-spacer>
               <v-btn
                 color="error"
@@ -301,8 +360,8 @@
                 :disabled="button"
                 dark
                 @click="cancel"
-                style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
+                text
               >
                 Cancel
               </v-btn>
@@ -312,9 +371,9 @@
                 :disabled="button"
                 dark
                 v-if="dialog_add"
-                style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
                 @click="validateQty('add')"
+                text
               >
                 Save
               </v-btn>
@@ -324,9 +383,9 @@
                 v-else
                 :disabled="button"
                 dark
-                style="text-transform: none"
                 :small="$vuetify.breakpoint.smAndDown"
                 @click="validateQty('delete')"
+                text
               >
                 Remove
               </v-btn>
@@ -351,8 +410,7 @@
             >
           </v-card>
 
-          <v-row no-gutters class="mt-2">
-            <!-- Items Per Page -->
+          <v-row no-gutters class="mt-2" style="height: 60px" align="center">
             <v-col cols="5" xl="3" lg="4" md="3" class="my-auto">
               <v-card-actions>
                 <span
@@ -390,19 +448,29 @@
             <v-spacer></v-spacer>
 
             <!-- Mode Field -->
-            <v-col cols="12" xl="4" lg="4" md="5" sm="4" class="my-auto">
+            <v-col
+              cols="12"
+              xl="4"
+              lg="4"
+              md="5"
+              sm="4"
+              class="my-auto text-center"
+              style="max-width: 150px"
+            >
               <v-card-actions>
                 <v-select
-                  outlined
                   dense
                   v-model="mode"
                   :items="['Walk-In', 'Take-Out']"
                   hide-details
+                  placeholder="Mode"
                   class="mb-0 mb-xl-4 mb-lg-4 mb-md-0 mb-sm-2 ml-auto"
+                  background-color="grey darken-3"
+                  dark
+                  flat
+                  solo
+                  style="font-size: 16px"
                 >
-                  <template slot="label">
-                    <div style="font-size: 14px">Mode</div>
-                  </template>
                 </v-select>
               </v-card-actions>
             </v-col>
@@ -410,7 +478,8 @@
 
           <!-- Order List Table -->
           <v-data-table
-            class="ord_table"
+            id="table2"
+            class="ord_table table-striped border mt-4"
             :headers="headers2"
             :items="table2"
             height="230"
@@ -453,7 +522,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <!-- <div class="text-center pt-2">
+          <!-- <div class="text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -513,6 +582,7 @@
             <v-row align="center" justify="center">
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  class="centered-input"
                   :rules="formRulesPrice"
                   ref="payment"
                   v-model="payment"
@@ -526,17 +596,19 @@
                   @blur="resetP"
                   persistent-placeholder
                   autocomplete="off"
-                  :disabled="!disabled"
+                  :disabled="disabled"
                   @keydown="paymentKeydown($event)"
+                  style="font-size: 22px"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Payment</div>
+                    <div style="font-size: 18px">Payment</div>
                   </template>
                 </v-text-field>
               </v-col>
 
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
                 <v-text-field
+                  class="centered-input"
                   :rules="formRulesDiscount"
                   v-model="discount"
                   @input="getChange($event)"
@@ -550,24 +622,27 @@
                   autocomplete="off"
                   :disabled="!payment"
                   @keydown="discountKeydown($event)"
+                  style="font-size: 22px"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Discount(%)</div>
+                    <div style="font-size: 18px">Discount(%)</div>
                   </template>
                 </v-text-field>
               </v-col>
 
               <v-col cols="12" xl="4" lg="4" md="12" sm="12" class="pb-0">
                 <v-text-field
+                  class="centered-input"
                   v-model="change"
                   outlined
                   dense
                   disabled
                   hide-details
                   filled
+                  style="font-size: 22px"
                 >
                   <template slot="label">
-                    <div style="font-size: 14px">Change</div>
+                    <div style="font-size: 18px">Change</div>
                   </template>
                 </v-text-field>
               </v-col>
@@ -599,9 +674,9 @@
                           v-on="data.on"
                           block
                           @click="getReceipt"
-                          color="blue-grey lighten-2"
+                          color="blue-grey darken-1"
                           style="text-transform: none; color: white"
-                          :disabled="!disabled1"
+                          :disabled="disabled1"
                         >
                           <v-icon large>mdi-printer</v-icon>
                         </v-btn>
@@ -621,7 +696,7 @@
                             color: white;
                             font-size: 17px;
                           "
-                          :disabled="!disabled"
+                          :disabled="disabled"
                           @click="validate('void')"
                         >
                           <v-icon large>mdi-do-not-disturb</v-icon>
@@ -638,7 +713,7 @@
                           block
                           color="blue darken-2"
                           style="text-transform: none; color: white"
-                          :disabled="!disabled"
+                          :disabled="disabled"
                           @click="validate('new')"
                         >
                           <v-icon large>mdi-new-box</v-icon>
@@ -664,7 +739,7 @@
                       block
                       color="green darken-3"
                       style="text-transform: none; color: white"
-                      :disabled="!disabled"
+                      :disabled="disabled"
                       @click="validate('save')"
                     >
                       <v-icon large>mdi-cart</v-icon>
@@ -682,15 +757,12 @@
 </template>
 
 <style>
-.v-pagination button {
-  background-color: #212121 !important;
-  color: #ffffff !important;
+.centered-input input {
+  text-align: center;
 }
-.v-pagination i.v-icon.v-icon {
-  color: #ffffff !important;
-}
-.v-pagination__navigation:disabled {
-  background-color: #000000 !important;
+
+#table2 .v-data-table-header th {
+  white-space: nowrap;
 }
 @media only screen and (min-width: 768px) {
   .v-data-table-header th {
@@ -710,6 +782,37 @@
     font-size: 17px !important;
   }
 }
+
+.pbutton .v-pagination button {
+  background-color: #212121 !important;
+  color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
+}
+.pbutton .v-pagination i.v-icon.v-icon {
+  color: #ffffff !important;
+}
+.pbutton .v-pagination__navigation:disabled {
+  background-color: #000000 !important;
+  height: 30px;
+}
+
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
 </style>
 
 <script>
@@ -728,14 +831,19 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
-    disabled() {
-      if (this.table2.length > 0) {
-        return true;
-      } else {
-        this.payment = 0;
-        this.discount = 0;
-        this.change = 0;
-        return false;
+    disabled2() {
+      for (var key in this.temp_data) {
+        console.log(this.temp_data.data);
+        console.log(this.table2);
+
+        for (var key1 in this.temp_data[key]) {
+          if (this.temp_data[key][key1] != this.table2[key][key1]) {
+            alert("d magkatulad");
+            return true;
+          } else {
+            alert("magkatulad");
+          }
+        }
       }
     },
   },
@@ -756,11 +864,13 @@ export default {
     button: false,
     mode: "",
     quantity: 1,
-    disabled1: false,
+    disabled: true,
+    disabled1: true,
     dialog: false,
+    filterDialog: false,
     selectedrow: { product_name: "" },
-    totalamount: 0,
-    discountedamount: 0,
+    totalamount: numeral(0).format("0,0.00"),
+    discountedamount: numeral(0).format("0,0.00"),
     payment: 0,
     discount: 0,
     change: 0,
@@ -769,6 +879,7 @@ export default {
     salescount: 0,
     table1: [],
     table2: [],
+    temp_data: [],
     prodcatlist: [],
     reference_no: "",
     prodsubcatlist: [],
@@ -806,7 +917,7 @@ export default {
 
       {
         text: "PRODUCT NAME",
-        value: "product_full",
+        value: "product_name.product_name",
         class: "black--text",
         class: "black--text",
       },
@@ -939,6 +1050,7 @@ export default {
           },
         })
         .then((result) => {
+          this.temp_data = JSON.parse(JSON.stringify(result.data));
           this.table1 = result.data;
           this.progressbar1 = false;
         })
@@ -991,7 +1103,6 @@ export default {
             message: "Do you want to void the order?",
             type: "void",
           };
-          this.disabled1 = false;
           break;
         case "new":
           this.snackbar2 = {
@@ -1001,7 +1112,6 @@ export default {
             message: "Do you want to make new order?",
             type: "new",
           };
-          this.disabled1 = false;
           break;
         default:
           break;
@@ -1015,10 +1125,15 @@ export default {
           .post("/api/pos/prodlist/save", this.table2)
           .then((result) => {
             this.reference_no = result.data.reference_no;
-
             this.get();
             this.getSalesCount();
-            this.disabled1 = true;
+            this.disabled1 = false; //for printer
+            this.disabled = true;
+            (this.table2 = []), (this.payment = 0);
+            this.discount = 0;
+            this.change = 0;
+            this.totalamount = numeral(0).format("0,0.00");
+            this.discountedamount = numeral(0).format("0,0.00");
             this.snackbar = {
               active: true,
               iconText: "check",
@@ -1038,8 +1153,7 @@ export default {
 
     async getSalesCount() {
       await axios.get("/api/sales_report/sales_count").then((result) => {
-     console.log(result.data)
-     this.salescount = result.data;
+        this.salescount = result.data;
       });
     },
 
@@ -1059,61 +1173,95 @@ export default {
     },
 
     validateQty(type) {
-      if (type == "add") {
-        var quantity = 0;
-        if (this.table2.length > 0) {
-          var indexid = -1;
-          for (var key in this.table2) {
-            //if table have value
-            if (
-              parseInt(this.selectedrow.product_name.id) ===
-              parseInt(this.table2[key].product)
-            ) {
-              indexid = this.table2.indexOf(this.table2[key]);
+      if (this.$refs.form.validate()) {
+        if (type == "add") {
+          var quantity = 0;
+          if (this.table2.length > 0) {
+            var indexid = -1;
+            for (var key in this.table2) {
+              //if table have value
+              if (
+                parseInt(this.selectedrow.product_name.id) ===
+                parseInt(this.table2[key].product)
+              ) {
+                indexid = this.table2.indexOf(this.table2[key]);
+              }
             }
-          }
-
-          if (indexid > -1) {
-            quantity =
-              parseInt(this.table2[indexid].quantity) + parseInt(this.quantity); //add current and input
-            if (parseInt(this.selectedrow.quantity_diff) < quantity) {
-              //check if greather than stocks
-              this.snackbar = {
-                active: true,
-                iconText: "alert",
-                iconColor: "error",
-                message: "Error! Please input correct quantity.",
-              };
-            } else {
-              this.table2[indexid].quantity =
+            if (indexid > -1) {
+              quantity =
                 parseInt(this.table2[indexid].quantity) +
-                parseInt(this.quantity);
-              this.table2[indexid].sub_total = numeral(
-                parseFloat(this.table2[indexid].quantity) *
-                  parseFloat(this.selectedrow.product_name.price)
-              ).format("0,0.00");
-              this.table2[indexid].temp_sub_total =
-                parseFloat(this.table2[indexid].quantity) *
-                parseFloat(this.selectedrow.product_name.price);
+                parseInt(this.quantity); //add current and input
+              if (parseInt(this.selectedrow.quantity_diff) < quantity) {
+                //check if greather than stocks
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "error",
+                  message: "Insufficient stocks.",
+                };
+              } else {
+                this.table2[indexid].quantity =
+                  parseInt(this.table2[indexid].quantity) +
+                  parseInt(this.quantity);
+                this.table2[indexid].sub_total = numeral(
+                  parseFloat(this.table2[indexid].quantity) *
+                    parseFloat(this.selectedrow.product_name.price)
+                ).format("0,0.00");
+                this.table2[indexid].temp_sub_total =
+                  parseFloat(this.table2[indexid].quantity) *
+                  parseFloat(this.selectedrow.product_name.price);
 
-              this.snackbar = {
-                active: true,
-                iconText: "check",
-                iconColor: "success",
-                message: "Successfully added.",
-              };
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully added.",
+                };
+              }
+            } else {
+              if (
+                parseInt(this.selectedrow.quantity_diff) <
+                parseInt(this.quantity)
+              ) {
+                this.snackbar = {
+                  active: true,
+                  iconText: "alert",
+                  iconColor: "error",
+                  message: "Insufficient stocks.",
+                };
+              } else {
+                this.table2.push({
+                  id: this.table2.length + 1,
+                  category: this.selectedrow.category.id,
+                  sub_category: this.selectedrow.sub_category.id,
+                  product_name: {
+                    product_name: this.selectedrow.product_name.product_name,
+                  },
+                  description: this.selectedrow.product_name.description,
+                  product: this.selectedrow.product_name.id,
+                  price: numeral(this.selectedrow.product_name.price).format(
+                    "0,0.00"
+                  ),
+                  quantity: this.quantity,
+                  sub_total: numeral(
+                    this.quantity * this.selectedrow.product_name.price
+                  ).format("0,0.00"),
+                  temp_sub_total:
+                    parseFloat(this.quantity) *
+                    parseFloat(this.selectedrow.product_name.price),
+                  mode: this.mode,
+                });
+
+                this.snackbar = {
+                  active: true,
+                  iconText: "check",
+                  iconColor: "success",
+                  message: "Successfully added.",
+                };
+              }
             }
           } else {
-            if (
-              parseInt(this.selectedrow.quantity_diff) < parseInt(this.quantity)
-            ) {
-              this.snackbar = {
-                active: true,
-                iconText: "alert",
-                iconColor: "error",
-                message: "Error! Please input correct quantity.",
-              };
-            } else {
+            if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
               this.table2.push({
                 id: this.table2.length + 1,
                 category: this.selectedrow.category.id,
@@ -1142,76 +1290,56 @@ export default {
                 iconColor: "success",
                 message: "Successfully added.",
               };
+              this.disabled = false;
+              this.disabled1 = true;
+            } else {
+              this.snackbar = {
+                active: true,
+                iconText: "alert",
+                iconColor: "error",
+                message: "Insufficient stocks.",
+              };
             }
           }
         } else {
-          if (parseInt(this.selectedrow.quantity_diff) >= this.quantity) {
-            this.table2.push({
-              id: this.table2.length + 1,
-              category: this.selectedrow.category.id,
-              sub_category: this.selectedrow.sub_category.id,
-              product_name: {
-                product_name: this.selectedrow.product_name.product_name,
-              },
-              description: this.selectedrow.product_name.description,
-              product: this.selectedrow.product_name.id,
-              price: numeral(this.selectedrow.product_name.price).format(
-                "0,0.00"
-              ),
-              quantity: this.quantity,
-              sub_total: numeral(
-                this.quantity * this.selectedrow.product_name.price
-              ).format("0,0.00"),
-              temp_sub_total:
-                parseFloat(this.quantity) *
-                parseFloat(this.selectedrow.product_name.price),
-              mode: this.mode,
-            });
+          this.table2[this.deleteindex].quantity =
+            this.table2[this.deleteindex].quantity - parseInt(this.quantity);
+          this.table2[this.deleteindex].sub_total = numeral(
+            parseFloat(this.table2[this.deleteindex].quantity) *
+              parseFloat(this.selectedrow.price)
+          ).format("0,0.00");
+          this.table2[this.deleteindex].temp_sub_total =
+            parseFloat(this.table2[this.deleteindex].quantity) *
+            parseFloat(this.selectedrow.price);
 
-            this.snackbar = {
-              active: true,
-              iconText: "check",
-              iconColor: "success",
-              message: "Successfully added.",
-            };
+          if (this.table2[this.deleteindex].quantity <= 0) {
+            this.table2.splice(this.deleteindex, 1);
+
+            for (var key in this.table2) {
+              this.table2[key].id = this.table2.length;
+            }
+          }
+
+          if (this.table2.length > 0) {
+            this.disabled = false;
+            this.disabled1 = true;
           } else {
-            this.snackbar = {
-              active: true,
-              iconText: "alert",
-              iconColor: "error",
-              message: "Error! Please input correct quantity.",
-            };
+            this.disabled = true;
           }
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully removed.",
+          };
         }
-      } else {
-        this.table2[this.deleteindex].quantity =
-          this.table2[this.deleteindex].quantity - parseInt(this.quantity);
-        this.table2[this.deleteindex].sub_total = numeral(
-          parseFloat(this.table2[this.deleteindex].quantity) *
-            parseFloat(this.selectedrow.price)
-        ).format("0,0.00");
-        this.table2[this.deleteindex].temp_sub_total =
-          parseFloat(this.table2[this.deleteindex].quantity) *
-          parseFloat(this.selectedrow.price);
-
-        if (this.table2[this.deleteindex].quantity <= 0) {
-          this.table2.splice(this.deleteindex, 1);
-
-          for (var key in this.table2) {
-            this.table2[key].id = this.table2.length;
-          }
-        }
-
-        this.snackbar = {
-          active: true,
-          iconText: "check",
-          iconColor: "success",
-          message: "Successfully removed.",
-        };
+        this.payment = 0;
+        this.discount = 0;
+        this.change = 0;
+        this.getTotal();
+        this.getChange();
+        this.cancel();
       }
-      this.getTotal();
-      this.getChange();
-      this.cancel();
     },
 
     validateDelete(item) {
@@ -1422,6 +1550,10 @@ export default {
     },
 
     voidOrder() {
+      this.payment = 0;
+      this.discount = 0;
+      this.change = 0;
+      this.disabled = true;
       this.table2 = [];
       this.getTotal();
       this.mode = null;
@@ -1434,6 +1566,10 @@ export default {
     },
 
     newOrder() {
+      this.payment = 0;
+      this.discount = 0;
+      this.change = 0;
+      this.disabled = true;
       this.table2 = [];
       this.reference_no = "";
       this.getTotal();

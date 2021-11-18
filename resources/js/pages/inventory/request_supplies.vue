@@ -5,6 +5,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -29,6 +31,8 @@
       min-width="auto"
       v-model="snackbar2.active"
       timeout="10000"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar2.iconColor">{{
@@ -95,21 +99,42 @@
       </v-layout>
     </v-container>
     <!-- Main Card -->
-    <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="pl-0">
-            <v-btn
-              color="primary"
-              style="text-transform: none"
-              depressed
-              dark
-              :small="$vuetify.breakpoint.smAndDown"
-              @click="addRequest"
-              >Add New Request</v-btn
-            >
+          <v-card-actions class="px-0">
+            <v-row no-gutters>
+              <v-btn
+                color="primary"
+                style="text-transform: none"
+                depressed
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                @click="addRequest"
+                >Add New Request</v-btn
+              >
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="success"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="get"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+            </v-row>
           </v-card-actions>
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
@@ -118,6 +143,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -128,13 +154,13 @@
               rounded
             ></v-progress-linear>
 
-            <template v-slot:[`item.supply_name`]="{ item }">
-              {{ item.supply_name }} {{ item.description }}</template
-            >
+            <template v-slot:[`item.request_date`]="{ item }">
+              {{ getFormatDate(item.request_date, "YYYY-MM-DD hh:mm A") }}
+            </template>
 
             <template v-slot:[`item.status`]="{ item }">
               <div v-if="item.status == 1" class="text-warning">Pending</div>
-              <div v-else-if="item.status == 2" class="text-success">
+              <div v-else-if="item.status == 2" class="text-info">
                 Confirmed / For Delivery
               </div>
               <div v-else-if="item.status == 3" class="text-success">
@@ -181,7 +207,7 @@
                     <v-btn
                       icon
                       color="red darken-2"
-                      @click="cancelRequest(item)"
+                      @click="validate('cancelreq', item)"
                       small
                       :x-small="$vuetify.breakpoint.smAndDown"
                       v-on="data.on"
@@ -194,7 +220,9 @@
               </div>
             </template>
           </v-data-table>
-          <div class="text-center pt-2">
+
+          <!-- Paginate -->
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -218,23 +246,17 @@
         dark
         class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
       >
-        New Request
+        Request
         <v-spacer></v-spacer>
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-              v-on="data.on"
-              text
-              @click="closeRequest"
-              >mdi-close</v-icon
-            >
-          </template>
-          <span>Close</span>
-        </v-tooltip>
+        <v-icon
+          class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+          text
+          @click="closeRequest"
+          >mdi-close</v-icon
+        >
       </v-toolbar>
 
-      <v-card tile height="auto" style="background-color: #f5f5f5">
+      <v-card tile height="auto" style="background-color: #f1ffff">
         <v-card-text class="py-2 px-2">
           <v-row no-gutters>
             <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
@@ -260,48 +282,78 @@
                   >
                 </v-card>
 
-                <v-col
-                  cols="12"
-                  xl="6"
-                  lg="6"
-                  md="7"
-                  sm="7"
-                  class="ml-auto my-auto pa-2"
-                >
-                  <v-card-actions class="py-0 px-0">
-                    <v-text-field
-                      v-model="search1"
-                      label="Supply Name"
-                      single-line
-                      dense
-                      clearable
-                      autocomplete="off"
-                    ></v-text-field>
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          :small="$vuetify.breakpoint.smAndDown"
-                          :large="$vuetify.breakpoint.mdAndUp"
-                          color="red darken-2"
-                          icon
-                          v-on="data.on"
-                          class="mb-3"
-                          @click="searchSupp"
-                        >
-                          <v-icon>mdi-magnify</v-icon></v-btn
-                        >
-                      </template>
-                      <span>Search</span>
-                    </v-tooltip>
-                  </v-card-actions>
-                </v-col>
+                <v-row no-gutters align="center">
+                  <v-col
+                    cols="10"
+                    xl="6"
+                    lg="6"
+                    md="7"
+                    sm="7"
+                    class="my-auto pa-2"
+                  >
+                    <v-card-actions class="py-0 px-0">
+                      <v-text-field
+                        hide-details
+                        v-model="search"
+                        single-line
+                        dense
+                        clearable
+                        autocomplete="off"
+                        background-color="grey darken-3"
+                        dark
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 12px">Supply Name</div>
+                        </template>
+                      </v-text-field>
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            small
+                            :x-small="$vuetify.breakpoint.smAndDown"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            class="ml-1"
+                            @click="getList"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
+                    </v-card-actions>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        class="mr-2"
+                        color="success"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getList"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
+                </v-row>
 
                 <v-data-table
-                  :search="search"
+                  id="table1"
                   :loading="progressbar1"
                   :headers="headers1"
                   :items="table1"
                   ref="progress"
+                  class="table-striped border mt-4"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -370,7 +422,12 @@
                 >
                   <v-card-actions class="py-0 px-0">
                     <v-col class="px-0" cols="4" xl="4" lg="4" md="4" sm="4">
-                      <div>No. of Items: {{ table2.length }}</div>
+                      <div>
+                        <span style="color: #616161"
+                          >No. of Items:
+                          <strong>{{ table2.length }}</strong></span
+                        >
+                      </div>
                     </v-col>
                     <v-spacer></v-spacer>
                     <v-col
@@ -381,17 +438,23 @@
                       md="8"
                       sm="8"
                     >
-                      <div v-if="ref">Reference No: {{ ref }}</div>
+                      <div v-if="ref">
+                        <span style="color: #616161"
+                          >Reference No: <strong>{{ ref }}</strong></span
+                        >
+                      </div>
                     </v-col>
                   </v-card-actions>
                 </v-col>
 
                 <v-data-table
+                  id="table1"
                   :headers="headers2"
                   :items="table2"
                   :items-per-page="table2.length"
                   hide-default-footer
                   ref="progress"
+                  class="table-striped border"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -406,11 +469,11 @@
                     {{ item.supply_name }} {{ item.description }}</template
                   >
 
-                 <template v-slot:[`item.status`]="{ item }">
+                  <template v-slot:[`item.status`]="{ item }">
                     <div v-if="item.status == 1" class="text-warning">
                       Pending
                     </div>
-                    <div v-else-if="item.status == 2" class="text-success">
+                    <div v-else-if="item.status == 2" class="text-info">
                       Confirmed / For Delivery
                     </div>
                     <div v-else-if="item.status == 3" class="text-success">
@@ -459,7 +522,8 @@
                     :small="$vuetify.breakpoint.smAndDown"
                     class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                     @click="validate('cancel')"
-                    :disabled="!disabled"
+                    :disabled="disabled"
+                    :hidden="isHidden"
                     >Cancel</v-btn
                   >
                   <v-btn
@@ -467,8 +531,11 @@
                     style="text-transform: none"
                     :small="$vuetify.breakpoint.smAndDown"
                     class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                    @click="validate('send')"
-                    :disabled="!disabled"
+                    @click="
+                      validate('send');
+                      disabled2();
+                    "
+                    :disabled="disabled"
                   >
                     Send Request</v-btn
                   >
@@ -480,111 +547,154 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="dialog" max-width="450px">
-      <v-toolbar
-        dense
-        dark
-        class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-      >
-        Enter Quantity
-        <v-spacer></v-spacer>
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-              v-on="data.on"
-              text
-              @click="dialog = false"
-              >mdi-close
-            </v-icon>
-          </template>
-          <span>Close</span>
-        </v-tooltip>
-      </v-toolbar>
-      <v-card tile style="background-color: #f5f5f5">
-        <v-card-text class="py-2">
-          <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-            <v-row>
-              <v-col class="py-3" cols="12" xl="12" lg="12" sm="12" md="12">
-                <span
-                  ><strong>Item Selected:</strong> {{ selected.supply_name }}
-                  {{ selected.description }}
-                </span>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
-                <v-text-field
-                  :rules="formRulesQuantity"
-                  v-model="quantity"
-                  outlined
-                  dense
-                  autocomplete="off"
-                  @focus="clearQ"
-                  @blur="resetQ"
-                  @keydown="quantityKeydown($event)"
-                  counter
-                  maxlength="3"
+    <!-- Quantity Dialog Form -->
+    <v-form ref="form" lazy-validation>
+      <v-dialog v-model="dialog" max-width="450px">
+        <v-card tile class="pa-3">
+          <v-toolbar dark dense flat rounded class="red darken-3">
+            Enter Quantity
+            <v-spacer></v-spacer>
+            <v-icon text @click="cancel">mdi-close </v-icon>
+          </v-toolbar>
+          <v-card-text class="px-0 py-0">
+            <v-container class="px-2">
+              <v-row>
+                <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <span
+                    >Item Selected:
+                    <strong
+                      >{{ selected.supply_name }}
+                      {{ selected.description }}</strong
+                    >
+                  </span>
+                </v-col>
+              </v-row>
+              <v-row class="mt-0">
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
                 >
-                  <template slot="label">
-                    <div style="font-size: 14px">Quantity *</div>
-                  </template>
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-
-        <!-- Dialog Form Buttons -->
-        <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
-          <v-spacer></v-spacer>
-          <v-btn
-            color="error"
-            depressed
-            dark
-            @click="dialog = false"
-            style="text-transform: none"
-            :small="$vuetify.breakpoint.smAndDown"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            depressed
-            dark
-            style="text-transform: none"
-            :small="$vuetify.breakpoint.smAndDown"
-            @click="commitAdd(selected)"
-          >
-            {{ type }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+                  <v-text-field
+                    :rules="formRulesQuantity"
+                    v-model="quantity"
+                    dense
+                    autocomplete="off"
+                    @focus="clearQ"
+                    @blur="resetQ"
+                    @keydown="quantityKeydown($event)"
+                    counter
+                    maxlength="3"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Quantity <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-divider class="my-0"></v-divider>
+          <!-- Dialog Form Buttons -->
+          <v-card-actions class="px-0 pb-0">
+            <v-spacer></v-spacer>
+            <v-btn
+              color="error"
+              depressed
+              dark
+              @click="cancel"
+              :small="$vuetify.breakpoint.smAndDown"
+              text
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primary"
+              depressed
+              dark
+              :small="$vuetify.breakpoint.smAndDown"
+              @click="commitAdd(selected)"
+              text
+            >
+              {{ type }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-form>
   </div>
 </template>
+
+
 <style>
-.v-pagination button {
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
 }
-</style> 
+
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
+}
+</style>
+
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
   computed: {
-    disabled() {
-      if (this.table2.length > 0) {
-        return true;
-      } else {
-        return false;
+    disabled2() {
+      for (var key in this.temp_data) {
+        for (var key1 in this.temp_data[key]) {
+          console.log(this.temp_data[key][key1]);
+          console.log(this.table2[key][key1]);
+          if (
+            this.temp_data[key][key1] != this.table2[key][key1] ||
+            this.temp_data.length != this.table2.length
+          ) {
+            return true;
+          }
+        }
       }
     },
   },
@@ -615,7 +725,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         filterable: false,
@@ -636,7 +746,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         filterable: false,
@@ -670,7 +780,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         filterable: false,
@@ -682,6 +792,12 @@ export default {
       (v) => !!v || "This is required",
       (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
+
+    form: {
+      quantity: 1,
+    },
+    disabled: true,
+    temp_data: [],
     progressbar: false,
     progressbar1: false,
     snackbar: {
@@ -692,6 +808,7 @@ export default {
       active: false,
       message: "",
     },
+    isHidden: false,
     table: [],
     table1: [],
     table2: [],
@@ -705,11 +822,13 @@ export default {
     pageCount: 0,
     itemsPerPage: 5,
     search: "",
-    search1: "",
+    cancel_select: [],
   }),
+
   created() {
     this.get();
   },
+
   watch: {
     page(val) {
       this.page = val;
@@ -736,7 +855,7 @@ export default {
       }
     },
 
-    validate(type) {
+    validate(type, data = "") {
       switch (type) {
         case "cancel":
           this.snackbar2 = {
@@ -755,6 +874,17 @@ export default {
             message: "Do you wish to send this request?",
             type: "send",
           };
+          break;
+        case "cancelreq":
+          this.cancel_select = data;
+          this.snackbar2 = {
+            active: true,
+            iconText: "comment-question-outline",
+            iconColor: "warning",
+            message: "Do you want to cancel?",
+            type: "cancelreq",
+          };
+          break;
         default:
           break;
       }
@@ -768,24 +898,26 @@ export default {
         case "send":
           this.storeRequest();
           break;
+        case "cancelreq":
+          this.cancelRequest();
+
+          break;
         default:
           break;
       }
       this.snackbar2.active = false;
     },
 
-    searchSupp() {
-      this.progressbar1 = true;
-      this.search = this.search1;
-      this.progressbar1 = false;
-    },
-
     async getList() {
       this.progressbar1 = true;
-      await axios.get("/api/requestsupp/supplies/list").then((result) => {
-        this.table1 = result.data;
-        this.progressbar1 = false;
-      });
+      await axios
+        .get("/api/requestsupp/supplies/list", {
+          params: { search: this.search },
+        })
+        .then((result) => {
+          this.table1 = result.data;
+          this.progressbar1 = false;
+        });
     },
     async get() {
       this.progressbar = true;
@@ -805,44 +937,50 @@ export default {
     validateAdd(row, type) {
       this.selected = row;
       this.type = type;
-      this.dialog = true;
+      this.openDialog();
     },
     commitAdd(row) {
-      if (this.type == "Update") {
-        this.Edit(row);
-      } else if (this.type == "Delete") {
-        this.Delete(row);
-      } else {
-        var check_existing = -1;
-        //table
-        for (var i in this.table2) {
-          if (row.id == this.table2[i].id) {
-            check_existing = this.table2.indexOf(this.table2[i]);
+      if (this.$refs.form.validate()) {
+        if (this.type == "Update") {
+          this.Edit(row);
+        } else if (this.type == "Delete") {
+          this.Delete(row);
+        } else {
+          var check_existing = -1;
+          //table
+          for (var i in this.table2) {
+            if (row.id == this.table2[i].id) {
+              check_existing = this.table2.indexOf(this.table2[i]);
+            }
+          }
+
+          if (check_existing > -1) {
+            this.table2[check_existing].quantity =
+              parseInt(this.table2[check_existing].quantity) +
+              parseInt(this.quantity);
+          } else {
+            this.table2.push({
+              id: row.id,
+              supply_name:
+                row.supply_name +
+                " " +
+                (row.description != null ? row.description : ""),
+              unit: row.unit,
+              quantity: this.quantity,
+              ref: "",
+              status: 0,
+            });
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully added.",
+            };
           }
         }
-
-        if (check_existing > -1) {
-          this.table2[check_existing].quantity =
-            parseInt(this.table2[check_existing].quantity) +
-            parseInt(this.quantity);
-        } else { 
-          this.table2.push({
-            id: row.id,
-            supply_name: row.supply_name + " " + (row.description != null?row.description:'') ,
-            unit: row.unit,
-            quantity: this.quantity,
-            ref: "",
-            status: 0,
-          });
-          this.snackbar = {
-            active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully added.",
-          };
-        }
+        this.disabled = false;
+        this.dialog = false;
       }
-      this.dialog = false;
     },
     Delete(row) {
       this.table2[this.table2.indexOf(row)].quantity =
@@ -850,6 +988,7 @@ export default {
       if (this.table2[this.table2.indexOf(row)].quantity <= 0) {
         this.table2.splice(this.table2.indexOf(row), 1);
       }
+
       this.snackbar = {
         active: true,
         iconText: "check",
@@ -868,7 +1007,6 @@ export default {
           this.table2[key].ref = this.ref;
         }
       }
-
       // save
       await axios
         .post("/api/requestsupp/supplies/save", this.table2)
@@ -888,14 +1026,52 @@ export default {
       if (this.headers2.length == 5) {
         this.headers2.splice(this.headers2.indexOf(this.headers2[3]), 1);
       }
+      this.disabled = true;
       this.dialog_list = true;
       this.getList();
     },
     async viewRequest(ref) {
+      (this.headers2 = [
+        {
+          text: "SUPPLY NAME",
+          value: "supply_name",
+          class: "black--text",
+        },
+        {
+          text: "UNIT",
+          value: "unit",
+          filterable: false,
+          class: "black--text",
+        },
+        {
+          text: "QTY",
+          value: "quantity",
+          filterable: false,
+          align: "right",
+          class: "black--text",
+        },
+        {
+          text: "STATUS",
+          value: "status",
+          filterable: false,
+          class: "black--text",
+        },
+        {
+          text: "ACTION",
+          value: "id",
+          align: "center",
+          filterable: false,
+          sortable: false,
+          class: "black--text",
+        },
+      ]),
+        (this.isHidden = true);
       this.getList();
       await axios
         .get("/api/requestsupp/request/list", { params: { ref: ref.ref } })
         .then((result) => {
+          console.log(result.data);
+          this.temp_data = JSON.parse(JSON.stringify(result.data));
           this.table2 = result.data;
           this.dialog_list = true;
           this.ref = ref.ref;
@@ -903,6 +1079,7 @@ export default {
     },
     closeRequest() {
       this.dialog_list = false;
+      this.disabled = true;
       this.clearRequest();
     },
     clearRequest() {
@@ -911,6 +1088,12 @@ export default {
     },
     clearRequest1() {
       this.table2 = [];
+      console.log(this.table2.length);
+      if (this.table2.length > 0) {
+        this.disabled = false;
+      } else {
+        this.disabled = true;
+      }
       this.ref = "";
       this.snackbar = {
         active: true,
@@ -919,11 +1102,13 @@ export default {
         message: "Successfully cancelled.",
       };
     },
- 
-    
-    async cancelRequest(ref) {
+    getFormatDate(e, format) {
+      const date = moment(e);
+      return date.format(format);
+    },
+    async cancelRequest() {
       await axios
-        .post("/api/requestsupp/request/cancel", ref)
+        .post("/api/requestsupp/request/cancel", this.cancel_select)
         .then((result) => {
           //if the value is true then save to database
           this.snackbar = {
@@ -949,6 +1134,16 @@ export default {
           };
           this.get();
         });
+    },
+
+    openDialog() {
+      this.quantity = 1;
+      this.dialog = true;
+    },
+
+    cancel() {
+      this.quantity = 1;
+      this.dialog = false;
     },
   },
 };

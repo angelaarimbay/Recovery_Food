@@ -68,9 +68,10 @@
                 <td class="body" style="width: 30%"></td>
             </tr>
             <tr>
-                <td class="body"> {{ $items['quantity'] }}  </td>
-                <td class="body" style="text-align: left"> {{ number_format($items['product_name_details']['price'], 2, ".", ",") }}  </td>
-                <td class="body" style="text-align: right"> {{ number_format($items['product_name_details']['price'] * $items['quantity'], 2, ".", ",") }} </td>
+                <td class="body"> {{ $items['quantity'] }}  </td> 
+                {{-- ano yang quantity na yan? --}}
+                <td class="body" style="text-align: left"> {{ number_format($items['sub_total_discounted'], 2, ".", ",") }}  </td>
+                <td class="body" style="text-align: right"> {{ number_format($items['sub_total_discounted'] * $items['quantity'], 2, ".", ",") }} </td>
             </tr>
         </table> 
         @endforeach

@@ -7,6 +7,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -63,7 +65,7 @@
       </v-container>
 
       <!-- Main Card -->
-      <v-card elevation="6" class="mt-2" style="border-radius: 10px">
+      <v-card elevation="2" class="mt-2" style="border-radius: 10px">
         <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
           <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
             <v-row>
@@ -99,7 +101,7 @@
                           outlined
                           color="grey darken-1"
                           class="btn-block"
-                          style="text-transform: none"
+                          style="text-transform: none; font-size: 12px"
                           @click="clickupload"
                           :small="$vuetify.breakpoint.smAndDown"
                         >
@@ -136,8 +138,12 @@
                   type="file"
                   @change="uploaddocument"
                 />
-                <div class="pt-2" v-if="form.attachment">
-                  Image Attachment:
+                <div
+                  style="font-size: 12px"
+                  class="pt-2"
+                  v-if="form.attachment"
+                >
+                  <span>Image Attachment:</span>
                   <v-row no-gutters justify="center" align="center">
                     <v-col cols="10">
                       <a :href="temppath" download>
@@ -149,7 +155,6 @@
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-icon
-                            large
                             v-on="data.on"
                             color="red darken-2"
                             class="text-center"
@@ -175,21 +180,31 @@
                   >VAT</v-card-title
                 >
                 <v-row no-gutters>
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" class="py-1">
+                  <v-col
+                    cols="12"
+                    xl="6"
+                    lg="6"
+                    md="6"
+                    sm="6"
+                    class="tfield py-1"
+                  >
                     <v-row no-gutters>
+                      <span style="font-size: 12px">Supplies VAT</span>
                       <v-col cols="10">
                         <v-text-field
                           :rules="formRulesVAT"
                           v-model="form1.vat"
-                          label="Supplies VAT"
                           dense
-                          outlined
                           persistent-placeholder
                           clearable
                           counter
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetSV"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -209,21 +224,31 @@
                       </v-col>
                     </v-row>
                   </v-col>
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" class="py-1">
+                  <v-col
+                    cols="12"
+                    xl="6"
+                    lg="6"
+                    md="6"
+                    sm="6"
+                    class="tfield py-1"
+                  >
                     <v-row no-gutters>
+                      <span style="font-size: 12px">Products VAT</span>
                       <v-col cols="10">
                         <v-text-field
                           :rules="formRulesVAT"
                           v-model="form2.vat"
-                          label="Products VAT"
                           dense
-                          outlined
                           clearable
                           persistent-placeholder
                           counter
                           @keydown="VATKeydown($event)"
                           maxlength="6"
                           @blur="resetPV"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="2" class="text-center">
@@ -252,6 +277,16 @@
     </v-form>
   </div>
 </template>
+
+<style>
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+</style>
+</style>
 
 <script>
 import { mapGetters } from "vuex";

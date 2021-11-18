@@ -6,6 +6,8 @@
       min-width="auto"
       v-model="snackbar.active"
       timeout="2500"
+      :left="$vuetify.breakpoint.smAndUp"
+      class="pb-0"
     >
       <span
         ><v-icon :color="snackbar.iconColor">{{
@@ -65,138 +67,193 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="6" class="mt-2" style="border-radius: 10px">
-      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-
-          <!-- Search Filters -->
-          <v-list dense nav class="px-0 py-0">
-            <v-list-group no-action color="#757575">
-              <template v-slot:activator>
-                <v-list-item-icon class="mx-0">
-                  <v-icon size="20">mdi-filter</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title
-                  style="color: #757575; font-weight: bold"
-                  class="px-3"
-                  >Search Filter</v-list-item-title
+          <v-row no-gutters>
+            <v-spacer></v-spacer>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  class="mr-2 mb-3"
+                  color="success"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="get"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-refresh</v-icon></v-btn
                 >
               </template>
+              <span>Refresh</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  color="grey darken-4"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="filterDialog = true"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-filter-variant</v-icon></v-btn
+                >
+              </template>
+              <span>Filter</span>
+            </v-tooltip>
+          </v-row>
 
-              <v-list class="p-0">
-                <v-row no-gutters>
-                  <!-- Items Per Page -->
-                  <v-col cols="4" xl="2" lg="2" md="3" sm="4" class="my-auto">
-                    <v-card-actions>
-                      <v-select
-                        style="max-width: 82px"
-                        dense
-                        v-model="itemsPerPage"
-                        label="Items per page"
-                        @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
-                      >
-                      </v-select>
-                    </v-card-actions>
-                  </v-col>
+          <!-- Filter Dialog -->
+          <v-dialog v-model="filterDialog" max-width="400px">
+            <v-card dark tile class="pa-2">
+              <v-toolbar dense flat class="transparent">
+                Search Filter
+                <v-spacer></v-spacer>
+                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              </v-toolbar>
+              <v-divider class="my-0"></v-divider>
+              <v-row no-gutters align="center" class="pa-2">
+                <!-- Items Per Page -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Items / Page</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      dense
+                      v-model="itemsPerPage"
+                      @change="itemperpage"
+                      :items="[
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                      ]"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
 
-                  <v-spacer></v-spacer>
+                <!-- Search Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Search</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      v-model="search"
+                      placeholder="Supply Name"
+                      single-line
+                      dense
+                      clearable
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          @click="get"
+                          class="ml-1"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
 
-                  <!-- Search Field -->
-                  <v-col
-                    cols="8"
-                    xl="4"
-                    lg="4"
-                    md="6"
-                    sm="8"
-                    style="max-width: 230px"
-                    class="my-auto"
-                  >
-                    <v-card-actions>
-                      <v-text-field
-                        v-model="search"
-                        label="Supply Name"
-                        single-line
-                        dense
-                        clearable
-                      ></v-text-field>
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            large
-                            :small="$vuetify.breakpoint.smAndDown"
-                            color="red darken-2"
-                            icon
-                            v-on="data.on"
-                            @click="get"
-                            class="mb-3"
-                          >
-                            <v-icon>mdi-magnify</v-icon></v-btn
-                          >
-                        </template>
-                        <span>Search</span>
-                      </v-tooltip>
-                    </v-card-actions>
-                  </v-col>
-                </v-row>
+                <!-- Branch Field -->
+                <v-col
+                  cols="4"
+                  v-if="
+                    !user.permissionslist.includes(
+                      'Access Reports - Outgoing Supplies'
+                    )
+                  "
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Branch</span
+                  ></v-col
+                >
+                <v-col
+                  cols="8"
+                  v-if="
+                    !user.permissionslist.includes(
+                      'Access Reports - Outgoing Supplies'
+                    )
+                  "
+                >
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="branch"
+                      :items="branchlist"
+                      item-text="branch_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Branch"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
 
-                <v-row no-gutters>
-                  <!-- Branch Field -->
-                  <v-col
-                    cols="6"
-                    xl="2"
-                    lg="2"
-                    md="3"
-                    sm="6"
-                    class="my-auto"
-                    v-if="
-                      !user.permissionslist.includes(
-                        'Access Reports - Outgoing Supplies'
-                      )
-                    "
-                  >
-                    <v-card-actions class="py-0">
-                      <v-select
-                        v-model="branch"
-                        :items="branchlist"
-                        item-text="branch_name"
-                        item-value="id"
-                        class="my-0"
-                        clearable
-                        dense
-                        label="Branch"
-                        @change="get"
-                      >
-                      </v-select>
-                    </v-card-actions>
-                  </v-col>
-
-                  <!-- Category Field -->
-                  <v-col cols="6" xl="2" lg="2" md="3" sm="6" class="my-auto">
-                    <v-card-actions class="py-0">
-                      <v-select
-                        v-model="category"
-                        :items="suppcatlist"
-                        item-text="supply_cat_name"
-                        item-value="id"
-                        class="my-0"
-                        clearable
-                        dense
-                        label="Category"
-                        @change="get"
-                      >
-                      </v-select>
-                    </v-card-actions>
-                  </v-col>
-                </v-row>
-              </v-list>
-            </v-list-group>
-          </v-list>
+                <!-- Category Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Category</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="category"
+                      :items="suppcatlist"
+                      item-text="supply_cat_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Category"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-dialog>
 
           <!-- Table -->
           <v-data-table
+            id="table1"
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
@@ -205,6 +262,7 @@
             :items-per-page="itemsPerPage"
             hide-default-footer
             @page-count="pageCount = $event"
+            class="table-striped border"
           >
             <!-- Progress Bar -->
             <v-progress-linear
@@ -247,7 +305,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <div class="text-center pt-2">
+          <div class="pbutton text-center pt-7">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -259,78 +317,64 @@
 
         <!--Dialog Form-->
         <v-form ref="form">
-          <v-dialog v-model="dialog" max-width="450px">
-            <v-toolbar
-              dense
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Deduct Supply
-              <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-icon
-                    class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                    v-on="data.on"
-                    text
-                    @click="cancel"
-                    >mdi-close
-                  </v-icon>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
-            </v-toolbar>
-            <v-card tile style="background-color: #f5f5f5">
-              <v-card-text class="py-2">
-                <br />
-                <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
-                  <v-row>
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field v-model="form.id" class="d-none" dense>
-                        <template slot="label">
-                          <div style="font-size: 14px">ID</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
+          <v-dialog
+            v-model="dialog"
+            max-width="450px"
+            persistent
+            no-click-animation
+          >
+            <v-card tile class="pa-3">
+              <v-toolbar dark dense flat rounded class="red darken-3">
+                Deduct Supply
+                <v-spacer></v-spacer>
+                <v-icon text @click="cancel">mdi-close </v-icon>
+              </v-toolbar>
 
-                    <v-col
-                      class="py-0"
-                      cols="12"
-                      xl="12"
-                      lg="12"
-                      sm="12"
-                      md="12"
-                    >
-                      <v-text-field
-                        :rules="formRulesQuantity"
-                        v-model="form.quantity"
-                        outlined
-                        dense
-                        autocomplete="off"
-                        @focus="clearQ"
-                        @blur="resetQ"
-                        @keydown="quantityKeydown($event)"
-                        counter
-                        maxlength="3"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 14px">Quantity *</div>
-                        </template>
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+              <v-container class="px-1">
+                <v-row class="py-4">
+                  <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <v-text-field v-model="form.id" class="d-none" dense>
+                      <template slot="label">
+                        <div style="font-size: 12px">ID</div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      :rules="formRulesQuantity"
+                      v-model="form.quantity"
+                      dense
+                      autocomplete="off"
+                      @focus="clearQ"
+                      @blur="resetQ"
+                      @keydown="quantityKeydown($event)"
+                      counter
+                      maxlength="3"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Quantity <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-divider class="my-0"></v-divider>
               <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-xl-9 px-lg-9 px-md-8 px-sm-6 px-6 py-4">
+              <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
                   color="error"
@@ -338,8 +382,8 @@
                   :disabled="button"
                   dark
                   @click="cancel"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Cancel
                 </v-btn>
@@ -349,8 +393,8 @@
                   :disabled="button"
                   dark
                   @click="save"
-                  style="text-transform: none"
                   :small="$vuetify.breakpoint.smAndDown"
+                  text
                 >
                   Save
                 </v-btn>
@@ -364,15 +408,45 @@
 </template>
 
 <style>
-.v-pagination button {
+#table1 .v-data-table-header th {
+  white-space: nowrap;
+}
+#table1 .v-data-table-header th {
+  font-size: 12px !important;
+}
+#table1 td {
+  font-size: 12px !important;
+}
+
+.pbutton .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
+  margin: 2px;
+  height: 30px;
 }
-.v-pagination i.v-icon.v-icon {
+.pbutton .v-pagination i.v-icon.v-icon {
   color: #ffffff !important;
 }
-.v-pagination__navigation:disabled {
+.pbutton .v-pagination__navigation:disabled {
   background-color: #000000 !important;
+  height: 30px;
+}
+
+.v-application .tfield .white {
+  border: 1px solid #bdbdbd !important;
+}
+.tfield .v-input--is-focused .v-input__slot {
+  border: 1px solid #42a5f5 !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
 
@@ -401,6 +475,7 @@ export default {
     search: "",
     button: false,
     dialog: false,
+    filterDialog: false,
     category: "",
     branch: "",
     table: [],
@@ -486,7 +561,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "ACTION(S)",
+        text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
@@ -554,9 +629,9 @@ export default {
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
-            iconText: "close",
-            iconColor: "danger",
-            message: "Insufficient quantity.",
+            iconText: "alert-circle",
+            iconColor: "error",
+            message: "Insufficient stocks.",
           };
           return;
         }

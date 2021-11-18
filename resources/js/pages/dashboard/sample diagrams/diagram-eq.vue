@@ -78,7 +78,6 @@
         this.progressBar = true
           await axios.get("/api/get/accumulation/chart1")
           .then(result =>{     
-            console.log(result.data)
               this.zone  = result.data.zone;
               this.amount = result.data.amount;
               this.fillData();
