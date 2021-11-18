@@ -550,7 +550,7 @@ html {
   overflow-y: initial !important;
 }
 
-.v-navigation-drawer ::-webkit-scrollbar{
+.v-navigation-drawer ::-webkit-scrollbar {
   width: 0px;
 }
 
@@ -617,6 +617,10 @@ export default {
   },
 
   methods: {
+    reloadPage() {
+      window.location.reload();
+    },
+
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
         if (result.data.path) {
@@ -631,6 +635,7 @@ export default {
 
       // Redirect to login.
       this.$router.push({ name: "login" });
+      this.reloadPage();
     },
   },
 };
