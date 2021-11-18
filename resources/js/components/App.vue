@@ -1,5 +1,5 @@
 <template>
-  <v-app style="background-color: #f1ffff">
+  <v-app style="background-color: #f0f2f5">
     <loading ref="loading" />
     <div v-if="!user">
       <!-- If no user, apply this header. Else, apply nav -->
@@ -38,10 +38,11 @@ export default {
   },
 
   data: () => ({
-    layout: null, temppath: '',
+    layout: null,
+    temppath: "",
     defaultLayout: "default",
   }),
- 
+
   computed: mapGetters({
     user: "auth/user",
   }),
@@ -53,9 +54,9 @@ export default {
       titleTemplate: `%s | ${appName}`,
     };
   },
-  created(){
-    this.getLogo()
-     this.$store.commit("check_layout/container", 'container' );
+  created() {
+    this.getLogo();
+    this.$store.commit("check_layout/container", "container");
   },
 
   mounted() {
@@ -63,12 +64,10 @@ export default {
   },
 
   methods: {
-    async getLogo(){
-       await axios
-        .get("/api/settings/company/logo/get")
-        .then((result) => { 
-          this.temppath = result.data.path;
-        });
+    async getLogo() {
+      await axios.get("/api/settings/company/logo/get").then((result) => {
+        this.temppath = result.data.path;
+      });
     },
 
     /**

@@ -12,7 +12,7 @@ class tbl_incomingsupp extends Model
 {
     // Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['with_vat', 'process_by','quantity_difference','quantity_amount','category_details','supply_name_details','supplier_details',  'fluctiation'];
+    public $appends = ['with_vat', 'process_by','quantity_difference','quantity_amount','category_details','supply_name_details','supplier_details',  'fluctuation'];
 
     public function category()
     {
@@ -67,7 +67,7 @@ class tbl_incomingsupp extends Model
         return tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price;
     }  
 
-    public function getFluctiationAttribute()
+    public function getFluctuationAttribute()
     { //for list with vat column
         
         $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"))); 

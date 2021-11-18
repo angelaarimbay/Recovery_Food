@@ -550,6 +550,10 @@ html {
   overflow-y: initial !important;
 }
 
+.v-navigation-drawer ::-webkit-scrollbar{
+  width: 0px;
+}
+
 ::-webkit-scrollbar-track {
   --webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: #fafafa;

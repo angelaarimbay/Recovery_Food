@@ -735,7 +735,6 @@ export default {
       await axios("/api/sales_report/info", {
         params: { reference_no: item.reference_no },
       }).then((result) => {
-        console.log(result.data);
         this.table2 = result.data;
         this.sales_var = numeral(
           this.table2.reduce((a, b) => a + b.sub_total_discounted, 0)

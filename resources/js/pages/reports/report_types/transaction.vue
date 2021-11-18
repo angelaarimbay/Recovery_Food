@@ -433,10 +433,14 @@
             :items="table2"
             hide-default-footer
           >
-            <template v-slot:[`item.product_name.price`]="{ item }"
-              >{{ getFormatCurrency(item.product_name.price, "0,0.00") }}
-            </template>
-
+            <template v-slot:[`item.price`]="{ item }">
+              {{
+                getFormatCurrency(
+                  item.sub_total_discounted / item.quantity,
+                  "0,0.00"
+                )
+              }}</template
+            >
             <template v-slot:[`item.product_name.product_name`]="{ item }"
               >{{ item.product_name.product_name }}
               {{ item.product_name.description }}</template
@@ -596,7 +600,7 @@ export default {
       },
       {
         text: "UNIT PRICE",
-        value: "product_name.price",
+        value: "price",
         align: "right",
         filterable: false,
         class: "black--text",

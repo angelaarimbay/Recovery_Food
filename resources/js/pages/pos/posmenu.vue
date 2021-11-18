@@ -79,7 +79,7 @@
             >
           </v-card>
 
-          <v-row no-gutters class="mt-2">
+          <v-row no-gutters class="mt-2" style="height: 60px" align="center">
             <v-spacer></v-spacer>
             <v-tooltip bottom>
               <template #activator="data">
@@ -285,8 +285,9 @@
               <v-spacer></v-spacer>
               <v-icon text @click="dialog2 = false">mdi-close </v-icon>
             </v-toolbar>
+
+            <salesreport v-if="renderComponent" />
           </v-card>
-          <v-card tile> <salesreport v-if="renderComponent" /></v-card>
           <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
         </v-dialog>
       </v-col>
@@ -409,7 +410,7 @@
             >
           </v-card>
 
-          <v-row no-gutters class="mt-2">
+          <v-row no-gutters class="mt-2" style="height: 60px" align="center">
             <v-col cols="5" xl="3" lg="4" md="3" class="my-auto">
               <v-card-actions>
                 <span
@@ -478,7 +479,7 @@
           <!-- Order List Table -->
           <v-data-table
             id="table2"
-            class="ord_table table-striped border"
+            class="ord_table table-striped border mt-4"
             :headers="headers2"
             :items="table2"
             height="230"
