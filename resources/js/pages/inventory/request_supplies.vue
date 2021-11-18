@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="min-width: 310px">
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
       min-width="auto"
@@ -99,7 +99,7 @@
       </v-layout>
     </v-container>
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
@@ -282,7 +282,7 @@
                   >
                 </v-card>
 
-                <v-row no-gutters align="center">
+                <v-row no-gutters style="height: 60px" align="center">
                   <v-col
                     cols="10"
                     xl="6"
@@ -353,7 +353,7 @@
                   :headers="headers1"
                   :items="table1"
                   ref="progress"
-                  class="table-striped border mt-4"
+                  class="table-striped border"
                 >
                   <!-- Progress Bar -->
                   <v-progress-linear
@@ -412,40 +412,42 @@
                   >
                 </v-card>
 
-                <v-col
-                  cols="12"
-                  xl="12"
-                  lg="12"
-                  md="12"
-                  sm="12"
-                  class="my-0 my-xl-1 my-lg-1 my-md-1 my-sm-0 pa-2"
-                >
-                  <v-card-actions class="py-0 px-0">
-                    <v-col class="px-0" cols="4" xl="4" lg="4" md="4" sm="4">
-                      <div>
-                        <span style="color: #616161"
-                          >No. of Items:
-                          <strong>{{ table2.length }}</strong></span
-                        >
-                      </div>
-                    </v-col>
-                    <v-spacer></v-spacer>
-                    <v-col
-                      class="text-right px-0"
-                      cols="8"
-                      xl="8"
-                      lg="8"
-                      md="8"
-                      sm="8"
-                    >
-                      <div v-if="ref">
-                        <span style="color: #616161"
-                          >Reference No: <strong>{{ ref }}</strong></span
-                        >
-                      </div>
-                    </v-col>
-                  </v-card-actions>
-                </v-col>
+                <v-row no-gutters style="height: 60px" align="center">
+                  <v-col
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    md="12"
+                    sm="12"
+                    class="my-0 my-xl-1 my-lg-1 my-md-1 my-sm-0 pa-2"
+                  >
+                    <v-card-actions class="py-0 px-0">
+                      <v-col class="px-0" cols="4" xl="4" lg="4" md="4" sm="4">
+                        <div>
+                          <span style="color: #616161"
+                            >No. of Items:
+                            <strong>{{ table2.length }}</strong></span
+                          >
+                        </div>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                      <v-col
+                        class="text-right px-0"
+                        cols="8"
+                        xl="8"
+                        lg="8"
+                        md="8"
+                        sm="8"
+                      >
+                        <div v-if="ref">
+                          <span style="color: #616161"
+                            >Reference No: <strong>{{ ref }}</strong></span
+                          >
+                        </div>
+                      </v-col>
+                    </v-card-actions>
+                  </v-col>
+                </v-row>
 
                 <v-data-table
                   id="table1"
@@ -514,7 +516,7 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
-                <v-card-actions>
+                <v-card-actions class="pa-0 mt-4">
                   <v-spacer></v-spacer>
                   <v-btn
                     color="error"
@@ -535,7 +537,7 @@
                       validate('send');
                       disabled2();
                     "
-                    :disabled="disabled"
+                    :disabled="disabled || checkLength"
                   >
                     Send Request</v-btn
                   >
@@ -683,6 +685,13 @@ import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
   computed: {
+    checkLength() {
+      if (this.table2.length > 0) {
+        this.disabled = false;
+      } else {
+        this.disabled = true;
+      }
+    },
     disabled2() {
       for (var key in this.temp_data) {
         for (var key1 in this.temp_data[key]) {
@@ -1018,6 +1027,7 @@ export default {
             iconColor: "success",
             message: "Request has been successfully sent.",
           };
+          this.disabled = true;
           this.clearRequest();
           this.get();
         });
@@ -1088,12 +1098,7 @@ export default {
     },
     clearRequest1() {
       this.table2 = [];
-      console.log(this.table2.length);
-      if (this.table2.length > 0) {
-        this.disabled = false;
-      } else {
-        this.disabled = true;
-      }
+      this.disabled = true;
       this.ref = "";
       this.snackbar = {
         active: true,

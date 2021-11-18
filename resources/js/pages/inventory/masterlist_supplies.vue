@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -66,7 +66,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
@@ -348,7 +348,7 @@
                   </v-icon></template
                 >
                 <span v-if="item.days >= 1 && item.days < 8"
-                  >Near to Expire</span
+                  >Nearly Expired</span
                 >
                 <span v-else-if="item.days < 1">Expired</span> </v-tooltip
               >{{ item.supply_name }} {{ item.description }}

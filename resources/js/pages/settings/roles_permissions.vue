@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -386,7 +386,7 @@
       </v-container>
 
       <!-- Main Card -->
-      <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+      <v-card elevation="1" class="mt-2" style="border-radius: 10px">
         <v-tabs
           slider-size="4"
           v-model="tab"

@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"

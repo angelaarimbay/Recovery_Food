@@ -39,6 +39,7 @@ class RequestSuppliesController extends Controller
             ->groupBy(['ref', 'user', 'request_date'])
             ->wherein('status', [1, 2])
             ->where('branch', auth()->user()->branch)
+            ->orderBy("request_date", "desc")
             ->get();
         $return = [];
         foreach ($table as $key => $value) {

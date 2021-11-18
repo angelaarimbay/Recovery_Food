@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 310px">
     <v-container>
       <v-layout row wrap>
         <span
@@ -38,7 +38,7 @@
       </v-layout>
     </v-container>
 
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
         v-model="tab"
