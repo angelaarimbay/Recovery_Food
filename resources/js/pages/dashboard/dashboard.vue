@@ -518,7 +518,7 @@
             min-height="80px"
           >
             <v-row no-gutters align="center">
-              <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-0">
+              <v-col cols="12" xl="6" lg="6" md="8" sm="12" class="pa-0">
                 <v-card-title
                   :class="{
                     'justify-center': $vuetify.breakpoint.xsOnly,
@@ -538,7 +538,7 @@
                   Pending Request(s)
                 </v-card-title>
               </v-col>
-              <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-0">
+              <v-col cols="12" xl="6" lg="6" md="4" sm="12" class="pa-0">
                 <v-card-text
                   :class="{
                     'text-center': $vuetify.breakpoint.xsOnly,
@@ -744,7 +744,7 @@ export default {
     useracc: null,
     suppexpdate: [],
     prodexpdate: [],
-    requests: [],
+    requests: null,
     hidden1: true,
     hidden2: true,
     hidden3: true,
