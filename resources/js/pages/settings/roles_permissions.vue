@@ -469,7 +469,7 @@
                     dark
                     :small="$vuetify.breakpoint.smAndDown"
                     @click="openDialogRoles"
-                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 d-none"
                   >
                     Add New Role
                   </v-btn>
@@ -535,6 +535,7 @@
                           @click="addPermission(item)"
                           v-on="data.on"
                           :x-small="$vuetify.breakpoint.smAndDown"
+                          class="d-none"
                         >
                           <v-icon> mdi-plus </v-icon>
                         </v-btn>
@@ -1203,23 +1204,23 @@ export default {
       this.getRolePermissions(item.name);
     },
 
-    checkRolesIsValid() {
-      // if mag add ng restriction bukod dito,
-      // console this.selectedAddPermission tignan and index then get name, then gawa ka if else mo ung message
-      // lagyan mo ng return sa loob. basta mag greater than one ndi yan prproceed.
-      if (
-        this.selectedAddPermission[0].name == "Access POS" &&
-        this.selectedAddPermission[1].name == "Access Dashboard"
-      ) {
-        this.snackbar = {
-          active: true,
-          iconText: "close",
-          iconColor: "danger",
-          message: "Disable all other permissions first.",
-        };
-        return 1;
-      }
-    },
+    // checkRolesIsValid() {
+    //   // if mag add ng restriction bukod dito,
+    //   // console this.selectedAddPermission tignan and index then get name, then gawa ka if else mo ung message
+    //   // lagyan mo ng return sa loob. basta mag greater than one ndi yan prproceed.
+    //   if (
+    //     this.selectedAddPermission[0].name == "Access POS" &&
+    //     this.selectedAddPermission[1].name == "Access Dashboard"
+    //   ) {
+    //     this.snackbar = {
+    //       active: true,
+    //       iconText: "close",
+    //       iconColor: "danger",
+    //       message: "Disable all other permissions first.",
+    //     };
+    //     return 1;
+    //   }
+    // },
 
     comparePermission() {
       // Check if not existed
@@ -1258,15 +1259,15 @@ export default {
           iconColor: "warning",
           message: "No changes has been made.",
         };
-        return false;
+        this.close();
       }
     },
 
     // Save Role Permission
     async storeAddPermissions() {
-      if (this.checkRolesIsValid() > 0) {
-        return;
-      }
+      // if (this.checkRolesIsValid() > 0) {
+      //   return;
+      // }
 
       if (this.comparePermission()) {
         await axios
@@ -1322,7 +1323,7 @@ export default {
           iconColor: "warning",
           message: "No changes has been made.",
         };
-        return false;
+        this.close();
       }
     },
     // Set User Role

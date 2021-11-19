@@ -348,7 +348,7 @@
                         text-md-subtitle-2
                         text-sm-body-2
                         pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-2
-                        py-2
+                        pt-1 pb-0
                         pr-2
                       "
                       style="color: #827717"
@@ -436,7 +436,7 @@
                         text-md-subtitle-2
                         text-sm-body-2
                         pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-2
-                        py-2
+                        pt-1 pb-0
                         pr-2
                       "
                       style="color: #827717"
