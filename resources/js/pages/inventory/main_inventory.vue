@@ -398,10 +398,12 @@
                     <br />
                   </v-col>
                 </v-row>
+
                 <v-row
                   :class="{
                     'text-caption': $vuetify.breakpoint.smAndDown,
                   }"
+                  class="border rounded"
                 >
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                     <v-row>
@@ -685,6 +687,7 @@
                       </v-col>
                     </v-row>
                   </v-col>
+                  <v-divider vertical :hidden="$vuetify.breakpoint.xsOnly"></v-divider>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                     <v-row>
                       <v-col
