@@ -987,6 +987,8 @@ export default {
         text: "",
         value: "row",
         align: "center",
+        filterable: false,
+        sortable: false,
       },
     ],
     page: 1,
