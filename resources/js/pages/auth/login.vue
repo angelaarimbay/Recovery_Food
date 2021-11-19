@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 310px">
     <v-container v-if="token == ''">
       <v-overlay :value="overlay">
         <v-progress-circular
@@ -20,7 +20,7 @@
           class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
         >
           <v-card
-            elevation="2"
+            elevation="1"
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
           >

@@ -130,6 +130,7 @@ class OutgoingSuppliesController extends Controller
             ->selectRaw('min(status) as status')
             ->groupBy(['branch', 'ref', 'user', 'request_date'])
             ->wherein('status', [1, 2])
+            ->orderBy("request_date", "desc")
             ->get();
         $return = [];
         foreach ($table as $key => $value) {

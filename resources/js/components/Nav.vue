@@ -453,7 +453,7 @@
           <v-list-item
             v-if="
               user.permissionslist.includes('Access Reports') &&
-              !user.permissionslist.includes('Access POS') &&
+              !user.permissionslist.includes('Access POS') ||
               !user.permissionslist.includes('Access Branch Inventory')
             "
             style="text-decoration: none"

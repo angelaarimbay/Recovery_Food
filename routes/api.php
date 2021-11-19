@@ -16,6 +16,9 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('dashboard/getProd', 'Dashboard\MainController@getProd');
     Route::get('dashboard/getPO', 'Dashboard\MainController@getPO');
     Route::get('dashboard/getUser', 'Dashboard\MainController@getUser');
+    Route::get('dashboard/getSuppExpDate', 'Dashboard\MainController@getSuppExpDate');
+    Route::get('dashboard/getProdExpDate', 'Dashboard\MainController@getProdExpDate');
+    Route::get('dashboard/getRequests', 'Dashboard\MainController@getRequests');
     Route::get('dashboard/getSalesGraph', 'Dashboard\MainController@getSalesGraph');
     Route::get('dashboard/getProductsGraph', 'Dashboard\MainController@getProductsGraph');
 

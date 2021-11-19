@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -987,6 +987,8 @@ export default {
         text: "",
         value: "row",
         align: "center",
+        filterable: false,
+        sortable: false,
       },
     ],
     page: 1,

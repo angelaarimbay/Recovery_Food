@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px">
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -66,7 +66,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters>
@@ -398,10 +398,12 @@
                     <br />
                   </v-col>
                 </v-row>
+
                 <v-row
                   :class="{
                     'text-caption': $vuetify.breakpoint.smAndDown,
                   }"
+                  class="border rounded"
                 >
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                     <v-row>
@@ -685,6 +687,7 @@
                       </v-col>
                     </v-row>
                   </v-col>
+                  <v-divider vertical :hidden="$vuetify.breakpoint.xsOnly"></v-divider>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                     <v-row>
                       <v-col

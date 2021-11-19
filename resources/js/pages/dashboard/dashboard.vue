@@ -1,6 +1,6 @@
 <template>
   <div
-    style="min-width: 280px"
+    style="min-width: 310px"
     v-if="!user.permissionslist.includes('Access POS')"
   >
     <v-container class="py-2">
@@ -146,7 +146,7 @@
           :hidden="!hiddenCard1"
         >
           <v-card
-            elevation="2"
+            elevation="1"
             style="border-radius: 10px; border-left: 10px solid #827717"
             class="pa-0"
             height="100"
@@ -192,7 +192,7 @@
           :hidden="!hiddenCard2"
         >
           <v-card
-            elevation="2"
+            elevation="1"
             style="border-radius: 10px; border-left: 10px solid #827717"
             class="pa-0"
             height="100"
@@ -238,7 +238,7 @@
           :hidden="!hiddenCard3"
         >
           <v-card
-            elevation="2"
+            elevation="1"
             style="border-radius: 10px; border-left: 10px solid #827717"
             class="pa-0"
             height="100"
@@ -284,7 +284,7 @@
           :hidden="!hiddenCard4"
         >
           <v-card
-            elevation="2"
+            elevation="1"
             style="border-radius: 10px; border-left: 10px solid #827717"
             class="pa-0"
             height="100"
@@ -322,9 +322,253 @@
       </v-row>
 
       <!-- Divider -->
-      <v-divider
-        style="border: 2px solid #bdbdbd; border-radius: 5px"
-      ></v-divider>
+      <v-divider></v-divider>
+
+      <!-- Expired Products -->
+      <v-row no-gutters>
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
+          <v-card
+            class="d-flex align-center justify-center"
+            elevation="1"
+            style="border-radius: 10px"
+            min-height="80px"
+          >
+            <v-row no-gutters>
+              <v-col cols="6" xl="6" lg="6" md="6" sm="6" class="pa-0">
+                <v-row no-gutters align="center">
+                  <v-col cols="12" xl="6" lg="12" md="12" sm="12">
+                    <v-card-title
+                      :class="{
+                        'justify-center': $vuetify.breakpoint.mdAndDown,
+                      }"
+                      class="
+                        text-body-2
+                        text-xl-subtitle-1
+                        text-lg-subtitle-1
+                        text-md-subtitle-2
+                        text-sm-body-2
+                        pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-2
+                        pt-1 pb-0
+                        pr-2
+                      "
+                      style="color: #827717"
+                    >
+                      Nearly Expired
+                    </v-card-title>
+                  </v-col>
+                  <v-col cols="12" xl="6" lg="12" md="12" sm="12">
+                    <v-row no-gutters>
+                      <v-col cols="12">
+                        <v-card-text
+                          :class="{
+                            'text-center': $vuetify.breakpoint.mdAndDown,
+                          }"
+                          class="
+                            text-right
+                            font-weight-bold
+                            pa-1
+                            text-body-2
+                            text-xl-subtitle-1
+                            text-lg-subtitle-1
+                            text-md-subtitle-2
+                            text-sm-body-2
+                            pr-2 pr-xl-4 pr-lg-4 pr-md-4 pr-sm-2
+                            pl-2
+                          "
+                        >
+                          {{ suppexpdate.warning_count }}
+                          <v-progress-circular
+                            size="18"
+                            indeterminate
+                            :hidden="hidden5"
+                            color="red darken-2"
+                          ></v-progress-circular>
+                          Supplies
+                        </v-card-text>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-card-text
+                          :class="{
+                            'text-center': $vuetify.breakpoint.mdAndDown,
+                          }"
+                          class="
+                            text-right
+                            font-weight-bold
+                            pa-1
+                            text-body-2
+                            text-xl-subtitle-1
+                            text-lg-subtitle-1
+                            text-md-subtitle-2
+                            text-sm-body-2
+                            pr-2 pr-xl-4 pr-lg-4 pr-md-4 pr-sm-2
+                            pl-2
+                          "
+                        >
+                          {{ prodexpdate.warning_count }}
+                          <v-progress-circular
+                            size="18"
+                            indeterminate
+                            :hidden="hidden6"
+                            color="red darken-2"
+                          ></v-progress-circular
+                          >Products
+                        </v-card-text>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-col>
+
+              <!-- Divider -->
+              <v-divider class="my-2" vertical></v-divider>
+
+              <v-col cols="6" xl="6" lg="6" md="6" sm="6" class="pa-0">
+                <v-row no-gutters align="center">
+                  <v-col cols="12" xl="6" lg="12" md="12" sm="12">
+                    <v-card-title
+                      :class="{
+                        'justify-center': $vuetify.breakpoint.mdAndDown,
+                      }"
+                      class="
+                        text-body-2
+                        text-xl-subtitle-1
+                        text-lg-subtitle-1
+                        text-md-subtitle-2
+                        text-sm-body-2
+                        pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-2
+                        pt-1 pb-0
+                        pr-2
+                      "
+                      style="color: #827717"
+                    >
+                      Expired
+                    </v-card-title>
+                  </v-col>
+                  <v-col cols="12" xl="6" lg="12" md="12" sm="12">
+                    <v-row no-gutters>
+                      <v-col cols="12">
+                        <v-card-text
+                          :class="{
+                            'text-center': $vuetify.breakpoint.mdAndDown,
+                          }"
+                          class="
+                            text-right
+                            font-weight-bold
+                            pa-1
+                            text-body-2
+                            text-xl-subtitle-1
+                            text-lg-subtitle-1
+                            text-md-subtitle-2
+                            text-sm-body-2
+                            pr-2 pr-xl-4 pr-lg-4 pr-md-4 pr-sm-2
+                            pl-2
+                          "
+                        >
+                          {{ suppexpdate.expired_count }}
+                          <v-progress-circular
+                            size="18"
+                            indeterminate
+                            :hidden="hidden5"
+                            color="red darken-2"
+                          ></v-progress-circular>
+                          Supplies
+                        </v-card-text>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-card-text
+                          :class="{
+                            'text-center': $vuetify.breakpoint.mdAndDown,
+                          }"
+                          class="
+                            text-right
+                            font-weight-bold
+                            pa-1
+                            text-body-2
+                            text-xl-subtitle-1
+                            text-lg-subtitle-1
+                            text-md-subtitle-2
+                            text-sm-body-2
+                            pr-2 pr-xl-4 pr-lg-4 pr-md-4 pr-sm-2
+                            pl-2
+                          "
+                        >
+                          {{ prodexpdate.expired_count }}
+                          <v-progress-circular
+                            size="18"
+                            indeterminate
+                            :hidden="hidden6"
+                            color="red darken-2"
+                          ></v-progress-circular
+                          >Products
+                        </v-card-text>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
+          <v-card
+            class="d-flex align-center justify-center"
+            elevation="1"
+            style="border-radius: 10px"
+            min-height="80px"
+          >
+            <v-row no-gutters align="center">
+              <v-col cols="12" xl="6" lg="6" md="8" sm="12" class="pa-0">
+                <v-card-title
+                  :class="{
+                    'justify-center': $vuetify.breakpoint.xsOnly,
+                  }"
+                  class="
+                    text-body-2
+                    text-xl-subtitle-1
+                    text-lg-subtitle-1
+                    text-md-subtitle-2
+                    text-sm-body-2
+                    pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-4
+                    py-2
+                    pr-2
+                  "
+                  style="color: #827717"
+                >
+                  Pending Request(s)
+                </v-card-title>
+              </v-col>
+              <v-col cols="12" xl="6" lg="6" md="4" sm="12" class="pa-0">
+                <v-card-text
+                  :class="{
+                    'text-center': $vuetify.breakpoint.xsOnly,
+                  }"
+                  class="
+                    text-right
+                    font-weight-bold
+                    pa-1
+                    mb-0
+                    h3
+                    pr-2 pr-xl-4 pr-lg-4 pr-md-4 pr-sm-4
+                    pl-2
+                  "
+                >
+                  {{ requests }}
+                  <v-progress-circular
+                    size="25"
+                    indeterminate
+                    :hidden="hidden7"
+                    color="red darken-2"
+                  ></v-progress-circular>
+                </v-card-text>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <!-- Divider -->
+      <v-divider></v-divider>
 
       <!-- Graphs -->
       <v-row no-gutters>
@@ -379,10 +623,11 @@
           ></v-row>
         </v-col>
       </v-row>
+
       <v-row no-gutters>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
-            elevation="2"
+            elevation="1"
             style="border-radius: 10px"
             class="pa-2"
             :loading="progressbar1"
@@ -401,7 +646,7 @@
         </v-col>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
-            elevation="2"
+            elevation="1"
             style="border-radius: 10px"
             class="pa-3"
             :loading="progressbar2"
@@ -497,10 +742,16 @@ export default {
     mlist: [],
     ylist: [],
     useracc: null,
+    suppexpdate: [],
+    prodexpdate: [],
+    requests: null,
     hidden1: true,
     hidden2: true,
     hidden3: true,
     hidden4: true,
+    hidden5: true,
+    hidden6: true,
+    hidden7: true,
     progressbar1: false,
     progressbar2: false,
     branchlist: [],
@@ -680,6 +931,45 @@ export default {
         });
     },
 
+    async getSuppExpDate() {
+      this.hidden5 = false;
+      await axios
+        .get("/api/dashboard/getSuppExpDate")
+        .then((result) => {
+          this.hidden5 = true;
+          this.suppexpdate = result.data;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async getProdExpDate() {
+      this.hidden6 = false;
+      await axios
+        .get("/api/dashboard/getProdExpDate")
+        .then((result) => {
+          this.hidden6 = true;
+          this.prodexpdate = result.data;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    async getRequests() {
+      this.hidden7 = false;
+      await axios
+        .get("/api/dashboard/getRequests")
+        .then((result) => {
+          this.hidden7 = true;
+          this.requests = result.data;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
     async getSalesGraph() {
       this.progressbar1 = true;
       await axios
@@ -748,6 +1038,9 @@ export default {
       this.list();
       this.getPO();
       this.getUser();
+      this.getSuppExpDate();
+      this.getProdExpDate();
+      this.getRequests();
       this.getSalesGraph();
       this.getProductsGraph();
       this.branchName();
