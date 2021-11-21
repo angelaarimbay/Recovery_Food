@@ -220,11 +220,11 @@ export default {
             await axios({
               url: "/api/reports/maininventory/get",
               method: "GET",
-              responseType: "blob",
+               responseType: "blob",
               params: { category: this.category, type: "pdf" },
             }).then((response) => {
-              // console.log(response.data);
-              // return;
+            //   console.log(response.data);
+            //  return;
               if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
@@ -238,7 +238,7 @@ export default {
                 };
                 setTimeout(function () {
                   document.getElementById("print3").contentWindow.print();
-                }, 3000);
+                },  3000);
               } else {
                 this.snackbar = {
                   active: true,

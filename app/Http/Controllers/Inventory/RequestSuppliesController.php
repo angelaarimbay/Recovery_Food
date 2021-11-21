@@ -69,6 +69,11 @@ class RequestSuppliesController extends Controller
 
         //---------------------------update / save as new row for exsiting request or if no reference fount save all.
         $date = date("Y-m-d H:i:s");
+        $refno = strtotime(date("Y-m-d h:i:s")); //hanap ka ng ibang pang create ng ref no. may diffrence yan sa seconds. 
+                 
+
+        
+
         foreach ($request->all() as $key => $value) {
             //first find the ref and id
             if (tbl_requestsupp::where(['ref' => $value['ref'], 'supply_name' => $value['id']])->get()->count() > 0) {
@@ -96,8 +101,7 @@ class RequestSuppliesController extends Controller
                     );
                 } else {
                     //if no ref found then save as new ref
-                    $refno = strtotime(date("Y-m-d h:i:s"));
-                    tbl_requestsupp::create(
+                     tbl_requestsupp::create(
                         [
                             'ref' => $refno,
                             'supply_name' => $value['id'],

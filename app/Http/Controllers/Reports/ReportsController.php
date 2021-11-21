@@ -583,6 +583,7 @@ class ReportsController extends Controller
  
         switch ($t->type) {
             case 'pdf':
+            
                 $content['data'] = $return;
                 $content['process_by'] = auth()->user()->name;
                 $pdf = PDF::loadView('reports.maininventory', $content, [], [

@@ -43,9 +43,7 @@
 
 <body>
     <div class="row">
-        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong> <br>
-            Prepared By:
-            <strong>{{ $process_by }}</strong>
+        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong>
         </div>
     </div>
 
@@ -86,11 +84,18 @@
             <tr>
                 <td style="width: auto"> {{ date('Y-m-d', strtotime($items['created_at'])) }} </td>
                 <td style="width: auto"> {{ $items['reference_no'] }} </td>
-                <td style="width: auto"> {{ $items['quantity'] }} </td>
-                <td style="width: auto"> {{ number_format($items['total_amount'], 2) }} </td>
+                <td style="width: auto; text-align: right"> {{ $items['quantity'] }} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['total_amount'], 2) }} </td>
             </tr>
         @endforeach
     </table>
+
+    <div class="row" style="margin-top: 15px">
+        <div class="header" style="text-align: right">
+            Prepared By:
+            <strong>{{ $process_by }}</strong>
+        </div>
+    </div>
     <!-- Page Number -->
     <htmlpagefooter name="page-footer">
         <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>

@@ -43,9 +43,7 @@
 
 <body>
     <div class="row">
-        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong> <br>
-            Prepared By:
-            <strong>{{ $process_by }}</strong>
+        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong>
         </div>
     </div>
 
@@ -190,40 +188,47 @@
             </tr>
             @foreach ($array as $items)
                 <tr>
-                    <td style="width: 15%"> {!! $items['supply_name'] !!}</td>
-                    <td style="width: auto"> {{ $items['unit'] }} </td>
-                    <td style="width: auto"> {{ $items['net_price'] ?? 0 }} </td>
-                    <td style="width: auto"> {{ $items['beginning_q'] ?? 0 }} </td>
-                    <td style="width: auto"> {{ $items['beginning_a'] ?? 0 }} </td>
-                    <td style="width: auto"> {{ $items['incoming_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['incoming_a'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['total_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['total_a'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['outgoing_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['outgoing_a'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['onhand_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['onhand_a'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['average_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['average_a'] ?? 0 }}</td>
+                    <td style="width: 15%; text-align: left"> {!! $items['supply_name'] !!}</td>
+                    <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
+                    <td style="width: auto; text-align: right"> {{ $items['net_price'] ?? 0 }} </td>
+                    <td style="width: auto; text-align: right"> {{ $items['beginning_q'] ?? 0 }} </td>
+                    <td style="width: auto; text-align: right"> {{ $items['beginning_a'] ?? 0 }} </td>
+                    <td style="width: auto; text-align: right"> {{ $items['incoming_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['incoming_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['total_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['total_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['outgoing_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['outgoing_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['onhand_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['onhand_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['average_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['average_a'] ?? 0 }}</td>
                     <td style="width: auto"> {{ $items['lead_time'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['orderpoint'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['minimum_order_quantity'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['ordr'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['orderpoint'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['minimum_order_quantity'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['ordr'] ?? 0 }}</td>
                     <td style="width: auto"> {{ $items['order_frequency'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['triggerpoint'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['ending_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['ending_a'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['consumption_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['consumption_a'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['ideal_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['ideal_a'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['variance_q'] ?? 0 }}</td>
-                    <td style="width: auto"> {{ $items['variance_a'] ?? 0 }} </td>
+                    <td style="width: auto; text-align: left"> {{ $items['triggerpoint'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['ending_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['ending_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['consumption_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['consumption_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['ideal_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['ideal_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['variance_q'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ $items['variance_a'] ?? 0 }} </td>
                 </tr>
             @endforeach
         @endforeach
 
     </table>
+
+    <div class="row" style="margin-top: 15px">
+        <div class="header" style="text-align: right">
+            Prepared By:
+            <strong>{{ $process_by }}</strong>
+        </div>
+    </div>
     <!-- Page Number -->
     <htmlpagefooter name="page-footer">
         <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>

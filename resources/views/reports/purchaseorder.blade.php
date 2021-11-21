@@ -43,9 +43,7 @@
 
 <body>
     <div class="row">
-        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong> <br>
-            Prepared By:
-            <strong>{{ $process_by }}</strong>
+        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong>
         </div>
     </div>
 
@@ -83,15 +81,22 @@
         <!-- Rows -->
         @foreach ($data as $items)
             <tr>
-                <td style="width: auto"> {{ $items['supplier_name_details']['supplier_name'] }}
+                <td style="width: auto; text-align: left"> {{ $items['supplier_name_details']['supplier_name'] }}
                     {{ $items['supplier_name_details']['description'] }}</td>
                 <td style="width: auto"> {{ $items['invoice_number'] }} </td>
-                <td style="width: auto"> {{ $items['format_amount'] }} </td>
+                <td style="width: auto; text-align: right"> {{ $items['format_amount'] }} </td>
                 <td style="width: auto"> {{ date('Y-m-d', strtotime($items['incoming_date'])) }} </td>
 
             </tr>
         @endforeach
     </table>
+
+    <div class="row" style="margin-top: 15px">
+        <div class="header" style="text-align: right">
+            Prepared By:
+            <strong>{{ $process_by }}</strong>
+        </div>
+    </div>
     <!-- Page Number -->
     <htmlpagefooter name="page-footer">
         <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>

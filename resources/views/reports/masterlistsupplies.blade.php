@@ -43,9 +43,7 @@
 
 <body>
     <div class="row">
-        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong> <br>
-            Prepared By:
-            <strong>{{ $process_by }}</strong>
+        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong>
         </div>
     </div>
 
@@ -91,12 +89,12 @@
             <!-- Rows -->
             @foreach ($array as $items)
                 <tr>
-                    <td style="width: auto"> {!! $items['supply_name'] !!} {{ $items['description'] }} </td>
-                    <td style="width: auto"> {{ $items['unit'] }} </td>
-                    <td style="width: auto"> {!! $items['net_price'] ? number_format($items['net_price'], 2) : '' !!} </td>
-                    <td style="width: auto"> {!! $items['with_vat'] ? number_format($items['with_vat'], 2) : '' !!} </td>
+                    <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }} </td>
+                    <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
+                    <td style="width: auto; text-align: right"> {!! $items['net_price'] ? number_format($items['net_price'], 2) : '' !!} </td>
+                    <td style="width: auto; text-align: right"> {!! $items['with_vat'] ? number_format($items['with_vat'], 2) : '' !!} </td>
                     <td style="width: auto"> {{ $items['vat'] }} </td>
-                    <td style="width: auto"> {!! $items['without_vat'] ? number_format($items['without_vat'], 2) : '' !!} </td>
+                    <td style="width: auto; text-align: right"> {!! $items['without_vat'] ? number_format($items['without_vat'], 2) : '' !!} </td>
                     <td style="width: auto">
                         {{ $items['exp_date'] ? date('Y-m-d', strtotime($items['exp_date'])) : null }} </td>
                 </tr>
@@ -135,6 +133,13 @@
             <td style=" border: none; width: auto"> </td>
         </tr> --}}
     </table>
+
+    <div class="row" style="margin-top: 15px">
+        <div class="header" style="text-align: right">
+            Prepared By:
+            <strong>{{ $process_by }}</strong>
+        </div>
+    </div>
     <!-- Page Number -->
     <htmlpagefooter name="page-footer">
         <p style="bottom: 0%;">Page {PAGENO} of {nb}</p>

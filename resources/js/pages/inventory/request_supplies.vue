@@ -533,10 +533,7 @@
                     style="text-transform: none"
                     :small="$vuetify.breakpoint.smAndDown"
                     class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                    @click="
-                      validate('send');
-                      disabled2();
-                    "
+                    @click="validate('send')"
                     :disabled="disabled || checkLength"
                   >
                     Send Request</v-btn
@@ -690,20 +687,6 @@ export default {
         this.disabled = false;
       } else {
         this.disabled = true;
-      }
-    },
-    disabled2() {
-      for (var key in this.temp_data) {
-        for (var key1 in this.temp_data[key]) {
-          console.log(this.temp_data[key][key1]);
-          console.log(this.table2[key][key1]);
-          if (
-            this.temp_data[key][key1] != this.table2[key][key1] ||
-            this.temp_data.length != this.table2.length
-          ) {
-            return true;
-          }
-        }
       }
     },
   },
@@ -986,8 +969,8 @@ export default {
               message: "Successfully added.",
             };
           }
+          this.disabled = false;
         }
-        this.disabled = false;
         this.dialog = false;
       }
     },
@@ -1004,9 +987,21 @@ export default {
         iconColor: "success",
         message: "Successfully removed.",
       };
+      this.disabled = false;
     },
     Edit(row) {
       this.table2[this.table2.indexOf(row)].quantity = this.quantity;
+      for (var key in this.temp_data) {
+        for (var key1 in this.temp_data[key]) {
+          if (
+            this.temp_data[key][key1] != this.table2[key][key1] ||
+            this.temp_data.length != this.table2.length
+          ) {
+            return (this.disabled = false);
+          }
+        }
+      }
+      this.disabled = true;
     },
 
     async storeRequest() {
@@ -1080,7 +1075,6 @@ export default {
       await axios
         .get("/api/requestsupp/request/list", { params: { ref: ref.ref } })
         .then((result) => {
-          console.log(result.data);
           this.temp_data = JSON.parse(JSON.stringify(result.data));
           this.table2 = result.data;
           this.dialog_list = true;
