@@ -31,6 +31,7 @@ export default [
   { path: '/supplies_inventory', name: 'supplies-inventory', component: page('inventory/supplies_inventory.vue') },
   { path: '/deducted_supplies', name: 'deducted-supplies', component: page('inventory/deducted_supplies.vue') },
   { path: '/request_supplies', name: 'request-supplies', component: page('inventory/request_supplies.vue') },
+  { path: '/request_products', name: 'request-products', component: page('inventory/request_products.vue') },
 
 
   //Products

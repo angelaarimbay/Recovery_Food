@@ -71,51 +71,77 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
-              <v-btn
-                color="primary"
-                style="text-transform: none"
-                depressed
-                dark
-                :small="$vuetify.breakpoint.smAndDown"
-                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                @click="openDialog"
+              <v-col cols="6" xl="4" lg="4" md="4" sm="6">
+                <v-btn
+                  color="primary"
+                  style="text-transform: none"
+                  depressed
+                  dark
+                  :small="$vuetify.breakpoint.smAndDown"
+                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                  @click="openDialog"
+                >
+                  Add Outgoing Product
+                </v-btn>
+              </v-col>
+              <v-col
+                cols="6"
+                xl="4"
+                lg="4"
+                md="4"
+                sm="6"
+                :class="{
+                  'text-right': $vuetify.breakpoint.smAndDown,
+                  'text-center': $vuetify.breakpoint.mdAndUp,
+                }"
               >
-                Add Outgoing Product
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    class="mr-2"
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="get"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-refresh</v-icon></v-btn
-                  >
-                </template>
-                <span>Refresh</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    color="grey darken-4"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="filterDialog = true"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-filter-variant</v-icon></v-btn
-                  >
-                </template>
-                <span>Filter</span>
-              </v-tooltip>
+                <v-btn
+                  color="warning"
+                  style="text-transform: none"
+                  depressed
+                  dark
+                  :small="$vuetify.breakpoint.smAndDown"
+                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                  @click="openRequestDialog"
+                >
+                  Request(s)
+                </v-btn>
+              </v-col>
+              <v-col cols="12" xl="4" lg="4" md="4" sm="6" class="text-right">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      class="mr-2"
+                      color="success"
+                      style="text-transform: none"
+                      depressed
+                      :small="$vuetify.breakpoint.smAndDown"
+                      dark
+                      @click="get"
+                      v-on="data.on"
+                      icon
+                      ><v-icon>mdi-refresh</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Refresh</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="grey darken-4"
+                      style="text-transform: none"
+                      depressed
+                      :small="$vuetify.breakpoint.smAndDown"
+                      dark
+                      @click="filterDialog = true"
+                      v-on="data.on"
+                      icon
+                      ><v-icon>mdi-filter-variant</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Filter</span>
+                </v-tooltip>
+              </v-col>
             </v-row>
 
             <!-- Filter Dialog -->
@@ -682,6 +708,351 @@
             </v-card>
           </v-dialog>
         </v-form>
+
+        <!-- BRANCH REQUEST LIST -->
+        <v-dialog
+          v-model="dialog1"
+          fullscreen
+          transition="dialog-bottom-transition"
+          persistent
+          no-click-animation
+        >
+          <v-toolbar
+            dense
+            dark
+            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+          >
+            Branch Request(s)
+            <v-spacer></v-spacer>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialog1 = false"
+              >mdi-close
+            </v-icon>
+          </v-toolbar>
+
+          <v-card tile height="auto" style="background-color: #f1ffff">
+            <v-card-text class="py-2 px-3">
+              <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+                <v-card elevation="1" class="mt-2" style="border-radius: 10px">
+                  <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-4">
+                    <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+                      <v-row no-gutters>
+                        <v-spacer></v-spacer>
+                        <v-tooltip bottom>
+                          <template #activator="data">
+                            <v-btn
+                              class="mr-2"
+                              color="success"
+                              style="text-transform: none"
+                              depressed
+                              :small="$vuetify.breakpoint.smAndDown"
+                              dark
+                              @click="requestList"
+                              v-on="data.on"
+                              icon
+                              ><v-icon>mdi-refresh</v-icon></v-btn
+                            >
+                          </template>
+                          <span>Refresh</span>
+                        </v-tooltip>
+                      </v-row>
+                      <v-data-table
+                        id="table1"
+                        :headers="headers1"
+                        :items="table1.data"
+                        :loading="progressbar1"
+                        :page.sync="page1"
+                        ref="progress"
+                        :items-per-page="itemsPerPage1"
+                        hide-default-footer
+                        @page-count="pageCount1 = $event"
+                        class="mt-2 table-striped border"
+                      >
+                        <!-- Progress Bar -->
+                        <v-progress-linear
+                          color="red darken-2"
+                          class="px-0 mx-0"
+                          slot="progress"
+                          indeterminate
+                          rounded
+                        ></v-progress-linear>
+                        <template v-slot:[`item.request_date`]="{ item }">
+                          {{
+                            getFormatDate(
+                              item.request_date,
+                              "YYYY-MM-DD hh:mm A"
+                            )
+                          }}
+                        </template>
+                        <template v-slot:[`item.product_name`]="{ item }">
+                          {{ item.product_name }}
+                          {{ item.description }}</template
+                        >
+
+                        <template v-slot:[`item.status`]="{ item }">
+                          <div v-if="item.status == 1" class="text-warning">
+                            Pending
+                          </div>
+                          <div v-else-if="item.status == 2" class="text-info">
+                            Confirmed / For Delivery
+                          </div>
+                          <div
+                            v-else-if="item.status == 3"
+                            class="text-success"
+                          >
+                            Completed
+                          </div>
+                        </template>
+
+                        <template v-slot:[`item.id`]="{ item }">
+                          <v-tooltip bottom>
+                            <template #activator="data">
+                              <v-btn
+                                icon
+                                color="red darken-2"
+                                @click="viewRequestDialog(item)"
+                                small
+                                :x-small="$vuetify.breakpoint.smAndDown"
+                                v-on="data.on"
+                              >
+                                <v-icon>mdi-eye</v-icon>
+                              </v-btn>
+                            </template>
+                            <span>View</span>
+                          </v-tooltip>
+                        </template>
+                      </v-data-table>
+                    </v-container>
+                  </v-container>
+                </v-card>
+                <!-- Paginate -->
+                <div class="pbutton text-center pt-7">
+                  <v-pagination
+                    v-model="page1"
+                    :total-visible="7"
+                    :length="table1.last_page"
+                    color="red darken-2"
+                  ></v-pagination>
+                </div>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+
+        <!-- View Requested Products List Form -->
+        <v-dialog v-model="dialog2" width="900px">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Requested Products List
+              <v-spacer></v-spacer>
+              <v-icon text @click="dialog2 = false">mdi-close </v-icon>
+            </v-toolbar>
+            <v-card-text class="px-0">
+              <v-card-text>
+                <div class="px-0" v-if="table2.length > 0">
+                  <v-row no-gutters>
+                    <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                      Requested By:<br /><strong
+                        >{{ table2[0].branch }}
+                        -
+                        {{ table2[0].user }}</strong
+                      >
+                    </v-col>
+                    <v-col
+                      :class="{ 'text-right': $vuetify.breakpoint.smAndUp }"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                    >
+                      Date Requested:<br /><strong>{{
+                        getFormatDate(
+                          table2[0].request_date,
+                          "YYYY-MM-DD hh:mm A"
+                        )
+                      }}</strong>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card-text>
+
+              <v-data-table
+                id="table1"
+                :headers="headers2"
+                show-select
+                :items="table2"
+                dense
+                item-key="product_id"
+                :items-per-page="10"
+                v-model="selected"
+                class="table-striped border"
+              >
+                <template
+                  v-slot:[`item.data-table-select`]="{
+                    item,
+                    isSelected,
+                    select,
+                  }"
+                >
+                  <v-simple-checkbox
+                    :value="
+                      item.status !== 3 &&
+                      isSelected &&
+                      item.status !== 2 &&
+                      isSelected
+                    "
+                    :readonly="item.status == 3 || item.status == 2"
+                    :disabled="item.status == 3 || item.status == 2"
+                    @input="select($event)"
+                  ></v-simple-checkbox>
+                </template>
+                <template v-slot:[`item.product_name`]="{ item }">
+                  {{ item.product_name }} {{ item.description }}</template
+                >
+
+                <template v-slot:[`item.status`]="{ item }">
+                  <div v-if="item.status == 1" class="text-warning">
+                    Pending
+                  </div>
+                  <div v-else-if="item.status == 2" class="text-info">
+                    Confirmed / For Delivery
+                  </div>
+                  <div v-else-if="item.status == 3" class="text-success">
+                    Completed
+                  </div>
+                </template>
+
+                <template v-slot:[`item.product_id`]="{ item }">
+                  <div v-if="item.status == 1">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          icon
+                          color="red darken-2"
+                          @click="editRequest(item)"
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          v-on="data.on"
+                        >
+                          <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Edit</span>
+                    </v-tooltip>
+                  </div>
+                </template>
+              </v-data-table>
+            </v-card-text>
+            <v-divider class="my-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="px-0 pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                color="primary"
+                @click="processRequest"
+                :disabled="!disabled"
+                text
+              >
+                Approve Request
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <!-- Quantity Dialog Form -->
+        <v-dialog v-model="dialog3" max-width="450px">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Enter Quantity
+              <v-spacer></v-spacer>
+              <v-icon text @click="dialog3 = false">mdi-close </v-icon>
+            </v-toolbar>
+            <v-card-text class="px-0 py-0">
+              <v-container class="px-2">
+                <v-row>
+                  <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <span
+                      >Item Selected:
+                      <strong>{{ selectedItem.product_name }}</strong></span
+                    >
+                  </v-col>
+                </v-row>
+                <v-row class="mt-0">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-card-actions class="px-0">
+                      <v-text-field
+                        :rules="formRulesQuantity"
+                        v-model="quantity"
+                        dense
+                        autocomplete="off"
+                        @keydown="quantityKeydown($event)"
+                        class="mr-2"
+                        clearable
+                        background-color="white"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 12px">
+                            Quantity <span style="color: red">*</span>
+                          </div>
+                        </template>
+                      </v-text-field>
+                      <v-btn
+                        outlined
+                        color="primary"
+                        class="py-4 px-2 mb-6"
+                        text
+                        @click="allQuantity(selectedItem)"
+                      >
+                        MAX
+                      </v-btn>
+                    </v-card-actions>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-divider class="my-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="px-0 pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="error"
+                depressed
+                :disabled="button"
+                dark
+                @click="dialog3 = false"
+                :small="$vuetify.breakpoint.smAndDown"
+                text
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                color="primary"
+                depressed
+                :disabled="button"
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                @click="updateQuantity(selectedItem)"
+                text
+              >
+                OK
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-container>
     </v-card>
   </div>
@@ -747,6 +1118,13 @@ export default {
         return true;
       } else {
         return false;
+      }
+    },
+    disabled() {
+      if (this.selected.length == 0) {
+        return false;
+      } else {
+        return true;
       }
     },
   },
@@ -856,7 +1234,7 @@ export default {
         class: "black--text",
       },
     ],
-    getQuantity: 0,
+
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
@@ -865,6 +1243,90 @@ export default {
     date1: false,
     date2: false,
     date3: false,
+    getQuantity: 0,
+    //----------------------------------requestlist
+    headers1: [
+      {
+        text: "REQUEST DATE",
+        value: "request_date",
+        class: "black--text",
+      },
+      {
+        text: "REFERENCE NO.",
+        align: "right",
+        value: "ref",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "BRANCH",
+        value: "branch",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
+        value: "status",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION",
+        value: "id",
+        align: "center",
+        filterable: false,
+        sortable: false,
+        class: "black--text",
+      },
+    ],
+    progressbar1: false,
+    table1: [],
+    dialog1: false,
+    page1: 1,
+    pageCount1: 0,
+    itemsPerPage1: 5,
+    //----------------------------------requestlist items
+    headers2: [
+      {
+        text: "PRODUCT NAME",
+        value: "product_name",
+        class: "black--text",
+      },
+      {
+        text: "REQUESTED QTY",
+        value: "quantity_requested",
+        filterable: false,
+        align: "right",
+        class: "black--text",
+      },
+      {
+        text: "AVAILABLE QTY",
+        value: "quantity_available",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
+        value: "status",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION",
+        value: "product_id",
+        align: "center",
+        filterable: false,
+        sortable: false,
+        class: "black--text",
+      },
+    ],
+    table2: [],
+    dialog2: false,
+    selected: [],
+
+    dialog3: false,
+    selectedItem: [],
   }),
 
   // Onload
@@ -1042,11 +1504,7 @@ export default {
       await axios
         .get("/api/outprod/prodValidate", { params: { id: id.id } })
         .then((result) => {
-          if (!edit) {
-            this.getQuantity = result.data + this.form.quantity;
-          } else {
-            this.getQuantity = result.data;
-          }
+          this.getQuantity = result.data;
         });
     },
 
@@ -1111,6 +1569,108 @@ export default {
       this.$refs.form.reset();
       this.dialog = false;
     },
+
+    //--------------------------------------------added
+    async requestList() {
+      this.progressbar1 = true;
+      await axios
+        .get("/api/outprod/request/list", {
+          params: {
+            page: this.page1,
+            itemsPerPage: this.itemsPerPage1,
+          },
+        })
+        .then((result) => {
+          this.table1 = result.data;
+          this.progressbar1 = false;
+        });
+    },
+    openRequestDialog() {
+      this.dialog1 = true;
+      this.requestList();
+    },
+
+    async viewRequestDialog(ref) {
+      await axios
+        .get("/api/outprod/request/items/list", {
+          params: {
+            ref: ref.id,
+          },
+        })
+        .then((result) => {
+          this.table2 = result.data;
+        });
+      this.selected = [];
+      this.dialog2 = true;
+    },
+    editRequest(row) {
+      this.selectedItem = row;
+      this.quantity = row.quantity_requested;
+      this.dialog3 = true;
+    },
+    updateQuantity() {
+      console.log(this.quantity);
+      console.log(
+        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
+      );
+      if (
+        this.quantity <
+        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
+      ) {
+        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested =
+          this.quantity;
+        this.dialog3 = false;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-circle",
+          iconColor: "error",
+          message: "Insufficient stocks.",
+        };
+      }
+    },
+    allQuantity() {
+      this.quantity = this.selectedItem.quantity_available;
+    },
+
+    async processRequest() {
+      var found = 0;
+      for (var key in this.selected) {
+        if (
+          this.selected[key].quantity_available <
+          this.selected[key].quantity_requested
+        ) {
+          found += 1;
+        }
+      }
+
+      if (found > 0) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-circle",
+          iconColor: "error",
+          message: "Insufficient stocks.",
+        };
+        return;
+      }
+
+      await axios
+        .post("/api/outprod/request/process", {
+          checked: this.selected,
+          actual: this.table2,
+        })
+        .then((result) => {
+          //if the value is true then save to database
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Request has been successfully proccessed.",
+          };
+          this.requestList();
+          this.dialog2 = false;
+        });
+    },
   },
 
   watch: {
@@ -1120,6 +1680,10 @@ export default {
     page(val) {
       this.page = val;
       this.get();
+    },
+    page1(val) {
+      this.page1 = val;
+      this.requestList();
     },
     id: {
       handler: function (v) {},

@@ -9,6 +9,8 @@ use App\Models\tbl_masterlistprod;
 use App\Models\tbl_outgoingprod;
 use App\Models\tbl_prodcat;
 use App\Models\tbl_prodsubcat;
+use App\Models\tbl_requestprod;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -117,5 +119,57 @@ class OutgoingProductsController extends Controller
     {
         return tbl_incomingprod::where('product_name', $request->id)->sum('quantity') -
         tbl_outgoingprod::where("product_name", $request->id)->sum('quantity');
+    }
+
+    public function getRequest(Request $t)
+    {
+        $table = tbl_requestprod::select(['branch', 'ref', 'user', 'request_date'])
+            ->selectRaw('min(status) as status')
+            ->groupBy(['branch', 'ref', 'user', 'request_date'])
+            ->wherein('status', [1, 2])
+            ->orderBy("request_date", "desc")
+            ->get();
+        $return = [];
+        foreach ($table as $key => $value) {
+            $temp = [];
+            $temp['row'] = $key + 1;
+            $temp['branch'] = tbl_branches::where("id", $value->branch)->first()->branch_name;
+            $temp['id'] = $value->ref;
+            $temp['ref'] = $value->ref;
+            $temp['status'] = $value->status;
+            $temp['request_date'] = $value->request_date;
+            array_push($return, $temp);
+        }
+        $items = Collection::make($return);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+    }
+
+    public function getRequested(Request $request)
+    {
+        $table = tbl_requestprod::where('ref', $request->ref)
+            ->where('deleted', 0)
+            ->get();
+        $return = [];
+        foreach ($table as $key => $value) {
+            $temp = [];
+            $temp['ref'] = $request->ref;
+            $temp['product_id'] = $value->product_name;
+            $temp['product_name'] = $value->product_name_details['product_name'] . ' ' . $value->product_name_details['description'];
+            $temp['quantity_requested'] = $value->quantity;
+            $temp['quantity_available'] = $value->quantity_available;
+            $temp['branch'] = tbl_branches::where("id", $value->branch)->first()->branch_name;
+            $temp['user'] = User::where("id", $value->user)->first()->name;
+            $temp['request_date'] = $value->request_date;
+            $temp['status'] = $value->status;
+            array_push($return, $temp);
+        }
+        return $return;
+    }
+
+    public function processRequest(Request $request)
+    {
+        foreach ($request->checked as $key => $value) {
+            tbl_requestprod::where(['product_name' => $value['product_id'], 'ref' => $value['ref']])->update(['status' => 2]);
+        }
     }
 }

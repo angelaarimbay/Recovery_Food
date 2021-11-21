@@ -70,7 +70,7 @@
             my-auto
           "
         >
-          Supplies Request
+          Products Request
         </span>
         <v-spacer></v-spacer>
 
@@ -93,7 +93,7 @@
             disabled
             class="px-0"
             style="text-transform: none"
-            >Supplies Request</v-btn
+            >Products Request</v-btn
           >
         </v-card-actions>
       </v-layout>
@@ -278,7 +278,7 @@
                       text-sm-subtitle-1
                       mb-0 mb-0
                     "
-                    >Supplies List</span
+                    >Products List</span
                   >
                 </v-card>
 
@@ -306,7 +306,7 @@
                         style="font-size: 12px"
                       >
                         <template slot="label">
-                          <div style="font-size: 12px">Supply Name</div>
+                          <div style="font-size: 12px">Product Name</div>
                         </template>
                       </v-text-field>
                       <v-tooltip bottom>
@@ -364,8 +364,8 @@
                     rounded
                   ></v-progress-linear>
 
-                  <template v-slot:[`item.supply_name`]="{ item }">
-                    {{ item.supply_name }} {{ item.description }}</template
+                  <template v-slot:[`item.product_name`]="{ item }">
+                    {{ item.product_name }} {{ item.description }}</template
                   >
 
                   <template v-slot:[`item.id`]="{ item }">
@@ -467,8 +467,8 @@
                     rounded
                   ></v-progress-linear>
 
-                  <template v-slot:[`item.supply_name`]="{ item }">
-                    {{ item.supply_name }} {{ item.description }}</template
+                  <template v-slot:[`item.product_name`]="{ item }">
+                    {{ item.product_name }} {{ item.description }}</template
                   >
 
                   <template v-slot:[`item.status`]="{ item }">
@@ -562,7 +562,7 @@
                   <span
                     >Item Selected:
                     <strong
-                      >{{ selected.supply_name }}
+                      >{{ selected.product_name }}
                       {{ selected.description }}</strong
                     >
                   </span>
@@ -727,14 +727,8 @@ export default {
     ],
     headers1: [
       {
-        text: "SUPPLY NAME",
-        value: "supply_name",
-        class: "black--text",
-      },
-      {
-        text: "UNIT",
-        value: "unit",
-        filterable: false,
+        text: "PRODUCT NAME",
+        value: "product_name",
         class: "black--text",
       },
       {
@@ -748,14 +742,8 @@ export default {
     ],
     headers2: [
       {
-        text: "SUPPLY NAME",
-        value: "supply_name",
-        class: "black--text",
-      },
-      {
-        text: "UNIT",
-        value: "unit",
-        filterable: false,
+        text: "PRODUCT NAME",
+        value: "product_name",
         class: "black--text",
       },
       {
@@ -903,7 +891,7 @@ export default {
     async getList() {
       this.progressbar1 = true;
       await axios
-        .get("/api/requestsupp/supplies/list", {
+        .get("/api/requestprod/products/list", {
           params: { search: this.search },
         })
         .then((result) => {
@@ -914,7 +902,7 @@ export default {
     async get() {
       this.progressbar = true;
       await axios
-        .get("/api/requestsupp/get", {
+        .get("/api/requestprod/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
@@ -953,11 +941,11 @@ export default {
           } else {
             this.table2.push({
               id: row.id,
-              supply_name:
-                row.supply_name +
+
+              product_name:
+                row.product_name +
                 " " +
                 (row.description != null ? row.description : ""),
-              unit: row.unit,
               quantity: this.quantity,
               ref: "",
               status: 0,
@@ -1013,7 +1001,7 @@ export default {
       }
       // save
       await axios
-        .post("/api/requestsupp/supplies/save", this.table2)
+        .post("/api/requestprod/products/save", this.table2)
         .then((result) => {
           //if the value is true then save to database
           this.snackbar = {
@@ -1028,8 +1016,8 @@ export default {
         });
     },
     addRequest() {
-      if (this.headers2.length == 5) {
-        this.headers2.splice(this.headers2.indexOf(this.headers2[3]), 1);
+      if (this.headers2.length == 4) {
+        this.headers2.splice(this.headers2.indexOf(this.headers2[2]), 1);
       }
       this.disabled = true;
       this.dialog_list = true;
@@ -1038,14 +1026,8 @@ export default {
     async viewRequest(ref) {
       (this.headers2 = [
         {
-          text: "SUPPLY NAME",
-          value: "supply_name",
-          class: "black--text",
-        },
-        {
-          text: "UNIT",
-          value: "unit",
-          filterable: false,
+          text: "PRODUCT NAME",
+          value: "product_name",
           class: "black--text",
         },
         {
@@ -1073,7 +1055,7 @@ export default {
         (this.isHidden = true);
       this.getList();
       await axios
-        .get("/api/requestsupp/request/list", { params: { ref: ref.ref } })
+        .get("/api/requestprod/request/list", { params: { ref: ref.ref } })
         .then((result) => {
           this.temp_data = JSON.parse(JSON.stringify(result.data));
           this.table2 = result.data;
@@ -1107,7 +1089,7 @@ export default {
     },
     async cancelRequest() {
       await axios
-        .post("/api/requestsupp/request/cancel", this.cancel_select)
+        .post("/api/requestprod/request/cancel", this.cancel_select)
         .then((result) => {
           //if the value is true then save to database
           this.snackbar = {
@@ -1122,7 +1104,7 @@ export default {
 
     async completeRequest(ref) {
       await axios
-        .post("/api/requestsupp/request/complete", ref)
+        .post("/api/requestprod/request/complete", ref)
         .then((result) => {
           //if the value is true then save to database
           this.snackbar = {

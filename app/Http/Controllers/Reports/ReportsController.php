@@ -6,6 +6,7 @@ use App\Exports\InventoryExport2;
 use App\Exports\InventoryExport;
 use App\Http\Controllers\Controller;
 use App\Models\tbl_branches;
+use App\Models\tbl_company;
 use App\Models\tbl_incomingsupp;
 use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_outgoingsupp;
@@ -88,7 +89,11 @@ class ReportsController extends Controller
                     $content['with_vat'] = tbl_masterlistsupp::get()->sum("with_vat");
                     $content['without_vat'] = tbl_masterlistsupp::get()->sum("without_vat");
                     $content['process_by'] = auth()->user()->name;
-
+                    if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                        $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                    } else {
+                        $content['img'] = null;
+                    }
                     $pdf = PDF::loadView('reports.masterlistsupplies', $content, [], [
                         'format' => 'A4-L',
                     ]);
@@ -205,7 +210,11 @@ class ReportsController extends Controller
                     $content['quantity_amount'] = $g_total_p;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to];
-
+                    if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                        $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                    } else {
+                        $content['img'] = null;
+                    }
                     $pdf = PDF::loadView('reports.incomingsupplies', $content, [], [
                         'format' => 'A4-L',
                     ]);
@@ -328,6 +337,11 @@ class ReportsController extends Controller
                     $content['quantity_amount'] = $g_total_p;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                    if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                        $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                    } else {
+                        $content['img'] = null;
+                    }
                     $pdf = PDF::loadView('reports.outgoingsupplies', $content, [], [
                         'format' => 'A4-L',
                     ]);
@@ -534,7 +548,6 @@ class ReportsController extends Controller
                 }
                 array_push($group, $temp);
             }
-            
 
             // ito ung sub total na row, lagay mo ung declared variable mo kanina.
             // may sample na jan ha dalwa.
@@ -573,19 +586,21 @@ class ReportsController extends Controller
                 'variance_a' => number_format($st_variance_a, 2),
             ];
 
-            
             $group = collect($group)->sortByDesc('triggerpoint')->ToArray();
             array_push($group, $ar);
             array_push($return, $group);
 
         }
- 
- 
+
         switch ($t->type) {
             case 'pdf':
-            
                 $content['data'] = $return;
                 $content['process_by'] = auth()->user()->name;
+                if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                    $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                } else {
+                    $content['img'] = null;
+                }
                 $pdf = PDF::loadView('reports.maininventory', $content, [], [
                     'format' => 'A4-L',
                 ]);
@@ -723,7 +738,11 @@ class ReportsController extends Controller
                 if (count($data) > 0) {
                     $content['data'] = $data;
                     $content['process_by'] = auth()->user()->name;
-
+                    if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                        $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                    } else {
+                        $content['img'] = null;
+                    }
                     $pdf = PDF::loadView('reports.inventorysummary', $content, [], [
                         'format' => 'A4-L',
                     ]);
@@ -764,6 +783,11 @@ class ReportsController extends Controller
                     $content['data'] = $data;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
+                    if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                        $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                    } else {
+                        $content['img'] = null;
+                    }
                     $pdf = PDF::loadView('reports.sales', $content, [], [
                         'format' => 'A4-L',
                     ]);
@@ -810,6 +834,11 @@ class ReportsController extends Controller
                     $content['data'] = $data;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
+                    if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                        $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                    } else {
+                        $content['img'] = null;
+                    }
                     $pdf = PDF::loadView('reports.transaction', $content, [], [
                         'format' => 'A4-L',
                     ]);
@@ -852,6 +881,11 @@ class ReportsController extends Controller
                     $content['data'] = $data;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                    if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                        $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                    } else {
+                        $content['img'] = null;
+                    }
                     $pdf = PDF::loadView('reports.purchaseorder', $content, [], [
                         'format' => 'A4-L',
                     ]);

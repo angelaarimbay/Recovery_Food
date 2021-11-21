@@ -1617,7 +1617,6 @@ export default {
     },
 
     //--------------------------------------------added
-
     async requestList() {
       this.progressbar1 = true;
       await axios
@@ -1660,16 +1659,16 @@ export default {
         this.quantity <
         this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
       ) {
+        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested =
+          this.quantity;
+        this.dialog3 = false;
+      } else {
         this.snackbar = {
           active: true,
           iconText: "alert-circle",
           iconColor: "error",
           message: "Insufficient stocks.",
         };
-      } else {
-        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested =
-          this.quantity;
-        this.dialog3 = false;
       }
     },
     allQuantity() {

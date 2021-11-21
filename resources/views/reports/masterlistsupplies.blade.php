@@ -46,9 +46,12 @@
         <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong>
         </div>
     </div>
-
     <div style="text-align: center">
-        <img src="{{ public_path() . '/img/logo.jpg' }}" style="width: 50px"></img>
+        @if ($img != null)
+            <img src="{{ public_path() . '/storage/logo/' . $img }}" style="width: 50px"></img>
+        @else
+            <img src="{{ public_path() . '/img/logo.jpg' }}" style="width: 50px"></img>
+        @endif
     </div>
     <p class="header">Recovery Food</p>
     <p class="header">Masterlist Supplies Report</p>
@@ -89,7 +92,8 @@
             <!-- Rows -->
             @foreach ($array as $items)
                 <tr>
-                    <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }} </td>
+                    <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
+                    </td>
                     <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
                     <td style="width: auto; text-align: right"> {!! $items['net_price'] ? number_format($items['net_price'], 2) : '' !!} </td>
                     <td style="width: auto; text-align: right"> {!! $items['with_vat'] ? number_format($items['with_vat'], 2) : '' !!} </td>

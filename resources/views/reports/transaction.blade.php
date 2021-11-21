@@ -48,7 +48,11 @@
     </div>
 
     <div style="text-align: center">
-        <img src="{{ public_path() . '/img/logo.jpg' }}" style="width: 50px"></img>
+        @if ($img != null)
+            <img src="{{ public_path() . '/storage/logo/' . $img }}" style="width: 50px"></img>
+        @else
+            <img src="{{ public_path() . '/img/logo.jpg' }}" style="width: 50px"></img>
+        @endif
     </div>
     <p class="header">Recovery Food</p>
     <p class="header">Transaction Report</p>
