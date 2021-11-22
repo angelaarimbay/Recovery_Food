@@ -1609,12 +1609,8 @@ export default {
       this.dialog3 = true;
     },
     updateQuantity() {
-      console.log(this.quantity);
-      console.log(
-        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
-      );
       if (
-        this.quantity <
+        this.quantity <=
         this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
       ) {
         this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested =
