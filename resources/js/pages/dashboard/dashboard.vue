@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div
     style="min-width: 310px"
     v-if="!user.permissionslist.includes('Access POS')"
@@ -50,7 +51,7 @@
               Close
             </v-btn>
 
-            <!-- Cards -->
+            <!-- Cards Bottom Sheet -->
             <v-row no-gutters>
               <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                 <v-row
@@ -145,6 +146,7 @@
           class="pa-1"
           :hidden="!hiddenCard1"
         >
+          <!-- Total Supplies -->
           <v-card
             elevation="1"
             style="border-radius: 10px; border-left: 10px solid #827717"
@@ -191,6 +193,7 @@
           class="pa-1"
           :hidden="!hiddenCard2"
         >
+          <!-- Total Products -->
           <v-card
             elevation="1"
             style="border-radius: 10px; border-left: 10px solid #827717"
@@ -237,6 +240,7 @@
           class="pa-1"
           :hidden="!hiddenCard3"
         >
+          <!-- Total Purchase Orders -->
           <v-card
             elevation="1"
             style="border-radius: 10px; border-left: 10px solid #827717"
@@ -283,6 +287,7 @@
           class="pa-1"
           :hidden="!hiddenCard4"
         >
+          <!-- Total Users -->
           <v-card
             elevation="1"
             style="border-radius: 10px; border-left: 10px solid #827717"
@@ -334,6 +339,7 @@
             min-height="80px"
           >
             <v-row no-gutters>
+              <!-- Nearly Expired -->
               <v-col cols="6" xl="6" lg="6" md="6" sm="6" class="pa-0">
                 <v-row no-gutters align="center">
                   <v-col cols="12" xl="6" lg="12" md="12" sm="12">
@@ -348,7 +354,8 @@
                         text-md-subtitle-2
                         text-sm-body-2
                         pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-2
-                        pt-1 pb-0
+                        pt-1
+                        pb-0
                         pr-2
                       "
                       style="color: #827717"
@@ -422,6 +429,7 @@
               <!-- Divider -->
               <v-divider class="my-2" vertical></v-divider>
 
+              <!-- Expired -->
               <v-col cols="6" xl="6" lg="6" md="6" sm="6" class="pa-0">
                 <v-row no-gutters align="center">
                   <v-col cols="12" xl="6" lg="12" md="12" sm="12">
@@ -436,7 +444,8 @@
                         text-md-subtitle-2
                         text-sm-body-2
                         pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-2
-                        pt-1 pb-0
+                        pt-1
+                        pb-0
                         pr-2
                       "
                       style="color: #827717"
@@ -517,50 +526,132 @@
             style="border-radius: 10px"
             min-height="80px"
           >
-            <v-row no-gutters align="center">
-              <v-col cols="12" xl="6" lg="6" md="8" sm="12" class="pa-0">
-                <v-card-title
-                  :class="{
-                    'justify-center': $vuetify.breakpoint.xsOnly,
-                  }"
-                  class="
-                    text-body-2
-                    text-xl-subtitle-1
-                    text-lg-subtitle-1
-                    text-md-subtitle-2
-                    text-sm-body-2
-                    pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-4
-                    py-2
-                    pr-2
-                  "
-                  style="color: #827717"
-                >
-                  Pending Request(s)
-                </v-card-title>
+            <v-row no-gutters>
+              <!-- Supplies Request -->
+              <v-col cols="6" xl="6" lg="6" md="6" sm="6" class="pa-0">
+                <v-row no-gutters align="center">
+                  <v-col cols="12" xl="8" lg="12" md="12" sm="12">
+                    <v-card-title
+                      :class="{
+                        'justify-center': $vuetify.breakpoint.mdAndDown,
+                      }"
+                      class="
+                        text-body-2
+                        text-xl-subtitle-1
+                        text-lg-subtitle-1
+                        text-md-subtitle-2
+                        text-sm-body-2
+                        pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-2
+                        pt-1
+                        pb-0
+                        pr-2
+                      "
+                      style="
+                        color: #827717;
+                        word-break: keep-all;
+                        text-align: center;
+                      "
+                    >
+                      Supplies Request(s)
+                    </v-card-title>
+                  </v-col>
+                  <v-col cols="12" xl="4" lg="12" md="12" sm="12">
+                    <v-row no-gutters>
+                      <v-col cols="12">
+                        <v-card-text
+                          :class="{
+                            'text-center': $vuetify.breakpoint.mdAndDown,
+                          }"
+                          class="
+                            text-right
+                            font-weight-bold
+                            pa-1
+                            text-body-2
+                            text-xl-subtitle-1
+                            text-lg-subtitle-1
+                            text-md-subtitle-2
+                            text-sm-body-2
+                            pr-2 pr-xl-4 pr-lg-4 pr-md-4 pr-sm-2
+                            pl-2
+                          "
+                        >
+                          {{ supprequest }}
+                          <v-progress-circular
+                            size="18"
+                            indeterminate
+                            :hidden="hidden7"
+                            color="red darken-2"
+                          ></v-progress-circular>
+                        </v-card-text>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
               </v-col>
-              <v-col cols="12" xl="6" lg="6" md="4" sm="12" class="pa-0">
-                <v-card-text
-                  :class="{
-                    'text-center': $vuetify.breakpoint.xsOnly,
-                  }"
-                  class="
-                    text-right
-                    font-weight-bold
-                    pa-1
-                    mb-0
-                    h3
-                    pr-2 pr-xl-4 pr-lg-4 pr-md-4 pr-sm-4
-                    pl-2
-                  "
-                >
-                  {{ requests }}
-                  <v-progress-circular
-                    size="25"
-                    indeterminate
-                    :hidden="hidden7"
-                    color="red darken-2"
-                  ></v-progress-circular>
-                </v-card-text>
+
+              <!-- Divider -->
+              <v-divider class="my-2" vertical></v-divider>
+
+              <!-- Products Request -->
+              <v-col cols="6" xl="6" lg="6" md="6" sm="6" class="pa-0">
+                <v-row no-gutters align="center">
+                  <v-col cols="12" xl="8" lg="12" md="12" sm="12">
+                    <v-card-title
+                      :class="{
+                        'justify-center': $vuetify.breakpoint.mdAndDown,
+                      }"
+                      class="
+                        text-body-2
+                        text-xl-subtitle-1
+                        text-lg-subtitle-1
+                        text-md-subtitle-2
+                        text-sm-body-2
+                        pl-2 pl-xl-4 pl-lg-4 pl-md-4 pl-sm-2
+                        pt-1
+                        pb-0
+                        pr-2
+                      "
+                      style="
+                        color: #827717;
+                        word-break: keep-all;
+                        text-align: center;
+                      "
+                    >
+                      Products Request(s)
+                    </v-card-title>
+                  </v-col>
+                  <v-col cols="12" xl="4" lg="12" md="12" sm="12">
+                    <v-row no-gutters>
+                      <v-col cols="12">
+                        <v-card-text
+                          :class="{
+                            'text-center': $vuetify.breakpoint.mdAndDown,
+                          }"
+                          class="
+                            text-right
+                            font-weight-bold
+                            pa-1
+                            text-body-2
+                            text-xl-subtitle-1
+                            text-lg-subtitle-1
+                            text-md-subtitle-2
+                            text-sm-body-2
+                            pr-2 pr-xl-4 pr-lg-4 pr-md-4 pr-sm-2
+                            pl-2
+                          "
+                        >
+                          {{ prodrequest }}
+                          <v-progress-circular
+                            size="18"
+                            indeterminate
+                            :hidden="hidden8"
+                            color="red darken-2"
+                          ></v-progress-circular>
+                        </v-card-text>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-card>
@@ -573,58 +664,67 @@
       <!-- Graphs -->
       <v-row no-gutters>
         <v-spacer></v-spacer>
-        <v-col cols="12" xl="6" lg="6" md="6" sm="12">
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12">
           <v-row no-gutters class="mb-3">
-            <v-select
-              :items="branchlist"
-              v-model="branch"
-              item-text="branch_name"
-              item-value="id"
-              label="Branch"
-              @change="getProductsGraph"
-              hide-details
-              style="width: 230px; font-size: 12px"
-              class="pa-1"
-              dense
-              solo
-              dark
-            >
-            </v-select>
-            <v-select
-              v-model="year"
-              item-text=""
-              item-value="id"
-              :items="ylist"
-              label="Year"
-              @change="getProductsGraph"
-              hide-details
-              style="width: 100px; font-size: 12px"
-              class="pa-1"
-              dense
-              solo
-              dark
-            >
-            </v-select>
-            <v-select
-              v-model="month"
-              item-text=""
-              item-value="id"
-              :items="mlist"
-              label="Month"
-              @change="getProductsGraph"
-              hide-details
-              style="width: 160px; font-size: 12px"
-              class="pa-1"
-              dense
-              solo
-              dark
-            >
-            </v-select
+            <!-- Branch Selection -->
+            <v-col cols="12" xl="6" lg="6" md="6" sm="12">
+              <v-select
+                :items="branchlist"
+                v-model="branch"
+                item-text="branch_name"
+                item-value="id"
+                label="Branch"
+                @change="getProductsGraph"
+                hide-details
+                style="font-size: 12px"
+                class="pa-1"
+                dense
+                solo
+                dark
+              >
+              </v-select>
+            </v-col>
+            <!-- Year Selection -->
+            <v-col cols="5" xl="3" lg="3" md="3" sm="5">
+              <v-select
+                v-model="year"
+                item-text=""
+                item-value="id"
+                :items="ylist"
+                label="Year"
+                @change="getProductsGraph"
+                hide-details
+                style="font-size: 12px"
+                class="pa-1"
+                dense
+                solo
+                dark
+              >
+              </v-select>
+            </v-col>
+            <!-- Month Selection -->
+            <v-col cols="7" xl="3" lg="3" md="3" sm="7">
+              <v-select
+                v-model="month"
+                item-text=""
+                item-value="id"
+                :items="mlist"
+                label="Month"
+                @change="getProductsGraph"
+                hide-details
+                style="font-size: 12px"
+                class="pa-1"
+                dense
+                solo
+                dark
+              >
+              </v-select> </v-col
           ></v-row>
         </v-col>
       </v-row>
 
       <v-row no-gutters>
+        <!-- Sales Graph -->
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
             elevation="1"
@@ -644,6 +744,7 @@
             ></v-progress-linear>
           </v-card>
         </v-col>
+        <!-- Products Graph -->
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
             elevation="1"
@@ -668,6 +769,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 .v-list-item__content {
   color: white !important;
@@ -680,6 +782,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import BarChart from "../charts/BarChart";
 import BarChart1 from "../charts/BarChart";
@@ -694,6 +797,7 @@ export default {
     BarChart,
     BarChart1,
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -727,6 +831,7 @@ export default {
       }
     },
   },
+  //Data
   data: () => ({
     sheet: false,
     checkbox1: true,
@@ -744,7 +849,8 @@ export default {
     useracc: null,
     suppexpdate: [],
     prodexpdate: [],
-    requests: null,
+    supprequest: null,
+    prodrequest: null,
     hidden1: true,
     hidden2: true,
     hidden3: true,
@@ -752,16 +858,12 @@ export default {
     hidden5: true,
     hidden6: true,
     hidden7: true,
+    hidden8: true,
     progressbar1: false,
     progressbar2: false,
     branchlist: [],
     datacollection: {},
     options: {
-      // onClick: function(e,i) {
-      //     e = i[0];
-      //     this.selecteditem = this.data.labels[e._index];
-      //     that.selectCresta(e._index)
-      // },
       plugins: {
         zoom: {
           zoom: {
@@ -814,11 +916,6 @@ export default {
 
     datacollection1: {},
     options1: {
-      // onClick: function(e,i) {
-      //     e = i[0];
-      //     this.selecteditem = this.data.labels[e._index];
-      //     that.selectCresta(e._index)
-      // },
       plugins: {
         zoom: {
           zoom: {
@@ -863,6 +960,7 @@ export default {
     },
   }),
 
+  //Methods
   methods: {
     list() {
       this.mlist = ["All"];
@@ -879,6 +977,7 @@ export default {
       this.ylist = years;
     },
 
+    //For retrieving supply count
     async getSupp() {
       this.hidden1 = false;
       await axios
@@ -892,6 +991,7 @@ export default {
         });
     },
 
+    //For retrieving product count
     async getProd() {
       this.hidden2 = false;
       await axios
@@ -905,6 +1005,7 @@ export default {
         });
     },
 
+    //For retrieving purchase order count
     async getPO() {
       this.hidden3 = false;
       await axios
@@ -918,6 +1019,7 @@ export default {
         });
     },
 
+    //For retrieving user count
     async getUser() {
       this.hidden4 = false;
       await axios
@@ -931,6 +1033,7 @@ export default {
         });
     },
 
+    //For retrieving expired supply count
     async getSuppExpDate() {
       this.hidden5 = false;
       await axios
@@ -944,6 +1047,7 @@ export default {
         });
     },
 
+    //For retrieving expired product count
     async getProdExpDate() {
       this.hidden6 = false;
       await axios
@@ -957,19 +1061,35 @@ export default {
         });
     },
 
-    async getRequests() {
+    //For retrieving supply request count
+    async getSuppRequests() {
       this.hidden7 = false;
       await axios
-        .get("/api/dashboard/getRequests")
+        .get("/api/dashboard/getSuppRequests")
         .then((result) => {
           this.hidden7 = true;
-          this.requests = result.data;
+          this.supprequest = result.data;
         })
         .catch((result) => {
           // If false or error when saving
         });
     },
 
+    //For retrieving product request count
+    async getProdRequests() {
+      this.hidden8 = false;
+      await axios
+        .get("/api/dashboard/getProdRequests")
+        .then((result) => {
+          this.hidden8 = true;
+          this.prodrequest = result.data;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
+    },
+
+    //For retrieving sales graph
     async getSalesGraph() {
       this.progressbar1 = true;
       await axios
@@ -995,6 +1115,8 @@ export default {
         })
         .catch((result) => {});
     },
+
+    //For retrieving products graph
     async getProductsGraph() {
       this.getSalesGraph();
       this.progressbar2 = true;
@@ -1022,6 +1144,7 @@ export default {
         .catch((result) => {});
     },
 
+    //For retrieving branch names
     async branchName() {
       await axios
         .get("/api/branches/inventory/branchName")
@@ -1031,6 +1154,7 @@ export default {
     },
   },
 
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Dashboard")) {
       this.getSupp();
@@ -1040,7 +1164,8 @@ export default {
       this.getUser();
       this.getSuppExpDate();
       this.getProdExpDate();
-      this.getRequests();
+      this.getSuppRequests();
+      this.getProdRequests();
       this.getSalesGraph();
       this.getProductsGraph();
       this.branchName();

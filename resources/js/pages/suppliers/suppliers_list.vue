@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
@@ -71,6 +72,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Button -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -83,6 +85,7 @@
                 Add Supplier
               </v-btn>
               <v-spacer></v-spacer>
+              <!-- Refresh -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -100,6 +103,7 @@
                 </template>
                 <span>Refresh</span>
               </v-tooltip>
+              <!-- Filter -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -294,12 +298,14 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- ID -->
                     <v-text-field v-model="form.id" class="d-none" dense>
                       <template slot="label">
                         <div style="font-size: 12px">ID</div>
                       </template>
                     </v-text-field>
 
+                    <!-- Status -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.status"
@@ -328,6 +334,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Supplier Name -->
                     <v-text-field
                       :rules="formRules"
                       v-model="form.supplier_name"
@@ -358,6 +365,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Description -->
                     <v-text-field
                       :rules="formRulesDesc"
                       v-model="form.description"
@@ -388,6 +396,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Contact Number -->
                     <v-text-field
                       :rules="formRulesNumberOnly"
                       v-model="form.phone_number"
@@ -419,6 +428,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Contact Person -->
                     <v-text-field
                       :rules="formRules"
                       v-model="form.contact_person"
@@ -449,6 +459,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Address -->
                     <v-text-field
                       :rules="formRules"
                       v-model="form.address"
@@ -507,6 +518,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -550,6 +562,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 const PHONE_NUMBER = "(####) ###-####";
 const TELEPHONE_NUMBER = "(###) ###-####";
@@ -560,6 +573,7 @@ export default {
   metaInfo() {
     return { title: "Suppliers" };
   },
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -576,7 +590,7 @@ export default {
     ],
     table: [],
 
-    // Form Rules
+    // Form rules
     formRules: [
       (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
@@ -601,7 +615,7 @@ export default {
       (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       status: null,
@@ -612,10 +626,10 @@ export default {
       address: null,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
@@ -663,7 +677,7 @@ export default {
     itemsPerPage: 5,
   }),
 
-  // Dynamic Width
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -680,7 +694,7 @@ export default {
     },
   },
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Suppliers")) {
       this.get();
@@ -689,7 +703,9 @@ export default {
     }
   },
 
+  //Methods
   methods: {
+    //Keydown
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
@@ -710,23 +726,23 @@ export default {
       this.get();
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
           found += 1;
         }
       }
-      //if has changes
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -740,16 +756,16 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        // Validate first before compare
+        //Validate first before compare
         if (this.compare()) {
-          // Save or update data in the table
+          //Save or update data in the table
           await axios
             .post("/api/supplist/save", this.form)
             .then((result) => {
-              //if the value is true then save to database
+              //If the value is true then save to database
               switch (result.data) {
                 case 0:
                   this.snackbar = {
@@ -766,7 +782,7 @@ export default {
                     active: true,
                     iconText: "alert",
                     iconColor: "error",
-                    message: "The supply category already exists.",
+                    message: "The supplier name already exists.",
                   };
                   break;
                 default:
@@ -774,15 +790,16 @@ export default {
               }
             })
             .catch((result) => {
-              // If false or error when saving
+              //If false or error when saving
             });
         }
       }
     },
 
+    //For retrieving suppliers
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/supplist/get", {
@@ -793,16 +810,16 @@ export default {
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -815,19 +832,20 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

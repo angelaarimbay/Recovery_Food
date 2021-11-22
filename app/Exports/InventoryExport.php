@@ -3,8 +3,8 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -15,18 +15,22 @@ class InventoryExport implements WithHeadings, FromArray, ShouldAutoSize, WithSt
     public function __construct($data, $columns)
     {
         $this->data = $data;
-        $this->columns= $columns;
+        $this->columns = $columns;
     }
-    //export as array
-    public function array(): array
+
+    //Export as array
+    function array(): array
     {
-        return  $this->data;
+        return $this->data;
     }
-    //with headers
+
+    //With headers
     public function headings(): array
     {
         return $this->columns;
     }
+    
+    //Styles for cell
     public function styles(Worksheet $sheet)
     {
         $sheet->getStyle(1)->getAlignment()->applyFromArray(
@@ -37,7 +41,7 @@ class InventoryExport implements WithHeadings, FromArray, ShouldAutoSize, WithSt
         );
         return [
             // Style the first row as bold text.
-            1    => ['font' => ['bold' => true]],
+            1 => ['font' => ['bold' => true]],
         ];
     }
 }

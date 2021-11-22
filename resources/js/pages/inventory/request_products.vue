@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -104,6 +105,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Button -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -115,6 +117,7 @@
                 >Add New Request</v-btn
               >
               <v-spacer></v-spacer>
+              <!-- Refresh -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -133,6 +136,8 @@
               </v-tooltip>
             </v-row>
           </v-card-actions>
+
+          <!-- Table -->
           <v-data-table
             id="table1"
             :headers="headers"
@@ -234,6 +239,7 @@
       </v-container>
     </v-card>
 
+    <!-- Dialog -->
     <v-dialog
       v-model="dialog_list"
       fullscreen
@@ -292,6 +298,7 @@
                     class="my-auto pa-2"
                   >
                     <v-card-actions class="py-0 px-0">
+                      <!-- Search -->
                       <v-text-field
                         hide-details
                         v-model="search"
@@ -328,6 +335,7 @@
                     </v-card-actions>
                   </v-col>
                   <v-spacer></v-spacer>
+                  <!-- Refresh -->
                   <v-tooltip bottom>
                     <template #activator="data">
                       <v-btn
@@ -347,6 +355,7 @@
                   </v-tooltip>
                 </v-row>
 
+                <!-- Table -->
                 <v-data-table
                   id="table1"
                   :loading="progressbar1"
@@ -449,6 +458,7 @@
                   </v-col>
                 </v-row>
 
+                <!-- Table -->
                 <v-data-table
                   id="table1"
                   :headers="headers2"
@@ -516,6 +526,7 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
+                <!-- Buttons -->
                 <v-card-actions class="pa-0 mt-4">
                   <v-spacer></v-spacer>
                   <v-btn
@@ -633,7 +644,7 @@
   </div>
 </template>
 
-
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -677,10 +688,12 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
   middleware: "auth",
+  //Computed
   computed: {
     checkLength() {
       if (this.table2.length > 0) {
@@ -690,6 +703,8 @@ export default {
       }
     },
   },
+
+  //Data
   data: () => ({
     headers: [
       {
@@ -725,6 +740,8 @@ export default {
         class: "black--text",
       },
     ],
+
+    //Header1
     headers1: [
       {
         text: "PRODUCT NAME",
@@ -740,6 +757,8 @@ export default {
         class: "black--text",
       },
     ],
+
+    //Header2
     headers2: [
       {
         text: "PRODUCT NAME",
@@ -768,6 +787,8 @@ export default {
         class: "black--text",
       },
     ],
+
+    //Form rules
     formRulesQuantity: [
       (v) => !!v || "This is required",
       (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
@@ -776,6 +797,7 @@ export default {
     form: {
       quantity: 1,
     },
+
     disabled: true,
     temp_data: [],
     progressbar: false,
@@ -805,10 +827,12 @@ export default {
     cancel_select: [],
   }),
 
+  //Onload
   created() {
     this.get();
   },
 
+  //Watch
   watch: {
     page(val) {
       this.page = val;
@@ -816,25 +840,28 @@ export default {
     },
   },
 
+  //Methods
   methods: {
+    //Keydown
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
-    // Clear Value of Quantity text-field
+    //Clear Value of quantity text-field
     clearQ() {
       if (this.quantity == 1) {
         this.quantity = null;
       }
     },
-    // Reset Value of Quantity text-field
+    //Reset Value of quantity text-field
     resetQ() {
       if (this.quantity == null) {
         this.quantity = 1;
       }
     },
 
+    //For validation
     validate(type, data = "") {
       switch (type) {
         case "cancel":
@@ -870,6 +897,7 @@ export default {
       }
     },
 
+    //For action
     action(type) {
       switch (type) {
         case "cancel":
@@ -888,6 +916,7 @@ export default {
       this.snackbar2.active = false;
     },
 
+    //For retrieving product list
     async getList() {
       this.progressbar1 = true;
       await axios
@@ -899,6 +928,8 @@ export default {
           this.progressbar1 = false;
         });
     },
+
+    //For retrieving product request
     async get() {
       this.progressbar = true;
       await axios
@@ -914,11 +945,14 @@ export default {
         });
     },
 
+    //For validation
     validateAdd(row, type) {
       this.selected = row;
       this.type = type;
       this.openDialog();
     },
+
+    //For identifying buttons
     commitAdd(row) {
       if (this.$refs.form.validate()) {
         if (this.type == "Update") {
@@ -962,13 +996,14 @@ export default {
         this.dialog = false;
       }
     },
+
+    //For deleting
     Delete(row) {
       this.table2[this.table2.indexOf(row)].quantity =
         this.table2[this.table2.indexOf(row)].quantity - this.quantity;
       if (this.table2[this.table2.indexOf(row)].quantity <= 0) {
         this.table2.splice(this.table2.indexOf(row), 1);
       }
-
       this.snackbar = {
         active: true,
         iconText: "check",
@@ -977,6 +1012,8 @@ export default {
       };
       this.disabled = false;
     },
+
+    //For editing
     Edit(row) {
       this.table2[this.table2.indexOf(row)].quantity = this.quantity;
       for (var key in this.temp_data) {
@@ -992,18 +1029,19 @@ export default {
       }
     },
 
+    //For saving requests
     async storeRequest() {
-      //this is used for update request
+      //This is used for updating request
       if (this.ref) {
         for (var key in this.table2) {
           this.table2[key].ref = this.ref;
         }
       }
-      // save
+      //Save
       await axios
         .post("/api/requestprod/products/save", this.table2)
         .then((result) => {
-          //if the value is true then save to database
+          //If the value is true then save to database
           this.snackbar = {
             active: true,
             iconText: "check",
@@ -1015,6 +1053,8 @@ export default {
           this.get();
         });
     },
+
+    //For adding requests
     addRequest() {
       if (this.headers2.length == 4) {
         this.headers2.splice(this.headers2.indexOf(this.headers2[2]), 1);
@@ -1023,6 +1063,8 @@ export default {
       this.dialog_list = true;
       this.getList();
     },
+
+    //For viewing requests
     async viewRequest(ref) {
       (this.headers2 = [
         {
@@ -1053,6 +1095,8 @@ export default {
         },
       ]),
         (this.isHidden = true);
+
+        //For retrieving product request list
       this.getList();
       await axios
         .get("/api/requestprod/request/list", { params: { ref: ref.ref } })
@@ -1063,15 +1107,21 @@ export default {
           this.ref = ref.ref;
         });
     },
+
+    //For closing requests
     closeRequest() {
       this.dialog_list = false;
       this.disabled = true;
       this.clearRequest();
     },
+
+    //For clearing requests
     clearRequest() {
       this.table2 = [];
       this.ref = "";
     },
+
+    //For clearing requests1
     clearRequest1() {
       this.table2 = [];
       this.disabled = true;
@@ -1083,10 +1133,13 @@ export default {
         message: "Successfully cancelled.",
       };
     },
+
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
     },
+
+    //For cancelling requests
     async cancelRequest() {
       await axios
         .post("/api/requestprod/request/cancel", this.cancel_select)
@@ -1102,6 +1155,7 @@ export default {
         });
     },
 
+    //For completing requests
     async completeRequest(ref) {
       await axios
         .post("/api/requestprod/request/complete", ref)

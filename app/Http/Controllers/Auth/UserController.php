@@ -14,9 +14,9 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function current(Request $request)
-    {   
+    {
         try {
-            return  auth()->user();
+            return auth()->user();
         } catch (\Throwable $th) {
             return [];
         }

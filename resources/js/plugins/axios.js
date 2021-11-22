@@ -46,8 +46,8 @@ axios.interceptors.response.use(response => response, error => {
   //     cancelButtonText: i18n.t('cancel')
   //   })
   // }
-  
-  if(status == 429){
+
+  if (status == 429) {
     Swal.fire({
       type: 'warning',
       title: 'Error Login',

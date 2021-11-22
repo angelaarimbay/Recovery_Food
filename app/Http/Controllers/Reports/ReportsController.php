@@ -25,27 +25,27 @@ use niklasravnsborg\LaravelPdf\Facades\Pdf;
 
 class ReportsController extends Controller
 {
+    //Middleware
     public function __construct()
     {
         $this->middleware("auth");
     }
 
-    // Masterlist Supplies Report - OK
+    //For masterlist supplies report
     public function MasterlistSuppliesReport(Request $t)
     {
-        //filter if all or specific
+        //Filter if all or specific
         $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
+        $data = []; //Main array
 
-        $data = []; // <----------MAIN ARRAY
-
-        //code...
-        //GET ALL THE CATEGORY THEN LOOP
+        //Get all the category then loop
         foreach (tbl_masterlistsupp::whereRaw($where)->groupBy('category')->pluck('category') as $key => $value) {
-            $group = []; // <-------------INNER ARRAY
-            $net_p = 0; // <--sub total
-            $wvat_p = 0;
-            $wovat_p = 0;
-            //EACH CATEGORY ADD TO INNER ARRAY
+            $group = []; //Inner Array
+            $net_p = 0; //Sub-Total
+            $wvat_p = 0; //Sub-Total
+            $wovat_p = 0; //Sub-Total
+
+            //Each category add to inner array
             foreach (tbl_masterlistsupp::with("category")->where("category", $value)->orderBy("exp_date", "desc")->get() as $key1 => $value1) {
                 $net_p += $value1->net_price;
                 $wvat_p += $value1->with_vat;
@@ -64,7 +64,8 @@ class ReportsController extends Controller
                 ];
                 array_push($group, $ar);
             }
-            // ADD INNER ARRAY TO MAIN ARRAY (NESTED ARRAY)
+
+            //Add inner array to main array (Nested array)
             $ar = [
                 'category_details' => '',
                 'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
@@ -79,12 +80,13 @@ class ReportsController extends Controller
             array_push($group, $ar);
             array_push($data, $group);
         }
+
         $content = [];
         switch ($t->type) {
             case 'pdf':
                 if (count($data) > 0) {
                     $content['data'] = $data;
-                    //TOTAL AMOUNTS BELOW THE REPORT
+                    //Total amounts below the report
                     $content['net_price'] = tbl_masterlistsupp::get()->sum("net_price");
                     $content['with_vat'] = tbl_masterlistsupp::get()->sum("with_vat");
                     $content['without_vat'] = tbl_masterlistsupp::get()->sum("without_vat");
@@ -101,21 +103,15 @@ class ReportsController extends Controller
                 } else {
                     return false;
                 }
-
                 break;
             case 'excel':
-                // if ($t->category == 'All') {
-                //     $data =  tbl_masterlistsupp::with("category")->get();
-                // } else {
-                //     $data =  tbl_masterlistsupp::with("category")->where("category", $t->category)->get();
-                // }
-                //columns
+                //Columns
                 $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'VAT', 'WITHOUT VAT', 'EXPIRATION DATE'];
-                //data
+                //Data
                 $dataitems = [];
+
                 foreach ($data as $key => $value) {
                     foreach ($value as $key1 => $value1) {
-
                         $temp = [];
                         $temp['category'] = $value1['category_details'];
                         $temp['supply_name'] = $value1['supply_name'] . " " . $value1['description'];
@@ -133,30 +129,27 @@ class ReportsController extends Controller
             default:
                 break;
         }
-
     }
 
-    // Incoming Supplies Report - OK
+    //For incoming supplies report
     public function IncomingSuppliesReport(Request $t)
     {
-
-        //filter if all or specific
+        //Filter if all or specific
         $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
-
-        $data = []; // <----------MAIN ARRAY
-        //GET ALL THE CATEGORY THEN LOOP
-        $g_net_p = 0;
-        $g_wvat_p = 0;
-        $g_total_p = 0;
+        $data = []; //Main array
+        //Get all the category then loop
+        $g_net_p = 0; //Grand Total
+        $g_wvat_p = 0; //Grand Total
+        $g_total_p = 0; //Grand Total
 
         foreach (tbl_incomingsupp::whereRaw($where)
             ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
             ->groupBy('category')->pluck('category') as $key => $value) {
-            $group = []; // <-------------INNER ARRAY
-            $net_p = 0; // <--sub total
-            $wvat_p = 0;
-            $total_p = 0;
-            //EACH CATEGORY ADD TO INNER ARRAY
+            $group = []; //Inner Array
+            $net_p = 0; //Sub-Total
+            $wvat_p = 0; //Sub-Total
+            $total_p = 0; //Sub-Total
+            //Each category add to inner array
             foreach (tbl_incomingsupp::with("category")->where("category", $value)
                 ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                 ->get() as $key1 => $value1) {
@@ -182,6 +175,8 @@ class ReportsController extends Controller
                 ];
                 array_push($group, $ar);
             }
+
+            //Add inner array to main array (Nested array)
             $ar = [
                 'category_details' => '',
                 'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
@@ -193,11 +188,8 @@ class ReportsController extends Controller
                 'quantity_amount' => $total_p,
                 'incoming_date' => '',
             ];
-
-            // ADD INNER ARRAY TO MAIN ARRAY (NESTED ARRAY)
             array_push($group, $ar);
             array_push($data, $group);
-            // return $data;
         }
 
         $content = [];
@@ -224,10 +216,11 @@ class ReportsController extends Controller
                 }
                 break;
             case 'excel':
-                //columns
+                //Columns
                 $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'QTY', 'TOTAL AMT', 'INCOMING DATE'];
-                //data
+                //Data
                 $dataitems = [];
+
                 foreach ($data as $key => $value) {
                     foreach ($value as $key1 => $value1) {
                         $temp = [];
@@ -249,32 +242,30 @@ class ReportsController extends Controller
         }
     }
 
-    // Outgoing Supplies Report - OK
+    //For outgoing supplies report
     public function OutgoingSuppliesReport(Request $t)
     {
-
-        //filter if all or specific
+        //Filter if all or specific
         $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category) .
             ($t->branch ? ' and requesting_branch = ' . $t->branch : '');
-
-        $data = []; // <----------MAIN ARRAY
-        //GET ALL THE CATEGORY THEN LOOP
-        $g_net_p = 0; // <--grand total
-        $g_wvat_p = 0;
-        $g_total_p = 0;
-        $g_quantity = 0;
-        $g_total_amount = 0;
+        $data = []; //Main array
+        //Get all the category then loop
+        $g_net_p = 0; //Grand Total
+        $g_wvat_p = 0; //Grand Total
+        $g_total_p = 0; //Grand Total
+        $g_quantity = 0; //Grand Total
+        $g_total_amount = 0; //Grand Total
 
         foreach (tbl_outgoingsupp::whereRaw($where)
             ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
             ->groupBy('category')->pluck('category') as $key => $value) {
-            $group = []; // <-------------INNER ARRAY
-            $net_p = 0; // <--sub total
-            $wvat_p = 0;
-            $quantity = 0;
-            $total_p = 0;
+            $group = []; //Inner array
+            $net_p = 0; //Sub-Total
+            $wvat_p = 0; //Sub-Total
+            $quantity = 0; //Sub-Total
+            $total_p = 0; //Sub-Total
 
-            //EACH CATEGORY ADD TO INNER ARRAY
+            //Each category add to inner array
             if ($t->branch) {
                 $t_branch = ' requesting_branch =' . $t->branch;
             }
@@ -307,6 +298,8 @@ class ReportsController extends Controller
                 ];
                 array_push($group, $ar);
             }
+
+            // Add inner array to main array (Nested array)
             $ar = [
                 'category_details' => '',
                 'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
@@ -319,11 +312,8 @@ class ReportsController extends Controller
                 'branch' => '',
                 'outgoing_date' => '',
             ];
-
-            // ADD INNER ARRAY TO MAIN ARRAY (NESTED ARRAY)
             array_push($group, $ar);
             array_push($data, $group);
-            // return $data;
         }
 
         $content = [];
@@ -351,9 +341,9 @@ class ReportsController extends Controller
                 }
                 break;
             case 'excel':
-                //columns
+                //Columns
                 $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'QTY', 'TOTAL AMT', 'OUTGOING DATE'];
-                //data
+                //Data
                 $dataitems = [];
                 foreach ($data as $key => $value) {
                     foreach ($value as $key1 => $value1) {
@@ -376,36 +366,32 @@ class ReportsController extends Controller
         }
     }
 
-    // Main Inventory Report - OK
+    //For main inventory report
     public function MainInventoryReport(Request $t)
     {
-        //last month
+        //Previous month
         $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
         $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-" . date("t"))));
-        //this month
+        //Current month
         $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
         $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
-
-        //ikaw na mag add ng iba. cocopy paste monlang. madami ako gawa.
-        //basahin mo mga comment
 
         $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
         $return = [];
         $row = 1;
 
-        //code...
         foreach (tbl_masterlistsupp::select('category')->whereRaw($where)->groupBy('category')->pluck('category') as $key1 => $value1) {
             $group = [];
-            $st_beginning_a = 0;
-            $st_incoming_a = 0; // mag create ka ng variable para sa sub total tulad nito
-            $st_total_a = 0;
-            $st_outgoing_a = 0;
-            $st_onhand_a = 0;
-            $st_average_a = 0;
-            $st_ending_a = 0;
-            $st_consumption_a = 0;
-            $st_ideal_a = 0;
-            $st_variance_a = 0;
+            $st_beginning_a = 0; //Total
+            $st_incoming_a = 0; //Total
+            $st_total_a = 0; //Total
+            $st_outgoing_a = 0; //Total
+            $st_onhand_a = 0; //Total
+            $st_average_a = 0; //Total
+            $st_ending_a = 0; //Total
+            $st_consumption_a = 0; //Total
+            $st_ideal_a = 0; //Total
+            $st_variance_a = 0; //Total
 
             foreach (tbl_masterlistsupp::where("category", $value1)->get() as $key => $value) {
                 $temp = [];
@@ -427,36 +413,34 @@ class ReportsController extends Controller
                 $incoming_and_past = tbl_incomingsupp::where('supply_name', $value->id)->whereBetween('incoming_date', [$date11, $date2]);
                 $outgoing_and_past = tbl_outgoingsupp::where('supply_name', $value->id)->whereBetween('outgoing_date', [$date11, $date2]);
 
-                //beginning (total of last month)
+                //Beginning (total of previous month)
                 $a = clone $incoming_past;
                 $temp['beginning_q'] = $a->sum('quantity');
                 $a = clone $incoming_past;
                 $temp['beginning_a'] = number_format($a->sum('amount'), 2);
-                $st_beginning_a += $a->sum('amount'); // ito ung para sa sub total, copy mo to ung nasa taas na line na to ung $a->sum('amount) lang,
-                //un ung total ng incoming, so dun sa iba na columns ganyna lang.
-                //proceed kna dun sa ka sa baba ung end ng for each na to
+                $st_beginning_a += $a->sum('amount'); //Sub-Total
 
-                //incming (total of current month)
+                //Incoming (total of current month)
                 $a = clone $incoming;
                 $temp['incoming_q'] = $a->sum('quantity');
                 $a = clone $incoming;
                 $temp['incoming_a'] = number_format($a->sum('amount'), 2);
-                $st_incoming_a += $a->sum('amount');
+                $st_incoming_a += $a->sum('amount'); //Sub-Total
 
-                //total (total of last month + current month)
+                //Total (total of previous month + current month)
                 $a = clone $incoming_and_past;
                 $temp['total_q'] = $temp['beginning_q'] + $temp['incoming_q'];
                 $temp['total_a'] = number_format($a->sum('amount'), 2);
-                $st_total_a += $a->sum('amount');
+                $st_total_a += $a->sum('amount'); //Sub-Total
 
-                //outgoing (total of current month)
+                //Outgoing (total of current month)
                 $b = clone $outgoing;
                 $temp['outgoing_q'] = $b->sum('quantity');
                 $b = clone $outgoing;
                 $temp['outgoing_a'] = number_format($b->sum('amount'), 2);
-                $st_outgoing_a += $b->sum('amount');
+                $st_outgoing_a += $b->sum('amount'); //Sub-Total
 
-                //onhand (total of last month + current month) - outgoing
+                //Stocks On Hand (total of previous month + current month) - outgoing
                 $c = clone $incoming_and_past;
                 $d = clone $outgoing;
                 $temp['onhand_q'] = $c->sum('quantity') - $d->sum('quantity');
@@ -469,7 +453,7 @@ class ReportsController extends Controller
                     $temp['onhand_a'] = 0;
                 }
 
-                //average (total of last month + current month / quantity of last month + current month) / (current month quantity / date today)
+                //Average ((total of last month + current month) / (quantity of last month + current month) / (current month quantity / date today))
                 $a = clone $outgoing;
                 $temp['average_q'] = number_format($a->sum('quantity') / date('d'), 2);
                 $c_a = clone $incoming_and_past;
@@ -481,11 +465,11 @@ class ReportsController extends Controller
                     $temp['average_a'] = 0;
                 }
 
-                //order point  (lead time of item * total quantity / day today) + outgoing quantity / day today
+                //Order Point  (lead time of item * total quantity / day today) + outgoing quantity / current day today
                 $a = clone $outgoing;
                 $temp['orderpoint'] = number_format(($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2), 2);
 
-                //order point  (lead time of item * total quantity / day today) + outgoing quantity / day today
+                //Order Point  (lead time of item * total quantity / day today) + outgoing quantity / current day today
                 $a = clone $outgoing;
                 $orderqty = $value->order_frequency * ($a->sum('quantity') / date('d'));
                 if ($orderqty < $value->minimum_order_quantity) {
@@ -494,7 +478,7 @@ class ReportsController extends Controller
                     $temp['ordr'] = number_format($orderqty, 2);
                 }
 
-                //trigger point  (lead time of item * total quantity / day today) + outgoing quantity / day today
+                //Trigger Point  (lead time of item * total quantity / day today) + outgoing quantity / day today
                 $a = clone $incoming_and_past;
                 $b = clone $outgoing;
                 if (($a->sum('quantity') - $b->sum('quantity')) < $value->lead_time * ($b->sum('quantity') / date('d'))) {
@@ -549,8 +533,6 @@ class ReportsController extends Controller
                 array_push($group, $temp);
             }
 
-            // ito ung sub total na row, lagay mo ung declared variable mo kanina.
-            // may sample na jan ha dalwa.
             $ar = [
                 'row' => '',
                 'category' => '',
@@ -625,7 +607,7 @@ class ReportsController extends Controller
                     foreach ($value1 as $key => $value) {
                         $temp = [];
                         $temp['category'] = $value['category'];
-                        $temp['supply_name'] = $value['supply_name']; //na concat na natin sa taas. no need concat ule dito.
+                        $temp['supply_name'] = $value['supply_name'];
                         $temp['unit'] = $value['unit'];
                         $temp['net_price'] = $value['net_price'] ?? 0;
                         $temp['beginning_q'] = $value['beginning_q'] ?? 0;
@@ -663,14 +645,13 @@ class ReportsController extends Controller
         }
     }
 
-    // Inventory Summary Report - OK
+    //For inventory summary report
     public function InventorySummaryReport(Request $t)
     {
-        // Laravel default format of date and time, use other format will handle exemptions
-        //last month
+        //Previous month
         $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-01")));
         $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-" . date("t"))));
-        //this month
+        //Current month
         $date1 = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month . "-01"));
         $date2 = date("Y-m-t 23:59:59", strtotime($t->year . '-' . $t->month . '-' . date("t")));
 
@@ -681,13 +662,13 @@ class ReportsController extends Controller
             $temp['category'] = $value->supply_cat_name;
 
             $temp['beginning'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount");
-            // Get incoming based on from, to and per category, then sum amounts
+            //Get incoming based on from, to, and category, then sum amounts
             $temp['incoming'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount");
-            // beg + in
+            //Beginning + incoming
             $temp['total'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount");
-            // Get outgoing based on from, to and per category, then sum outgoing_amount based on masterlist net
+            //Get outgoing based on from, to, and category, then sum outgoing_amount based on masterlist supplies net price
             $temp['outgoing'] = tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount");
-            // stocks = total - outgoing
+            //Stocks = total - outgoing
             $temp['stocks'] = (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount")) - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount");
             try {
                 $temp['ending'] =
@@ -732,7 +713,7 @@ class ReportsController extends Controller
         }
         array_push($data, $temp);
         $content = [];
-        //  return $data;
+
         switch ($t->type) {
             case 'pdf':
                 if (count($data) > 0) {
@@ -752,7 +733,7 @@ class ReportsController extends Controller
                 }
                 break;
             case 'excel':
-                //columns
+                //Columns
                 $columns = [
                     'SUPPLIES CATEGORY', 'BEGINNING INVENTORY', 'PURCHASES', 'TOTAL STOCKS',
                     'OUTGOING SUPPLIES', 'STOCKS ON HAND', 'ENDING INVENTORY', 'VARIANCE',
@@ -765,10 +746,9 @@ class ReportsController extends Controller
         }
     }
 
-    // Sales Report - OK
+    //For sales report
     public function SalesReport(Request $t)
     {
-
         DB::statement(DB::raw("set @row:=0"));
 
         $data = tbl_pos::where("branch", $t->branch)
@@ -797,9 +777,9 @@ class ReportsController extends Controller
                 }
                 break;
             case 'excel':
-                //columns
+                //Columns
                 $columns = ['BRANCH', 'DATE', 'REFERENCE NO', 'SALES AMOUNT'];
-                //data
+                //Data
                 $dataitems = [];
                 foreach ($data as $key => $value) {
                     $temp = [];
@@ -816,10 +796,9 @@ class ReportsController extends Controller
         }
     }
 
-    // Transaction Report - OK
+    //For transaction report
     public function TransactionReport(Request $t)
     {
-
         $data = tbl_pos::whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
             ->selectRaw(" sum(quantity) as quantity,
         sum(sub_total_discounted) as sub_total_discounted,
@@ -848,9 +827,9 @@ class ReportsController extends Controller
                 }
                 break;
             case 'excel':
-                //columns
+                //Columns
                 $columns = ['BRANCH', 'DATE ', 'REFERENCE NO', 'TOTAL PRODUCT(S)', 'TOTAL AMT'];
-                //data
+                //Data
                 $dataitems = [];
                 foreach ($data as $key => $value) {
                     $temp = [];
@@ -868,7 +847,7 @@ class ReportsController extends Controller
         }
     }
 
-    // Purchase ORder Report - OK
+    //For purchase order report
     public function PurchaseOrderReport(Request $t)
     {
         DB::statement(DB::raw("set @row:=0"));
@@ -895,9 +874,9 @@ class ReportsController extends Controller
                 }
                 break;
             case 'excel':
-                // Columns
+                //Columns
                 $columns = ['SUPPLIER NAME', 'INVOICE NUMBER', 'AMT', 'DATE'];
-                // Data
+                //Data
                 $dataitems = [];
                 foreach ($data as $key => $value) {
                     $temp = [];
@@ -914,6 +893,7 @@ class ReportsController extends Controller
         }
     }
 
+    //For retrieving sales list
     public function ListSP(Request $t)
     {
         if (auth()->user()->can('Access POS')) {
@@ -958,11 +938,13 @@ class ReportsController extends Controller
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page);
     }
 
+    //For retrieving sales info
     public function getSPInfo(Request $t)
     {
         return tbl_pos::with(["branch", 'product_name', 'cashier'])->where("reference_no", $t->reference_no)->get();
     }
 
+    //For generating receipt
     public function Receipt(Request $t)
     {
         if ($t->reference_no) {

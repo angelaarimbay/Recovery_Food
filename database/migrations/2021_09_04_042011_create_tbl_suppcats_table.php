@@ -14,7 +14,7 @@ class CreateTblSuppcatsTable extends Migration
     public function up()
     {
         Schema::create('tbl_suppcats', function (Blueprint $table) {
-            $table->id(); 
+            $table->id();
             $table->string('supply_cat_name');
             $table->integer('status')->default(1); //0 = inactive, else active
             $table->timestamps();

@@ -34,6 +34,7 @@
       </v-snackbar>
 
       <v-card-actions class="px-0 justify-center">
+        <!-- Export to PDF -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -48,6 +49,7 @@
           </template>
           <span>Export to PDF</span>
         </v-tooltip>
+        <!-- Export to Excel -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -62,6 +64,7 @@
           </template>
           <span>Export to Excel</span>
         </v-tooltip>
+        <!-- Print -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -182,6 +185,7 @@
   </v-container>
 </template>
 
+<!-- Style -->
 <style>
 .v-list-item__content {
   color: white !important;
@@ -194,9 +198,11 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  //Computed
   computed: {
     showIcon() {
       if (this.$vuetify.breakpoint.smAndUp) {
@@ -206,6 +212,8 @@ export default {
       }
     },
   },
+
+  //Data
   data: () => ({
     category: "",
     suppcatlist: [],
@@ -221,6 +229,7 @@ export default {
     overlay: false,
   }),
 
+  //Onload
   created() {
     this.incoming_from = this.getFormatDate(
       new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -233,12 +242,14 @@ export default {
     this.suppCat();
   },
 
+  //Methods
   methods: {
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
     },
 
+    //For exporting/printing
     async get(type) {
       if (
         this.category == "" ||
@@ -382,6 +393,7 @@ export default {
       }
     },
 
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
         this.suppcatlist.push({ supply_cat_name: "All", id: "All" });

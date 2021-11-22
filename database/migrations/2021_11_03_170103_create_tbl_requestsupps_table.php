@@ -15,10 +15,10 @@ class CreateTblRequestsuppsTable extends Migration
     {
         Schema::create('tbl_requestsupps', function (Blueprint $table) {
             $table->id();
-            $table->text('ref'); 
+            $table->text('ref');
             $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
-            $table->float('quantity'); 
-            $table->datetime('request_date'); 
+            $table->float('quantity');
+            $table->datetime('request_date');
             $table->integer('branch')->references('id')->on('tbl_branches');
             $table->integer('user')->references('id')->on('users');
             $table->integer('status')->default(1);

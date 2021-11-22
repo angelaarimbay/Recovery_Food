@@ -13,25 +13,28 @@ use Illuminate\Support\Collection;
 
 class RequestProductsController extends Controller
 {
+    //Middleware
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
+    //For retrieving products list
     public function getProductsList(Request $request)
     {
         $where = ($request->category ? "category !=0  and category=" . $request->category : "category != 0");
-
-        // return $where;
         $table = tbl_masterlistprod::with("category", "sub_category")
             ->selectRaw("*, case when exp_date is null THEN null when datediff(exp_date,current_timestamp) > 7 THEN null ELSE datediff(exp_date,current_timestamp) end as days")
             ->whereRaw($where);
 
-        if ($request->search) { //we will be using wherehas if this portion is in relationship
-            // if not. just use where
+        if ($request->search) { //Wherehas if this portion is in relationship, if not then just use where
             $table = $table->where('product_name', 'like', "%" . $request->search . "%");
-
         }
 
         return $table->get();
     }
 
+    //For retrieving requests
     public function get(Request $t)
     {
         $table = tbl_requestprod::select(['ref', 'user', 'request_date'])
@@ -56,23 +59,24 @@ class RequestProductsController extends Controller
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
+    //For storing products request
     public function storeProducts(Request $request)
     {
-        //---------------------------delete upon update
-        //get all the request row
+        //Delete upon updating
+        //Get all the request rows
         $ids = [];
         foreach ($request->all() as $key => $value) {
             array_push($ids, $value['id']);
         }
-        //if the ref is found and id is not found in that reference then status = 0
+        //If the ref is found and id is not found in that reference then status = 0
         tbl_requestprod::where('ref', $request[0]['ref'])->whereNotIn('product_name', $ids)->update(['status' => 0]);
 
-        //---------------------------update / save as new row for exsiting request or if no reference fount save all.
+        //Update / Save as new row for existing request or if no reference found save all
         $date = date("Y-m-d H:i:s");
-        $refno = strtotime(date("Y-m-d h:i:s")); //hanap ka ng ibang pang create ng ref no. may diffrence yan sa seconds.
+        $refno = strtotime(date("Y-m-d h:i:s"));
 
         foreach ($request->all() as $key => $value) {
-            //first find the ref and id
+            //First, find the ref and id
             if (tbl_requestprod::where(['ref' => $value['ref'], 'product_name' => $value['id']])->get()->count() > 0) {
                 tbl_requestprod::where(['ref' => $value['ref'], 'product_name' => $value['id']])
                     ->update(
@@ -84,7 +88,7 @@ class RequestProductsController extends Controller
                         ]
                     );
             } else {
-                //if the item have ref then add new with that ref.
+                //If the item has ref then add new with that ref
                 if ($value['ref']) {
                     tbl_requestprod::create(
                         [
@@ -97,7 +101,7 @@ class RequestProductsController extends Controller
                         ]
                     );
                 } else {
-                    //if no ref found then save as new ref
+                    //If no ref found then save as new ref
                     tbl_requestprod::create(
                         [
                             'ref' => $refno,
@@ -114,6 +118,7 @@ class RequestProductsController extends Controller
         return $request;
     }
 
+    //For retrieving requests
     public function getRequested(Request $request)
     {
         $table = tbl_requestprod::where('ref', $request->ref)
@@ -132,6 +137,7 @@ class RequestProductsController extends Controller
         return $return;
     }
 
+    //For completing requests
     public function completeRequest(Request $request)
     {
         foreach (tbl_requestprod::where(['ref' => $request->ref])->where('status', '!=', 0)->get() as $key => $value) {
@@ -150,7 +156,7 @@ class RequestProductsController extends Controller
             tbl_outgoingprod::create(
                 ['category' => tbl_masterlistprod::where("id", $value->product_name)->first()->category,
                     'product_name' => $value->product_name,
-                    'sub_category' =>tbl_masterlistprod::where("id", $value->product_name)->first()->sub_category,
+                    'sub_category' => tbl_masterlistprod::where("id", $value->product_name)->first()->sub_category,
                     'quantity' => $value->quantity,
                     'requesting_branch' => $value->branch,
                     'request_ref' => $value->ref,
@@ -162,6 +168,7 @@ class RequestProductsController extends Controller
         tbl_requestprod::where(['ref' => $request->ref])->where('status', '!=', 0)->update(['status' => 3]);
     }
 
+    //For cancelling requests
     public function cancelRequest(Request $request)
     {
         tbl_requestprod::where(['ref' => $request->ref])->where('status', '!=', 0)->update(['status' => 0]);

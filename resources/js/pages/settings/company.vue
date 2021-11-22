@@ -1,5 +1,6 @@
  
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
@@ -95,6 +96,7 @@
                   <v-col cols="12" class="py-2">
                     <v-tooltip bottom>
                       <template #activator="data">
+                        <!-- Upload Button -->
                         <v-btn
                           v-on="data.on"
                           block
@@ -115,6 +117,7 @@
                   <v-col cols="12" v-if="form.attachment">
                     <v-tooltip bottom>
                       <template #activator="data">
+                        <!-- Save Button -->
                         <v-btn
                           v-on="data.on"
                           block
@@ -152,6 +155,7 @@
                     </v-col>
 
                     <v-col cols="2" class="text-center">
+                      <!-- Delete Button -->
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-icon
@@ -278,6 +282,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 .v-application .tfield .white {
   border: 1px solid #bdbdbd !important;
@@ -286,8 +291,8 @@
   border: 1px solid #42a5f5 !important;
 }
 </style>
-</style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios";
@@ -296,11 +301,14 @@ export default {
   metaInfo() {
     return { title: "Settings" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
   },
+
+  //Data
   data: () => ({
     tempfile: "",
     tab: null,
@@ -315,19 +323,23 @@ export default {
     form1: { vat: 0, type: "" },
     form2: { vat: 0, type: "" },
 
-    // Form Rules
+    //Form rules
     formRulesVAT: [
       (v) => !!v || "This is required",
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
     ],
   }),
+
+  //Onload
   created() {
     this.getLogo();
     this.getVat("s");
     this.getVat("p");
   },
 
+  //Methods
   methods: {
+    //Keydown
     VATKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
@@ -346,6 +358,7 @@ export default {
       }
     },
 
+    //For deleting uploaded file
     async deletefile() {
       this.progressBar = true;
       this.$refs.uploader.value = null;
@@ -362,6 +375,7 @@ export default {
         };
       });
     },
+
     clickupload() {
       this.isSelecting = true;
       window.addEventListener(
@@ -373,6 +387,8 @@ export default {
       );
       this.$refs.uploader.click();
     },
+
+    //For uploading file
     async uploaddocument(e) {
       this.progressBar = true;
       var dataform = new FormData();
@@ -388,6 +404,8 @@ export default {
           this.temppath = result.data.path ?? "/img/Logo.jpg";
         });
     },
+
+    //For saving file
     async savefile(e) {
       await axios
         .post("/api/settings/company/logo/store", this.form)
@@ -401,6 +419,7 @@ export default {
         });
     },
 
+    //For retrieving logo
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
         this.form.attachment = result.data.tempfile;
@@ -409,6 +428,7 @@ export default {
       });
     },
 
+    //For saving VAT
     async saveVat(type) {
       type == "s" ? (this.form1.type = type) : (this.form2.type = type);
       if (this.$refs.mainForm.validate()) {
@@ -446,6 +466,7 @@ export default {
       }
     },
 
+    //For retrieving VAT
     async getVat(type) {
       await axios
         .get("/api/settings/vat/get", { params: { type: type } })

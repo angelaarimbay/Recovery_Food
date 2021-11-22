@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px; max-width: 1500px">
     <v-container>
       <!-- Snackbar -->
@@ -71,6 +72,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters align="center" class="mb-3">
             <v-spacer></v-spacer>
+            <!-- Refresh -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -88,6 +90,7 @@
               </template>
               <span>Refresh</span>
             </v-tooltip>
+            <!-- Filter -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -226,6 +229,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -248,6 +252,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -256,11 +261,14 @@ export default {
   metaInfo() {
     return { title: "Inventory" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -342,7 +350,7 @@ export default {
     ],
   }),
 
-  //On Load
+  //OlLoad
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.list();
@@ -352,6 +360,7 @@ export default {
     }
   },
 
+  //Methods
   methods: {
     sumField(key) {
       var num = 0;
@@ -372,6 +381,7 @@ export default {
       this.ylist = years;
     },
 
+    //For retrieving inventory summary
     async get() {
       this.progressbar = true;
       await axios

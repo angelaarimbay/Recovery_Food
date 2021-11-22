@@ -3,8 +3,8 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -17,16 +17,20 @@ class InventoryExport2 implements WithHeadings, FromArray, ShouldAutoSize, WithS
         $this->data = $data;
         $this->columns = $columns;
     }
-    //export as array
-    public function array(): array
+
+    //Export as array
+    function array(): array
     {
-        return  $this->data;
+        return $this->data;
     }
-    //with headers
+
+    //With headers
     public function headings(): array
     {
         return $this->columns;
     }
+    
+    //Styles for cells
     public function styles(Worksheet $sheet)
     {
         $sheet->mergeCells('A1:A2');
@@ -62,8 +66,8 @@ class InventoryExport2 implements WithHeadings, FromArray, ShouldAutoSize, WithS
         );
         return [
             // Style the first row as bold text.
-            1    => ['font' => ['bold' => true]],
-            2    => ['font' => ['bold' => true]],
+            1 => ['font' => ['bold' => true]],
+            2 => ['font' => ['bold' => true]],
         ];
     }
 }

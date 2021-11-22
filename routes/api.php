@@ -18,7 +18,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('dashboard/getUser', 'Dashboard\MainController@getUser');
     Route::get('dashboard/getSuppExpDate', 'Dashboard\MainController@getSuppExpDate');
     Route::get('dashboard/getProdExpDate', 'Dashboard\MainController@getProdExpDate');
-    Route::get('dashboard/getRequests', 'Dashboard\MainController@getRequests');
+    Route::get('dashboard/getSuppRequests', 'Dashboard\MainController@getSuppRequests');
+    Route::get('dashboard/getProdRequests', 'Dashboard\MainController@getProdRequests');
     Route::get('dashboard/getSalesGraph', 'Dashboard\MainController@getSalesGraph');
     Route::get('dashboard/getProductsGraph', 'Dashboard\MainController@getProductsGraph');
 
@@ -165,8 +166,8 @@ Route::group(['middleware' => 'api'], function () {
 
     // POS
     Route::post('pos/prodlist/save', 'POS\ProductsListController@save');
-    Route::get('pos/receipt', 'Reports\ReportsController@Receipt'); //change mo nlang kung ano proper syo
-    Route::get('pos/today', 'POS\ProductsListController@getSalesToday'); //change mo nlang kung ano proper naming syo
+    Route::get('pos/receipt', 'Reports\ReportsController@Receipt');
+    Route::get('pos/today', 'POS\ProductsListController@getSalesToday');
 
     Route::get('pos/prodlist/get', 'POS\ProductsListController@get');
     Route::get('sales_report/sales_count', 'POS\ProductsListController@getSalesCount');

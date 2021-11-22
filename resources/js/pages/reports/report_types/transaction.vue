@@ -34,6 +34,7 @@
       </v-snackbar>
 
       <v-card-actions class="px-0 justify-center">
+        <!-- Export to PDF -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -48,6 +49,7 @@
           </template>
           <span>Export to PDF</span>
         </v-tooltip>
+        <!-- Export to Excel -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -62,6 +64,7 @@
           </template>
           <span>Export to Excel</span>
         </v-tooltip>
+        <!-- Print -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -79,6 +82,7 @@
       >
       <v-row no-gutters>
         <v-spacer></v-spacer>
+        <!-- Refresh -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -96,6 +100,7 @@
           </template>
           <span>Refresh</span>
         </v-tooltip>
+        <!-- Filter -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -224,10 +229,8 @@
                 v-model="date1"
                 :close-on-content-click="false"
                 :nudge-right="35"
-                lazy
                 transition="scale-transition"
                 offset-y
-                full-width
                 min-width="290px"
               >
                 <template v-slot:activator="{ on }">
@@ -271,10 +274,8 @@
                 v-model="date2"
                 :close-on-content-click="false"
                 :nudge-right="35"
-                lazy
                 transition="scale-transition"
                 offset-y
-                full-width
                 min-width="290px"
               >
                 <template v-slot:activator="{ on }">
@@ -477,6 +478,7 @@
   </v-container>
 </template>
 
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -510,9 +512,11 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -538,7 +542,8 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
-    // Table Headers TP
+
+    //Table Headers TP
     headers: [
       {
         text: "#",
@@ -590,7 +595,7 @@ export default {
       },
     ],
 
-    // View Dialog Headers
+    //View Dialog Headers
     headers2: [
       {
         text: "PRODUCT(S)",
@@ -622,6 +627,7 @@ export default {
     ],
   }),
 
+  //Onload
   created() {
     this.dateFromTP = this.getFormatDate(
       new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -634,7 +640,10 @@ export default {
     this.getTransactionReport();
     this.branchName();
   },
+
+  //Methods
   methods: {
+    //For retrieving transaction report
     async getTransactionReport() {
       this.progressbar = true;
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
@@ -660,6 +669,7 @@ export default {
       return date.format(format);
     },
 
+    //For retrieving transaction report info
     async getTPInfo(item) {
       this.viewdialog = true;
       this.progressbar = true;
@@ -674,15 +684,19 @@ export default {
       });
     },
 
+    //For retrieving branch names
     async branchName() {
       await axios.get("/api/osupp/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },
+
     getFormatCurrency(e, format) {
       const numbr = numeral(e);
       return numbr.format(format);
     },
+
+    //For exporting/printing
     async get(type) {
       if (
         this.branch == "" ||
@@ -831,11 +845,13 @@ export default {
       this.getTransactionReport();
     },
 
-    // Close View Dialog
+    //Close View Dialog
     closeViewDialog() {
       this.viewdialog = false;
     },
   },
+
+  //Watch
   watch: {
     viewdialog(val) {
       val || this.closeViewDialog();

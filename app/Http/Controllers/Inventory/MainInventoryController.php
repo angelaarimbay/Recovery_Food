@@ -13,25 +13,27 @@ use Illuminate\Support\Collection;
 
 class MainInventoryController extends Controller
 {
+    //Middleware
     public function __construct()
     {
         $this->middleware('auth');
     }
+
+    //For retrieving main inventory info
     public function get(Request $t)
     {
         $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0");
-
         $table = tbl_masterlistsupp::whereRaw($where);
 
-        if ($t->search) { // If has value
+        if ($t->search) { //If has value
             $table = $table->where("supply_name", "like", "%" . $t->search . "%");
         }
 
-        //last month
+        //Previous month
         $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
         $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-" . date("t"))));
 
-        //for the month
+        //Current month
         $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
         $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
 
@@ -57,42 +59,43 @@ class MainInventoryController extends Controller
             $incoming_and_past = tbl_incomingsupp::where('supply_name', $value->id)->whereBetween('incoming_date', [$date11, $date2]);
             $outgoing_and_past = tbl_outgoingsupp::where('supply_name', $value->id)->whereBetween('outgoing_date', [$date11, $date2]);
 
-            //begining (total of last month)
+            //Begining (Total of previous month)
             $a = clone $incoming_past;
             $temp['begining_q'] = $a->sum('quantity');
             $a = clone $incoming_past;
             $temp['begining_a'] = number_format($a->sum('amount'), 2);
 
-            //incming (total of current month)
+            //Incoming (Total of previous month)
             $a = clone $incoming;
             $temp['incoming_q'] = $a->sum('quantity');
             $a = clone $incoming;
             $temp['incoming_a'] = number_format($a->sum('amount'), 2);
 
-            //total (total of last month + current month)
+            //Total (Total of previous month + current month)
             $a = clone $incoming_and_past;
             $temp['total_q'] = $temp['begining_q'] + $temp['incoming_q'];
             $temp['total_a'] = number_format($a->sum('amount'), 2);
 
-            //outgoing (total of current month)
+            //Outgoing (Total of current month)
             $b = clone $outgoing;
             $temp['outgoing_q'] = $b->sum('quantity');
             $b = clone $outgoing;
             $temp['outgoing_a'] = number_format($b->sum('amount'), 2);
 
-            //onhand (total of last month + current month) - outgoing
+            //Stocks On Hand (Total of last month + current month) - Outgoing
             $c = clone $incoming_and_past;
             $d = clone $outgoing;
             $temp['onhand_q'] = $c->sum('quantity') - $d->sum('quantity');
             $c_a = clone $incoming_and_past;
             $cc_a = clone $incoming_and_past;
+
             if ($c_a->sum('quantity') > 0) {
                 $temp['onhand_a'] = number_format(($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q']), 2);
             } else {
                 $temp['onhand_a'] = 0;
             }
 
-            //average (total of last month + current month / quantity of last month + current month) / (current month quantity / date today)
+            //Average ((Total of previous month + current month) / (quantity of previous month + current month) / (current month quantity / current date today))
             $a = clone $outgoing;
             $temp['average_q'] = number_format($a->sum('quantity') / date('d'), 2);
             $c_a = clone $incoming_and_past;
@@ -103,11 +106,11 @@ class MainInventoryController extends Controller
                 $temp['average_a'] = 0;
             }
 
-            //order point (lead time of item * total quantity / day today) + outgoing quantity / day today
+            //Order Point ((lead time of item * total quantity / current day today) + (outgoing quantity / current day today))
             $a = clone $outgoing;
             $temp['orderpoint'] = number_format(($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2), 2);
 
-            //order point (lead time of item * total quantity / day today) + outgoing quantity / day today
+            //Order Point ((lead time of item * total quantity / current day today) + (outgoing quantity / current day today))
             $a = clone $outgoing;
             $orderqty = $value->order_frequency * ($a->sum('quantity') / date('d'));
             if ($orderqty < $value->minimum_order_quantity) {
@@ -116,15 +119,16 @@ class MainInventoryController extends Controller
                 $temp['ordr'] = number_format($orderqty, 2);
             }
 
-            //trigger point  (lead time of item * total quantity / day today) + outgoing quantity / day today
+            //Trigger Point  ((lead time of item * total quantity / current day today) + (outgoing quantity / current day today))
             $a = clone $incoming_and_past;
             $b = clone $outgoing;
             if (($a->sum('quantity') - $b->sum('quantity')) < $value->lead_time * ($b->sum('quantity') / date('d'))) {
-                $temp['triggerpoint'] =  0; // order
+                $temp['triggerpoint'] = 0; // order
             } else {
-                $temp['triggerpoint'] =  1 ;// manage
+                $temp['triggerpoint'] = 1; // manage
             }
 
+            //For Ending
             $a = clone $incoming_and_past;
             $b = clone $outgoing;
             $aa = clone $incoming;
@@ -136,6 +140,7 @@ class MainInventoryController extends Controller
                 $temp['ending_a'] = 0;
             }
 
+            //For consumption
             $a = clone $incoming_and_past;
             $temp['consumption_q'] = $a->sum('quantity') - $temp['ending_q'];
 
@@ -145,6 +150,7 @@ class MainInventoryController extends Controller
                 $temp['consumption_a'] = 0;
             }
 
+            //For ideal
             $a = clone $incoming_and_past;
             $b = clone $outgoing;
             $temp['ideal_q'] = $a->sum('quantity') - $b->sum('quantity');
@@ -155,6 +161,7 @@ class MainInventoryController extends Controller
                 $temp['ideal_a'] = 0;
             }
 
+            //For variance
             $temp['variance_q'] = $temp['ending_q'] - $temp['ideal_q'];
             $aa = clone $incoming;
             if ($temp['variance_q'] > 0) {
@@ -169,6 +176,7 @@ class MainInventoryController extends Controller
         return new LengthAwarePaginator(collect($items)->sortBy('triggerpoint')->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
+    //For retrieving supply categories
     public function suppCat()
     {
         return tbl_suppcat::select(["supply_cat_name", "id"])->where("status", 1)->get();

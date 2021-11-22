@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <v-container>
       <v-layout row wrap>
@@ -80,6 +81,7 @@
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-row no-gutters>
                 <v-spacer></v-spacer>
+                <!-- Refresh -->
                 <v-tooltip bottom>
                   <template #activator="data">
                     <v-btn
@@ -97,6 +99,7 @@
                   </template>
                   <span>Refresh</span>
                 </v-tooltip>
+                <!-- Filter -->
                 <v-tooltip bottom>
                   <template #activator="data">
                     <v-btn
@@ -512,6 +515,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -548,6 +552,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -556,11 +561,11 @@ export default {
   metaInfo() {
     return { title: "Branches" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
-
     height() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -570,6 +575,8 @@ export default {
       }
     },
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     search1: "",
@@ -588,7 +595,8 @@ export default {
     branchlist: [],
     filterDialog: false,
     filterDialog1: false,
-    // Table Headers 1
+
+    //Table Headers 1
     headers1: [
       {
         text: "#",
@@ -642,7 +650,7 @@ export default {
       },
     ],
 
-    // Table Headers 2
+    //Table Headers 2
     headers2: [
       {
         text: "#",
@@ -694,6 +702,7 @@ export default {
     itemsPerPage2: 5,
   }),
 
+  //Watch
   watch: {
     page1(val) {
       this.page1 = val;
@@ -704,7 +713,8 @@ export default {
       this.getProducts();
     },
   },
-  // Onload
+
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Branches")) {
       this.getSupplies();
@@ -717,6 +727,7 @@ export default {
     }
   },
 
+  //Methods
   methods: {
     itemperpage1() {
       this.page1 = 1;
@@ -728,6 +739,7 @@ export default {
       this.getProducts();
     },
 
+    //For retrieving supplies
     async getSupplies() {
       this.progressbar = true;
       this.itemsPerPage1 = parseInt(this.itemsPerPage1) ?? 0;
@@ -747,6 +759,7 @@ export default {
         });
     },
 
+    //For retrieving products
     async getProducts() {
       this.progressbar = true;
       this.itemsPerPage2 = parseInt(this.itemsPerPage2) ?? 0;
@@ -766,12 +779,14 @@ export default {
         });
     },
 
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/branches/inventory/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
+    //For retrieving branch name
     async branchName() {
       await axios
         .get("/api/branches/inventory/branchName")
@@ -780,6 +795,7 @@ export default {
         });
     },
 
+    //For retrieving product categories
     async prodCat() {
       await axios.get("/api/branches/inventory/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;

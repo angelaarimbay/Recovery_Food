@@ -16,11 +16,13 @@ use Illuminate\Support\Facades\DB;
 
 class OutgoingSuppliesController extends Controller
 {
+    //Middleware
     public function __construct()
     {
         $this->middleware('auth');
     }
 
+    //For saving outgoing supplies info
     public function save(Request $data)
     {
         $table = tbl_outgoingsupp::where("supply_name", "!=", null);
@@ -37,7 +39,7 @@ class OutgoingSuppliesController extends Controller
 
         $table_clone = clone $table;
         if ($table_clone->where("id", $data->id)->count() > 0) {
-            // Update
+            //Update
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
                 ["category" => $data->category,
@@ -58,6 +60,7 @@ class OutgoingSuppliesController extends Controller
         return 0;
     }
 
+    //For retrieving outgoing supplies info
     public function get(Request $t)
     {
         $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
@@ -70,7 +73,7 @@ class OutgoingSuppliesController extends Controller
             $table = $table->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
 
-        if ($t->search) { // If has value
+        if ($t->search) { //If has value
             $table = $table->whereHas('supply_name', function ($q) use ($t) {
                 $q->where('supply_name', 'like', "%" . $t->search . "%");
             });
@@ -100,11 +103,13 @@ class OutgoingSuppliesController extends Controller
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
+    //For retrieving supply categories
     public function suppCat()
     {
         return tbl_suppcat::select(["supply_cat_name", "id"])->where("status", 1)->get();
     }
 
+    //For retrieving supply names
     public function suppName(Request $t)
     {
         $data = DB::table("tbl_masterlistsupps")
@@ -113,17 +118,20 @@ class OutgoingSuppliesController extends Controller
         return $data;
     }
 
+    //For retrieving branch names
     public function branchName()
     {
         return tbl_branches::select(["branch_name", "id"])->where('type', 0)->where("status", 1)->get();
     }
 
+    //For validating quantity
     public function validateQuantity(Request $request)
     {
         return tbl_incomingsupp::where('supply_name', $request->id)->sum('quantity') -
         tbl_outgoingsupp::where('supply_name', $request->id)->sum('quantity');
     }
 
+    //For retrieving requests
     public function getRequest(Request $t)
     {
         $table = tbl_requestsupp::select(['branch', 'ref', 'user', 'request_date'])
@@ -147,6 +155,7 @@ class OutgoingSuppliesController extends Controller
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
+    //For retrieving requests info
     public function getRequested(Request $request)
     {
         $table = tbl_requestsupp::where('ref', $request->ref)
@@ -170,6 +179,7 @@ class OutgoingSuppliesController extends Controller
         return $return;
     }
 
+    //For processing requests
     public function processRequest(Request $request)
     {
         foreach ($request->checked as $key => $value) {

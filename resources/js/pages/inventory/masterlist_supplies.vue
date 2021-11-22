@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
@@ -71,6 +72,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Button -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -83,6 +85,7 @@
                 Add Supply
               </v-btn>
               <v-spacer></v-spacer>
+              <!-- Refresh -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -100,6 +103,7 @@
                 </template>
                 <span>Refresh</span>
               </v-tooltip>
+              <!-- Filter -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -221,82 +225,6 @@
                 </v-row>
               </v-card>
             </v-dialog>
-
-            <!-- <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  :large="$vuetify.breakpoint.mdAndDown"
-                  x-large
-                  icon
-                  dark
-                  @click="sheet = !sheet"
-                  color="red darken-2"
-                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                  v-on="data.on"
-                >
-                  <v-icon>mdi-calendar</v-icon>
-                </v-btn>
-              </template>
-              <span>Manage Dates</span>
-            </v-tooltip> -->
-
-            <!-- <v-bottom-sheet v-model="sheet" inset width="400px">
-              <v-sheet
-                class="text-center"
-                style="border-radius: 10px 10px 0px 0px"
-              >
-                <v-btn
-                  color="#FF5252"
-                  depressed
-                  dark
-                  style="text-transform: none"
-                  small
-                  class="mt-5"
-                  @click="sheet = !sheet"
-                >
-                  Close
-                </v-btn>
-
-                <v-row no-gutters>
-                  <v-col
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    md="12"
-                    sm="12"
-                    class="pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3 pa-3"
-                  >
-                    <v-text-field
-                      outlined
-                      label="Date"
-                      hide-details
-                      dense
-                      clearable
-                    >
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    md="12"
-                    sm="12"
-                    class="pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3 pa-3"
-                  >
-                    <v-select
-                      outlined
-                      label="Month Days"
-                      hide-details
-                      dense
-                      :items="dayslist"
-                      clearable
-                    >
-                    </v-select>
-                  </v-col>
-                </v-row>
-              </v-sheet>
-            </v-bottom-sheet> -->
           </v-card-actions>
 
           <!-- :item-class="itemRowBackground" -->
@@ -357,10 +285,6 @@
               {{ item.row }}</template
             >
             <template v-slot:[`item.status`]="{ item }">
-              <!-- <small> Lead time: {{ item.lead_time }} /
-              Max order: {{ item.minimum_order_quantity }} /
-              Frequency:  {{ item.order_frequency }}<br> </small> -->
-
               <v-chip
                 style="justify-content: center"
                 small
@@ -440,12 +364,14 @@
                         sm="12"
                         md="12"
                       >
+                        <!-- ID -->
                         <v-text-field v-model="form.id" class="d-none" dense>
                           <template slot="label">
                             <div style="font-size: 12px">ID</div>
                           </template>
                         </v-text-field>
 
+                        <!-- Status -->
                         <v-select
                           :rules="formRulesNumberRange"
                           v-model="form.status"
@@ -474,6 +400,7 @@
                         sm="12"
                         md="12"
                       >
+                        <!-- Supplier -->
                         <v-select
                           :rules="formRules1"
                           v-model="form.supplier"
@@ -502,6 +429,7 @@
                         sm="12"
                         md="12"
                       >
+                        <!-- Supply Category -->
                         <v-select
                           :rules="formRulesNumberRange"
                           v-model="form.category"
@@ -530,6 +458,7 @@
                         sm="12"
                         md="12"
                       >
+                        <!-- Supply Name -->
                         <v-text-field
                           :rules="formRules"
                           v-model="form.supply_name"
@@ -570,6 +499,7 @@
                         sm="6"
                         md="6"
                       >
+                        <!-- Description -->
                         <v-text-field
                           :rules="formRulesDesc"
                           v-model="form.description"
@@ -596,6 +526,7 @@
                         sm="6"
                         md="6"
                       >
+                        <!-- Unit -->
                         <v-select
                           :items="unit"
                           :rules="formRulesUnit"
@@ -622,6 +553,7 @@
                         sm="6"
                         md="6"
                       >
+                        <!-- Net Price -->
                         <v-text-field
                           :rules="formRulesPrice"
                           v-model="form.net_price"
@@ -654,6 +586,7 @@
                         md="6"
                       >
                         <v-layout align-center>
+                          <!-- VAT -->
                           <v-text-field
                             :rules="formRulesVAT"
                             v-model="temp_vat"
@@ -690,6 +623,7 @@
                         sm="6"
                         md="6"
                       >
+                        <!-- Price w/o VAT -->
                         <v-text-field disabled outlined clearable dense>
                           <template slot="label">
                             <div style="font-size: 12px">Price w/o VAT</div>
@@ -705,6 +639,7 @@
                         sm="6"
                         md="6"
                       >
+                        <!-- Lead Time -->
                         <v-text-field
                           :rules="formRulesOthers"
                           v-model="form.lead_time"
@@ -733,6 +668,7 @@
                         sm="6"
                         md="6"
                       >
+                        <!-- Min Order Qty -->
                         <v-text-field
                           :rules="formRulesOthers"
                           v-model="form.minimum_order_quantity"
@@ -759,6 +695,7 @@
                         sm="6"
                         md="6"
                       >
+                        <!-- Order Frequency -->
                         <v-text-field
                           :rules="formRulesOthers"
                           v-model="form.order_frequency"
@@ -791,13 +728,12 @@
                           v-model="menu"
                           :close-on-content-click="false"
                           :nudge-right="35"
-                          lazy
                           transition="scale-transition"
                           offset-y
-                          full-width
                           min-width="290px"
                         >
                           <template v-slot:activator="{ on }">
+                            <!-- Expiration Date -->
                             <v-text-field
                               :prepend-inner-icon="
                                 showIcon ? 'mdi-calendar-range' : ''
@@ -870,6 +806,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 /* #table1 .style-1 {
   color: #fb8c00;
@@ -920,6 +857,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -928,6 +866,7 @@ export default {
   metaInfo() {
     return { title: "Inventory" };
   },
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -973,7 +912,7 @@ export default {
     date: null,
     menu: false,
 
-    // Form Rules
+    //Form Rules
     formRules: [
       (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
@@ -982,7 +921,7 @@ export default {
         ) || "This field must have a valid value",
     ],
     formRules1: [(v) => !!v || "This is required"],
-    // Form Rules
+    //Form Rules
     formRulesUnit: [(v) => (!!v && v.length >= 2) || "This is required"],
     formRulesDesc: [
       (v) =>
@@ -1011,7 +950,7 @@ export default {
       },
     ],
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       status: [
@@ -1035,10 +974,10 @@ export default {
     vat: false,
     supplierlist: [],
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
@@ -1103,7 +1042,7 @@ export default {
     itemsPerPage: 5,
   }),
 
-  // Dynamic Width
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -1124,7 +1063,7 @@ export default {
     },
   },
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.get();
@@ -1133,7 +1072,6 @@ export default {
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
-    // this.getDays();
   },
 
   methods: {
@@ -1147,7 +1085,7 @@ export default {
     //     }
     //   }
     // },
-
+    //Keydown
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
@@ -1164,6 +1102,7 @@ export default {
       }
     },
 
+    //For retrieving VAT
     async getVat() {
       await axios
         .get("/api/settings/vat/get", { params: { type: "s" } })
@@ -1171,6 +1110,8 @@ export default {
           this.temp_vat = result.data.vat;
         });
     },
+
+    //For retrieving supply names
     async suppName() {
       this.form.supply_name = null;
       await axios
@@ -1187,33 +1128,21 @@ export default {
       return date.format(format);
     },
 
-    // getDays() {
-    //   var days = new Date(
-    //     this.getFormatDate(Date.now(), "Y"),
-    //     this.getFormatDate(Date.now(), "M"),
-    //     0
-    //   ).getDate();
-
-    //   for (let i = 1; i < days + 1; i++) {
-    //     this.dayslist.push(i);
-    //   }
-    // },
-
     itemperpage() {
       this.page = 1;
       this.get();
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
@@ -1267,17 +1196,17 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
         this.compute();
-        // Validate first before compare
+        //Validate first before compare
         if (this.compare()) {
-          // Save or update data in the table
+          //Save or update data in the table
           await axios
             .post("/api/msupp/save", this.form)
             .then((result) => {
-              //if the value is true then save to database
+              //If the value is true then save to database
               switch (result.data) {
                 case 0:
                   this.snackbar = {
@@ -1294,14 +1223,16 @@ export default {
               }
             })
             .catch((result) => {
-              // If false or error when saving
+              //If false or error when saving
             });
         }
       }
     },
+
+    //For retrieving masterlist supplies
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/msupp/get", {
@@ -1313,21 +1244,23 @@ export default {
           },
         })
         .then((result) => {
-          // If the value is true then get the data
-
+          //If the value is true then get the data
           this.table = result.data;
-          this.progressbar = false; // Hide the progress bar
+          this.progressbar = false; //Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
+
+    //For suppliers info
     async suppliers() {
       await axios.get("/api/msupp/suppliers", {}).then((result) => {
         this.supplierlist = result.data;
       });
     },
 
+    //For adding
     async sum() {
       await axios
         .get("/api/msupp/sum", {
@@ -1336,13 +1269,14 @@ export default {
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For validating item
     async validateItem() {
       await axios
         .get("/api/msupp/validateItem", {
@@ -1356,19 +1290,19 @@ export default {
           } catch (error) {}
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
-    // 1. get specific item info ,eg total amount, total quantity
-    // 2. check if true then total / tem_vat
-    // 3. else wo/vat = total (total amt / quantity)
+
+    //For computing amount with VAT
     async compute() {
       //check if vatable or not
       if (this.vat) {
@@ -1390,7 +1324,7 @@ export default {
       return numbr.format(format);
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.supplier = row.supplier;
@@ -1415,7 +1349,7 @@ export default {
       this.compute();
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       if (this.form.temp_vat !== null) {
         this.$refs.form.resetValidation();
@@ -1428,7 +1362,7 @@ export default {
       }
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       for (var key in this.form) {
         if (key == "vat") {
@@ -1443,6 +1377,7 @@ export default {
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

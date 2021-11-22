@@ -1,8 +1,9 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 280px">
     <template v-if="user">
       <!-- Inventory -->
-
+      <!-- App Bar -->
       <v-app-bar
         v-if="!user.permissionslist.includes('Access POS')"
         dense
@@ -29,6 +30,7 @@
 
         <v-spacer></v-spacer>
 
+        <!-- Account -->
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -47,6 +49,7 @@
             </v-btn>
           </template>
           <v-list dense>
+            <!-- Password -->
             <v-list-item
               :to="{ name: 'password' }"
               style="text-decoration: none"
@@ -55,6 +58,7 @@
                 >Password</v-list-item-title
               >
             </v-list-item>
+            <!-- Log Out -->
             <v-list-item>
               <v-list-item-title @click="logout" style="cursor: pointer"
                 >Log Out
@@ -100,6 +104,7 @@
             </v-btn>
           </template>
           <v-list dense>
+            <!-- Password -->
             <v-list-item
               :to="{ name: 'password' }"
               style="text-decoration: none"
@@ -108,6 +113,7 @@
                 >Password</v-list-item-title
               >
             </v-list-item>
+            <!-- Log Out -->
             <v-list-item>
               <v-list-item-title @click="logout" style="cursor: pointer"
                 >Logout
@@ -117,6 +123,7 @@
         </v-menu>
       </v-app-bar>
 
+      <!-- Navigation Drawer -->
       <v-navigation-drawer
         height="100%"
         app
@@ -240,7 +247,7 @@
                 <v-list-item-icon class="me-3">
                   <v-icon size="16">mdi-circle</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title>Products-Sub Category</v-list-item-title>
+                <v-list-item-title>Products Subcategory</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-list-group>
@@ -556,6 +563,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 /* For Chrome, Microsoft Edge */
 html {
@@ -603,13 +611,15 @@ html {
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
-import axios from "axios"; // Library for sending api request
+import axios from "axios"; //Library for sending api request
 // import template from "../pages/template.vue";
 export default {
   // components: { template },
   middleware: "auth",
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -617,22 +627,26 @@ export default {
       roles: "auth/user_roles",
     }),
   },
+
+  //Onload
   created() {
     this.getLogo();
   },
   data() {
     return {
-      logo_path: "/img/Logo.jpg", //default pag wlang uploaded file.
+      logo_path: "/img/Logo.jpg", //Default if no uploaded image
       drawer: true,
       mini: false,
     };
   },
 
+  //Methods
   methods: {
     reloadPage() {
       window.location.reload();
     },
 
+    //For retrieving logo
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
         if (result.data.path) {
@@ -641,11 +655,12 @@ export default {
       });
     },
 
+    //For logging out
     async logout() {
-      // Log out the user.
+      //Log out the user.
       await this.$store.dispatch("auth/logout").catch((errr) => {});
 
-      // Redirect to login.
+      //Redirect to login.
       this.$router.push({ name: "login" });
       this.reloadPage();
     },

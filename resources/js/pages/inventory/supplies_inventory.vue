@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
@@ -72,6 +73,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters>
             <v-spacer></v-spacer>
+            <!-- Refresh -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -89,6 +91,7 @@
               </template>
               <span>Refresh</span>
             </v-tooltip>
+            <!-- Filter -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -178,46 +181,6 @@
                       </template>
                       <span>Search</span>
                     </v-tooltip>
-                  </v-card-actions>
-                </v-col>
-
-                <!-- Branch Field -->
-                <v-col
-                  cols="4"
-                  v-if="
-                    !user.permissionslist.includes(
-                      'Access Reports - Outgoing Supplies'
-                    )
-                  "
-                  ><span class="text-caption text-xl-subtitle-2"
-                    >Branch</span
-                  ></v-col
-                >
-                <v-col
-                  cols="8"
-                  v-if="
-                    !user.permissionslist.includes(
-                      'Access Reports - Outgoing Supplies'
-                    )
-                  "
-                >
-                  <v-card-actions class="px-0">
-                    <v-select
-                      hide-details
-                      v-model="branch"
-                      :items="branchlist"
-                      item-text="branch_name"
-                      item-value="id"
-                      clearable
-                      dense
-                      placeholder="Branch"
-                      @change="get"
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                    </v-select>
                   </v-card-actions>
                 </v-col>
 
@@ -348,6 +311,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Quantity -->
                     <v-text-field
                       :rules="formRulesQuantity"
                       v-model="form.quantity"
@@ -407,6 +371,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -450,6 +415,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -460,14 +426,16 @@ export default {
   metaInfo() {
     return { title: "Inventory" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
   },
+
+  //Data
   data: () => ({
     progressbar: false,
-
     snackbar: {
       active: false,
       message: "",
@@ -477,13 +445,11 @@ export default {
     dialog: false,
     filterDialog: false,
     category: "",
-    branch: "",
     table: [],
     suppcatlist: [],
     suppnamelist: [],
-    branchlist: [],
 
-    // Form Rules
+    //Form rules
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
@@ -496,17 +462,17 @@ export default {
       },
     ],
 
-    // Form Data
+    //Form Data
     form: {
       category: null,
       supply_name: null,
       quantity: 1,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
@@ -580,7 +546,7 @@ export default {
     getQuantity: 0,
   }),
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Branch Inventory")) {
       this.get();
@@ -590,12 +556,15 @@ export default {
     }
   },
 
+  //Methods
   methods: {
+    //Keydown
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -622,10 +591,10 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        // Validate first before compare
+        //Validate first before compare
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
@@ -635,16 +604,12 @@ export default {
           };
           return;
         }
-        if (
-          this.user.permissionslist.includes(
-            "Access Reports - Outgoing Supplies"
-          )
-        ) {
+        if (this.user.permissionslist.includes("Access Branch Inventory")) {
           this.form.branch = this.user.branch;
         }
-        // Save or update data in the table
+        //Save or update data in the table
         await axios.post("/api/suppinven/save", this.form).then((result) => {
-          //if the value is true then save to database
+          //If the value is true then save to database
           this.snackbar = {
             active: true,
             iconText: "check",
@@ -656,6 +621,8 @@ export default {
         });
       }
     },
+
+    //For retrieving supplies inventory
     async get() {
       this.progressbar = true; // Show the progress bar
       // Get data from tables
@@ -667,7 +634,6 @@ export default {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
-            branch: this.branch,
             category: this.category,
             dateFrom: this.dateFrom,
             dateUntil: this.dateUntil,
@@ -683,12 +649,14 @@ export default {
         });
     },
 
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/osupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
+    //For retrieving supply names
     async suppName() {
       this.form.supply_name = null;
       await axios
@@ -700,7 +668,7 @@ export default {
         });
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.getQuantity = row.quantity;
       this.form.category = row.category.id;
@@ -709,19 +677,20 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.quantity = 1;
       this.dialog = false;
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

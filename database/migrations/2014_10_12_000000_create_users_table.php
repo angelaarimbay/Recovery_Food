@@ -14,13 +14,13 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();//this is our reference for other table for relationship
+            $table->id(); //Reference for other table for relationship
             $table->string('name');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable(); 
+            $table->string('password')->nullable();
             $table->string('phone_number')->nullable();
             $table->integer('branch')->references('id')->on('tbl_branches');
             $table->rememberToken();

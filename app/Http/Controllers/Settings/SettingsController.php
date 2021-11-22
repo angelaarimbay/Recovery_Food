@@ -9,28 +9,32 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
-// dont add auth
-    // dont add auth
-    // dont add auth
-
+    //For uploading logo
     public function uploadLogo(Request $t)
     {
-        $img = $t->file('file');
-        $newfilename = $img->getClientOriginalName() . "~" . time() . '.' . $img->getClientOriginalExtension();
-        $input['imagename'] = $newfilename;
-        $img->storeAs('public/logo/', $input['imagename']);
-        return ['filename' => $img->getClientOriginalName(), 'tempfile' => $newfilename, 'path' => url('/storage/logo/' . $input['imagename'])];
+        try {
+            $img = $t->file('file');
+            $newfilename = $img->getClientOriginalName() . "~" . time() . '.' . $img->getClientOriginalExtension();
+            $input['imagename'] = $newfilename;
+            $img->storeAs('public/logo/', $input['imagename']);
+            return ['filename' => $img->getClientOriginalName(), 'tempfile' => $newfilename, 'path' => url('/storage/logo/' . $input['imagename'])];
+        } catch (\Throwable $th) {
+        }
     }
 
+    //For saving logo
     public function storeLogo(Request $t)
     {
         tbl_company::create(['logo' => $t->attachment]);
     }
+
+    //For removing logo
     public function deleteLogo()
     {
         tbl_company::where('active', '!=', 0)->update(['active' => 0]);
     }
 
+    //For retrieving logo
     public function getLogo()
     {
         if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
@@ -44,11 +48,11 @@ class SettingsController extends Controller
         }
         return ['path' => $logo, 'tempfile' => $filename, 'filename' => $temp];
     }
+
+    //For storing VAT
     public function storeVat(Request $t)
     {
-
         if (tbl_vat::where(["type" => $t->type])->get()->count() > 0) {
-
             if (tbl_vat::where(["type" => $t->type, 'vat' => $t->vat])->get()->count() > 0) {
                 return 0;
             } else {
@@ -58,7 +62,6 @@ class SettingsController extends Controller
                         'cashier' => auth()->user()->id]);
                 return 1;
             }
-
         } else {
             tbl_vat::create(['vat' => $t->vat,
                 'type' => $t->type,
@@ -67,6 +70,8 @@ class SettingsController extends Controller
         }
 
     }
+
+    //For retrieving VAT
     public function getVat(Request $t)
     {
         return tbl_vat::where("type", $t->type)->orderby("created_at", 'desc')->first();

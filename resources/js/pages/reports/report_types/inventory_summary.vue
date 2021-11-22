@@ -34,6 +34,7 @@
       </v-snackbar>
 
       <v-card-actions class="px-0 justify-center">
+        <!-- Export to PDF -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -48,6 +49,7 @@
           </template>
           <span>Export to PDF</span>
         </v-tooltip>
+        <!-- Export to Excel -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -62,6 +64,7 @@
           </template>
           <span>Export to Excel</span>
         </v-tooltip>
+        <!-- Print -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -127,6 +130,7 @@
   </v-container>
 </template>
 
+<!-- Style -->
 <style>
 .v-list-item__content {
   color: white !important;
@@ -139,9 +143,11 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  //Data
   data: () => ({
     dateFrom: null,
     print: "",
@@ -159,10 +165,12 @@ export default {
     overlay: false,
   }),
 
+  //Onload
   created() {
     this.list();
   },
 
+  //Methods
   methods: {
     list() {
       for (var key in moment.months()) {
@@ -178,6 +186,7 @@ export default {
       this.ylist = years;
     },
 
+    //For exporting/printing
     async get(type) {
       if (this.year == null || this.month == null) {
         this.snackbar = {

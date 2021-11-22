@@ -15,10 +15,10 @@ class CreateTblRequestprodsTable extends Migration
     {
         Schema::create('tbl_requestprods', function (Blueprint $table) {
             $table->id();
-            $table->text('ref'); 
+            $table->text('ref');
             $table->integer('product_name')->references('id')->on('tbl_masterlistprod');
-            $table->float('quantity'); 
-            $table->datetime('request_date'); 
+            $table->float('quantity');
+            $table->datetime('request_date');
             $table->integer('branch')->references('id')->on('tbl_branches');
             $table->integer('user')->references('id')->on('users');
             $table->integer('status')->default(1);

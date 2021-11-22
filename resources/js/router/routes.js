@@ -4,7 +4,7 @@ function page(path) {
 
 export default [
 
-  { path: '*', name:'invalid-page', component: page('errors/page-not-found.vue') }, 
+  { path: '*', name: 'invalid-page', component: page('errors/page-not-found.vue') },
   // Login
   { path: '/login', name: 'login', component: page('auth/login.vue') },
   { path: '/', name: 'home', component: page('dashboard/dashboard.vue') },
