@@ -25,7 +25,11 @@ class ProductsListController extends Controller
     //For retrieving products list
     public function get(Request $t)
     {
+        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
+            ($t->subcategory ? " and sub_category=" . $t->subcategory : "");
+
         $table = tbl_outgoingprod::with(["category", "sub_category", "product_name"])
+            ->whereRaw($where)
             ->whereHas("requesting_branch", function ($q) {
                 $q->where("id", auth()->user()->branch);
             })->whereHas("product_name", function ($q1) use ($t) {

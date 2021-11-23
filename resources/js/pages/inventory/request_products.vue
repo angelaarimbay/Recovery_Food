@@ -289,51 +289,6 @@
                 </v-card>
 
                 <v-row no-gutters style="height: 60px" align="center">
-                  <v-col
-                    cols="10"
-                    xl="6"
-                    lg="6"
-                    md="7"
-                    sm="7"
-                    class="my-auto pa-2"
-                  >
-                    <v-card-actions class="py-0 px-0">
-                      <!-- Search -->
-                      <v-text-field
-                        hide-details
-                        v-model="search"
-                        single-line
-                        dense
-                        clearable
-                        autocomplete="off"
-                        background-color="grey darken-3"
-                        dark
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">Product Name</div>
-                        </template>
-                      </v-text-field>
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            small
-                            :x-small="$vuetify.breakpoint.smAndDown"
-                            color="red darken-2"
-                            icon
-                            v-on="data.on"
-                            class="ml-1"
-                            @click="getList"
-                          >
-                            <v-icon>mdi-magnify</v-icon></v-btn
-                          >
-                        </template>
-                        <span>Search</span>
-                      </v-tooltip>
-                    </v-card-actions>
-                  </v-col>
                   <v-spacer></v-spacer>
                   <!-- Refresh -->
                   <v-tooltip bottom>
@@ -353,10 +308,136 @@
                     </template>
                     <span>Refresh</span>
                   </v-tooltip>
+                  <!-- Filter -->
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="grey darken-4"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="filterDialog = true"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-filter-variant</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Filter</span>
+                  </v-tooltip>
                 </v-row>
+
+                <!-- Filter Dialog -->
+                <v-dialog v-model="filterDialog" max-width="400px">
+                  <v-card dark tile class="pa-2">
+                    <v-toolbar dense flat class="transparent">
+                      Search Filter
+                      <v-spacer></v-spacer>
+                      <v-icon text @click="filterDialog = false"
+                        >mdi-close
+                      </v-icon>
+                    </v-toolbar>
+                    <v-divider class="my-0"></v-divider>
+                    <v-row no-gutters align="center" class="pa-2">
+                      <!-- Search Field -->
+                      <v-col cols="4"
+                        ><span class="text-caption text-xl-subtitle-2"
+                          >Search</span
+                        ></v-col
+                      >
+                      <v-col cols="8">
+                        <v-card-actions class="px-0">
+                          <v-text-field
+                            v-model="search"
+                            placeholder="Product Name"
+                            single-line
+                            dense
+                            clearable
+                            hide-details
+                            background-color="grey darken-3"
+                            flat
+                            solo
+                            style="font-size: 12px"
+                          ></v-text-field>
+                          <v-tooltip bottom>
+                            <template #activator="data">
+                              <v-btn
+                                small
+                                :x-small="$vuetify.breakpoint.smAndDown"
+                                color="red darken-2"
+                                icon
+                                v-on="data.on"
+                                @click="getList"
+                                class="ml-1"
+                              >
+                                <v-icon>mdi-magnify</v-icon></v-btn
+                              >
+                            </template>
+                            <span>Search</span>
+                          </v-tooltip>
+                        </v-card-actions>
+                      </v-col>
+
+                      <!-- Category Field -->
+                      <v-col cols="4"
+                        ><span class="text-caption text-xl-subtitle-2"
+                          >Category</span
+                        ></v-col
+                      >
+                      <v-col cols="8">
+                        <v-card-actions class="px-0">
+                          <v-select
+                            hide-details
+                            v-model="category"
+                            :items="prodcatlist"
+                            item-text="product_cat_name"
+                            item-value="id"
+                            clearable
+                            dense
+                            placeholder="Category"
+                            @change="getList"
+                            background-color="grey darken-3"
+                            flat
+                            solo
+                            style="font-size: 12px"
+                          >
+                          </v-select>
+                        </v-card-actions>
+                      </v-col>
+
+                      <!-- Subcategory Field -->
+                      <v-col cols="4"
+                        ><span class="text-caption text-xl-subtitle-2"
+                          >Subcategory</span
+                        ></v-col
+                      >
+                      <v-col cols="8">
+                        <v-card-actions class="px-0">
+                          <v-select
+                            hide-details
+                            v-model="subcategory"
+                            :items="prodsubcatlist"
+                            item-text="prod_sub_cat_name"
+                            item-value="id"
+                            clearable
+                            dense
+                            placeholder="Subcategory"
+                            @change="getList"
+                            background-color="grey darken-3"
+                            flat
+                            solo
+                            style="font-size: 12px"
+                          >
+                          </v-select>
+                        </v-card-actions>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-dialog>
 
                 <!-- Table -->
                 <v-data-table
+                  dense
                   id="table1"
                   :loading="progressbar1"
                   :headers="headers1"
@@ -460,6 +541,8 @@
 
                 <!-- Table -->
                 <v-data-table
+                  height="230"
+                  dense
                   id="table1"
                   :headers="headers2"
                   :items="table2"
@@ -744,6 +827,18 @@ export default {
     //Header1
     headers1: [
       {
+        text: "CATEGORY",
+        value: "category.product_cat_name",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "SUBCATEGORY",
+        value: "sub_category.prod_sub_cat_name",
+        filterable: false,
+        class: "black--text",
+      },
+      {
         text: "PRODUCT NAME",
         value: "product_name",
         class: "black--text",
@@ -824,12 +919,19 @@ export default {
     pageCount: 0,
     itemsPerPage: 5,
     search: "",
+    category: "",
+    subcategory: "",
     cancel_select: [],
+    filterDialog: false,
+    prodcatlist: [],
+    prodsubcatlist: [],
   }),
 
   //Onload
   created() {
     this.get();
+    this.prodCat();
+    this.prodSubCat();
   },
 
   //Watch
@@ -921,7 +1023,11 @@ export default {
       this.progressbar1 = true;
       await axios
         .get("/api/requestprod/products/list", {
-          params: { search: this.search },
+          params: {
+            search: this.search,
+            category: this.category,
+            subcategory: this.subcategory,
+          },
         })
         .then((result) => {
           this.table1 = result.data;
@@ -943,6 +1049,20 @@ export default {
           this.table = result.data;
           this.progressbar = false;
         });
+    },
+
+    //For retrieving product categories
+    async prodCat() {
+      await axios.get("/api/mprod/prodCat").then((prod_cat) => {
+        this.prodcatlist = prod_cat.data;
+      });
+    },
+
+    //For retrieving product subcategories
+    async prodSubCat() {
+      await axios.get("/api/mprod/prodSubCat").then((prodsub_cat) => {
+        this.prodsubcatlist = prodsub_cat.data;
+      });
     },
 
     //For validation
@@ -1096,7 +1216,7 @@ export default {
       ]),
         (this.isHidden = true);
 
-        //For retrieving product request list
+      //For retrieving product request list
       this.getList();
       await axios
         .get("/api/requestprod/request/list", { params: { ref: ref.ref } })

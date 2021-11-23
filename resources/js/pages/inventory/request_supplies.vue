@@ -290,51 +290,6 @@
                 </v-card>
 
                 <v-row no-gutters style="height: 60px" align="center">
-                  <!-- Search -->
-                  <v-col
-                    cols="10"
-                    xl="6"
-                    lg="6"
-                    md="7"
-                    sm="7"
-                    class="my-auto pa-2"
-                  >
-                    <v-card-actions class="py-0 px-0">
-                      <v-text-field
-                        hide-details
-                        v-model="search"
-                        single-line
-                        dense
-                        clearable
-                        autocomplete="off"
-                        background-color="grey darken-3"
-                        dark
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                        <template slot="label">
-                          <div style="font-size: 12px">Supply Name</div>
-                        </template>
-                      </v-text-field>
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            small
-                            :x-small="$vuetify.breakpoint.smAndDown"
-                            color="red darken-2"
-                            icon
-                            v-on="data.on"
-                            class="ml-1"
-                            @click="getList"
-                          >
-                            <v-icon>mdi-magnify</v-icon></v-btn
-                          >
-                        </template>
-                        <span>Search</span>
-                      </v-tooltip>
-                    </v-card-actions>
-                  </v-col>
                   <v-spacer></v-spacer>
                   <!-- Refresh -->
                   <v-tooltip bottom>
@@ -354,10 +309,109 @@
                     </template>
                     <span>Refresh</span>
                   </v-tooltip>
+                  <!-- Filter -->
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="grey darken-4"
+                        style="text-transform: none"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="filterDialog = true"
+                        v-on="data.on"
+                        icon
+                        ><v-icon>mdi-filter-variant</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Filter</span>
+                  </v-tooltip>
                 </v-row>
+
+                <!-- Filter Dialog -->
+                <v-dialog v-model="filterDialog" max-width="400px">
+                  <v-card dark tile class="pa-2">
+                    <v-toolbar dense flat class="transparent">
+                      Search Filter
+                      <v-spacer></v-spacer>
+                      <v-icon text @click="filterDialog = false"
+                        >mdi-close
+                      </v-icon>
+                    </v-toolbar>
+                    <v-divider class="my-0"></v-divider>
+                    <v-row no-gutters align="center" class="pa-2">
+                      <!-- Search Field -->
+                      <v-col cols="4"
+                        ><span class="text-caption text-xl-subtitle-2"
+                          >Search</span
+                        ></v-col
+                      >
+                      <v-col cols="8">
+                        <v-card-actions class="px-0">
+                          <v-text-field
+                            v-model="search"
+                            placeholder="Supply Name"
+                            single-line
+                            dense
+                            clearable
+                            hide-details
+                            background-color="grey darken-3"
+                            flat
+                            solo
+                            style="font-size: 12px"
+                          ></v-text-field>
+                          <v-tooltip bottom>
+                            <template #activator="data">
+                              <v-btn
+                                small
+                                :x-small="$vuetify.breakpoint.smAndDown"
+                                color="red darken-2"
+                                icon
+                                v-on="data.on"
+                                @click="getList"
+                                class="ml-1"
+                              >
+                                <v-icon>mdi-magnify</v-icon></v-btn
+                              >
+                            </template>
+                            <span>Search</span>
+                          </v-tooltip>
+                        </v-card-actions>
+                      </v-col>
+
+                      <!-- Category Field -->
+                      <v-col cols="4"
+                        ><span class="text-caption text-xl-subtitle-2"
+                          >Category</span
+                        ></v-col
+                      >
+                      <v-col cols="8">
+                        <v-card-actions class="px-0">
+                          <v-select
+                            hide-details
+                            v-model="category"
+                            :items="suppcatlist"
+                            item-text="supply_cat_name"
+                            item-value="id"
+                            clearable
+                            dense
+                            placeholder="Category"
+                            @change="getList"
+                            background-color="grey darken-3"
+                            flat
+                            solo
+                            style="font-size: 12px"
+                          >
+                          </v-select>
+                        </v-card-actions>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-dialog>
 
                 <!-- Table -->
                 <v-data-table
+                  dense
                   id="table1"
                   :loading="progressbar1"
                   :headers="headers1"
@@ -461,6 +515,8 @@
 
                 <!-- Table -->
                 <v-data-table
+                  height="230"
+                  dense
                   id="table1"
                   :headers="headers2"
                   :items="table2"
@@ -746,6 +802,12 @@ export default {
     //Header1
     headers1: [
       {
+        text: "CATEGORY",
+        value: "category.supply_cat_name",
+        class: "black--text",
+        filterable: false,
+      },
+      {
         text: "SUPPLY NAME",
         value: "supply_name",
         class: "black--text",
@@ -839,11 +901,15 @@ export default {
     itemsPerPage: 5,
     search: "",
     cancel_select: [],
+    filterDialog: false,
+    suppcatlist: [],
+    category: "",
   }),
 
   //Onload
   created() {
     this.get();
+    this.suppCat();
   },
 
   //Watch
@@ -937,7 +1003,7 @@ export default {
       this.progressbar1 = true;
       await axios
         .get("/api/requestsupp/supplies/list", {
-          params: { search: this.search },
+          params: { search: this.search, category: this.category },
         })
         .then((result) => {
           this.table1 = result.data;
@@ -959,6 +1025,13 @@ export default {
           this.table = result.data;
           this.progressbar = false;
         });
+    },
+
+    //For retrieving supply categories
+    async suppCat() {
+      await axios.get("/api/msupp/suppCat").then((supp_cat) => {
+        this.suppcatlist = supp_cat.data;
+      });
     },
 
     //For validation

@@ -58,7 +58,9 @@ class MasterlistProductsController extends Controller
     //For retrieving masterlist products info
     public function get(Request $t)
     {
-        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0");
+        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
+            ($t->subcategory ? " and sub_category=" . $t->subcategory : "");
+            
         $table = tbl_masterlistprod::with("category", "sub_category")
             ->selectRaw("*, case when exp_date is null THEN null when datediff(exp_date,current_timestamp) > 7 THEN null ELSE datediff(exp_date,current_timestamp) end as days")
             ->whereRaw($where);

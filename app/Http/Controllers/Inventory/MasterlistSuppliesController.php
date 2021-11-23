@@ -69,7 +69,8 @@ class MasterlistSuppliesController extends Controller
     //For retrieving masterlist supplies info
     public function get(Request $t)
     {
-        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0");
+        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
+            ($t->supplier ? " and supplier=" . $t->supplier : "");
 
         // return $where;
         $table = tbl_masterlistsupp::with("category", "supplier")

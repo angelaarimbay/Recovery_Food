@@ -196,6 +196,33 @@
                     </v-card-actions>
                   </v-col>
 
+                  <!-- Supplier Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Supplier</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        v-model="supplier"
+                        :items="supplierlist"
+                        item-text="supplier_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        placeholder="Supplier"
+                        @change="get"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
+
                   <!-- Category Field -->
                   <v-col cols="4"
                     ><span class="text-caption text-xl-subtitle-2"
@@ -905,6 +932,7 @@ export default {
     supply_id: "",
     disable: "",
     table: [],
+    supplier: "",
     category: "",
     suppcatlist: [],
     suppnamelist: [],
@@ -1111,7 +1139,7 @@ export default {
         });
     },
 
-    //For retrieving supply names
+    //For retrieving supplier names
     async suppName() {
       this.form.supply_name = null;
       await axios
@@ -1240,6 +1268,7 @@ export default {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            supplier: this.supplier,
             category: this.category,
           },
         })
@@ -1300,7 +1329,6 @@ export default {
         this.suppcatlist = supp_cat.data;
       });
     },
-
 
     //For computing amount with VAT
     async compute() {

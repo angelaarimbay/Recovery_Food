@@ -54,7 +54,7 @@
 
 </style>
 
-<body style="height: 100%">
+<body style="height: 100%; overflow: hidden">
     <p class="header"> Recovery Food </p>
     <p class="header"> {{ $branch }} </p>
     <p class="header_location"> {{ $branch_location }} </p>
@@ -143,8 +143,7 @@
     <hr class="divider" />
     <p class="bottom_footer">Thank you!! Please come again...</p>
     <p class="bottom_footer">Contact # {{ $branch_number }}</p>
-    <p class="bottom_footer">This serves as your Official Receipt</p>
+    <p class="bottom_footer">This is not an official receipt</p>
 </body>
-</iframe>
 
 </html>

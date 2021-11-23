@@ -47,7 +47,9 @@ class IncomingProductsController extends Controller
     //For retrieving incoming products info
     public function get(Request $t)
     {
-        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0");
+        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
+            ($t->subcategory ? " and sub_category=" . $t->subcategory : "");
+            
         $table = tbl_incomingprod::with(["category", "sub_category", "product_name"])
             ->whereRaw($where);
 

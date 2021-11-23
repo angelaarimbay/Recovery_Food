@@ -222,6 +222,33 @@
                       </v-select>
                     </v-card-actions>
                   </v-col>
+
+                  <!-- Subcategory Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Subcategory</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        v-model="subcategory"
+                        :items="prodsubcatlist"
+                        item-text="prod_sub_cat_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        placeholder="Subcategory"
+                        @change="get"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
                 </v-row>
               </v-card>
             </v-dialog>
@@ -427,7 +454,7 @@
                     sm="6"
                     md="6"
                   >
-                    <!-- Subcategory -->
+                    <!-- Product Subcategory -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.sub_category"
@@ -759,6 +786,7 @@ export default {
     },
     search: "",
     category: "",
+    subcategory: "",
     button: false,
     dialog: false,
     sheet: false,
@@ -1046,6 +1074,7 @@ export default {
             itemsPerPage: this.itemsPerPage,
             search: this.search,
             category: this.category,
+            subcategory: this.subcategory,
           },
         })
         .then((result) => {

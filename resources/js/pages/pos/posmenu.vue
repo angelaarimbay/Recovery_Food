@@ -192,6 +192,60 @@
                     </v-tooltip>
                   </v-card-actions>
                 </v-col>
+
+                <!-- Category Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Category</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="category"
+                      :items="prodcatlist"
+                      item-text="product_cat_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Category"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Subcategory Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Subcategory</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="subcategory"
+                      :items="prodsubcatlist"
+                      item-text="prod_sub_cat_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Subcategory"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
               </v-row>
             </v-card>
           </v-dialog>
@@ -879,6 +933,8 @@ export default {
       message: "",
     },
     search: "",
+    category: "",
+    subcategory: "",
     button: false,
     mode: "",
     quantity: 1,
@@ -1076,6 +1132,8 @@ export default {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            category: this.category,
+            subcategory: this.subcategory,
           },
         })
         .then((result) => {
@@ -1086,6 +1144,20 @@ export default {
         .catch((result) => {
           // If false or error when saving
         });
+    },
+
+    //For retrieving product categories
+    async prodCat() {
+      await axios.get("/api/mprod/prodCat").then((prod_cat) => {
+        this.prodcatlist = prod_cat.data;
+      });
+    },
+
+    //For retrieving product subcategories
+    async prodSubCat() {
+      await axios.get("/api/mprod/prodSubCat").then((prodsub_cat) => {
+        this.prodsubcatlist = prodsub_cat.data;
+      });
     },
 
     //For generating receipt
@@ -1605,6 +1677,8 @@ export default {
     if (this.user.permissionslist.includes("Access POS")) {
       this.$store.commit("check_layout/container", "");
       this.get();
+      this.prodCat();
+      this.prodSubCat();
       this.getSalesCount();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});

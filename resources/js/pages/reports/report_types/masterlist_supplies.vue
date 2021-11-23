@@ -83,7 +83,7 @@
 
       <!-- Category Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="4" class="px-1" style="max-width: 150px">
+        <v-col cols="4" class="px-1" style="max-width: 150px; min-width: 150px">
           <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               hide-details

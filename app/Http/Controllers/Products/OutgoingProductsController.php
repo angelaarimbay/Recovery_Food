@@ -54,6 +54,7 @@ class OutgoingProductsController extends Controller
     public function get(Request $t)
     {
         $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
+            ($t->subcategory ? " and sub_category=" . $t->subcategory : "") .
             ($t->branch ? " and requesting_branch=" . $t->branch : "");
         $table = tbl_outgoingprod::with(["category", "sub_category", "product_name", "requesting_branch"])
             ->whereRaw($where)

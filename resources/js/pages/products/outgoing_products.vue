@@ -268,6 +268,33 @@
                     </v-card-actions>
                   </v-col>
 
+                  <!-- Subcategory Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Subcategory</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        v-model="subcategory"
+                        :items="prodsubcatlist"
+                        item-text="prod_sub_cat_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        placeholder="Subcategory"
+                        @change="get"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
+
                   <!-- Date Picker -->
                   <v-col cols="4"
                     ><span class="text-caption text-xl-subtitle-2"
@@ -1148,6 +1175,7 @@ export default {
     search: "",
     branch: "",
     category: "",
+    subcategory: "",
     button: false,
     dialog: false,
     table: [],
@@ -1504,6 +1532,7 @@ export default {
             search: this.search,
             branch: this.branch,
             category: this.category,
+            subcategory: this.subcategory,
             dateFrom: this.dateFrom,
             dateUntil: this.dateUntil,
           },
