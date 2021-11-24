@@ -976,7 +976,7 @@ class ReportsController extends Controller
                 $temp,
                 [],
                 [
-                    'format' => ['57', 76 + (30 * $data_cloned->count())],
+                    'format' => ['57', 95 + (10 * $data_cloned->count())],
                     'margin_left' => 3,
                     'margin_right' => 3,
                     'margin_top' => 5,
