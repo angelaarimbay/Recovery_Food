@@ -10,6 +10,7 @@
         dark
         class="red darken-2"
         app
+        flat
       >
         <template class="d-none">
           <v-app-bar-nav-icon
@@ -75,6 +76,7 @@
         dark
         class="red darken-2"
         app
+        flat
       >
         <v-list-item-avatar class="my-0">
           <v-img :src="logo_path"></v-img>

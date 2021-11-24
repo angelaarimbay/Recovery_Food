@@ -54,7 +54,7 @@
 
 </style>
 
-<body style="height: 100%; overflow: hidden">
+<body style="height: 100%">
     <p class="header"> Recovery Food </p>
     <p class="header"> {{ $branch }} </p>
     <p class="header_location"> {{ $branch_location }} </p>
