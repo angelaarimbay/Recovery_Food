@@ -85,6 +85,7 @@
                 </v-row>
                 <br />
                 <v-form ref="form" id="password">
+                  <!-- Password -->
                   <v-text-field
                     :dense="$vuetify.breakpoint.smAndDown"
                     :rules="rules.passwordRules"
@@ -97,6 +98,7 @@
                     flat
                     solo
                   ></v-text-field>
+                  <!-- Confirm Password -->
                   <v-text-field
                     :dense="$vuetify.breakpoint.smAndDown"
                     :rules="[
@@ -112,7 +114,7 @@
                     flat
                     solo
                   ></v-text-field>
-
+                  <!-- Save Button -->
                   <v-btn
                     :large="$vuetify.breakpoint.mdAndUp"
                     class="
@@ -156,6 +158,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 .v-application #password .white {
   border: 1px solid #bdbdbd !important;
@@ -165,6 +168,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import Form from "vform";
 import axios from "axios";
@@ -174,6 +178,8 @@ export default {
   metaInfo() {
     return { title: "Password" };
   },
+
+  //Data
   data: () => ({
     snackbar: {
       active: false,
@@ -186,12 +192,14 @@ export default {
     token: "",
     value: null,
     value1: null,
+
     rules: {
       passwordRules: [
         (v) => !!v || "This is required",
         (v) => (v && v.length <= 10) || "Password must be 10 characters",
       ],
     },
+
     form: new Form({
       password: "",
       confirm: "",
@@ -199,7 +207,9 @@ export default {
     remember: false,
   }),
 
+  //Methods
   methods: {
+    //For changing
     async change() {
       if (this.$refs.form.validate()) {
         // Submit the form.

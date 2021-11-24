@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
@@ -71,6 +72,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Button -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -83,6 +85,7 @@
                 Add Incoming Product
               </v-btn>
               <v-spacer></v-spacer>
+              <!-- Refresh -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -100,6 +103,7 @@
                 </template>
                 <span>Refresh</span>
               </v-tooltip>
+              <!-- Filter -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -219,6 +223,33 @@
                     </v-card-actions>
                   </v-col>
 
+                  <!-- Subcategory Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Subcategory</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        v-model="subcategory"
+                        :items="prodsubcatlist"
+                        item-text="prod_sub_cat_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        placeholder="Subcategory"
+                        @change="get"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
+
                   <!-- Date Picker -->
                   <v-col cols="4"
                     ><span class="text-caption text-xl-subtitle-2"
@@ -230,10 +261,8 @@
                       v-model="date1"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -277,10 +306,8 @@
                       v-model="date2"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -398,6 +425,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- ID -->
                     <v-text-field v-model="form.id" class="d-none" dense>
                       <template slot="label">
                         <div style="font-size: 12px">ID</div>
@@ -408,13 +436,12 @@
                       v-model="date3"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
+                        <!-- Incoming Date -->
                         <v-text-field
                           :prepend-inner-icon="
                             showIcon ? 'mdi-calendar-range' : ''
@@ -458,6 +485,7 @@
                     sm="6"
                     md="6"
                   >
+                    <!-- Product Category -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.category"
@@ -487,6 +515,7 @@
                     sm="6"
                     md="6"
                   >
+                    <!-- Subcategory -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.sub_category"
@@ -502,7 +531,7 @@
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
-                          Sub Category <span style="color: red">*</span>
+                          Subcategory <span style="color: red">*</span>
                         </div>
                       </template>
                     </v-select>
@@ -516,6 +545,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Product Name -->
                     <v-autocomplete
                       :rules="formRules"
                       v-model="form.product_name"
@@ -538,19 +568,19 @@
                     <v-card flat class="px-4 pb-6" v-if="form.product_name">
                       <table style="width: 100%; font-size: 11px">
                         <tr>
-                          <th
+                          <td
                             class="text-left pr-2"
                             style="width: 50%"
                             v-if="form.product_name.description"
                           >
                             Description:
-                          </th>
+                          </td>
                           <th>{{ form.product_name.description }}</th>
                         </tr>
                         <tr>
-                          <th class="text-left pr-2" style="width: 50%">
+                          <td class="text-left pr-2" style="width: 50%">
                             Price:
-                          </th>
+                          </td>
                           <th>
                             {{
                               getFormatCurrency(
@@ -572,6 +602,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Quantity -->
                     <v-text-field
                       :rules="formRulesQuantity"
                       v-model="form.quantity"
@@ -629,6 +660,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -672,6 +704,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -680,6 +713,7 @@ export default {
   metaInfo() {
     return { title: "Products" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -692,6 +726,8 @@ export default {
       }
     },
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -700,6 +736,7 @@ export default {
     },
     search: "",
     category: "",
+    subcategory: "",
     button: false,
     dialog: false,
     sheet: false,
@@ -711,7 +748,7 @@ export default {
     date: null,
     menu: false,
 
-    // Form Rules
+    //Form rules
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
@@ -729,7 +766,7 @@ export default {
       },
     ],
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       category: null,
@@ -740,10 +777,10 @@ export default {
       incoming_date: null,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
@@ -759,7 +796,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "SUB-CATEGORY",
+        text: "SUBCATEGORY",
         value: "sub_category.prod_sub_cat_name",
         filterable: false,
         class: "black--text",
@@ -816,7 +853,7 @@ export default {
     date3: false,
   }),
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Products")) {
       this.dateFrom = this.getFormatDate(
@@ -835,7 +872,9 @@ export default {
     }
   },
 
+  //Methods
   methods: {
+    //Keydown
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
@@ -851,16 +890,16 @@ export default {
       this.get();
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
@@ -898,7 +937,7 @@ export default {
           }
         }
       }
-      //if has changes
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -912,16 +951,16 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        // Validate first before compare
+        //Validate first before compare
         if (this.compare()) {
-          // Save or update data in the table
+          //Save or update data in the table
           await axios
             .post("/api/inprod/save", this.form)
             .then((result) => {
-              //if the value is true then save to database
+              //If the value is true then save to database
               this.snackbar = {
                 active: true,
                 iconText: "check",
@@ -932,14 +971,16 @@ export default {
               this.cancel();
             })
             .catch((result) => {
-              // If false or error when saving
+              //If false or error when saving
             });
         }
       }
     },
+
+    //For retrieving incoming products
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/inprod/get", {
@@ -948,32 +989,36 @@ export default {
             itemsPerPage: this.itemsPerPage,
             search: this.search,
             category: this.category,
+            subcategory: this.subcategory,
             dateFrom: this.dateFrom,
             dateUntil: this.dateUntil,
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For retrieving product categories
     async prodCat() {
       await axios.get("/api/inprod/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
     },
 
+    //For retrieving product subcategories
     async prodSubCat() {
       await axios.get("/api/inprod/prodSubCat").then((prodsub_cat) => {
         this.prodsubcatlist = prodsub_cat.data;
       });
     },
 
+    //For retrieving product names
     async prodName() {
       this.form.product_name = null;
       await axios
@@ -997,7 +1042,7 @@ export default {
       return numbr.format(format);
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -1013,13 +1058,14 @@ export default {
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

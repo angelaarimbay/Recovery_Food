@@ -1,6 +1,8 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <v-container v-if="token == ''">
+      <!-- Progress Circular -->
       <v-overlay :value="overlay">
         <v-progress-circular
           size="55"
@@ -9,9 +11,11 @@
         ></v-progress-circular>
       </v-overlay>
       <v-row v-if="user" align="center">
+        <!-- Logo -->
         <v-col cols="12" xl="6" lg="6" md="6">
           <v-img contain :src="logo_path" class="hidden-xs-only"></v-img>
         </v-col>
+        <!-- Login Form -->
         <v-col
           cols="12"
           xl="6"
@@ -40,6 +44,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
+                  <!-- Email Field -->
                   <v-col cols="12" md="12" class="py-1" id="email">
                     <v-text-field
                       :rules="formRulesEmail"
@@ -58,7 +63,7 @@
                       solo
                     ></v-text-field>
                   </v-col>
-
+                  <!-- Password Field -->
                   <v-col cols="12" sm="12" class="py-1" id="password">
                     <v-text-field
                       :rules="passwordRules"
@@ -81,7 +86,7 @@
                     ></v-text-field>
                   </v-col>
                 </v-row>
-
+                <!-- Login Button -->
                 <v-row>
                   <v-col cols="12">
                     <v-btn
@@ -109,6 +114,7 @@
         </v-col>
       </v-row>
     </v-container>
+    <!-- Snackbar -->
     <v-snackbar
       bottom
       v-model="snackbar.status"
@@ -136,6 +142,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 .v-application #email .white,
 .v-application #password .white {
@@ -147,6 +154,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import Form from "vform";
 import axios from "axios";
@@ -155,6 +163,7 @@ export default {
   metaInfo() {
     return { title: "Log In" };
   },
+  //Data
   data: () => ({
     user: true,
     drawer: null,
@@ -170,13 +179,18 @@ export default {
       password: "",
     }),
     remember: false,
+
+    //Form Rules
     formRulesEmail: [],
     passwordRules: [],
   }),
+
+  //Onload
   created() {
     this.getLogo();
   },
-
+  
+  //Watch
   watch: {
     "form.email"(val) {
       this.formRulesEmail = [];
@@ -186,7 +200,9 @@ export default {
     },
   },
 
+  //Methods
   methods: {
+    //For submithandler
     submitHandler() {
       (this.formRulesEmail = [
         (v) => !!v || "This is required",
@@ -196,6 +212,8 @@ export default {
       ]),
         (this.passwordRules = [(v) => !!v || "This is required"]);
     },
+
+    //For retrieving logo
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
         if (result.data.path) {
@@ -204,14 +222,15 @@ export default {
       });
     },
 
+    //For logging in
     async login() {
       if (this.$refs.form.validate()) {
         this.overlay = true;
-        // Submit the form.
+        //Submit the form.
         await axios
           .post("/api/login", this.form)
           .then((result) => {
-            // Save the token.
+            //Save the token.
             this.user = false;
             this.$store
               .dispatch("auth/saveToken", {

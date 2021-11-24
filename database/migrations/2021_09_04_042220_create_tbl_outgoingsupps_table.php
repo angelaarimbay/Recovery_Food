@@ -21,7 +21,7 @@ class CreateTblOutgoingsuppsTable extends Migration
             $table->float('amount');
             $table->integer('requesting_branch')->references('id')->on('tbl_branches');
             $table->datetime('outgoing_date');
-            $table->text('request_ref'); 
+            $table->text('request_ref');
             $table->timestamps();
         });
     }

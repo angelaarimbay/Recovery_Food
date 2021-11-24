@@ -25,7 +25,7 @@ class CreateTblOutgoingprodsTable extends Migration
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *

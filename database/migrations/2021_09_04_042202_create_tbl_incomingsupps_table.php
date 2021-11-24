@@ -19,24 +19,8 @@ class CreateTblIncomingsuppsTable extends Migration
             $table->integer('category')->references('id')->on('tbl_suppcat');
             $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
             $table->float('quantity');
-            $table->float('amount'); 
+            $table->float('amount');
             $table->datetime('incoming_date');
-            
-
-            // $table->string('col'); //required string
-            // $table->string('col')->nullable(); //optional string
-            // $table->string('col',25)->nullable(); //with required length of str
-
-            // $table->integer('col'); //required number (whole number only)
-            // $table->integer('col')->nullable(); //optional number (whole number only)
-            // $table->integer('col',25)->nullable(); //with required length of number $table->double('net_price');
-
-
-            // $table->float('col'); //required number (with decimals)
-            // $table->float('col')->nullable(); //optional number  (with decimals)
-            // $table->float('col',25)->nullable(); //with required length of number (with decimals)
-
-
             $table->timestamps();
         });
     }

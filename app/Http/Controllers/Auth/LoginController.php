@@ -8,7 +8,6 @@ use App\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -25,10 +24,11 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function directLogin(Request $request){
-        if($token = $this->login($request)){
+    public function directLogin(Request $request)
+    {
+        if ($token = $this->login($request)) {
             $token = json_decode(json_encode($token));
-            return redirect()->to('/verify-redirect?token='. $token->original->token . '&expires=' . $token->original->expires_in);
+            return redirect()->to('/verify-redirect?token=' . $token->original->token . '&expires=' . $token->original->expires_in);
         }
         return abort(404);
     }
@@ -43,12 +43,12 @@ class LoginController extends Controller
     {
         $token = $this->guard()->attempt($this->credentials($request));
 
-        if (! $token) {
+        if (!$token) {
             return false;
         }
 
         $user = $this->guard()->user();
-        if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
             return false;
         }
 
@@ -88,7 +88,7 @@ class LoginController extends Controller
     protected function sendFailedLoginResponse(Request $request)
     {
         $user = $this->guard()->user();
-        if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
             throw VerifyEmailException::forUser($user);
         }
 

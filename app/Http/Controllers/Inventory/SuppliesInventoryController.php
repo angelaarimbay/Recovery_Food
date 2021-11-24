@@ -11,8 +11,13 @@ use Illuminate\Support\Collection;
 
 class SuppliesInventoryController extends Controller
 {
-    //
+    //Middleware
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
+    //For storing supplies inventory info
     public function store(Request $request)
     {
         tbl_suppliesinventory::create(
@@ -27,11 +32,11 @@ class SuppliesInventoryController extends Controller
         );
     }
 
+    //For retrieving supplies inventory info
     public function get(Request $t)
     {
         $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
             ($t->branch ? " and requesting_branch=" . $t->branch : "");
-
         $table = tbl_outgoingsupp::with(["category", "supply_name", "requesting_branch"])
             ->selectRaw("max(id) as id, category, supply_name, requesting_branch, sum(quantity) as quantity")
             ->groupby(["category", "supply_name", "requesting_branch"])
@@ -41,7 +46,7 @@ class SuppliesInventoryController extends Controller
             $table = $table->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
 
-        if ($t->search) { // If has value
+        if ($t->search) { //If has value
             $table = $table->whereHas('supply_name', function ($q) use ($t) {
                 $q->where('supply_name', 'like', "%" . $t->search . "%");
             });

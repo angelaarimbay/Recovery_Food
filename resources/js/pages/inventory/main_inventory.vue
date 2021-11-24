@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
@@ -71,6 +72,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters>
             <v-spacer></v-spacer>
+            <!-- Refresh -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -88,6 +90,7 @@
               </template>
               <span>Refresh</span>
             </v-tooltip>
+            <!-- Filter -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -993,6 +996,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -1038,6 +1042,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -1046,11 +1051,14 @@ export default {
   metaInfo() {
     return { title: "Inventory" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -1067,7 +1075,7 @@ export default {
     filterDialog: false,
     viewdialog: false,
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       beginning_inv_qty: null,
@@ -1077,10 +1085,10 @@ export default {
       ending_inv_qty: null,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
@@ -1140,7 +1148,7 @@ export default {
     itemsPerPage: 5,
   }),
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.get();
@@ -1150,6 +1158,7 @@ export default {
     }
   },
 
+  //Methods
   methods: {
     itemperpage() {
       this.page = 1;
@@ -1161,21 +1170,22 @@ export default {
       return numbr.format(format);
     },
 
-    // View Branch Info
+    //View Branch Info
     openViewDialog(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.viewdialog = true;
     },
 
-    // Close View Dialog
+    //Close View Dialog
     closeViewDialog() {
       this.viewdialog = false;
     },
 
+    //For retrieving main inventory
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/misupp/get", {
@@ -1187,22 +1197,23 @@ export default {
           },
         })
         .then((result) => {
-          //if the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/misupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -1214,19 +1225,20 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

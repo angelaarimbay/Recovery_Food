@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
@@ -71,6 +72,7 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Branch Button -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -83,6 +85,7 @@
                 Add Branch
               </v-btn>
               <v-spacer></v-spacer>
+              <!-- Refresh Button -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -100,6 +103,7 @@
                 </template>
                 <span>Refresh</span>
               </v-tooltip>
+              <!-- Filter Button -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -418,6 +422,7 @@
                     sm="6"
                     md="6"
                   >
+                    <!-- Type -->
                     <v-select
                       :rules="formRulesBasic"
                       v-model="form.type"
@@ -449,12 +454,14 @@
                     sm="6"
                     md="6"
                   >
+                    <!-- ID -->
                     <v-text-field v-model="form.id" class="d-none" dense>
                       <template slot="label">
                         <div style="font-size: 12px">ID</div>
                       </template>
                     </v-text-field>
 
+                    <!-- Status -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.status"
@@ -483,6 +490,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Branch Name -->
                     <v-text-field
                       :rules="formRules"
                       v-model="form.branch_name"
@@ -512,6 +520,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Location -->
                     <v-text-field
                       :rules="formRules"
                       v-model="form.location"
@@ -541,6 +550,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Contact Number -->
                     <v-text-field
                       :rules="formRulesNumberOnly"
                       v-model="form.phone_number"
@@ -571,6 +581,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Email Address -->
                     <v-text-field
                       :rules="formRulesEmail"
                       v-model="form.email_add"
@@ -604,6 +615,7 @@
                     <!-- Check if has image, then display the image -->
                     <div style="font-size: 12px" v-if="form.branch_image">
                       <v-row no-gutters>
+                        <!-- Upload -->
                         <v-col cols="11">
                           <a
                             :href="'/storage/branches/' + form.branch_image"
@@ -613,7 +625,7 @@
                             {{ tempfile }}
                           </a>
                         </v-col>
-
+                        <!-- Delete Button -->
                         <v-col cols="1" class="text-center">
                           <v-tooltip bottom>
                             <template #activator="data">
@@ -631,7 +643,7 @@
                       </v-row>
                     </div>
 
-                    <!-- Progressbar for uploading -->
+                    <!-- Progressbar For Uploading -->
                     <v-progress-linear
                       v-show="loading"
                       slot="progress"
@@ -639,7 +651,7 @@
                       indeterminate
                     ></v-progress-linear>
 
-                    <!-- Upload button -->
+                    <!-- Upload Button -->
                     <v-btn
                       outlined
                       color="grey darken-1"
@@ -649,7 +661,7 @@
                       ><v-icon>mdi-upload</v-icon> Upload Image
                     </v-btn>
 
-                    <!-- For uploading  -->
+                    <!-- For Uploading  -->
                     <input
                       ref="uploader"
                       clearable
@@ -703,6 +715,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 #table1 .v-data-table-header th {
   white-space: nowrap;
@@ -746,6 +759,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 const PHONE_NUMBER = "(####) ###-####";
 const TELEPHONE_NUMBER = "(###) ###-####";
@@ -756,6 +770,7 @@ export default {
   metaInfo() {
     return { title: "Branches" };
   },
+  //Data
   data: () => ({
     value: "",
     progressbar: false,
@@ -773,10 +788,10 @@ export default {
       { name: "Available", id: 1 },
       { name: "Unavailable", id: 0 },
     ],
-    tempfile: "", // for uploading
+    tempfile: "", //For uploading
     table: [],
 
-    // Form Rules
+    //Form Rules
     formRulesBasic: [(v) => !!v || "This is required"],
     formRules: [
       (v) => (!!v && v.length >= 3) || "This is required",
@@ -802,7 +817,7 @@ export default {
       (v) => (!!v && v.length >= 7) || "Contact number must be valid",
     ],
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       status: null,
@@ -814,7 +829,7 @@ export default {
       type: 0,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {
       id: null,
       status: null,
@@ -826,7 +841,7 @@ export default {
       type: null,
     },
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
@@ -862,7 +877,7 @@ export default {
     itemsPerPage: 5,
   }),
 
-  // Dynamic Width
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -879,7 +894,7 @@ export default {
     },
   },
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Branches")) {
       this.get();
@@ -888,7 +903,9 @@ export default {
     }
   },
 
+  //Methods
   methods: {
+    //Keydown
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
@@ -904,16 +921,16 @@ export default {
       this.get();
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
@@ -938,7 +955,7 @@ export default {
           }
         }
       }
-      //if has changes
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -952,16 +969,16 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        // Validate first before compare
+        //Validate first before compare
         if (this.compare()) {
-          // Save or update data in the table
+          //Save or update data in the table
           await axios
             .post("/api/branches/save", this.form)
             .then((result) => {
-              //if the value is true then save to database
+              //If the value is true then save to database
               switch (result.data) {
                 case 0:
                   this.snackbar = {
@@ -986,15 +1003,15 @@ export default {
               }
             })
             .catch((result) => {
-              // If false or error when saving
+              //If false or error when saving
             });
         }
       }
     },
 
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/branches/get", {
@@ -1005,16 +1022,16 @@ export default {
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
-    // For uploading
+    //For uploading
     clickupload() {
       this.isSelecting = true;
       window.addEventListener(
@@ -1032,11 +1049,11 @@ export default {
       this.form.branch_image = null;
     },
 
-    // For attachment
+    //For attachment
     async attachment(e) {
       if (e.target.files[0]) {
         this.loading = true;
-        var dataform = new FormData(); // Can use typical jquery form data
+        var dataform = new FormData(); //Can use typical jquery form data
         dataform.append("file", e.target.files[0]);
 
         await axios
@@ -1050,8 +1067,8 @@ export default {
           });
       }
     },
-    // For uploading
-    // Editing/updating of row
+    //For uploading
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -1071,13 +1088,13 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // View Branch Info
+    //View Branch Info
     openViewDialog(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -1094,18 +1111,19 @@ export default {
       this.viewdialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
 
-    // Close View Dialog
+    //Close View Dialog
     closeViewDialog() {
       this.viewdialog = false;
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

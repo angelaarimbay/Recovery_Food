@@ -14,18 +14,20 @@ use Illuminate\Support\Facades\DB;
 
 class IncomingProductsController extends Controller
 {
+    //Middleware
     public function __construct()
     {
         $this->middleware('auth');
     }
 
+    //For saving incoming products info
     public function save(Request $data)
     {
         $table = tbl_incomingprod::where("product_name", "!=", null);
-
         $table_clone = clone $table;
+
         if ($table_clone->where("id", $data->id)->count() > 0) {
-            // Update
+            //Update
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
                 ["category" => $data->category,
@@ -42,10 +44,12 @@ class IncomingProductsController extends Controller
         return 0;
     }
 
+    //For retrieving incoming products info
     public function get(Request $t)
     {
-        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0");
-
+        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
+            ($t->subcategory ? " and sub_category=" . $t->subcategory : "");
+            
         $table = tbl_incomingprod::with(["category", "sub_category", "product_name"])
             ->whereRaw($where);
 
@@ -53,7 +57,7 @@ class IncomingProductsController extends Controller
             $table = $table->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
 
-        if ($t->search) { // If has value
+        if ($t->search) { //If has value
             $table = $table->whereHas('product_name', function ($q) use ($t) {
                 $q->where('product_name', 'like', "%" . $t->search . "%");
             });
@@ -80,16 +84,19 @@ class IncomingProductsController extends Controller
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
+    //For retrieving product categories
     public function prodCat()
     {
         return tbl_prodcat::select(["product_cat_name", "id"])->where("status", 1)->get();
     }
 
+    //For retrieving product subcategories
     public function prodSubCat()
     {
         return tbl_prodsubcat::select(["prod_sub_cat_name", "id"])->where("status", 1)->get();
     }
 
+    //For retrieving product names
     public function prodName(Request $t)
     {
         $data = DB::table("tbl_masterlistprods")

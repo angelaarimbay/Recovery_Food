@@ -33,6 +33,7 @@
         </template>
       </v-snackbar>
 
+      <!-- Preview Receipt -->
       <v-dialog v-model="dialog1">
         <v-toolbar
           dense
@@ -55,6 +56,7 @@
         class="px-0 justify-center"
         v-if="!this.user.permissionslist.includes('Access POS')"
       >
+        <!-- Export to PDF -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -69,6 +71,7 @@
           </template>
           <span>Export to PDF</span>
         </v-tooltip>
+        <!-- Export to Excel -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -83,6 +86,7 @@
           </template>
           <span>Export to Excel</span>
         </v-tooltip>
+        <!-- Print -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -101,6 +105,7 @@
 
       <v-row no-gutters>
         <v-spacer></v-spacer>
+        <!-- Refresh -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -118,6 +123,7 @@
           </template>
           <span>Refresh</span>
         </v-tooltip>
+        <!-- Filter -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -256,10 +262,8 @@
                 v-model="date1"
                 :close-on-content-click="false"
                 :nudge-right="35"
-                lazy
                 transition="scale-transition"
                 offset-y
-                full-width
                 min-width="290px"
               >
                 <template v-slot:activator="{ on }">
@@ -308,10 +312,8 @@
                 v-model="date2"
                 :close-on-content-click="false"
                 :nudge-right="35"
-                lazy
                 transition="scale-transition"
                 offset-y
-                full-width
                 min-width="290px"
               >
                 <template v-slot:activator="{ on }">
@@ -506,6 +508,7 @@
   </v-container>
 </template>
 
+<!-- Style -->
 <style>
 iframe:focus {
   outline: none;
@@ -549,10 +552,12 @@ iframe[seamless] {
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -580,7 +585,8 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
-    // Table Headers SP
+
+    //Table Headers SP
     headers: [
       {
         text: "#",
@@ -625,7 +631,7 @@ export default {
       },
     ],
 
-    // View Dialog Headers
+    //View Dialog Headers
     headers2: [
       {
         text: "PRODUCT(S)",
@@ -657,6 +663,7 @@ export default {
     ],
   }),
 
+  //Onload
   created() {
     this.dateFromSP = this.getFormatDate(
       new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -676,6 +683,7 @@ export default {
     }
   },
 
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -684,7 +692,10 @@ export default {
       return this.headers.filter((s) => this.headers.includes(s));
     },
   },
+
+  //Methods
   methods: {
+    //For generating receipt
     async getReceipt(reference_no) {
       await axios({
         url: "/api/pos/receipt",
@@ -700,6 +711,7 @@ export default {
       });
     },
 
+    //For retrieving sales report
     async getSalesReport() {
       this.progressbar = true;
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
@@ -729,6 +741,7 @@ export default {
       return numbr.format(format);
     },
 
+    //For retrieving sales report info
     async getSPInfo(item) {
       this.viewdialog = true;
       this.progressbar = true;
@@ -743,12 +756,14 @@ export default {
       });
     },
 
+    //For retrieving branch names
     async branchName() {
       await axios.get("/api/osupp/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },
 
+    //For exporting/printing
     async get(type) {
       if (
         this.branch == "" ||
@@ -777,8 +792,6 @@ export default {
               },
             }).then((response) => {
               if (response.data.size > 0) {
-                // console.log(response.data);
-                // return;
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
                 });
@@ -906,6 +919,8 @@ export default {
       this.viewdialog = false;
     },
   },
+
+  //Watch
   watch: {
     viewdialog(val) {
       val || this.closeViewDialog();

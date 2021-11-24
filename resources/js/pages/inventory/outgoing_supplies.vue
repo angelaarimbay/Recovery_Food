@@ -1,4 +1,5 @@
 <template>
+  <!-- Div -->
   <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
@@ -60,16 +61,7 @@
             class="px-0"
             style="text-transform: none"
           >
-            <template
-              v-if="
-                !user.permissionslist.includes(
-                  'Access Reports - Outgoing Supplies'
-                )
-              "
-            >
-              Outgoing Supplies
-            </template>
-            <template v-else> Supplies Inventory </template>
+            Outgoing Supplies
           </v-btn>
         </v-card-actions>
       </v-layout>
@@ -81,94 +73,70 @@
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
-              <v-col cols="6" xl="4" lg="4" md="4" sm="6">
-                <v-btn
-                  color="primary"
-                  style="text-transform: none"
-                  depressed
-                  dark
-                  :small="$vuetify.breakpoint.smAndDown"
-                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 mr-1"
-                  @click="openDialog"
-                >
-                  <template
-                    v-if="
-                      !user.permissionslist.includes(
-                        'Access Reports - Outgoing Supplies'
-                      )
-                    "
-                  >
-                    Add Outgoing Supply
-                  </template>
-                  <template v-else> Add Supply </template>
-                </v-btn>
-              </v-col>
-              <v-col
-                cols="6"
-                xl="4"
-                lg="4"
-                md="4"
-                sm="6"
-                :class="{
-                  'text-right': $vuetify.breakpoint.smAndDown,
-                  'text-center': $vuetify.breakpoint.mdAndUp,
-                }"
+              <!-- Add Button -->
+              <v-btn
+                color="primary"
+                style="text-transform: none"
+                depressed
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 mr-1"
+                @click="openDialog"
               >
-                <v-btn
-                  color="warning"
-                  style="text-transform: none"
-                  depressed
-                  dark
-                  :small="$vuetify.breakpoint.smAndDown"
-                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                  @click="openRequestDialog"
-                >
-                  <template
-                    v-if="
-                      !user.permissionslist.includes(
-                        'Access Reports - Outgoing Supplies'
-                      )
-                    "
+                Add Outgoing Supply
+              </v-btn>
+              <v-spacer></v-spacer>
+              <!-- Request Button -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2"
+                    color="warning"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="openRequestDialog"
+                    v-on="data.on"
+                    icon
                   >
-                    Request(s)
-                  </template>
-                </v-btn>
-              </v-col>
-              <v-col cols="12" xl="4" lg="4" md="4" sm="6" class="text-right">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      class="mr-1"
-                      color="success"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="get"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-refresh</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Refresh</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="grey darken-4"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="filterDialog = true"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-filter-variant</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Filter</span>
-                </v-tooltip>
-              </v-col>
+                    <v-icon>mdi-clipboard-text</v-icon>
+                  </v-btn>
+                </template>
+                <span>Request(s)</span>
+              </v-tooltip>
+              <!-- Refresh -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2"
+                    color="success"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="get"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+              <!-- Filter -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="grey darken-4"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="filterDialog = true"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-filter-variant</v-icon></v-btn
+                  >
+                </template>
+                <span>Filter</span>
+              </v-tooltip>
             </v-row>
 
             <!-- Filter Dialog -->
@@ -246,25 +214,12 @@
                   </v-col>
 
                   <!-- Branch Field -->
-                  <v-col
-                    cols="4"
-                    v-if="
-                      !user.permissionslist.includes(
-                        'Access Reports - Outgoing Supplies'
-                      )
-                    "
+                  <v-col cols="4"
                     ><span class="text-caption text-xl-subtitle-2"
                       >Branch</span
                     ></v-col
                   >
-                  <v-col
-                    cols="8"
-                    v-if="
-                      !user.permissionslist.includes(
-                        'Access Reports - Outgoing Supplies'
-                      )
-                    "
-                  >
+                  <v-col cols="8">
                     <v-card-actions class="px-0">
                       <v-select
                         hide-details
@@ -323,10 +278,8 @@
                       v-model="date1"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -370,10 +323,8 @@
                       v-model="date2"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -494,6 +445,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- ID -->
                     <v-text-field v-model="form.id" class="d-none" dense>
                       <template slot="label">
                         <div style="font-size: 12px">ID</div>
@@ -504,13 +456,12 @@
                       v-model="date3"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
+                        <!-- Outgoing Date -->
                         <v-text-field
                           :prepend-inner-icon="
                             showIcon ? 'mdi-calendar-range' : ''
@@ -554,6 +505,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Requesting Branch -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.requesting_branch"
@@ -582,6 +534,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Supply Category -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.category"
@@ -611,6 +564,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Supply Name -->
                     <v-autocomplete
                       :rules="formRules"
                       v-model="form.supply_name"
@@ -634,19 +588,19 @@
                     <v-card flat class="px-4 pb-6" v-if="form.supply_name">
                       <table style="width: 100%; font-size: 11px">
                         <tr>
-                          <th
+                          <td
                             class="text-left pr-2"
                             style="width: 50%"
                             v-if="form.supply_name.description"
                           >
                             Description:
-                          </th>
+                          </td>
                           <th>{{ form.supply_name.description }}</th>
                         </tr>
                         <tr>
-                          <th class="text-left pr-2" style="width: 50%">
+                          <td class="text-left pr-2" style="width: 50%">
                             Net Price:
-                          </th>
+                          </td>
                           <th>
                             {{
                               getFormatCurrency(
@@ -657,15 +611,15 @@
                           </th>
                         </tr>
                         <tr>
-                          <th class="text-left pr-2" style="width: 50%">
+                          <td class="text-left pr-2" style="width: 50%">
                             Unit:
-                          </th>
+                          </td>
                           <th>{{ form.supply_name.unit }}</th>
                         </tr>
                         <tr>
-                          <th class="text-left pr-2" style="width: 50%">
+                          <td class="text-left pr-2" style="width: 50%">
                             Available Quantity:
-                          </th>
+                          </td>
                           <th>{{ getQuantity }}</th>
                         </tr>
                       </table>
@@ -680,6 +634,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Quantity -->
                     <v-text-field
                       :rules="formRulesQuantity"
                       v-model="form.quantity"
@@ -695,7 +650,7 @@
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
-                          Supply Quantity <span style="color: red">*</span>
+                          Quantity <span style="color: red">*</span>
                         </div>
                       </template>
                     </v-text-field>
@@ -733,7 +688,7 @@
           </v-dialog>
         </v-form>
 
-        <!-- BRANCH REQUEST LIST -->
+        <!-- Branch Request List  -->
         <v-dialog
           v-model="dialog1"
           fullscreen
@@ -764,6 +719,7 @@
                     <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
                       <v-row no-gutters>
                         <v-spacer></v-spacer>
+                        <!--Refresh -->
                         <v-tooltip bottom>
                           <template #activator="data">
                             <v-btn
@@ -848,18 +804,18 @@
                           </v-tooltip>
                         </template>
                       </v-data-table>
+                      <!-- Paginate -->
+                      <div class="pbutton text-center pt-7">
+                        <v-pagination
+                          v-model="page1"
+                          :total-visible="7"
+                          :length="table1.last_page"
+                          color="red darken-2"
+                        ></v-pagination>
+                      </div>
                     </v-container>
                   </v-container>
                 </v-card>
-                <!-- Paginate -->
-                <div class="pbutton text-center pt-7">
-                  <v-pagination
-                    v-model="page1"
-                    :total-visible="7"
-                    :length="table1.last_page"
-                    color="red darken-2"
-                  ></v-pagination>
-                </div>
               </v-container>
             </v-card-text>
           </v-card>
@@ -1015,6 +971,7 @@
                     md="12"
                   >
                     <v-card-actions class="px-0">
+                      <!-- Quantity -->
                       <v-text-field
                         :rules="formRulesQuantity"
                         v-model="quantity"
@@ -1082,6 +1039,7 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
 .tbl.v-data-table__checkbox,
 .v-input--selection-controls__input .mdi-checkbox-marked,
@@ -1131,7 +1089,7 @@
 }
 </style>
 
-
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -1140,6 +1098,7 @@ export default {
   metaInfo() {
     return { title: "Inventory" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -1162,6 +1121,8 @@ export default {
       return this.headers.filter((s) => this.headers.includes(s));
     },
   },
+
+  //Data
   data: () => ({
     checkQuantity: [],
     progressbar: false,
@@ -1181,7 +1142,8 @@ export default {
     branchlist: [],
     filterDialog: false,
     quantity: 0,
-    // Form Rules
+
+    //Form Rules
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
@@ -1194,7 +1156,7 @@ export default {
       },
     ],
 
-    // Form Data
+    //Form Data
     form: {
       category: null,
       supply_name: null,
@@ -1203,10 +1165,10 @@ export default {
       outgoing_date: null,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
@@ -1291,7 +1253,8 @@ export default {
     date2: false,
     date3: false,
     getQuantity: 0,
-    //----------------------------------requestlist
+
+    //Header1 request list
     headers1: [
       {
         text: "REQUEST DATE",
@@ -1332,7 +1295,8 @@ export default {
     page1: 1,
     pageCount1: 0,
     itemsPerPage1: 5,
-    //----------------------------------requestlist items
+
+    //Header2 request list items
     headers2: [
       {
         text: "SUPPLY NAME",
@@ -1376,15 +1340,12 @@ export default {
     selectedItem: [],
   }),
 
-  // Onload
+  //Onload
   created() {
-    if (
-      this.user.permissionslist.includes("Access Inventory") ||
-      this.user.permissionslist.includes("Access Reports - Outgoing Supplies")
-    ) {
+    if (this.user.permissionslist.includes("Access Inventory")) {
       for (var key in this.user.permissionslist) {
         if (
-          this.user.permissionslist[key] == "Access Reports - Outgoing Supplies"
+          this.user.permissionslist[key] == "Access Branch Inventory"
         ) {
           this.headers.splice(this.headers.indexOf(this.headers[8]), 1);
           this.headers.splice(this.headers.indexOf(this.headers[9]), 1);
@@ -1407,12 +1368,15 @@ export default {
     }
   },
 
+  //Methods
   methods: {
+    //Keydown
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -1427,16 +1391,16 @@ export default {
       return numbr.format(format);
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
@@ -1475,7 +1439,8 @@ export default {
           }
         }
       }
-      //if has changes
+
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -1489,10 +1454,10 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        // Validate first before compare
+        //Validate first before compare
         if (this.getQuantity < this.form.quantity) {
           this.snackbar = {
             active: true,
@@ -1504,11 +1469,11 @@ export default {
         }
 
         if (this.compare()) {
-          // Save or update data in the table
+          //Save or update data in the table
           await axios
             .post("/api/osupp/save", this.form)
             .then((result) => {
-              //if the value is true then save to database
+              //If the value is true then save to database
               this.snackbar = {
                 active: true,
                 iconText: "check",
@@ -1519,18 +1484,20 @@ export default {
               this.cancel();
             })
             .catch((result) => {
-              // If false or error when saving
+              //If false or error when saving
             });
         }
       }
     },
+
+    //For retrieving outgoing supplies
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
 
       if (
-        this.user.permissionslist.includes("Access Reports - Outgoing Supplies")
+        this.user.permissionslist.includes("Access Branch Inventory")
       ) {
         this.branch = this.user.branch;
       }
@@ -1548,21 +1515,23 @@ export default {
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
-          this.progressbar = false; // Hide the progress bar
+          this.progressbar = false; //Hide the progress bar
         })
         .catch((result) => {
           // If false or error when saving
         });
     },
 
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/osupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
+    //For validating supply quantity
     async suppValidate(id = "", edit = "") {
       await axios
         .get("/api/osupp/suppValidate", { params: { id: id.id } })
@@ -1571,6 +1540,7 @@ export default {
         });
     },
 
+    //For retrieving supply names
     async suppName() {
       this.form.supply_name = null;
       await axios
@@ -1582,13 +1552,14 @@ export default {
         });
     },
 
+    //For retrieving branch names
     async branchName() {
       await axios.get("/api/osupp/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -1605,20 +1576,19 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
 
-    //--------------------------------------------added
-
+    //For retrieving request list
     async requestList() {
       this.progressbar1 = true;
       await axios
@@ -1633,11 +1603,13 @@ export default {
           this.progressbar1 = false;
         });
     },
+
     openRequestDialog() {
       this.dialog1 = true;
       this.requestList();
     },
 
+    //For viewing request
     async viewRequestDialog(ref) {
       await axios
         .get("/api/osupp/request/items/list", {
@@ -1651,32 +1623,36 @@ export default {
       this.selected = [];
       this.dialog2 = true;
     },
+
     editRequest(row) {
       this.selectedItem = row;
       this.quantity = row.quantity_requested;
       this.dialog3 = true;
     },
+
     updateQuantity() {
       if (
-        this.quantity <
+        this.quantity <=
         this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
       ) {
+        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested =
+          this.quantity;
+        this.dialog3 = false;
+      } else {
         this.snackbar = {
           active: true,
           iconText: "alert-circle",
           iconColor: "error",
           message: "Insufficient stocks.",
         };
-      } else {
-        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested =
-          this.quantity;
-        this.dialog3 = false;
       }
     },
+
     allQuantity() {
       this.quantity = this.selectedItem.quantity_available;
     },
 
+    //For processing request
     async processRequest() {
       var found = 0;
       for (var key in this.selected) {
@@ -1717,6 +1693,7 @@ export default {
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

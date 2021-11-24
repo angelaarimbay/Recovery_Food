@@ -15,14 +15,13 @@ class CreateTblSuppliesinventoriesTable extends Migration
     {
         Schema::create('tbl_suppliesinventories', function (Blueprint $table) {
             $table->id();
-              //lagay mo mga columns
-              $table->integer('ref')->reference('id')->on("tbl_outgoingsupp");
-              $table->integer('category')->references('id')->on('tbl_suppcat');
-              $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
-              $table->float('quantity'); 
-              $table->datetime('outgoing_date'); 
-              $table->integer('branch')->references('id')->on('tbl_branches');
-              $table->integer('user')->references('id')->on('users');
+            $table->integer('ref')->reference('id')->on("tbl_outgoingsupp");
+            $table->integer('category')->references('id')->on('tbl_suppcat');
+            $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
+            $table->float('quantity');
+            $table->datetime('outgoing_date');
+            $table->integer('branch')->references('id')->on('tbl_branches');
+            $table->integer('user')->references('id')->on('users');
             $table->timestamps();
         });
     }

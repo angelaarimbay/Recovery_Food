@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTblRequestsuppsTable extends Migration
+class CreateTblRequestprodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateTblRequestsuppsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tbl_requestsupps', function (Blueprint $table) {
+        Schema::create('tbl_requestprods', function (Blueprint $table) {
             $table->id();
             $table->text('ref');
-            $table->integer('supply_name')->references('id')->on('tbl_masterlistsupp');
+            $table->integer('product_name')->references('id')->on('tbl_masterlistprod');
             $table->float('quantity');
             $table->datetime('request_date');
             $table->integer('branch')->references('id')->on('tbl_branches');
@@ -34,6 +34,6 @@ class CreateTblRequestsuppsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tbl_requestsupps');
+        Schema::dropIfExists('tbl_requestprods');
     }
 }
