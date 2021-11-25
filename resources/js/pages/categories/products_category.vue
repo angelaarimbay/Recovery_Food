@@ -462,7 +462,7 @@ export default {
     formRules: [
       (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
-        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/&+])(?!\3{1}))+$/i.test(
           v
         ) || "This field must have a valid value",
     ],
@@ -537,7 +537,7 @@ export default {
   methods: {
     //Keydown
     valueKeydown(e) {
-      if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
+      if (/[~`!@#$%^()_={}[\]\\"*|:;.<>\?]/.test(e.key)) {
         e.preventDefault();
       }
     },

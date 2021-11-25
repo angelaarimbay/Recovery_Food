@@ -276,6 +276,11 @@
               indeterminate
               rounded
             ></v-progress-linear>
+            <template v-slot:[`item.supplier.supplier_name`]="{ item }"
+              >{{ item.supplier.supplier_name }} ({{
+                item.supplier.description
+              }})</template
+            >
             <template v-slot:[`item.supply_name`]="{ item }"
               ><v-tooltip bottom>
                 <template #activator="data"
@@ -637,10 +642,17 @@
                           </v-text-field>
 
                           <v-checkbox
+                            :dense="$vuetify.breakpoint.xsOnly"
                             :disabled="!disabled"
                             v-model="vat"
                             hide-details
-                            class="shrink pt-0 mt-0 mb-7 ml-3"
+                            class="
+                              shrink
+                              pt-0
+                              mt-0
+                              mb-7
+                              ml-0 ml-xl-3 ml-lg-3 ml-md-3 ml-sm-3
+                            "
                             color="red darken-3"
                             @change="compute"
                           ></v-checkbox>
@@ -688,39 +700,15 @@
                           style="font-size: 12px"
                         >
                           <template slot="label">
-                            <div style="font-size: 12px">Lead Time</div>
+                            <div style="font-size: 12px">
+                              Lead Time <span style="color: red">*</span>
+                            </div>
                           </template>
                         </v-text-field>
                       </v-col>
+
                       <v-col
                         class="tfield py-0 pl-1"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        sm="6"
-                        md="6"
-                      >
-                        <!-- Min Order Qty -->
-                        <v-text-field
-                          :rules="formRulesOthers"
-                          v-model="form.minimum_order_quantity"
-                          clearable
-                          dense
-                          counter
-                          @keydown="numberKeydown($event)"
-                          maxlength="5"
-                          background-color="white"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                          <template slot="label">
-                            <div style="font-size: 12px">Min Order Qty</div>
-                          </template>
-                        </v-text-field>
-                      </v-col>
-                      <v-col
-                        class="tfield py-0 pr-1"
                         cols="6"
                         xl="6"
                         lg="6"
@@ -744,10 +732,43 @@
                           style="font-size: 12px"
                         >
                           <template slot="label">
-                            <div style="font-size: 12px">Order Frequency</div>
+                            <div style="font-size: 12px">
+                              Order Frequency <span style="color: red">*</span>
+                            </div>
                           </template>
                         </v-text-field>
                       </v-col>
+
+                      <v-col
+                        class="tfield py-0 pr-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
+                        <!-- Min Order Qty -->
+                        <v-text-field
+                          :rules="formRulesOthers"
+                          v-model="form.minimum_order_quantity"
+                          clearable
+                          dense
+                          counter
+                          @keydown="numberKeydown($event)"
+                          maxlength="5"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">
+                              Min Order Qty <span style="color: red">*</span>
+                            </div>
+                          </template>
+                        </v-text-field>
+                      </v-col>
+
                       <v-col
                         class="tfield py-0 pl-1"
                         cols="6"
@@ -972,9 +993,7 @@ export default {
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
     ],
     formRulesOthers: [
-      (v) =>
-        /^$|^([0-9]\d{0,7}(?:\.\d{1,4})?)+$/.test(v) ||
-        "This field must be valid",
+      (v) => /^([0-9]\d{0,7}(?:\.\d{1,4})?)+$/.test(v) || "Field must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
