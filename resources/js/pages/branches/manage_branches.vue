@@ -934,13 +934,7 @@ export default {
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
-          if (key == "type") {
-            if (this.currentdata.category) {
-              if (this.currentdata.type != this.form.type) {
-                found += 1;
-              }
-            }
-          } else if (key == "branch_image") {
+          if (key == "branch_image") {
             if (
               this.currentdata.branch_image == "/img/Logo.jpg" &&
               !this.form[key]

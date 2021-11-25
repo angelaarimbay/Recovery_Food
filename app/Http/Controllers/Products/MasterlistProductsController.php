@@ -46,6 +46,7 @@ class MasterlistProductsController extends Controller
                     "product_name" => $data->product_name,
                     "description" => $data->description,
                     "price" => $data->price,
+                    "critical_limit" => $data->critical_limit,
                     "exp_date" => $data->exp_date,
                 ]
             );
@@ -79,6 +80,7 @@ class MasterlistProductsController extends Controller
             $temp['description'] = $value->description;
             $temp['diff_quantity'] = $value->diff_quantity;
             $temp['days'] = $value->days;
+            $temp['critical_limit'] = $value->critical_limit;
             $temp['exp_date'] = $value->exp_date;
             $temp['without_vat'] = number_format($value->without_vat, 2);
             $temp['vat'] = $value->vat;

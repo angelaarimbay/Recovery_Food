@@ -509,6 +509,11 @@
                     </v-row>
                   </v-col>
 
+                  <v-divider
+                    vertical
+                    :hidden="$vuetify.breakpoint.xsOnly"
+                  ></v-divider>
+
                   <v-col
                     cols="12"
                     xl="6"
@@ -1226,33 +1231,42 @@ export default {
 
     //Saving data to database
     async save() {
-      if (this.$refs.form.validate()) {
-        this.compute();
-        //Validate first before compare
-        if (this.compare()) {
-          //Save or update data in the table
-          await axios
-            .post("/api/msupp/save", this.form)
-            .then((result) => {
-              //If the value is true then save to database
-              switch (result.data) {
-                case 0:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "check",
-                    iconColor: "success",
-                    message: "Successfully saved.",
-                  };
-                  this.get();
-                  this.cancel();
-                  break;
-                default:
-                  break;
-              }
-            })
-            .catch((result) => {
-              //If false or error when saving
-            });
+      if (this.temp_vat == null) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Set the VAT first.",
+        };
+      } else {
+        if (this.$refs.form.validate()) {
+          this.compute();
+          //Validate first before compare
+          if (this.compare()) {
+            //Save or update data in the table
+            await axios
+              .post("/api/msupp/save", this.form)
+              .then((result) => {
+                //If the value is true then save to database
+                switch (result.data) {
+                  case 0:
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully saved.",
+                    };
+                    this.get();
+                    this.cancel();
+                    break;
+                  default:
+                    break;
+                }
+              })
+              .catch((result) => {
+                //If false or error when saving
+              });
+          }
         }
       }
     },

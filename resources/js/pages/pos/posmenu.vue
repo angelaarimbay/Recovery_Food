@@ -1245,6 +1245,7 @@ export default {
               iconColor: "success",
               message: "Successfully checked-out.",
             };
+            this.$refs.form.resetValidation();
           });
       } else {
         this.snackbar = {
