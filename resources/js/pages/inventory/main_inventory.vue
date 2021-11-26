@@ -131,9 +131,7 @@
                       dense
                       v-model="itemsPerPage"
                       @change="itemperpage"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
+                      :items="[5, 10, 15, 20]"
                       hide-details
                       background-color="grey darken-3"
                       flat
@@ -219,7 +217,7 @@
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
-            :page.sync="page" 
+            :page.sync="page"
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -238,7 +236,7 @@
               <div v-if="item.triggerpoint == 0">
                 <span style="color: red">Order</span>
               </div>
-              <div v-else-if="item.triggerpoint ==  1" class="text-black">
+              <div v-else-if="item.triggerpoint == 1" class="text-black">
                 Manage
               </div>
             </template>
@@ -690,7 +688,10 @@
                       </v-col>
                     </v-row>
                   </v-col>
-                  <v-divider vertical :hidden="$vuetify.breakpoint.xsOnly"></v-divider>
+                  <v-divider
+                    vertical
+                    :hidden="$vuetify.breakpoint.xsOnly"
+                  ></v-divider>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                     <v-row>
                       <v-col
@@ -978,7 +979,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :small="$vuetify.breakpoint.smAndDown"
                   dark
@@ -1145,7 +1146,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
   //Onload

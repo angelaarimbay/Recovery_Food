@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\tbl_incomingsupp;
 use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_suppcat;
-use App\Models\tbl_supplist;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -98,6 +97,7 @@ class IncomingSuppliesController extends Controller
     {
         $data = DB::table("tbl_masterlistsupps")
             ->selectRaw(' CONCAT(supply_name , " ", COALESCE(description,"")) as supply_name, category, net_price, unit, description, id')
+            ->where("supplier", (integer) $t->supplier)->where("status", 1)
             ->where("category", (integer) $t->category)->where("status", 1)->get();
         return $data;
     }
@@ -105,6 +105,9 @@ class IncomingSuppliesController extends Controller
     //For retrieving suppliers info
     public function suppliers()
     {
-        return tbl_supplist::get();
+        $data = DB::table("tbl_supplists")
+            ->selectRaw(' CONCAT(supplier_name , " (", COALESCE(description,"") ,")") as supplier_name, phone_number, contact_person, address, description, id')
+            ->get();
+        return $data;
     }
 }

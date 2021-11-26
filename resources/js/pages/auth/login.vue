@@ -144,6 +144,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1150px !important;
+  }
+}
+
 .v-application #email .white,
 .v-application #password .white {
   border: 1px solid #bdbdbd !important;
@@ -189,7 +195,7 @@ export default {
   created() {
     this.getLogo();
   },
-  
+
   //Watch
   watch: {
     "form.email"(val) {

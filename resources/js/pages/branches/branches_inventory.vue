@@ -142,9 +142,7 @@
                           dense
                           v-model="itemsPerPage1"
                           @change="itemperpage1"
-                          :items="[
-                            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                          ]"
+                          :items="[5, 10, 15, 20]"
                           hide-details
                           background-color="grey darken-3"
                           flat
@@ -359,9 +357,7 @@
                           dense
                           v-model="itemsPerPage2"
                           @change="itemperpage2"
-                          :items="[
-                            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                          ]"
+                          :items="[5, 10, 15, 20]"
                           hide-details
                           background-color="grey darken-3"
                           flat

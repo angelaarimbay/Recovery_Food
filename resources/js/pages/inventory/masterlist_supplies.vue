@@ -144,9 +144,7 @@
                         dense
                         v-model="itemsPerPage"
                         @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
+                        :items="[5, 10, 15, 20]"
                         hide-details
                         background-color="grey darken-3"
                         flat
@@ -276,11 +274,6 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.supplier.supplier_name`]="{ item }"
-              >{{ item.supplier.supplier_name }} ({{
-                item.supplier.description
-              }})</template
-            >
             <template v-slot:[`item.supply_name`]="{ item }"
               ><v-tooltip bottom>
                 <template #activator="data"
@@ -715,6 +708,36 @@
                         sm="6"
                         md="6"
                       >
+                        <!-- Min Order Qty -->
+                        <v-text-field
+                          :rules="formRulesOthers"
+                          v-model="form.minimum_order_quantity"
+                          clearable
+                          dense
+                          counter
+                          @keydown="numberKeydown($event)"
+                          maxlength="5"
+                          background-color="white"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        >
+                          <template slot="label">
+                            <div style="font-size: 12px">
+                              Min Order Qty <span style="color: red">*</span>
+                            </div>
+                          </template>
+                        </v-text-field>
+                      </v-col>
+
+                      <v-col
+                        class="tfield py-0 pr-1"
+                        cols="6"
+                        xl="6"
+                        lg="6"
+                        sm="6"
+                        md="6"
+                      >
                         <!-- Order Frequency -->
                         <v-text-field
                           :rules="formRulesOthers"
@@ -734,36 +757,6 @@
                           <template slot="label">
                             <div style="font-size: 12px">
                               Order Frequency <span style="color: red">*</span>
-                            </div>
-                          </template>
-                        </v-text-field>
-                      </v-col>
-
-                      <v-col
-                        class="tfield py-0 pr-1"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        sm="6"
-                        md="6"
-                      >
-                        <!-- Min Order Qty -->
-                        <v-text-field
-                          :rules="formRulesOthers"
-                          v-model="form.minimum_order_quantity"
-                          clearable
-                          dense
-                          counter
-                          @keydown="numberKeydown($event)"
-                          maxlength="5"
-                          background-color="white"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                          <template slot="label">
-                            <div style="font-size: 12px">
-                              Min Order Qty <span style="color: red">*</span>
                             </div>
                           </template>
                         </v-text-field>
@@ -829,7 +822,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :disabled="button"
                   dark
@@ -979,20 +972,21 @@ export default {
     formRulesUnit: [(v) => (!!v && v.length >= 2) || "This is required"],
     formRulesDesc: [
       (v) =>
-        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
+        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()#])(?!\3{1}))+$/i.test(
           v
         ) || "This field must have a valid value",
     ],
     formRulesPrice: [
       (v) => !!v || "This is required",
       (v) =>
-        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
+        /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
     ],
     formRulesVAT: [
       (v) => !!v || "This is required",
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
     ],
     formRulesOthers: [
+      (v) => !!v || "This is required",
       (v) => /^([0-9]\d{0,7}(?:\.\d{1,4})?)+$/.test(v) || "Field must be valid",
     ],
     formRulesNumberRange: [
@@ -1091,7 +1085,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
   //Computed
@@ -1144,7 +1138,7 @@ export default {
       }
     },
     descKeydown(e) {
-      if (/[~`!@#$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
+      if (/[~`!@$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
         e.preventDefault();
       }
     },

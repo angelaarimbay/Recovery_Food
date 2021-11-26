@@ -14,6 +14,14 @@
   </v-app>
 </template>
 
+<style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+</style>
+
 <script>
 import ft from "./Footer";
 import Loading from "./Loading";

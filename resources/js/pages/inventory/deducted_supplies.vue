@@ -105,9 +105,7 @@
                       dense
                       v-model="itemsPerPage"
                       @change="itemperpage"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
+                      :items="[5, 10, 15, 20]"
                       hide-details
                       background-color="grey darken-3"
                       flat
@@ -464,7 +462,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     dateFrom: null,
     dateUntil: null,
     date1: false,
@@ -474,9 +472,7 @@ export default {
 
   //Onload
   created() {
-    if (
-      this.user.permissionslist.includes("Access Branch Inventory")
-    ) {
+    if (this.user.permissionslist.includes("Access Branch Inventory")) {
       this.dateFrom = this.getFormatDate(
         new Date(new Date().getFullYear(), new Date().getMonth(), 1),
         "YYYY-MM-DD"
