@@ -172,6 +172,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;

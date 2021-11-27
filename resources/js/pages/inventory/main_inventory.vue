@@ -131,9 +131,7 @@
                       dense
                       v-model="itemsPerPage"
                       @change="itemperpage"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
+                      :items="[5, 10, 15, 20]"
                       hide-details
                       background-color="grey darken-3"
                       flat
@@ -219,7 +217,7 @@
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
-            :page.sync="page" 
+            :page.sync="page"
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -238,8 +236,8 @@
               <div v-if="item.triggerpoint == 0">
                 <span style="color: red">Order</span>
               </div>
-              <div v-else-if="item.triggerpoint ==  1" class="text-black">
-                Manage
+              <div v-else-if="item.triggerpoint == 1" class="text-black">
+                <span>Manage</span>
               </div>
             </template>
             <template v-slot:[`item.net_price`]="{ item }"
@@ -252,10 +250,10 @@
               v-slot:[`item.onhand_a`]="{ item }"
               style="text-align: right"
             >
-              <small>
-                Qty : {{ item.onhand_q }} <br />
-                Value: {{ item.onhand_a }}
-              </small>
+              <span>
+                <strong>Qty:</strong> {{ item.onhand_q }} <br />
+                <strong>Value:</strong> {{ item.onhand_a }}
+              </span>
             </template>
 
             <!-- <template
@@ -690,7 +688,10 @@
                       </v-col>
                     </v-row>
                   </v-col>
-                  <v-divider vertical :hidden="$vuetify.breakpoint.xsOnly"></v-divider>
+                  <v-divider
+                    vertical
+                    :hidden="$vuetify.breakpoint.xsOnly"
+                  ></v-divider>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                     <v-row>
                       <v-col
@@ -847,7 +848,7 @@
                         md="3"
                         sm="3"
                       >
-                        {{ currentdata.triggerpoint }}
+                        {{ currentdata.triggerpoint == 0 ? "Order" : "Manage" }}
                       </v-col>
                     </v-row>
                     <v-row>
@@ -978,7 +979,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :small="$vuetify.breakpoint.smAndDown"
                   dark
@@ -998,11 +999,18 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -1093,9 +1101,10 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "CATEGORY",
@@ -1145,7 +1154,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
   //Onload

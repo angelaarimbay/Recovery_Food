@@ -82,7 +82,7 @@ class OutgoingProductsController extends Controller
             $temp['product_name'] =
             DB::table("tbl_masterlistprods")
                 ->selectRaw(' CONCAT(product_name , " ", COALESCE(description,"")) as product_name, category, sub_category, price, description, id')
-                ->where("id", $value->product_name)->where("status", 1)->first();
+                ->where("id", $value->product_name)->first();
             $temp['quantity'] = $value->quantity;
             $temp['quantity_diff'] = $value->quantity_diff;
             $temp['requesting_branch'] = $value->requesting_branch_details;

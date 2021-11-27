@@ -46,4 +46,6 @@ class tbl_masterlistprod extends Model
         $without_vat = $this->price ? $this->price / $this->vat : 0;
         return $without_vat;
     }
+
+    
 }

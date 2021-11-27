@@ -31,7 +31,6 @@ class RolesPermissionsSeeder extends Seeder
             ['permission_id' => '9', 'role_id' => '1'],
             ['permission_id' => '10', 'role_id' => '1'],
             ['permission_id' => '11', 'role_id' => '5'],
-            ['permission_id' => '12', 'role_id' => '5'],
 
         ]);
         DB::table('model_has_permissions')->insert([
@@ -54,7 +53,6 @@ class RolesPermissionsSeeder extends Seeder
             ['permission_id' => '9', 'model_type' => 'App\User', 'model_id' => '1'],
             ['permission_id' => '10', 'model_type' => 'App\User', 'model_id' => '1'],
             ['permission_id' => '11', 'model_type' => 'App\User', 'model_id' => '3'],
-            ['permission_id' => '12', 'model_type' => 'App\User', 'model_id' => '3'],
 
         ]);
         DB::table('model_has_roles')->insert([

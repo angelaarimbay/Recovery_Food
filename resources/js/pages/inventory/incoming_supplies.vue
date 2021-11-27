@@ -144,9 +144,7 @@
                         dense
                         v-model="itemsPerPage"
                         @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
+                        :items="[5, 10, 15, 20]"
                         hide-details
                         background-color="grey darken-3"
                         flat
@@ -577,7 +575,7 @@
                   </v-col>
                   <v-col
                     class="tfield py-0"
-                    cols="12"
+                    cols="6"
                     xl="5"
                     lg="5"
                     sm="5"
@@ -607,7 +605,7 @@
 
                   <v-col
                     class="tfield py-0"
-                    cols="12"
+                    cols="6"
                     xl="7"
                     lg="7"
                     sm="7"
@@ -641,7 +639,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :small="$vuetify.breakpoint.smAndDown"
                   dark
@@ -672,11 +670,18 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -792,9 +797,10 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "CATEGORY",
@@ -858,7 +864,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     dateFrom: null,
     dateUntil: null,
     incomingDate: null,

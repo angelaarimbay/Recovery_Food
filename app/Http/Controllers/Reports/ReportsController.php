@@ -576,17 +576,21 @@ class ReportsController extends Controller
 
         switch ($t->type) {
             case 'pdf':
-                $content['data'] = $return;
-                $content['process_by'] = auth()->user()->name;
-                if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
-                    $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                if (count($return) > 0) {
+                    $content['data'] = $return;
+                    $content['process_by'] = auth()->user()->name;
+                    if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+                        $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+                    } else {
+                        $content['img'] = null;
+                    }
+                    $pdf = PDF::loadView('reports.maininventory', $content, [], [
+                        'format' => 'A4-L',
+                    ]);
+                    return $pdf->stream();
                 } else {
-                    $content['img'] = null;
+                    return false;
                 }
-                $pdf = PDF::loadView('reports.maininventory', $content, [], [
-                    'format' => 'A4-L',
-                ]);
-                return $pdf->stream();
                 break;
             case 'excel':
                 $columns = [
@@ -976,7 +980,7 @@ class ReportsController extends Controller
                 $temp,
                 [],
                 [
-                    'format' => ['57', 76 + (30 * $data_cloned->count())],
+                    'format' => ['57', 95 + (10 * $data_cloned->count())],
                     'margin_left' => 3,
                     'margin_right' => 3,
                     'margin_top' => 5,

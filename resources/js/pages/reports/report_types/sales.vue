@@ -164,7 +164,7 @@
                   dense
                   v-model="itemsPerPage"
                   @change="itemperpage"
-                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
+                  :items="[5, 10, 15, 20]"
                   hide-details
                   background-color="grey darken-3"
                   flat
@@ -321,7 +321,7 @@
                     <v-text-field
                       hide-details
                       v-model="dateUntilSP"
-                      label="Date Until"
+                      placeholder="Date Until""
                       prepend-inner-icon="mdi-calendar-range"
                       readonly
                       v-on="on"
@@ -482,7 +482,7 @@
         <v-card-actions class="px-0 pb-0">
           <v-spacer></v-spacer>
           <v-btn
-            color="error"
+            color="black"
             :small="$vuetify.breakpoint.smAndDown"
             depressed
             dark
@@ -510,6 +510,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 iframe:focus {
   outline: none;
 }
@@ -522,6 +528,7 @@ iframe[seamless] {
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -584,7 +591,7 @@ export default {
     dateUntilSP: null,
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
 
     //Table Headers SP
     headers: [

@@ -144,9 +144,7 @@
                         dense
                         v-model="itemsPerPage"
                         @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
+                        :items="[5, 10, 15, 20]"
                         hide-details
                         background-color="grey darken-3"
                         flat
@@ -509,6 +507,11 @@
                     </v-row>
                   </v-col>
 
+                  <v-divider
+                    vertical
+                    :hidden="$vuetify.breakpoint.xsOnly"
+                  ></v-divider>
+
                   <v-col
                     cols="12"
                     xl="6"
@@ -632,10 +635,17 @@
                           </v-text-field>
 
                           <v-checkbox
+                            :dense="$vuetify.breakpoint.xsOnly"
                             :disabled="!disabled"
                             v-model="vat"
                             hide-details
-                            class="shrink pt-0 mt-0 mb-7 ml-3"
+                            class="
+                              shrink
+                              pt-0
+                              mt-0
+                              mb-7
+                              ml-0 ml-xl-3 ml-lg-3 ml-md-3 ml-sm-3
+                            "
                             color="red darken-3"
                             @change="compute"
                           ></v-checkbox>
@@ -683,10 +693,13 @@
                           style="font-size: 12px"
                         >
                           <template slot="label">
-                            <div style="font-size: 12px">Lead Time</div>
+                            <div style="font-size: 12px">
+                              Lead Time <span style="color: red">*</span>
+                            </div>
                           </template>
                         </v-text-field>
                       </v-col>
+
                       <v-col
                         class="tfield py-0 pl-1"
                         cols="6"
@@ -710,10 +723,13 @@
                           style="font-size: 12px"
                         >
                           <template slot="label">
-                            <div style="font-size: 12px">Min Order Qty</div>
+                            <div style="font-size: 12px">
+                              Min Order Qty <span style="color: red">*</span>
+                            </div>
                           </template>
                         </v-text-field>
                       </v-col>
+
                       <v-col
                         class="tfield py-0 pr-1"
                         cols="6"
@@ -739,10 +755,13 @@
                           style="font-size: 12px"
                         >
                           <template slot="label">
-                            <div style="font-size: 12px">Order Frequency</div>
+                            <div style="font-size: 12px">
+                              Order Frequency <span style="color: red">*</span>
+                            </div>
                           </template>
                         </v-text-field>
                       </v-col>
+
                       <v-col
                         class="tfield py-0 pl-1"
                         cols="6"
@@ -803,7 +822,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :disabled="button"
                   dark
@@ -835,6 +854,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 /* #table1 .style-1 {
   color: #fb8c00;
 }
@@ -847,6 +872,7 @@
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -953,23 +979,22 @@ export default {
     formRulesUnit: [(v) => (!!v && v.length >= 2) || "This is required"],
     formRulesDesc: [
       (v) =>
-        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
+        /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()#])(?!\3{1}))+$/i.test(
           v
         ) || "This field must have a valid value",
     ],
     formRulesPrice: [
       (v) => !!v || "This is required",
       (v) =>
-        /^[1-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
+        /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Net Price must be valid",
     ],
     formRulesVAT: [
       (v) => !!v || "This is required",
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
     ],
     formRulesOthers: [
-      (v) =>
-        /^$|^([0-9]\d{0,7}(?:\.\d{1,4})?)+$/.test(v) ||
-        "This field must be valid",
+      (v) => !!v || "This is required",
+      (v) => /^([0-9]\d{0,7}(?:\.\d{1,4})?)+$/.test(v) || "Field must be valid",
     ],
     formRulesNumberRange: [
       (v) => {
@@ -1010,9 +1035,10 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "SUPPLIER",
@@ -1067,7 +1093,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
   //Computed
@@ -1120,7 +1146,7 @@ export default {
       }
     },
     descKeydown(e) {
-      if (/[~`!@#$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
+      if (/[~`!@$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
         e.preventDefault();
       }
     },
@@ -1226,33 +1252,42 @@ export default {
 
     //Saving data to database
     async save() {
-      if (this.$refs.form.validate()) {
-        this.compute();
-        //Validate first before compare
-        if (this.compare()) {
-          //Save or update data in the table
-          await axios
-            .post("/api/msupp/save", this.form)
-            .then((result) => {
-              //If the value is true then save to database
-              switch (result.data) {
-                case 0:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "check",
-                    iconColor: "success",
-                    message: "Successfully saved.",
-                  };
-                  this.get();
-                  this.cancel();
-                  break;
-                default:
-                  break;
-              }
-            })
-            .catch((result) => {
-              //If false or error when saving
-            });
+      if (this.temp_vat == null) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Set the VAT first.",
+        };
+      } else {
+        if (this.$refs.form.validate()) {
+          this.compute();
+          //Validate first before compare
+          if (this.compare()) {
+            //Save or update data in the table
+            await axios
+              .post("/api/msupp/save", this.form)
+              .then((result) => {
+                //If the value is true then save to database
+                switch (result.data) {
+                  case 0:
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully saved.",
+                    };
+                    this.get();
+                    this.cancel();
+                    break;
+                  default:
+                    break;
+                }
+              })
+              .catch((result) => {
+                //If false or error when saving
+              });
+          }
         }
       }
     },

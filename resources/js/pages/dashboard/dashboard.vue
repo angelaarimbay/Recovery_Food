@@ -771,6 +771,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .v-list-item__content {
   color: white !important;
 }

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Suppliers;
 
 use App\Http\Controllers\Controller;
 use App\Models\tbl_purchaseord;
-use App\Models\tbl_supplist;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseOrdersController extends Controller
 {
@@ -49,15 +49,19 @@ class PurchaseOrdersController extends Controller
 
     //For retrieving purchase order info
     public function get(Request $t)
-    {$table = tbl_purchaseord::with("supplier_name")->where("supplier_name", "!=", null);
+    {
+        $where = ($t->supplier ? "supplier_name != 0 and supplier_name=" . $t->supplier : "supplier_name != 0");
+
+        $table = tbl_purchaseord::with("supplier_name")
+            ->whereRaw($where);
 
         if ($t->dateFrom && $t->dateUntil) {
             $table = $table->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
 
         if ($t->search) { //If has value
-            $table = $table->selectRaw("*, @row:=@row+1 as row ")->whereHas('supplier_name', function ($q) use ($t) {
-                $q->where('supplier_name', 'like', "%" . $t->search . "%");
+            $table = $table->whereHas('supplier_name', function ($q) use ($t) {
+                $q->where('invoice_number', 'like', "%" . $t->search . "%");
             });
         }
 
@@ -81,6 +85,10 @@ class PurchaseOrdersController extends Controller
     //For retrieving supplier names
     public function suppName()
     {
-        return tbl_supplist::select(["supplier_name", "id"])->where("status", 1)->get();
+        $data = DB::table("tbl_supplists")
+            ->selectRaw(' CONCAT(supplier_name , " (", COALESCE(description,"") ,")") as supplier_name, phone_number, contact_person, address, description, id')
+            ->where("status", 1)
+            ->get();
+        return $data;
     }
 }

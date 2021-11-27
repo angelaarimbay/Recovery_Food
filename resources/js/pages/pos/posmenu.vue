@@ -141,9 +141,7 @@
                       dense
                       v-model="itemsPerPage"
                       @change="itemperpage"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
+                      :items="[5, 10, 15, 20]"
                       hide-details
                       background-color="grey darken-3"
                       flat
@@ -413,7 +411,7 @@
             <v-card-actions class="px-0 pb-0">
               <v-spacer></v-spacer>
               <v-btn
-                color="error"
+                color="black"
                 depressed
                 :disabled="button"
                 dark
@@ -824,6 +822,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .centered-input input {
   text-align: center;
 }
@@ -843,6 +847,7 @@
   .prod_table .v-data-table-header th,
   .ord_table .v-data-table-header th {
     font-size: 15px !important;
+    text-align: center !important;
   }
   .prod_table td,
   .ord_table td {
@@ -986,9 +991,10 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
 
       {
@@ -1021,7 +1027,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     renderComponent: true,
 
     //Table Headers
@@ -1029,7 +1035,7 @@ export default {
       {
         text: "#",
         value: "id",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
       },
@@ -1070,7 +1076,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
   //Methods
@@ -1245,6 +1251,7 @@ export default {
               iconColor: "success",
               message: "Successfully checked-out.",
             };
+            this.$refs.form.resetValidation();
           });
       } else {
         this.snackbar = {

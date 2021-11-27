@@ -89,8 +89,8 @@ class MasterlistSuppliesController extends Controller
             $temp['status'] = $value->status;
             $temp['supplier'] =
             $data = DB::table("tbl_supplists")
-                ->selectRaw(' CONCAT(supplier_name , " ", COALESCE(description,"")) as supplier_name, phone_number, contact_person, address, description, id')
-                ->where("id", $value->supplier)->where("status", 1)->first();
+                ->selectRaw(' CONCAT(supplier_name , " (", COALESCE(description,"") ,")") as supplier_name, phone_number, contact_person, address, description, id')
+                ->where("id", $value->supplier)->first();
             $temp['category'] = $value->category_details;
             $temp['unit'] = $value->unit;
             $temp['vat'] = $value->vat;
@@ -138,7 +138,8 @@ class MasterlistSuppliesController extends Controller
     public function suppliers()
     {
         $data = DB::table("tbl_supplists")
-            ->selectRaw(' CONCAT(supplier_name , " ", COALESCE(description,"")) as supplier_name, phone_number, contact_person, address, description, id')
+            ->selectRaw(' CONCAT(supplier_name , " (", COALESCE(description,"") ,")") as supplier_name, phone_number, contact_person, address, description, id')
+            ->where("status", 1)
             ->get();
         return $data;
     }

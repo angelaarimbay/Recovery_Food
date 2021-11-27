@@ -613,7 +613,7 @@
                 <v-card-actions class="pa-0 mt-4">
                   <v-spacer></v-spacer>
                   <v-btn
-                    color="error"
+                    color="black"
                     style="text-transform: none; color: white"
                     :small="$vuetify.breakpoint.smAndDown"
                     class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
@@ -701,7 +701,7 @@
           <v-card-actions class="px-0 pb-0">
             <v-spacer></v-spacer>
             <v-btn
-              color="error"
+              color="black"
               depressed
               dark
               @click="cancel"
@@ -729,11 +729,18 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -917,7 +924,7 @@ export default {
     type: "",
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     search: "",
     category: "",
     subcategory: "",

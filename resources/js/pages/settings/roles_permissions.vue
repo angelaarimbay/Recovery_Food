@@ -144,7 +144,7 @@
           <v-card-actions class="px-0 pb-0">
             <v-spacer></v-spacer>
             <v-btn
-              color="error"
+              color="black"
               depressed
               dark
               @click="cancelRoles"
@@ -759,6 +759,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .tbl.v-data-table__checkbox,
 .v-input--selection-controls__input .mdi-checkbox-marked,
 .v-input--selection-controls__input .mdi-minus-box {

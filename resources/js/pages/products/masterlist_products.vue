@@ -144,9 +144,7 @@
                         dense
                         v-model="itemsPerPage"
                         @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
+                        :items="[5, 10, 15, 20]"
                         hide-details
                         background-color="grey darken-3"
                         flat
@@ -307,14 +305,20 @@
                 <span v-else-if="item.days < 1">Expired</span> </v-tooltip
               >{{ item.product_name }} {{ item.description }}</template
             >
-            <!-- <template v-slot:[`item.diff_quantity`]="{ item }"> 
-              <div v-if="item.diff_quantity<=5">
-                <span style="color: red"> {{ item.diff_quantity }}</span>
+            <template v-slot:[`item.diff_quantity`]="{ item }">
+              <div v-if="item.diff_quantity <= item.critical_limit">
+                {{ item.diff_quantity
+                }}<v-tooltip bottom>
+                  <template #activator="data"
+                    ><v-icon v-on="data.on" color="red">mdi-alert</v-icon>
+                  </template>
+                  <span>Critical State</span>
+                </v-tooltip>
               </div>
-              <div v-else-if="item.diff_quantity>=6 && item.diff_quantity <=10">
-                <span style="color: orange"> {{ item.diff_quantity }}</span>
+              <div v-else>
+                {{ item.diff_quantity }}
               </div>
-            </template> -->
+            </template>
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -535,43 +539,11 @@
 
                   <v-col
                     class="tfield py-0"
-                    cols="12"
-                    xl="8"
-                    lg="8"
-                    sm="8"
-                    md="8"
-                  >
-                    <!-- Price -->
-                    <v-text-field
-                      :rules="formRulesPrice"
-                      v-model="form.price"
-                      clearable
-                      dense
-                      counter
-                      @keydown="numberKeydown($event)"
-                      @input="compute"
-                      @click:clear="compute"
-                      maxlength="15"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Price <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="4"
-                    lg="4"
-                    sm="4"
-                    md="4"
+                    cols="6"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
                   >
                     <v-layout align-center>
                       <!-- VAT -->
@@ -603,6 +575,38 @@
                   </v-col>
 
                   <v-col
+                    class="tfield py-0"
+                    cols="6"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
+                  >
+                    <!-- Price -->
+                    <v-text-field
+                      :rules="formRulesPrice"
+                      v-model="form.price"
+                      clearable
+                      dense
+                      counter
+                      @keydown="numberKeydown($event)"
+                      @input="compute"
+                      @click:clear="compute"
+                      maxlength="15"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Price <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+
+                  <v-col
                     class="tfield py-0 d-none"
                     cols="12"
                     xl="12"
@@ -627,14 +631,44 @@
                     </v-text-field>
                   </v-col>
 
+                  <v-col
+                    class="tfield py-0"
+                    cols="6"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
+                  >
+                    <!-- Critical Limit -->
+                    <v-text-field
+                      :rules="formRulesPrice"
+                      v-model="form.critical_limit"
+                      clearable
+                      dense
+                      @keydown="numberKeydown($event)"
+                      counter
+                      maxlength="8"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Critical Limit<span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+
                   <!-- Date Picker -->
                   <v-col
                     class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
+                    cols="6"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
                   >
                     <v-menu
                       v-model="menu"
@@ -684,7 +718,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :disabled="button"
                   dark
@@ -716,6 +750,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 /* #table1 .style-1 {
   color: #fb8c00;
 }
@@ -728,6 +768,7 @@
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -809,6 +850,10 @@ export default {
           v
         ) || "This field must have a valid value",
     ],
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
+    ],
     formRulesDesc: [
       (v) =>
         /^$|^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()])(?!\3{1}))+$/i.test(
@@ -840,6 +885,7 @@ export default {
       price: null,
       vat: null,
       without_vat: null,
+      critical_limit: null,
       exp_date: null,
     },
     temp_vat: null,
@@ -853,9 +899,10 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "CATEGORY",
@@ -909,7 +956,7 @@ export default {
     page: 1,
     pageCount: 0,
     disabled: true,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
   //Computed
@@ -1023,41 +1070,50 @@ export default {
 
     //Saving data to database
     async save() {
-      this.compute();
-      if (this.$refs.form.validate()) {
-        //Validate first before compare
-        if (this.compare()) {
-          //Save or update data in the table
-          await axios
-            .post("/api/mprod/save", this.form)
-            .then((result) => {
-              //If the value is true then save to database
-              switch (result.data) {
-                case 0:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "check",
-                    iconColor: "success",
-                    message: "Successfully saved.",
-                  };
-                  this.get();
-                  this.cancel();
-                  break;
-                case 1:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "The supply name already exists.",
-                  };
-                  break;
-                default:
-                  break;
-              }
-            })
-            .catch((result) => {
-              //If false or error when saving
-            });
+      if (this.temp_vat == null) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Set the VAT first.",
+        };
+      } else {
+        this.compute();
+        if (this.$refs.form.validate()) {
+          //Validate first before compare
+          if (this.compare()) {
+            //Save or update data in the table
+            await axios
+              .post("/api/mprod/save", this.form)
+              .then((result) => {
+                //If the value is true then save to database
+                switch (result.data) {
+                  case 0:
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully saved.",
+                    };
+                    this.get();
+                    this.cancel();
+                    break;
+                  case 1:
+                    this.snackbar = {
+                      active: true,
+                      iconText: "alert",
+                      iconColor: "error",
+                      message: "The product name already exists.",
+                    };
+                    break;
+                  default:
+                    break;
+                }
+              })
+              .catch((result) => {
+                //If false or error when saving
+              });
+          }
         }
       }
     },
@@ -1116,6 +1172,7 @@ export default {
     //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
+      console.log(this.currentdata);
       this.form.id = row.id;
       this.form.status = row.status;
       this.form.category = row.category.id;
@@ -1127,6 +1184,7 @@ export default {
       this.vat = true;
       this.temp_vat = row.vat;
       this.form.without_vat = row.without_vat;
+      this.form.critical_limit = row.critical_limit;
       this.form.exp_date = row.exp_date
         ? this.getFormatDate(row.exp_date, "YYYY-MM-DD")
         : "";

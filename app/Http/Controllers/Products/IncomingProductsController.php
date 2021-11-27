@@ -73,7 +73,7 @@ class IncomingProductsController extends Controller
             $temp['product_name'] =
             DB::table("tbl_masterlistprods")
                 ->selectRaw(' CONCAT(product_name , " ", COALESCE(description,"")) as product_name, category, sub_category, price, description, id')
-                ->where("id", $value->product_name)->where("status", 1)->first();
+                ->where("id", $value->product_name)->first();
             $temp['price'] = number_format($value->product_name_details['price'], 2);
             $temp['quantity'] = $value->quantity;
             $temp['category'] = $value->category_details;
