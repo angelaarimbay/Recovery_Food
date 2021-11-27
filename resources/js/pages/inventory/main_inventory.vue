@@ -237,7 +237,7 @@
                 <span style="color: red">Order</span>
               </div>
               <div v-else-if="item.triggerpoint == 1" class="text-black">
-                Manage
+                <span>Manage</span>
               </div>
             </template>
             <template v-slot:[`item.net_price`]="{ item }"
@@ -250,10 +250,10 @@
               v-slot:[`item.onhand_a`]="{ item }"
               style="text-align: right"
             >
-              <small>
-                Qty : {{ item.onhand_q }} <br />
-                Value: {{ item.onhand_a }}
-              </small>
+              <span>
+                <strong>Qty:</strong> {{ item.onhand_q }} <br />
+                <strong>Value:</strong> {{ item.onhand_a }}
+              </span>
             </template>
 
             <!-- <template
@@ -848,7 +848,7 @@
                         md="3"
                         sm="3"
                       >
-                        {{ currentdata.triggerpoint }}
+                        {{ currentdata.triggerpoint == 0 ? "Order" : "Manage" }}
                       </v-col>
                     </v-row>
                     <v-row>
@@ -999,11 +999,18 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -1094,9 +1101,10 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "CATEGORY",

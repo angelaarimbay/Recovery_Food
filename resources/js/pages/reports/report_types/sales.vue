@@ -321,7 +321,7 @@
                     <v-text-field
                       hide-details
                       v-model="dateUntilSP"
-                      label="Date Until"
+                      placeholder="Date Until""
                       prepend-inner-icon="mdi-calendar-range"
                       readonly
                       v-on="on"
@@ -510,6 +510,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 iframe:focus {
   outline: none;
 }
@@ -522,6 +528,7 @@ iframe[seamless] {
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;

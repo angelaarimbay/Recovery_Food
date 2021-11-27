@@ -25,6 +25,7 @@ class SuppliersListController extends Controller
         $table_clone = clone $table; //Get all items from supplist
         if ($table_clone
             ->where("supplier_name", $data->supplier_name) //Filter using name
+            ->where("description", $data->description) //Filter using description
             ->where("id", "!=", $data->id) //Filter if id is not selected
             ->count() > 0) {
             return 1;

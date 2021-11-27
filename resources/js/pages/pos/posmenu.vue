@@ -822,6 +822,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .centered-input input {
   text-align: center;
 }
@@ -841,6 +847,7 @@
   .prod_table .v-data-table-header th,
   .ord_table .v-data-table-header th {
     font-size: 15px !important;
+    text-align: center !important;
   }
   .prod_table td,
   .ord_table td {
@@ -984,9 +991,10 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
 
       {
@@ -1027,7 +1035,7 @@ export default {
       {
         text: "#",
         value: "id",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
       },

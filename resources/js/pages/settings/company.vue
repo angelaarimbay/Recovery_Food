@@ -284,6 +284,12 @@
 
 <!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .v-application .tfield .white {
   border: 1px solid #bdbdbd !important;
 }

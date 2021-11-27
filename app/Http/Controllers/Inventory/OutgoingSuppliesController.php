@@ -92,7 +92,7 @@ class OutgoingSuppliesController extends Controller
             $temp['supply_name'] =
             DB::table("tbl_masterlistsupps")
                 ->selectRaw(' CONCAT(supply_name , " ", COALESCE(description,"")) as supply_name, category, net_price, unit, description, id')
-                ->where("id", $value->supply_name)->where("status", 1)->first();
+                ->where("id", $value->supply_name)->first();
             $temp['outgoing_amount'] = number_format($value->with_vat_price * $value->quantity, 2);
             $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
             $temp['without_vat_price'] = number_format($value->without_vat_price, 2);

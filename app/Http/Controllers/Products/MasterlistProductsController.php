@@ -28,6 +28,7 @@ class MasterlistProductsController extends Controller
         $table_clone = clone $table; //Get all items from masterlistprod
         if ($table_clone
             ->where("product_name", $data->product_name) //Filter using name
+            ->where("description", $data->description) //Filter using description
             ->where("id", "!=", $data->id) //Filter if id is not selected
             ->count() > 0) {
             return 1;

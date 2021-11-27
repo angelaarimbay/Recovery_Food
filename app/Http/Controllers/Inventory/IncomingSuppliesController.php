@@ -74,7 +74,7 @@ class IncomingSuppliesController extends Controller
             $temp['supply_name'] =
             DB::table("tbl_masterlistsupps")
                 ->selectRaw(' CONCAT(supply_name , " ", COALESCE(description,"")) as supply_name, category, net_price, unit, description, id')
-                ->where("id", $value->supply_name)->where("status", 1)->first();
+                ->where("id", $value->supply_name)->first();
             $temp['supplier'] = $value->supplier_details;
             $temp['amount'] = number_format($value->amount, 2);
             $wvat = tbl_masterlistsupp::where("id", $value->id);
@@ -107,6 +107,7 @@ class IncomingSuppliesController extends Controller
     {
         $data = DB::table("tbl_supplists")
             ->selectRaw(' CONCAT(supplier_name , " (", COALESCE(description,"") ,")") as supplier_name, phone_number, contact_person, address, description, id')
+            ->where("status", 1)
             ->get();
         return $data;
     }
