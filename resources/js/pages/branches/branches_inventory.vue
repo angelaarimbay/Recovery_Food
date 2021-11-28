@@ -42,14 +42,12 @@
     <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
-        v-model="tab"
         color="red darken-2"
+        :centered="$vuetify.breakpoint.xsOnly"
         :height="height"
-        show-arrows
-        center-active
-        centered
+        :class="{'pa-2' : $vuetify.breakpoint.smAndUp}"
       >
-        <v-tabs-slider style="display: none"></v-tabs-slider>
+        <v-tabs-slider style="border-radius: 20px 20px 0px 0px"></v-tabs-slider>
         <v-tab
           class="
             text-body-2
@@ -72,441 +70,433 @@
           style="text-transform: none"
           >Products List</v-tab
         >
-      </v-tabs>
 
-      <v-tabs-items v-model="tab">
         <!-- Branch Supplies Inventory -->
         <v-tab-item>
-          <v-container class="py-2">
-            <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-              <v-row no-gutters>
-                <v-spacer></v-spacer>
-                <!-- Refresh -->
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      class="mr-2 mb-3"
-                      color="success"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="getSupplies"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-refresh</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Refresh</span>
-                </v-tooltip>
-                <!-- Filter -->
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="grey darken-4"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="filterDialog = true"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-filter-variant</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Filter</span>
-                </v-tooltip>
-              </v-row>
+          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-row no-gutters>
+              <v-spacer></v-spacer>
+              <!-- Refresh -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2 mb-3"
+                    color="success"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="getSupplies"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+              <!-- Filter -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="grey darken-4"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="filterDialog = true"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-filter-variant</v-icon></v-btn
+                  >
+                </template>
+                <span>Filter</span>
+              </v-tooltip>
+            </v-row>
 
-              <!-- Filter Dialog -->
-              <v-dialog v-model="filterDialog" max-width="400px">
-                <v-card dark tile class="pa-2">
-                  <v-toolbar dense flat class="transparent">
-                    Search Filter
-                    <v-spacer></v-spacer>
-                    <v-icon text @click="filterDialog = false"
-                      >mdi-close
-                    </v-icon>
-                  </v-toolbar>
-                  <v-divider class="my-0"></v-divider>
-                  <v-row no-gutters align="center" class="pa-2">
-                    <!-- Items Per Page -->
-                    <v-col cols="4"
-                      ><span class="text-caption text-xl-subtitle-2"
-                        >Items / Page</span
-                      ></v-col
-                    >
-                    <v-col cols="8">
-                      <v-card-actions class="px-0">
-                        <v-select
-                          dense
-                          v-model="itemsPerPage1"
-                          @change="itemperpage1"
-                          :items="[5, 10, 15, 20]"
-                          hide-details
-                          background-color="grey darken-3"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                        </v-select>
-                      </v-card-actions>
-                    </v-col>
+            <!-- Filter Dialog -->
+            <v-dialog v-model="filterDialog" max-width="400px">
+              <v-card dark tile class="pa-2">
+                <v-toolbar dense flat class="transparent">
+                  Search Filter
+                  <v-spacer></v-spacer>
+                  <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+                </v-toolbar>
+                <v-divider class="my-0"></v-divider>
+                <v-row no-gutters align="center" class="pa-2">
+                  <!-- Items Per Page -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Items / Page</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        dense
+                        v-model="itemsPerPage1"
+                        @change="itemperpage1"
+                        :items="[5, 10, 15, 20]"
+                        hide-details
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
 
-                    <!-- Search Field -->
-                    <v-col cols="4"
-                      ><span class="text-caption text-xl-subtitle-2"
-                        >Search</span
-                      ></v-col
-                    >
-                    <v-col cols="8">
-                      <v-card-actions class="px-0">
-                        <v-text-field
-                          v-model="search1"
-                          placeholder="Supply Name"
-                          single-line
-                          dense
-                          clearable
-                          hide-details
-                          background-color="grey darken-3"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        ></v-text-field>
-                        <v-tooltip bottom>
-                          <template #activator="data">
-                            <v-btn
-                              small
-                              :x-small="$vuetify.breakpoint.smAndDown"
-                              color="red darken-2"
-                              icon
-                              v-on="data.on"
-                              @click="getSupplies"
-                              class="ml-1"
-                            >
-                              <v-icon>mdi-magnify</v-icon></v-btn
-                            >
-                          </template>
-                          <span>Search</span>
-                        </v-tooltip>
-                      </v-card-actions>
-                    </v-col>
+                  <!-- Search Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Search</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-text-field
+                        v-model="search1"
+                        placeholder="Supply Name"
+                        single-line
+                        dense
+                        clearable
+                        hide-details
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      ></v-text-field>
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            small
+                            :x-small="$vuetify.breakpoint.smAndDown"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            @click="getSupplies"
+                            class="ml-1"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
+                    </v-card-actions>
+                  </v-col>
 
-                    <!-- Branch Field -->
-                    <v-col cols="4"
-                      ><span class="text-caption text-xl-subtitle-2"
-                        >Branch</span
-                      ></v-col
-                    >
-                    <v-col cols="8">
-                      <v-card-actions class="px-0">
-                        <v-select
-                          hide-details
-                          :items="branchlist"
-                          v-model="branch1"
-                          item-text="branch_name"
-                          item-value="id"
-                          clearable
-                          dense
-                          @change="getSupplies"
-                          placeholder="Branch"
-                          background-color="grey darken-3"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                        </v-select>
-                      </v-card-actions>
-                    </v-col>
+                  <!-- Branch Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Branch</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        :items="branchlist"
+                        v-model="branch1"
+                        item-text="branch_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        @change="getSupplies"
+                        placeholder="Branch"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
 
-                    <!-- Category Field -->
-                    <v-col cols="4"
-                      ><span class="text-caption text-xl-subtitle-2"
-                        >Category</span
-                      ></v-col
-                    >
-                    <v-col cols="8">
-                      <v-card-actions class="px-0">
-                        <v-select
-                          hide-details
-                          :items="suppcatlist"
-                          item-text="supply_cat_name"
-                          item-value="id"
-                          class="my-0"
-                          v-model="category1"
-                          @change="getSupplies"
-                          clearable
-                          dense
-                          placeholder="Category"
-                          background-color="grey darken-3"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                        </v-select>
-                      </v-card-actions>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-dialog>
+                  <!-- Category Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Category</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        :items="suppcatlist"
+                        item-text="supply_cat_name"
+                        item-value="id"
+                        class="my-0"
+                        v-model="category1"
+                        @change="getSupplies"
+                        clearable
+                        dense
+                        placeholder="Category"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-dialog>
 
-              <!-- Table -->
-              <v-data-table
-                id="table1"
-                :headers="headers1"
-                :items="table1.data"
-                :loading="progressbar"
-                :page.sync="page1"
-                ref="progress"
-                :items-per-page="itemsPerPage1"
-                hide-default-footer
-                @page-count="pageCount = $event"
-                class="table-striped border"
+            <!-- Table -->
+            <v-data-table
+              id="table1"
+              :headers="headers1"
+              :items="table1.data"
+              :loading="progressbar"
+              :page.sync="page1"
+              ref="progress"
+              :items-per-page="itemsPerPage1"
+              hide-default-footer
+              @page-count="pageCount = $event"
+              class="table-striped border"
+            >
+              <!-- Progress Bar -->
+              <v-progress-linear
+                color="red darken-2"
+                class="px-0 mx-0"
+                slot="progress"
+                indeterminate
+                rounded
+              ></v-progress-linear>
+              <template v-slot:[`item.supply_full`]="{ item }"
+                >{{ item.supply_name.supply_name }}
+                {{ item.supply_name.description }}</template
               >
-                <!-- Progress Bar -->
-                <v-progress-linear
-                  color="red darken-2"
-                  class="px-0 mx-0"
-                  slot="progress"
-                  indeterminate
-                  rounded
-                ></v-progress-linear>
-                <template v-slot:[`item.supply_full`]="{ item }"
-                  >{{ item.supply_name.supply_name }}
-                  {{ item.supply_name.description }}</template
-                >
-                <template v-slot:[`item.count`]="{ item }">
-                  {{ item.row }}</template
-                >
-              </v-data-table>
+              <template v-slot:[`item.count`]="{ item }">
+                {{ item.row }}</template
+              >
+            </v-data-table>
 
-              <!-- Paginate -->
-              <div class="pbutton text-center pt-7">
-                <v-pagination
-                  v-model="page1"
-                  :length="table1.last_page"
-                  color="red darken-2"
-                ></v-pagination>
-              </div>
-            </v-container>
+            <!-- Paginate -->
+            <div class="pbutton text-center pt-7">
+              <v-pagination
+                v-model="page1"
+                :length="table1.last_page"
+                color="red darken-2"
+              ></v-pagination>
+            </div>
           </v-container>
         </v-tab-item>
 
         <!-- Branch Products List -->
         <v-tab-item>
-          <v-container class="py-2">
-            <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-              <v-row no-gutters>
-                <v-spacer></v-spacer>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      class="mr-2 mb-3"
-                      color="success"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="getProducts"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-refresh</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Refresh</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="grey darken-4"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="filterDialog1 = true"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-filter-variant</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Filter</span>
-                </v-tooltip>
-              </v-row>
+          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-row no-gutters>
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2 mb-3"
+                    color="success"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="getProducts"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="grey darken-4"
+                    style="text-transform: none"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="filterDialog1 = true"
+                    v-on="data.on"
+                    icon
+                    ><v-icon>mdi-filter-variant</v-icon></v-btn
+                  >
+                </template>
+                <span>Filter</span>
+              </v-tooltip>
+            </v-row>
 
-              <!-- Filter Dialog -->
-              <v-dialog v-model="filterDialog1" max-width="400px">
-                <v-card dark tile class="pa-2">
-                  <v-toolbar dense flat class="transparent">
-                    Search Filter
-                    <v-spacer></v-spacer>
-                    <v-icon text @click="filterDialog1 = false"
-                      >mdi-close
-                    </v-icon>
-                  </v-toolbar>
-                  <v-divider class="my-0"></v-divider>
-                  <v-row no-gutters align="center" class="pa-2">
-                    <!-- Items Per Page -->
-                    <v-col cols="4"
-                      ><span class="text-caption text-xl-subtitle-2"
-                        >Items / Page</span
-                      ></v-col
-                    >
-                    <v-col cols="8">
-                      <v-card-actions class="px-0">
-                        <v-select
-                          dense
-                          v-model="itemsPerPage2"
-                          @change="itemperpage2"
-                          :items="[5, 10, 15, 20]"
-                          hide-details
-                          background-color="grey darken-3"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                        </v-select>
-                      </v-card-actions>
-                    </v-col>
+            <!-- Filter Dialog -->
+            <v-dialog v-model="filterDialog1" max-width="400px">
+              <v-card dark tile class="pa-2">
+                <v-toolbar dense flat class="transparent">
+                  Search Filter
+                  <v-spacer></v-spacer>
+                  <v-icon text @click="filterDialog1 = false"
+                    >mdi-close
+                  </v-icon>
+                </v-toolbar>
+                <v-divider class="my-0"></v-divider>
+                <v-row no-gutters align="center" class="pa-2">
+                  <!-- Items Per Page -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Items / Page</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        dense
+                        v-model="itemsPerPage2"
+                        @change="itemperpage2"
+                        :items="[5, 10, 15, 20]"
+                        hide-details
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
 
-                    <!-- Search Field -->
-                    <v-col cols="4"
-                      ><span class="text-caption text-xl-subtitle-2"
-                        >Search</span
-                      ></v-col
-                    >
-                    <v-col cols="8">
-                      <v-card-actions class="px-0">
-                        <v-text-field
-                          v-model="search2"
-                          placeholder="Product Name"
-                          single-line
-                          dense
-                          clearable
-                          hide-details
-                          background-color="grey darken-3"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        ></v-text-field>
-                        <v-tooltip bottom>
-                          <template #activator="data">
-                            <v-btn
-                              small
-                              :x-small="$vuetify.breakpoint.smAndDown"
-                              color="red darken-2"
-                              icon
-                              v-on="data.on"
-                              @click="getProducts"
-                              class="ml-1"
-                            >
-                              <v-icon>mdi-magnify</v-icon></v-btn
-                            >
-                          </template>
-                          <span>Search</span>
-                        </v-tooltip>
-                      </v-card-actions>
-                    </v-col>
+                  <!-- Search Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Search</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-text-field
+                        v-model="search2"
+                        placeholder="Product Name"
+                        single-line
+                        dense
+                        clearable
+                        hide-details
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      ></v-text-field>
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            small
+                            :x-small="$vuetify.breakpoint.smAndDown"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            @click="getProducts"
+                            class="ml-1"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
+                    </v-card-actions>
+                  </v-col>
 
-                    <!-- Branch Field -->
-                    <v-col cols="4"
-                      ><span class="text-caption text-xl-subtitle-2"
-                        >Branch</span
-                      ></v-col
-                    >
-                    <v-col cols="8">
-                      <v-card-actions class="px-0">
-                        <v-select
-                          hide-details
-                          :items="branchlist"
-                          v-model="branch2"
-                          item-text="branch_name"
-                          item-value="id"
-                          clearable
-                          dense
-                          @change="getProducts"
-                          placeholder="Branch"
-                          background-color="grey darken-3"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                        </v-select>
-                      </v-card-actions>
-                    </v-col>
+                  <!-- Branch Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Branch</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        :items="branchlist"
+                        v-model="branch2"
+                        item-text="branch_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        @change="getProducts"
+                        placeholder="Branch"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
 
-                    <!-- Category Field -->
-                    <v-col cols="4"
-                      ><span class="text-caption text-xl-subtitle-2"
-                        >Category</span
-                      ></v-col
-                    >
-                    <v-col cols="8">
-                      <v-card-actions class="px-0">
-                        <v-select
-                          hide-details
-                          :items="prodcatlist"
-                          item-text="product_cat_name"
-                          item-value="id"
-                          v-model="category2"
-                          @change="getProducts"
-                          clearable
-                          dense
-                          placeholder="Category"
-                          background-color="grey darken-3"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                        </v-select>
-                      </v-card-actions>
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-dialog>
+                  <!-- Category Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Category</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        :items="prodcatlist"
+                        item-text="product_cat_name"
+                        item-value="id"
+                        v-model="category2"
+                        @change="getProducts"
+                        clearable
+                        dense
+                        placeholder="Category"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-dialog>
 
-              <!-- Table -->
-              <v-data-table
-                id="table1"
-                :headers="headers2"
-                :items="table2.data"
-                :loading="progressbar"
-                :page.sync="page2"
-                ref="progress"
-                :items-per-page="itemsPerPage2"
-                hide-default-footer
-                @page-count="pageCount = $event"
-                class="table-striped border"
+            <!-- Table -->
+            <v-data-table
+              id="table1"
+              :headers="headers2"
+              :items="table2.data"
+              :loading="progressbar"
+              :page.sync="page2"
+              ref="progress"
+              :items-per-page="itemsPerPage2"
+              hide-default-footer
+              @page-count="pageCount = $event"
+              class="table-striped border"
+            >
+              <!-- Progress Bar -->
+              <v-progress-linear
+                color="red darken-2"
+                class="px-0 mx-0"
+                slot="progress"
+                indeterminate
+                rounded
+              ></v-progress-linear>
+              <template v-slot:[`item.product_full`]="{ item }"
+                >{{ item.product_name.product_name }}
+                {{ item.product_name.description }}</template
               >
-                <!-- Progress Bar -->
-                <v-progress-linear
-                  color="red darken-2"
-                  class="px-0 mx-0"
-                  slot="progress"
-                  indeterminate
-                  rounded
-                ></v-progress-linear>
-                <template v-slot:[`item.product_full`]="{ item }"
-                  >{{ item.product_name.product_name }}
-                  {{ item.product_name.description }}</template
-                >
-                <template v-slot:[`item.count`]="{ item }">
-                  {{ item.row }}</template
-                >
-              </v-data-table>
+              <template v-slot:[`item.count`]="{ item }">
+                {{ item.row }}</template
+              >
+            </v-data-table>
 
-              <!-- Paginate -->
-              <div class="pbutton text-center pt-7">
-                <v-pagination
-                  v-model="page2"
-                  :total-visible="7"
-                  :length="table2.last_page"
-                  color="red darken-2"
-                ></v-pagination>
-              </div>
-            </v-container>
+            <!-- Paginate -->
+            <div class="pbutton text-center pt-7">
+              <v-pagination
+                v-model="page2"
+                :total-visible="7"
+                :length="table2.last_page"
+                color="red darken-2"
+              ></v-pagination>
+            </div>
           </v-container>
         </v-tab-item>
-      </v-tabs-items>
+      </v-tabs>
     </v-card>
   </div>
 </template>
@@ -570,11 +560,8 @@ export default {
       user: "auth/user",
     }),
     height() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return 35;
-        default:
-          return 42;
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return 35;
       }
     },
   },
@@ -589,7 +576,6 @@ export default {
     category1: "",
     category2: "",
     loading: false,
-    tab: null,
     table1: [],
     table2: [],
     suppcatlist: [],
@@ -703,8 +689,8 @@ export default {
     page1: 1,
     page2: 1,
     pageCount: 0,
-    itemsPerPage1: 5,
-    itemsPerPage2: 5,
+    itemsPerPage1: 10,
+    itemsPerPage2: 10,
   }),
 
   //Watch

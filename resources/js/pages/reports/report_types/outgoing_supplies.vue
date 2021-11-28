@@ -1,239 +1,237 @@
 <template>
   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-    <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-      <!-- Progress Circular -->
-      <v-overlay :value="overlay">
-        <v-progress-circular size="55" color="red darken-2" indeterminate>
-        </v-progress-circular>
-      </v-overlay>
-      <!-- Snackbar -->
-      <v-snackbar
-        :vertical="$vuetify.breakpoint.xsOnly"
-        min-width="auto"
-        v-model="snackbar.active"
-        timeout="2500"
-        class="text-center pb-0"
-        :left="$vuetify.breakpoint.smAndUp"
+    <!-- Progress Circular -->
+    <v-overlay :value="overlay">
+      <v-progress-circular size="55" color="red darken-2" indeterminate>
+      </v-progress-circular>
+    </v-overlay>
+    <!-- Snackbar -->
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar.active"
+      timeout="2500"
+      class="text-center pb-0"
+      :left="$vuetify.breakpoint.smAndUp"
+    >
+      <span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
       >
-        <span
-          ><v-icon :color="snackbar.iconColor">{{
-            `mdi-${snackbar.iconText}`
-          }}</v-icon></span
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
         >
-        {{ snackbar.message }}
-        <template v-slot:action="{ attrs }">
+      </template>
+    </v-snackbar>
+
+    <v-card-actions class="px-0 justify-center">
+      <!-- Export to PDF -->
+      <v-tooltip bottom>
+        <template #activator="data">
           <v-btn
+            dark
+            color="red accent-4"
+            class="mx-1"
+            @click="get('pdf')"
+            v-on="data.on"
             :small="$vuetify.breakpoint.smAndDown"
-            v-bind="attrs"
-            color="primary"
-            text
-            @click="snackbar.active = false"
-            >Close</v-btn
+            ><v-icon>mdi-file-pdf</v-icon></v-btn
           >
         </template>
-      </v-snackbar>
-
-      <v-card-actions class="px-0 justify-center">
-        <!-- Export to PDF -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="red accent-4"
-              class="mx-1"
-              @click="get('pdf')"
-              v-on="data.on"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-file-pdf</v-icon></v-btn
-            >
-          </template>
-          <span>Export to PDF</span>
-        </v-tooltip>
-        <!-- Export to Excel -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="green darken-4"
-              class="mx-1"
-              @click="get('excel')"
-              v-on="data.on"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-file-excel</v-icon></v-btn
-            >
-          </template>
-          <span>Export to Excel</span>
-        </v-tooltip>
-        <!-- Print -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="blue-grey darken-1"
-              class="mx-1"
-              @click="get('print')"
-              v-on="data.on"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-printer</v-icon></v-btn
-            >
-          </template>
-          <span>Print</span>
-        </v-tooltip></v-card-actions
+        <span>Export to PDF</span>
+      </v-tooltip>
+      <!-- Export to Excel -->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn
+            dark
+            color="green darken-4"
+            class="mx-1"
+            @click="get('excel')"
+            v-on="data.on"
+            :small="$vuetify.breakpoint.smAndDown"
+            ><v-icon>mdi-file-excel</v-icon></v-btn
+          >
+        </template>
+        <span>Export to Excel</span>
+      </v-tooltip>
+      <!-- Print -->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn
+            dark
+            color="blue-grey darken-1"
+            class="mx-1"
+            @click="get('print')"
+            v-on="data.on"
+            :small="$vuetify.breakpoint.smAndDown"
+            ><v-icon>mdi-printer</v-icon></v-btn
+          >
+        </template>
+        <span>Print</span>
+      </v-tooltip></v-card-actions
+    >
+    <!-- Branch Field -->
+    <v-row no-gutters justify="center">
+      <v-col
+        cols="6"
+        xl="3"
+        lg="3"
+        md="3"
+        sm="6"
+        class="px-1"
+        style="max-width: 150px"
       >
-      <!-- Branch Field -->
-      <v-row no-gutters justify="center">
-        <v-col
-          cols="6"
-          xl="3"
-          lg="3"
-          md="3"
-          sm="6"
-          class="px-1"
-          style="max-width: 150px"
-        >
-          <v-card-actions class="pb-1 pt-4 px-0">
-            <v-select
-              hide-details
-              v-model="branch"
-              :items="branchlist"
-              item-text="branch_name"
-              item-value="id"
-              dense
-              placeholder="Branch"
-              background-color="grey darken-3"
-              dark
-              flat
-              solo
-              style="font-size: 12px"
-            >
-            </v-select>
-          </v-card-actions>
-        </v-col>
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-select
+            hide-details
+            v-model="branch"
+            :items="branchlist"
+            item-text="branch_name"
+            item-value="id"
+            dense
+            placeholder="Branch"
+            background-color="grey darken-3"
+            dark
+            flat
+            solo
+            style="font-size: 12px"
+          >
+          </v-select>
+        </v-card-actions>
+      </v-col>
 
-        <!-- Category Field -->
-        <v-col
-          cols="6"
-          xl="3"
-          lg="3"
-          md="3"
-          sm="6"
-          class="px-1"
-          style="max-width: 150px"
-        >
-          <v-card-actions class="pb-1 pt-4 px-0">
-            <v-select
-              hide-details
-              v-model="category"
-              :items="suppcatlist"
-              item-text="supply_cat_name"
-              item-value="id"
-              dense
-              placeholder="Category"
-              background-color="grey darken-3"
-              dark
-              flat
-              solo
-              style="font-size: 12px"
-            >
-            </v-select>
-          </v-card-actions>
-        </v-col>
+      <!-- Category Field -->
+      <v-col
+        cols="6"
+        xl="3"
+        lg="3"
+        md="3"
+        sm="6"
+        class="px-1"
+        style="max-width: 150px"
+      >
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-select
+            hide-details
+            v-model="category"
+            :items="suppcatlist"
+            item-text="supply_cat_name"
+            item-value="id"
+            dense
+            placeholder="Category"
+            background-color="grey darken-3"
+            dark
+            flat
+            solo
+            style="font-size: 12px"
+          >
+          </v-select>
+        </v-card-actions>
+      </v-col>
 
-        <!-- Date Picker -->
-        <v-col
-          cols="6"
-          xl="3"
-          lg="3"
-          md="3"
-          sm="6"
-          class="px-1"
-          style="max-width: 150px"
-        >
-          <v-card-actions class="pb-1 pt-4 px-0">
-            <v-menu
-              v-model="date1"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  hide-details
-                  v-model="outgoing_from"
-                  placeholder="Date From"
-                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
-                  readonly
-                  v-on="on"
-                  dense
-                  background-color="grey darken-3"
-                  dark
-                  flat
-                  solo
-                  style="font-size: 12px"
-                ></v-text-field>
-              </template>
-              <v-date-picker
+      <!-- Date Picker -->
+      <v-col
+        cols="6"
+        xl="3"
+        lg="3"
+        md="3"
+        sm="6"
+        class="px-1"
+        style="max-width: 150px"
+      >
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-menu
+            v-model="date1"
+            :close-on-content-click="false"
+            :nudge-right="35"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                hide-details
                 v-model="outgoing_from"
-                @input="date1 = false"
-                scrollable
-                no-title
-                color="red darken-2"
+                placeholder="Date From"
+                :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
+                readonly
+                v-on="on"
+                dense
+                background-color="grey darken-3"
                 dark
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
-        </v-col>
+                flat
+                solo
+                style="font-size: 12px"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="outgoing_from"
+              @input="date1 = false"
+              scrollable
+              no-title
+              color="red darken-2"
+              dark
+            ></v-date-picker>
+          </v-menu>
+        </v-card-actions>
+      </v-col>
 
-        <!-- Date Picker -->
-        <v-col
-          cols="6"
-          xl="3"
-          lg="3"
-          md="3"
-          sm="6"
-          class="px-1"
-          style="max-width: 150px"
-        >
-          <v-card-actions class="pb-1 pt-4 px-0">
-            <v-menu
-              v-model="date2"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  hide-details
-                  v-model="outgoing_to"
-                  placeholder="Date Until"
-                  :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
-                  readonly
-                  v-on="on"
-                  dense
-                  background-color="grey darken-3"
-                  dark
-                  flat
-                  solo
-                  style="font-size: 12px"
-                ></v-text-field>
-              </template>
-              <v-date-picker
+      <!-- Date Picker -->
+      <v-col
+        cols="6"
+        xl="3"
+        lg="3"
+        md="3"
+        sm="6"
+        class="px-1"
+        style="max-width: 150px"
+      >
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-menu
+            v-model="date2"
+            :close-on-content-click="false"
+            :nudge-right="35"
+            transition="scale-transition"
+            offset-y
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                hide-details
                 v-model="outgoing_to"
-                @input="date2 = false"
-                scrollable
-                no-title
-                color="red darken-2"
+                placeholder="Date Until"
+                :prepend-inner-icon="showIcon ? 'mdi-calendar-range' : ''"
+                readonly
+                v-on="on"
+                dense
+                background-color="grey darken-3"
                 dark
-              ></v-date-picker>
-            </v-menu>
-          </v-card-actions>
-        </v-col>
-      </v-row>
-    </v-container>
+                flat
+                solo
+                style="font-size: 12px"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              v-model="outgoing_to"
+              @input="date2 = false"
+              scrollable
+              no-title
+              color="red darken-2"
+              dark
+            ></v-date-picker>
+          </v-menu>
+        </v-card-actions>
+      </v-col>
+    </v-row>
     <iframe id="print2" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>

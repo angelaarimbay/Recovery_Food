@@ -69,161 +69,159 @@
     <!-- Main Card -->
     <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
-        <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-row no-gutters align="center" class="mb-3">
-            <v-spacer></v-spacer>
-            <!-- Refresh -->
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  class="ml-auto mr-2"
-                  color="success"
-                  style="text-transform: none"
-                  depressed
-                  :small="$vuetify.breakpoint.smAndDown"
-                  dark
-                  @click="get"
-                  v-on="data.on"
-                  icon
-                  ><v-icon>mdi-refresh</v-icon></v-btn
-                >
-              </template>
-              <span>Refresh</span>
-            </v-tooltip>
-            <!-- Filter -->
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  color="grey darken-4"
-                  style="text-transform: none"
-                  depressed
-                  :small="$vuetify.breakpoint.smAndDown"
-                  dark
-                  @click="filterDialog = true"
-                  v-on="data.on"
-                  icon
-                  ><v-icon>mdi-filter-variant</v-icon></v-btn
-                >
-              </template>
-              <span>Filter</span>
-            </v-tooltip>
-          </v-row>
-
-          <!-- Filter Dialog -->
-          <v-dialog v-model="filterDialog" max-width="400px">
-            <v-card dark tile class="pa-2">
-              <v-toolbar dense flat class="transparent">
-                Search Filter
-                <v-spacer></v-spacer>
-                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
-              </v-toolbar>
-              <v-divider class="my-0"></v-divider>
-              <v-row no-gutters align="center" justify="center" class="pa-2">
-                <!-- Date Picker -->
-                <v-col cols="4"
-                  ><span class="text-caption text-xl-subtitle-2"
-                    >Year</span
-                  ></v-col
-                >
-                <v-col cols="8">
-                  <v-card-actions class="px-0">
-                    <v-select
-                      v-model="year"
-                      item-text=""
-                      item-value="id"
-                      :items="ylist"
-                      dense
-                      placeholder="Year"
-                      @change="get"
-                      hide-details
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-
-                <!-- Date Picker -->
-                <v-col cols="4"
-                  ><span class="text-caption text-xl-subtitle-2"
-                    >Month</span
-                  ></v-col
-                >
-                <v-col cols="8">
-                  <v-card-actions class="px-0">
-                    <v-select
-                      v-model="month"
-                      item-text=""
-                      item-value="id"
-                      :items="mlist"
-                      dense
-                      placeholder="Month"
-                      @change="get"
-                      hide-details
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-dialog>
-
-          <!-- Table -->
-          <v-data-table
-            id="table1"
-            :headers="headers"
-            :items="table"
-            :loading="progressbar"
-            hide-default-footer
-            ref="progress"
-            class="mt-2 table-striped border"
-          >
-            <!-- Progress Bar -->
-            <v-progress-linear
-              color="red darken-2"
-              class="px-0 mx-0"
-              slot="progress"
-              indeterminate
-              rounded
-            ></v-progress-linear>
-
-            <template slot="body.append">
-              <tr class="hidden-xs-only">
-                <th class="text-uppercase">Grand Totals</th>
-                <td style="text-align: right; font-size: 15px">
-                  {{ sumField("begining_orig") }}
-                </td>
-                <td style="text-align: right; font-size: 15px">
-                  {{ sumField("incoming_orig") }}
-                </td>
-                <td style="text-align: right; font-size: 15px">
-                  {{ sumField("total_orig") }}
-                </td>
-                <td style="text-align: right; font-size: 15px">
-                  {{ sumField("outgoing_orig") }}
-                </td>
-                <td style="text-align: right; font-size: 15px">
-                  {{ sumField("stocks_orig") }}
-                </td>
-                <td style="text-align: right; font-size: 15px">
-                  {{ sumField("ending_orig") }}
-                </td>
-                <td style="text-align: right; font-size: 15px">
-                  {{ sumField("variance_orig") }}
-                </td>
-                <td style="text-align: right; font-size: 15px">
-                  {{ sumField("fluctuation_orig") }}
-                </td>
-              </tr>
+        <v-row no-gutters align="center" class="mb-3">
+          <v-spacer></v-spacer>
+          <!-- Refresh -->
+          <v-tooltip bottom>
+            <template #activator="data">
+              <v-btn
+                class="ml-auto mr-2"
+                color="success"
+                style="text-transform: none"
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                dark
+                @click="get"
+                v-on="data.on"
+                icon
+                ><v-icon>mdi-refresh</v-icon></v-btn
+              >
             </template>
-          </v-data-table>
-        </v-container>
+            <span>Refresh</span>
+          </v-tooltip>
+          <!-- Filter -->
+          <v-tooltip bottom>
+            <template #activator="data">
+              <v-btn
+                color="grey darken-4"
+                style="text-transform: none"
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                dark
+                @click="filterDialog = true"
+                v-on="data.on"
+                icon
+                ><v-icon>mdi-filter-variant</v-icon></v-btn
+              >
+            </template>
+            <span>Filter</span>
+          </v-tooltip>
+        </v-row>
+
+        <!-- Filter Dialog -->
+        <v-dialog v-model="filterDialog" max-width="400px">
+          <v-card dark tile class="pa-2">
+            <v-toolbar dense flat class="transparent">
+              Search Filter
+              <v-spacer></v-spacer>
+              <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+            </v-toolbar>
+            <v-divider class="my-0"></v-divider>
+            <v-row no-gutters align="center" justify="center" class="pa-2">
+              <!-- Date Picker -->
+              <v-col cols="4"
+                ><span class="text-caption text-xl-subtitle-2"
+                  >Year</span
+                ></v-col
+              >
+              <v-col cols="8">
+                <v-card-actions class="px-0">
+                  <v-select
+                    v-model="year"
+                    item-text=""
+                    item-value="id"
+                    :items="ylist"
+                    dense
+                    placeholder="Year"
+                    @change="get"
+                    hide-details
+                    background-color="grey darken-3"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                  </v-select>
+                </v-card-actions>
+              </v-col>
+
+              <!-- Date Picker -->
+              <v-col cols="4"
+                ><span class="text-caption text-xl-subtitle-2"
+                  >Month</span
+                ></v-col
+              >
+              <v-col cols="8">
+                <v-card-actions class="px-0">
+                  <v-select
+                    v-model="month"
+                    item-text=""
+                    item-value="id"
+                    :items="mlist"
+                    dense
+                    placeholder="Month"
+                    @change="get"
+                    hide-details
+                    background-color="grey darken-3"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                  </v-select>
+                </v-card-actions>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-dialog>
+
+        <!-- Table -->
+        <v-data-table
+          id="table1"
+          :headers="headers"
+          :items="table"
+          :loading="progressbar"
+          hide-default-footer
+          ref="progress"
+          class="mt-2 table-striped border"
+        >
+          <!-- Progress Bar -->
+          <v-progress-linear
+            color="red darken-2"
+            class="px-0 mx-0"
+            slot="progress"
+            indeterminate
+            rounded
+          ></v-progress-linear>
+
+          <template slot="body.append">
+            <tr class="hidden-xs-only">
+              <th class="text-uppercase">Grand Totals</th>
+              <td style="text-align: right; font-size: 15px">
+                {{ sumField("begining_orig") }}
+              </td>
+              <td style="text-align: right; font-size: 15px">
+                {{ sumField("incoming_orig") }}
+              </td>
+              <td style="text-align: right; font-size: 15px">
+                {{ sumField("total_orig") }}
+              </td>
+              <td style="text-align: right; font-size: 15px">
+                {{ sumField("outgoing_orig") }}
+              </td>
+              <td style="text-align: right; font-size: 15px">
+                {{ sumField("stocks_orig") }}
+              </td>
+              <td style="text-align: right; font-size: 15px">
+                {{ sumField("ending_orig") }}
+              </td>
+              <td style="text-align: right; font-size: 15px">
+                {{ sumField("variance_orig") }}
+              </td>
+              <td style="text-align: right; font-size: 15px">
+                {{ sumField("fluctuation_orig") }}
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
       </v-container>
     </v-card>
   </div>

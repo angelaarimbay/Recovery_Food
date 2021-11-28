@@ -1,135 +1,107 @@
 <template>
   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-    <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-      <!-- Progress Circular -->
-      <v-overlay :value="overlay">
-        <v-progress-circular size="55" color="red darken-2" indeterminate>
-        </v-progress-circular>
-      </v-overlay>
-      <!-- Snackbar -->
-      <v-snackbar
-        :vertical="$vuetify.breakpoint.xsOnly"
-        min-width="auto"
-        v-model="snackbar.active"
-        timeout="2500"
-        class="text-center pb-0"
-        :left="$vuetify.breakpoint.smAndUp"
+    <!-- Progress Circular -->
+    <v-overlay :value="overlay">
+      <v-progress-circular size="55" color="red darken-2" indeterminate>
+      </v-progress-circular>
+    </v-overlay>
+    <!-- Snackbar -->
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar.active"
+      timeout="2500"
+      class="text-center pb-0"
+      :left="$vuetify.breakpoint.smAndUp"
+    >
+      <span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
       >
-        <span
-          ><v-icon :color="snackbar.iconColor">{{
-            `mdi-${snackbar.iconText}`
-          }}</v-icon></span
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
         >
-        {{ snackbar.message }}
-        <template v-slot:action="{ attrs }">
+      </template>
+    </v-snackbar>
+
+    <v-card-actions class="px-0 justify-center">
+      <!-- Export to PDF -->
+      <v-tooltip bottom>
+        <template #activator="data">
           <v-btn
+            dark
+            color="red accent-4"
+            class="mx-1"
+            @click="get('pdf')"
+            v-on="data.on"
             :small="$vuetify.breakpoint.smAndDown"
-            v-bind="attrs"
-            color="primary"
-            text
-            @click="snackbar.active = false"
-            >Close</v-btn
+            ><v-icon>mdi-file-pdf</v-icon></v-btn
           >
         </template>
-      </v-snackbar>
+        <span>Export to PDF</span>
+      </v-tooltip>
+      <!-- Export to Excel -->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn
+            dark
+            color="green darken-4"
+            class="mx-1"
+            @click="get('excel')"
+            v-on="data.on"
+            :small="$vuetify.breakpoint.smAndDown"
+            ><v-icon>mdi-file-excel</v-icon></v-btn
+          >
+        </template>
+        <span>Export to Excel</span>
+      </v-tooltip>
+      <!-- Print -->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn
+            dark
+            color="blue-grey darken-1"
+            class="mx-1"
+            @click="get('print')"
+            v-on="data.on"
+            :small="$vuetify.breakpoint.smAndDown"
+            ><v-icon>mdi-printer</v-icon></v-btn
+          >
+        </template>
+        <span>Print</span>
+      </v-tooltip></v-card-actions
+    >
 
-      <v-card-actions class="px-0 justify-center">
-        <!-- Export to PDF -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="red accent-4"
-              class="mx-1"
-              @click="get('pdf')"
-              v-on="data.on"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-file-pdf</v-icon></v-btn
-            >
-          </template>
-          <span>Export to PDF</span>
-        </v-tooltip>
-        <!-- Export to Excel -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="green darken-4"
-              class="mx-1"
-              @click="get('excel')"
-              v-on="data.on"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-file-excel</v-icon></v-btn
-            >
-          </template>
-          <span>Export to Excel</span>
-        </v-tooltip>
-        <!-- Print -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="blue-grey darken-1"
-              class="mx-1"
-              @click="get('print')"
-              v-on="data.on"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-printer</v-icon></v-btn
-            >
-          </template>
-          <span>Print</span>
-        </v-tooltip></v-card-actions
-      >
-
-      <!-- Category Field -->
-      <v-row no-gutters justify="center">
-        <v-col cols="4" class="px-1" style="max-width: 150px; min-width: 150px">
-          <v-card-actions class="pb-1 pt-4 px-0">
-            <v-select
-              hide-details
-              :items="suppcatlist"
-              item-text="supply_cat_name"
-              item-value="id"
-              v-model="category"
-              dense
-              placeholder="Category"
-              background-color="grey darken-3"
-              dark
-              flat
-              solo
-              style="font-size: 12px"
-            >
-            </v-select>
-          </v-card-actions>
-        </v-col>
-      </v-row>
-
-
-  <!-- Supplier Field -->
-      <v-row no-gutters justify="center">
-        <v-col cols="4" class="px-1" style="max-width: 150px; min-width: 150px">
-          <v-card-actions class="pb-1 pt-4 px-0">
-            <v-select
-              hide-details
-              :items="supplist"
-              item-text="supp_list"
-              item-value="id"
-              v-model="supplier"
-              dense
-              placeholder="Supplier"
-              background-color="grey darken-3"
-              dark
-              flat
-              solo
-              style="font-size: 12px"
-            >
-            </v-select>
-          </v-card-actions>
-        </v-col>
-      </v-row>
-
-
-    </v-container>
+    <!-- Category Field -->
+    <v-row no-gutters justify="center">
+      <v-col cols="4" class="px-1" style="max-width: 150px; min-width: 150px">
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-select
+            hide-details
+            :items="suppcatlist"
+            item-text="supply_cat_name"
+            item-value="id"
+            v-model="category"
+            dense
+            placeholder="Category"
+            background-color="grey darken-3"
+            dark
+            flat
+            solo
+            style="font-size: 12px"
+          >
+          </v-select>
+        </v-card-actions>
+      </v-col>
+    </v-row>
     <iframe id="print0" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
@@ -161,7 +133,6 @@ export default {
   data: () => ({
     category: "",
     suppcatlist: [],
-    supplist: [],
     print: "",
     snackbar: {
       active: false,
@@ -173,7 +144,6 @@ export default {
   //Onload
   created() {
     this.suppCat();
-    this.supplierlist();
   },
 
   //Methods
@@ -186,9 +156,7 @@ export default {
           iconColor: "error",
           message: "Error! Please select a category first.",
         };
-      } 
-
-      else {
+      } else {
         this.overlay = true;
         switch (type) {
           case "pdf":
@@ -300,138 +268,7 @@ export default {
         }
         this.overlay = false;
       }
-    } ,
-
- async get(type) {
-      if (this.supplierlist == "") {
-        this.snackbar = {
-          active: true,
-          iconText: "alert",
-          iconColor: "error",
-          message: "Error! Please select a supplier first.",
-        };
-      } 
-
-      else {
-        this.overlay = true;
-        switch (type) {
-          case "pdf":
-            await axios({
-              url: "/api/reports/masterlistsupplist/get",
-              method: "GET",
-              responseType: "blob",
-              params: { supplier: this.supplier, type: type },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Masterlist Suppliers Report.pdf";
-                link.click();
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully exported.",
-                };
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "excel":
-            await axios({
-              url: "/api/reports/masterlistsuppliers/get",
-              method: "GET",
-              responseType: "blob",
-              params: { supplier: this.supplier, type: "pdf" },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                axios
-                  .get("/api/reports/masterlistsuppliers/get", {
-                    method: "GET",
-                    responseType: "arraybuffer",
-                    params: {
-                      supplier: this.supplier,
-                      type: type,
-                    },
-                  })
-                  .then((res) => {
-                    let blob = new Blob([res.data], {
-                      type: "application/excel",
-                    });
-                    let link = document.createElement("a");
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Masterlist Suppliers Report.xlsx";
-                    link.click();
-                    this.snackbar = {
-                      active: true,
-                      iconText: "check",
-                      iconColor: "success",
-                      message: "Successfully exported.",
-                    };
-                  });
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/masterlistsuppliers/get",
-              method: "GET",
-              responseType: "blob",
-              params: { supplier: this.supplier, type: "pdf" },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                this.print = window.URL.createObjectURL(blob);
-                this.snackbar = {
-                  active: true,
-                  iconText: "information",
-                  iconColor: "primary",
-                  message: "Printing... Please wait.",
-                };
-                setTimeout(function () {
-                  document.getElementById("print0").contentWindow.print();
-                }, 3000);
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to print.",
-                };
-              }
-            });
-            break;
-          default:
-            break;
-        }
-        this.overlay = false;
-      }
-    } ,
-
-
-
-
-
-
-
+    },
 
     //For retrieving supply categories
     async suppCat() {
@@ -445,22 +282,6 @@ export default {
         }
       });
     },
-
- async suppliers() {
-      await axios.get("/api/msupp/suppliers").then((supp_list) => {
-        this.supplist.push({ supp_list_name: "All", id: "All" });
-        for (var key in supp_list.data) {
-          this.supplist.push({
-            supp_list_name: supp_list.data[key]["supp_list_name"],
-            id: supp_list.data[key]["id"],
-          });
-        }
-      });
-    },
-
-
-
-
   },
 };
 </script>

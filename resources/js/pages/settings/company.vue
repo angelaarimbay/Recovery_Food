@@ -68,214 +68,208 @@
       <!-- Main Card -->
       <v-card elevation="1" class="mt-2" style="border-radius: 10px">
         <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
-          <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-            <v-row>
-              <!-- Image -->
-              <v-col cols="12" xl="6" lg="6" md="12" sm="12">
-                <v-card-title
-                  class="
-                    text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
-                    p-0
-                    justify-center
-                  "
-                  >Logo/Image</v-card-title
-                >
-                <v-img
-                  class="border"
-                  contain
-                  :src="temppath"
-                  height="320"
-                ></v-img>
-                <v-progress-linear
-                  v-show="progressBar"
-                  color="red darken-2"
-                  indeterminate
-                  rounded
-                ></v-progress-linear>
-                <v-row no-gutters>
-                  <v-col cols="12" class="py-2">
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <!-- Upload Button -->
-                        <v-btn
-                          v-on="data.on"
-                          block
-                          outlined
-                          color="grey darken-1"
-                          class="btn-block"
-                          style="text-transform: none; font-size: 12px"
-                          @click="clickupload"
-                          :small="$vuetify.breakpoint.smAndDown"
-                        >
-                          <v-icon>mdi-upload</v-icon> Upload Image
-                        </v-btn>
-                      </template>
-                      <span>Choose an image</span>
-                    </v-tooltip>
+          <v-row>
+            <!-- Image -->
+            <v-col cols="12" xl="6" lg="6" md="12" sm="12">
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                >Logo/Image</v-card-title
+              >
+              <v-img
+                class="border"
+                contain
+                :src="temppath"
+                height="320"
+              ></v-img>
+              <v-progress-linear
+                v-show="progressBar"
+                color="red darken-2"
+                indeterminate
+                rounded
+              ></v-progress-linear>
+              <v-row no-gutters>
+                <v-col cols="12" class="py-2">
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <!-- Upload Button -->
+                      <v-btn
+                        v-on="data.on"
+                        block
+                        outlined
+                        color="grey darken-1"
+                        class="btn-block"
+                        style="text-transform: none; font-size: 12px"
+                        @click="clickupload"
+                        :small="$vuetify.breakpoint.smAndDown"
+                      >
+                        <v-icon>mdi-upload</v-icon> Upload Image
+                      </v-btn>
+                    </template>
+                    <span>Choose an image</span>
+                  </v-tooltip>
+                </v-col>
+
+                <v-col cols="12" v-if="form.attachment">
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <!-- Save Button -->
+                      <v-btn
+                        v-on="data.on"
+                        block
+                        class="primary"
+                        style="text-transform: none"
+                        @click="savefile"
+                        :small="$vuetify.breakpoint.smAndDown"
+                      >
+                        <v-icon color="white">mdi-content-save</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Save Logo/Image</span>
+                  </v-tooltip>
+                </v-col>
+              </v-row>
+              <input
+                ref="uploader"
+                clearable
+                accept="image/*"
+                class="d-none"
+                type="file"
+                @change="uploaddocument"
+              />
+              <div style="font-size: 12px" class="pt-2" v-if="form.attachment">
+                <span>Image Attachment:</span>
+                <v-row no-gutters justify="center" align="center">
+                  <v-col cols="10">
+                    <a :href="temppath" download>
+                      {{ tempfile }}
+                    </a>
                   </v-col>
 
-                  <v-col cols="12" v-if="form.attachment">
+                  <v-col cols="2" class="text-center">
+                    <!-- Delete Button -->
                     <v-tooltip bottom>
                       <template #activator="data">
-                        <!-- Save Button -->
-                        <v-btn
+                        <v-icon
                           v-on="data.on"
-                          block
-                          class="primary"
-                          style="text-transform: none"
-                          @click="savefile"
-                          :small="$vuetify.breakpoint.smAndDown"
+                          color="red darken-2"
+                          class="text-center"
+                          @click="deletefile"
+                          >mdi-delete</v-icon
                         >
-                          <v-icon color="white">mdi-content-save</v-icon>
-                        </v-btn>
                       </template>
-                      <span>Save Logo/Image</span>
+                      <span>Remove Image</span>
                     </v-tooltip>
                   </v-col>
                 </v-row>
-                <input
-                  ref="uploader"
-                  clearable
-                  accept="image/*"
-                  class="d-none"
-                  type="file"
-                  @change="uploaddocument"
-                />
-                <div
-                  style="font-size: 12px"
-                  class="pt-2"
-                  v-if="form.attachment"
-                >
-                  <span>Image Attachment:</span>
-                  <v-row no-gutters justify="center" align="center">
-                    <v-col cols="10">
-                      <a :href="temppath" download>
-                        {{ tempfile }}
-                      </a>
-                    </v-col>
+              </div>
+            </v-col>
 
+            <!-- VAT -->
+            <v-col cols="12" xl="6" lg="6" md="12" sm="12">
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                >VAT</v-card-title
+              >
+              <v-row no-gutters>
+                <v-col
+                  cols="12"
+                  xl="6"
+                  lg="6"
+                  md="6"
+                  sm="6"
+                  class="tfield py-1"
+                >
+                  <v-row no-gutters>
+                    <span style="font-size: 12px">Supplies VAT</span>
+                    <v-col cols="10">
+                      <v-text-field
+                        :rules="formRulesVAT"
+                        v-model="form1.vat"
+                        dense
+                        persistent-placeholder
+                        clearable
+                        counter
+                        @keydown="VATKeydown($event)"
+                        maxlength="6"
+                        @blur="resetSV"
+                        background-color="white"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      ></v-text-field>
+                    </v-col>
                     <v-col cols="2" class="text-center">
-                      <!-- Delete Button -->
                       <v-tooltip bottom>
                         <template #activator="data">
                           <v-icon
                             v-on="data.on"
-                            color="red darken-2"
-                            class="text-center"
-                            @click="deletefile"
-                            >mdi-delete</v-icon
+                            x-large
+                            color="primary"
+                            @click="saveVat('s')"
+                            :large="$vuetify.breakpoint.smAndDown"
+                            >mdi-content-save</v-icon
                           >
                         </template>
-                        <span>Remove Image</span>
+                        <span>Save</span>
                       </v-tooltip>
                     </v-col>
                   </v-row>
-                </div>
-              </v-col>
-
-              <!-- VAT -->
-              <v-col cols="12" xl="6" lg="6" md="12" sm="12">
-                <v-card-title
-                  class="
-                    text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
-                    p-0
-                    justify-center
-                  "
-                  >VAT</v-card-title
+                </v-col>
+                <v-col
+                  cols="12"
+                  xl="6"
+                  lg="6"
+                  md="6"
+                  sm="6"
+                  class="tfield py-1"
                 >
-                <v-row no-gutters>
-                  <v-col
-                    cols="12"
-                    xl="6"
-                    lg="6"
-                    md="6"
-                    sm="6"
-                    class="tfield py-1"
-                  >
-                    <v-row no-gutters>
-                      <span style="font-size: 12px">Supplies VAT</span>
-                      <v-col cols="10">
-                        <v-text-field
-                          :rules="formRulesVAT"
-                          v-model="form1.vat"
-                          dense
-                          persistent-placeholder
-                          clearable
-                          counter
-                          @keydown="VATKeydown($event)"
-                          maxlength="6"
-                          @blur="resetSV"
-                          background-color="white"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="2" class="text-center">
-                        <v-tooltip bottom>
-                          <template #activator="data">
-                            <v-icon
-                              v-on="data.on"
-                              x-large
-                              color="primary"
-                              @click="saveVat('s')"
-                              :large="$vuetify.breakpoint.smAndDown"
-                              >mdi-content-save</v-icon
-                            >
-                          </template>
-                          <span>Save</span>
-                        </v-tooltip>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    xl="6"
-                    lg="6"
-                    md="6"
-                    sm="6"
-                    class="tfield py-1"
-                  >
-                    <v-row no-gutters>
-                      <span style="font-size: 12px">Products VAT</span>
-                      <v-col cols="10">
-                        <v-text-field
-                          :rules="formRulesVAT"
-                          v-model="form2.vat"
-                          dense
-                          clearable
-                          persistent-placeholder
-                          counter
-                          @keydown="VATKeydown($event)"
-                          maxlength="6"
-                          @blur="resetPV"
-                          background-color="white"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="2" class="text-center">
-                        <v-tooltip bottom>
-                          <template #activator="data">
-                            <v-icon
-                              v-on="data.on"
-                              x-large
-                              color="primary"
-                              @click="saveVat('p')"
-                              :large="$vuetify.breakpoint.smAndDown"
-                              >mdi-content-save</v-icon
-                            >
-                          </template>
-                          <span>Save</span>
-                        </v-tooltip>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-container>
+                  <v-row no-gutters>
+                    <span style="font-size: 12px">Products VAT</span>
+                    <v-col cols="10">
+                      <v-text-field
+                        :rules="formRulesVAT"
+                        v-model="form2.vat"
+                        dense
+                        clearable
+                        persistent-placeholder
+                        counter
+                        @keydown="VATKeydown($event)"
+                        maxlength="6"
+                        @blur="resetPV"
+                        background-color="white"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="2" class="text-center">
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-icon
+                            v-on="data.on"
+                            x-large
+                            color="primary"
+                            @click="saveVat('p')"
+                            :large="$vuetify.breakpoint.smAndDown"
+                            >mdi-content-save</v-icon
+                          >
+                        </template>
+                        <span>Save</span>
+                      </v-tooltip>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card>
     </v-form>

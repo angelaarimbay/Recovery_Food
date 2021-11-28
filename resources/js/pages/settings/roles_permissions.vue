@@ -396,14 +396,12 @@
       <v-card elevation="1" class="mt-2" style="border-radius: 10px">
         <v-tabs
           slider-size="4"
-          v-model="tab"
           color="red darken-2"
+          :centered="$vuetify.breakpoint.xsOnly"
           :height="height"
-          show-arrows
-          center-active
-          centered
+          :class="{ 'pa-2': $vuetify.breakpoint.smAndUp }"
         >
-          <v-tabs-slider style="display: none"></v-tabs-slider>
+          <v-tabs-slider style="border-radius: 20px 20px 0px 0px"></v-tabs-slider>
           <v-tab
             class="
               text-body-2
@@ -460,272 +458,264 @@
           >
             Dev
           </v-tab> -->
-        </v-tabs>
 
-        <v-tabs-items v-model="tab">
           <v-tab-item>
             <!-- Roles List -->
             <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-              <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-                <v-card-actions class="px-0">
-                  <!-- Buttons -->
-                  <v-btn
-                    color="primary"
-                    style="text-transform: none"
-                    depressed
-                    dark
-                    :small="$vuetify.breakpoint.smAndDown"
-                    @click="openDialogRoles"
-                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 d-none"
-                  >
-                    Add New Role
-                  </v-btn>
-                  <v-spacer></v-spacer>
+              <v-card-actions class="px-0">
+                <!-- Buttons -->
+                <v-btn
+                  color="primary"
+                  style="text-transform: none"
+                  depressed
+                  dark
+                  :small="$vuetify.breakpoint.smAndDown"
+                  @click="openDialogRoles"
+                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 d-none"
+                >
+                  Add New Role
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="success"
+                      style="text-transform: none"
+                      depressed
+                      :small="$vuetify.breakpoint.smAndDown"
+                      dark
+                      @click="getRoles"
+                      v-on="data.on"
+                      icon
+                      ><v-icon>mdi-refresh</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Refresh</span>
+                </v-tooltip>
+              </v-card-actions>
+
+              <!-- Roles List Table -->
+              <v-data-table
+                hide-default-footer
+                id="table"
+                :items-per-page="5"
+                :loading="progressBar"
+                :headers="headersRoles"
+                :items="tableRoles.data"
+                class="table-striped border"
+              >
+                <v-progress-linear
+                  v-show="progressBar"
+                  slot="progress"
+                  color="red darken-2"
+                  class="px-0 mx-0"
+                  indeterminate
+                  rounded
+                ></v-progress-linear>
+
+                <template v-slot:[`item.id`]="{ item }">
                   <v-tooltip bottom>
                     <template #activator="data">
                       <v-btn
-                        color="success"
-                        style="text-transform: none"
-                        depressed
-                        :small="$vuetify.breakpoint.smAndDown"
-                        dark
-                        @click="getRoles"
-                        v-on="data.on"
                         icon
-                        ><v-icon>mdi-refresh</v-icon></v-btn
+                        color="red darken-2"
+                        @click="editItemRoles(item)"
+                        v-on="data.on"
+                        :x-small="$vuetify.breakpoint.smAndDown"
                       >
+                        <v-icon> mdi-pencil </v-icon>
+                      </v-btn>
                     </template>
-                    <span>Refresh</span>
+                    <span>Edit Role</span>
                   </v-tooltip>
-                </v-card-actions>
 
-                <!-- Roles List Table -->
-                <v-data-table
-                  hide-default-footer
-                  id="table"
-                  :items-per-page="5"
-                  :loading="progressBar"
-                  :headers="headersRoles"
-                  :items="tableRoles.data"
-                  class="table-striped border"
-                >
-                  <v-progress-linear
-                    v-show="progressBar"
-                    slot="progress"
-                    color="red darken-2"
-                    class="px-0 mx-0"
-                    indeterminate
-                    rounded
-                  ></v-progress-linear>
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        icon
+                        color="red darken-2"
+                        @click="addPermission(item)"
+                        v-on="data.on"
+                        :x-small="$vuetify.breakpoint.smAndDown"
+                        class="d-none"
+                      >
+                        <v-icon> mdi-plus </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Add Role(s)</span>
+                  </v-tooltip>
+                </template>
+              </v-data-table>
 
-                  <template v-slot:[`item.id`]="{ item }">
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          icon
-                          color="red darken-2"
-                          @click="editItemRoles(item)"
-                          v-on="data.on"
-                          :x-small="$vuetify.breakpoint.smAndDown"
-                        >
-                          <v-icon> mdi-pencil </v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Edit Role</span>
-                    </v-tooltip>
-
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          icon
-                          color="red darken-2"
-                          @click="addPermission(item)"
-                          v-on="data.on"
-                          :x-small="$vuetify.breakpoint.smAndDown"
-                          class="d-none"
-                        >
-                          <v-icon> mdi-plus </v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Add Role(s)</span>
-                    </v-tooltip>
-                  </template>
-                </v-data-table>
-
-                <!-- Paginate -->
-                <div class="tbl pbutton text-center pt-7">
-                  <v-pagination
-                    v-model="page1"
-                    :total-visible="7"
-                    :length="tableRoles.last_page"
-                    color="red darken-2"
-                  ></v-pagination>
-                </div>
-              </v-container>
+              <!-- Paginate -->
+              <div class="tbl pbutton text-center pt-7">
+                <v-pagination
+                  v-model="page1"
+                  :total-visible="7"
+                  :length="tableRoles.last_page"
+                  color="red darken-2"
+                ></v-pagination>
+              </div>
             </v-container>
           </v-tab-item>
 
           <v-tab-item class="d-none">
             <!-- Permissions List -->
             <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-              <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-                <v-card-actions class="px-0">
-                  <v-btn
-                    color="primary"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="dialogPermissions = true"
-                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                  >
-                    Add New Permission
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-tooltip bottom>
-                    <template #activator="data">
-                      <v-btn
-                        color="success"
-                        style="text-transform: none"
-                        depressed
-                        :small="$vuetify.breakpoint.smAndDown"
-                        dark
-                        @click="getPermissions"
-                        v-on="data.on"
-                        icon
-                        ><v-icon>mdi-refresh</v-icon></v-btn
-                      >
-                    </template>
-                    <span>Refresh</span>
-                  </v-tooltip>
-                </v-card-actions>
-
-                <!-- Permissions List Table -->
-                <v-data-table
-                  id="table"
-                  :items-per-page="5"
-                  :loading="progressBar"
-                  hide-default-footer
-                  :headers="headersPermissions"
-                  :items="tablePermissions.data"
-                  class="table-striped border"
+              <v-card-actions class="px-0">
+                <v-btn
+                  color="primary"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="dialogPermissions = true"
+                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                 >
-                  <v-progress-linear
-                    v-show="progressBar"
-                    slot="progress"
-                    color="red darken-2"
-                    class="px-0 mx-0"
-                    indeterminate
-                    rounded
-                  ></v-progress-linear>
-
-                  <template v-slot:[`item.id`]="{ item }">
+                  Add New Permission
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                  <template #activator="data">
                     <v-btn
+                      color="success"
+                      style="text-transform: none"
+                      depressed
+                      :small="$vuetify.breakpoint.smAndDown"
+                      dark
+                      @click="getPermissions"
+                      v-on="data.on"
                       icon
-                      color="red darken-2"
-                      @click="editItemPermissions(item)"
-                      :x-small="$vuetify.breakpoint.smAndDown"
+                      ><v-icon>mdi-refresh</v-icon></v-btn
                     >
-                      <v-icon> mdi-pencil </v-icon>
-                    </v-btn>
                   </template>
-                </v-data-table>
+                  <span>Refresh</span>
+                </v-tooltip>
+              </v-card-actions>
 
-                <!-- Paginate -->
-                <div class="tbl pbutton text-center pt-7">
-                  <v-pagination
-                    v-model="page4"
-                    :total-visible="7"
-                    :length="tablePermissions.last_page"
+              <!-- Permissions List Table -->
+              <v-data-table
+                id="table"
+                :items-per-page="5"
+                :loading="progressBar"
+                hide-default-footer
+                :headers="headersPermissions"
+                :items="tablePermissions.data"
+                class="table-striped border"
+              >
+                <v-progress-linear
+                  v-show="progressBar"
+                  slot="progress"
+                  color="red darken-2"
+                  class="px-0 mx-0"
+                  indeterminate
+                  rounded
+                ></v-progress-linear>
+
+                <template v-slot:[`item.id`]="{ item }">
+                  <v-btn
+                    icon
                     color="red darken-2"
-                  ></v-pagination>
-                </div>
-              </v-container>
+                    @click="editItemPermissions(item)"
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                  >
+                    <v-icon> mdi-pencil </v-icon>
+                  </v-btn>
+                </template>
+              </v-data-table>
+
+              <!-- Paginate -->
+              <div class="tbl pbutton text-center pt-7">
+                <v-pagination
+                  v-model="page4"
+                  :total-visible="7"
+                  :length="tablePermissions.last_page"
+                  color="red darken-2"
+                ></v-pagination>
+              </div>
             </v-container>
           </v-tab-item>
 
           <v-tab-item>
             <!-- User Roles -->
             <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-              <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-                <v-card-actions class="px-0">
-                  <v-spacer></v-spacer>
+              <v-card-actions class="px-0">
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      color="success"
+                      style="text-transform: none"
+                      depressed
+                      :small="$vuetify.breakpoint.smAndDown"
+                      dark
+                      @click="getUserRoles"
+                      v-on="data.on"
+                      icon
+                      ><v-icon>mdi-refresh</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Refresh</span>
+                </v-tooltip>
+              </v-card-actions>
+
+              <!-- User Roles Table -->
+              <v-data-table
+                id="table"
+                :items-per-page="5"
+                hide-default-footer
+                :loading="progressBar"
+                :headers="headersUserrole"
+                :items="tableUserrole.data"
+                class="table-striped border"
+              >
+                <v-progress-linear
+                  v-show="progressBar"
+                  slot="progress"
+                  color="red darken-2"
+                  class="px-0 mx-0"
+                  indeterminate
+                  rounded
+                ></v-progress-linear>
+
+                <template v-slot:[`item.roles.name`]="{ item }">
+                  <v-chip
+                    small
+                    class="ma-2"
+                    v-for="(val, key) in item.roles"
+                    :key="key"
+                  >
+                    {{ val.name }}</v-chip
+                  >
+                </template>
+
+                <template v-slot:[`item.id`]="{ item }">
                   <v-tooltip bottom>
                     <template #activator="data">
                       <v-btn
-                        color="success"
-                        style="text-transform: none"
-                        depressed
-                        :small="$vuetify.breakpoint.smAndDown"
-                        dark
-                        @click="getUserRoles"
-                        v-on="data.on"
                         icon
-                        ><v-icon>mdi-refresh</v-icon></v-btn
+                        color="red darken-2"
+                        @click="addUserRole(item)"
+                        v-on="data.on"
+                        :x-small="$vuetify.breakpoint.smAndDown"
                       >
+                        <v-icon> mdi-plus </v-icon>
+                      </v-btn>
                     </template>
-                    <span>Refresh</span>
+                    <span>Add User Role</span>
                   </v-tooltip>
-                </v-card-actions>
+                </template>
+              </v-data-table>
 
-                <!-- User Roles Table -->
-                <v-data-table
-                  id="table"
-                  :items-per-page="5"
-                  hide-default-footer
-                  :loading="progressBar"
-                  :headers="headersUserrole"
-                  :items="tableUserrole.data"
-                  class="table-striped border"
-                >
-                  <v-progress-linear
-                    v-show="progressBar"
-                    slot="progress"
-                    color="red darken-2"
-                    class="px-0 mx-0"
-                    indeterminate
-                    rounded
-                  ></v-progress-linear>
-
-                  <template v-slot:[`item.roles.name`]="{ item }">
-                    <v-chip
-                      small
-                      class="ma-2"
-                      v-for="(val, key) in item.roles"
-                      :key="key"
-                    >
-                      {{ val.name }}</v-chip
-                    >
-                  </template>
-
-                  <template v-slot:[`item.id`]="{ item }">
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          icon
-                          color="red darken-2"
-                          @click="addUserRole(item)"
-                          v-on="data.on"
-                          :x-small="$vuetify.breakpoint.smAndDown"
-                        >
-                          <v-icon> mdi-plus </v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Add User Role</span>
-                    </v-tooltip>
-                  </template>
-                </v-data-table>
-
-                <!-- Paginate -->
-                <div class="tbl pbutton text-center pt-7">
-                  <v-pagination
-                    v-model="page2"
-                    :total-visible="7"
-                    :length="tableUserrole.last_page"
-                    color="red darken-2"
-                  ></v-pagination>
-                </div>
-              </v-container>
+              <!-- Paginate -->
+              <div class="tbl pbutton text-center pt-7">
+                <v-pagination
+                  v-model="page2"
+                  :total-visible="7"
+                  :length="tableUserrole.last_page"
+                  color="red darken-2"
+                ></v-pagination>
+              </div>
             </v-container>
           </v-tab-item>
 
@@ -751,7 +741,7 @@
               ></v-textarea>
             </v-card-text>
           </v-tab-item>
-        </v-tabs-items>
+        </v-tabs>
       </v-card>
     </v-form>
   </div>
@@ -839,7 +829,6 @@ export default {
     seederColumns: "",
     seederTablename: "",
     currentdataRoles: {},
-    tab: null,
 
     //Form rules
     formRules: [
@@ -1438,11 +1427,8 @@ export default {
     },
 
     height() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return 35;
-        default:
-          return 42;
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return 35;
       }
     },
   },

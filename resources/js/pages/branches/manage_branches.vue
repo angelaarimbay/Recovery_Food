@@ -69,646 +69,641 @@
     <!-- Main Card -->
     <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-        <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="px-0">
-            <v-row no-gutters>
-              <!-- Add Branch Button -->
+        <v-card-actions class="px-0">
+          <v-row no-gutters>
+            <!-- Add Branch Button -->
+            <v-btn
+              color="primary"
+              style="text-transform: none"
+              depressed
+              dark
+              :small="$vuetify.breakpoint.smAndDown"
+              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+              @click="openDialog"
+            >
+              Add Branch
+            </v-btn>
+            <v-spacer></v-spacer>
+            <!-- Refresh Button -->
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  class="mr-2"
+                  color="success"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="get"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-refresh</v-icon></v-btn
+                >
+              </template>
+              <span>Refresh</span>
+            </v-tooltip>
+            <!-- Filter Button -->
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  color="grey darken-4"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="filterDialog = true"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-filter-variant</v-icon></v-btn
+                >
+              </template>
+              <span>Filter</span>
+            </v-tooltip>
+          </v-row>
+
+          <!-- Filter Dialog -->
+          <v-dialog v-model="filterDialog" max-width="400px">
+            <v-card dark tile class="pa-2">
+              <v-toolbar dense flat class="transparent">
+                Search Filter
+                <v-spacer></v-spacer>
+                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              </v-toolbar>
+              <v-divider class="my-0"></v-divider>
+              <v-row no-gutters align="center" class="pa-2">
+                <!-- Items Per Page -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Items / Page</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      dense
+                      v-model="itemsPerPage"
+                      @change="itemperpage"
+                      :items="[5, 10, 15, 20]"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Search Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Search</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      v-model="search"
+                      placeholder="Branch Name"
+                      dense
+                      clearable
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          @click="get"
+                          class="ml-1"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-dialog>
+        </v-card-actions>
+
+        <!-- Table -->
+        <v-data-table
+          id="table1"
+          :headers="headers"
+          :items="table.data"
+          :loading="progressbar"
+          :page.sync="page"
+          ref="progress"
+          :items-per-page="itemsPerPage"
+          hide-default-footer
+          @page-count="pageCount = $event"
+          class="table-striped border"
+        >
+          <!-- Progress Bar -->
+          <v-progress-linear
+            color="red darken-2"
+            class="px-0 mx-0"
+            slot="progress"
+            indeterminate
+            rounded
+          ></v-progress-linear>
+
+          <template v-slot:[`item.count`]="{ item }"> {{ item.row }}</template>
+
+          <template v-slot:[`item.type`]="{ item }">
+            <div v-if="item.type == 0">Branch</div>
+            <div v-else>Warehouse</div>
+          </template>
+          <template v-slot:[`item.status`]="{ item }">
+            <v-chip
+              style="justify-content: center"
+              small
+              :x-small="$vuetify.breakpoint.smAndDown"
+              :color="
+                item.status == '1'
+                  ? '#43A047'
+                  : item.status == '0'
+                  ? '#FF6F00'
+                  : ''
+              "
+              dark
+            >
+              {{ item.status == 1 ? "Available" : "Unavailable" }}
+            </v-chip>
+          </template>
+          <template v-slot:[`item.id`]="{ item }">
+            <!-- Actions Button -->
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  icon
+                  color="red darken-2"
+                  small
+                  :x-small="$vuetify.breakpoint.smAndDown"
+                  v-on="data.on"
+                  @click="openViewDialog(item)"
+                >
+                  <v-icon>mdi-eye</v-icon>
+                </v-btn>
+              </template>
+              <span>View</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  icon
+                  color="red darken-2"
+                  @click="edit(item)"
+                  small
+                  :x-small="$vuetify.breakpoint.smAndDown"
+                  v-on="data.on"
+                >
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+              </template>
+              <span>Edit</span>
+            </v-tooltip>
+          </template>
+        </v-data-table>
+
+        <!-- Paginate -->
+        <div class="pbutton text-center pt-7">
+          <v-pagination
+            v-model="page"
+            :total-visible="7"
+            :length="table.last_page"
+            color="red darken-2"
+          ></v-pagination>
+        </div>
+      </v-container>
+
+      <!-- View Dialog Form -->
+      <v-form ref="form">
+        <v-dialog v-model="viewdialog" max-width="500px">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              View Branch
+              <v-spacer></v-spacer>
+              <v-icon text @click="closeViewDialog">mdi-close </v-icon>
+            </v-toolbar>
+            <v-container class="px-1 py-0">
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  font-weight-bold
+                  justify-center
+                  py-xl-3 py-lg-3 py-md-2 py-sm-2 py-1
+                  my-0
+                "
+                style="color: #827717"
+              >
+                {{ form.branch_name }}
+              </v-card-title>
+              <v-img
+                :src="form.branch_image"
+                class="mx-auto mb-4"
+                contain
+                max-width="480px"
+                max-height="300px"
+              ></v-img>
+              <v-card-text
+                class="
+                  text-body-2
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  px-1
+                  py-1
+                  my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
+                "
+              >
+                <v-row no-gutters>
+                  <v-col cols="1">
+                    <v-icon
+                      color="red darken-2"
+                      :small="$vuetify.breakpoint.xsOnly"
+                      >mdi-map-marker</v-icon
+                    ></v-col
+                  ><v-col cols="11" class="my-auto">{{
+                    form.location
+                  }}</v-col></v-row
+                >
+              </v-card-text>
+              <v-card-text
+                class="
+                  text-body-2
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  px-1
+                  py-1
+                  my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
+                "
+              >
+                <v-row no-gutters>
+                  <v-col cols="1">
+                    <v-icon
+                      color="red darken-2"
+                      :small="$vuetify.breakpoint.xsOnly"
+                      >mdi-email</v-icon
+                    ></v-col
+                  ><v-col cols="11" class="my-auto">{{
+                    form.email_add
+                  }}</v-col></v-row
+                >
+              </v-card-text>
+              <v-card-text
+                class="
+                  text-body-2
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  px-1
+                  py-1
+                  my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
+                "
+              >
+                <v-row no-gutters>
+                  <v-col cols="1">
+                    <v-icon
+                      color="red darken-2"
+                      :small="$vuetify.breakpoint.xsOnly"
+                      >mdi-phone</v-icon
+                    ></v-col
+                  ><v-col cols="11" class="my-auto">{{
+                    form.phone_number
+                  }}</v-col></v-row
+                >
+              </v-card-text>
+            </v-container>
+          </v-card>
+        </v-dialog>
+      </v-form>
+
+      <!-- Dialog Form-->
+      <v-form ref="form">
+        <v-dialog
+          v-model="dialog"
+          max-width="450px"
+          persistent
+          no-click-animation
+        >
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Branch
+              <v-spacer></v-spacer>
+              <v-icon text @click="cancel">mdi-close </v-icon>
+            </v-toolbar>
+            <v-container class="px-1">
+              <v-row class="py-4">
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="6"
+                  lg="6"
+                  sm="6"
+                  md="6"
+                >
+                  <!-- Type -->
+                  <v-select
+                    :rules="formRulesBasic"
+                    v-model="form.type"
+                    dense
+                    :items="[
+                      { name: 'Branch', id: '0' },
+                      { name: 'Warehouse', id: '1' },
+                    ]"
+                    item-text="name"
+                    item-value="id"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Type <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-select>
+                </v-col>
+
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="6"
+                  lg="6"
+                  sm="6"
+                  md="6"
+                >
+                  <!-- ID -->
+                  <v-text-field v-model="form.id" class="d-none" dense>
+                    <template slot="label">
+                      <div style="font-size: 12px">ID</div>
+                    </template>
+                  </v-text-field>
+
+                  <!-- Status -->
+                  <v-select
+                    :rules="formRulesNumberRange"
+                    v-model="form.status"
+                    dense
+                    :items="status"
+                    item-text="name"
+                    item-value="id"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Status <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-select>
+                </v-col>
+
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <!-- Branch Name -->
+                  <v-text-field
+                    :rules="formRules"
+                    v-model="form.branch_name"
+                    clearable
+                    dense
+                    counter
+                    @keydown="valueKeydown($event)"
+                    maxlength="35"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Branch Name <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <!-- Location -->
+                  <v-text-field
+                    :rules="formRules"
+                    v-model="form.location"
+                    clearable
+                    dense
+                    counter
+                    @keydown="valueKeydown($event)"
+                    maxlength="35"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Location <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <!-- Contact Number -->
+                  <v-text-field
+                    :rules="formRulesNumberOnly"
+                    v-model="form.phone_number"
+                    clearable
+                    dense
+                    counter
+                    @keydown="contactKeydown($event)"
+                    maxlength="15"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                    v-mask="mask"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Contact Number <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <!-- Email Address -->
+                  <v-text-field
+                    :rules="formRulesEmail"
+                    v-model="form.email_add"
+                    clearable
+                    dense
+                    counter
+                    maxlength="64"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Email Address <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+
+                <v-col
+                  class="py-0 px-4"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <span style="font-size: 12px">Image Attachment:</span>
+                  <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
+                  <!-- Check if has image, then display the image -->
+                  <div style="font-size: 12px" v-if="form.branch_image">
+                    <v-row no-gutters>
+                      <!-- Upload -->
+                      <v-col cols="11">
+                        <a
+                          :href="'/storage/branches/' + form.branch_image"
+                          style="text-decoration: none"
+                          download
+                        >
+                          {{ tempfile }}
+                        </a>
+                      </v-col>
+                      <!-- Delete Button -->
+                      <v-col cols="1" class="text-center">
+                        <v-tooltip bottom>
+                          <template #activator="data">
+                            <v-icon
+                              v-on="data.on"
+                              color="red darken-2"
+                              v-if="form.branch_image"
+                              @click="deletefile"
+                              >mdi-delete</v-icon
+                            >
+                          </template>
+                          <span>Remove Image</span>
+                        </v-tooltip>
+                      </v-col>
+                    </v-row>
+                  </div>
+
+                  <!-- Progressbar For Uploading -->
+                  <v-progress-linear
+                    v-show="loading"
+                    slot="progress"
+                    color="red darken-2"
+                    indeterminate
+                  ></v-progress-linear>
+
+                  <!-- Upload Button -->
+                  <v-btn
+                    outlined
+                    color="grey darken-1"
+                    class="btn-block"
+                    style="text-transform: none; font-size: 12px"
+                    @click="clickupload"
+                    ><v-icon>mdi-upload</v-icon> Upload Image
+                  </v-btn>
+
+                  <!-- For Uploading  -->
+                  <input
+                    ref="uploader"
+                    clearable
+                    accept="image/png, image/jpeg"
+                    class="d-none"
+                    type="file"
+                    @change="attachment"
+                  />
+                </v-col>
+                <v-col class="py-1" cols="12" xl="12" lg="12" sm="12" md="4">
+                  <v-text-field
+                    style="display: none"
+                    v-model="form.branch_image"
+                    label="Document"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-divider class="my-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="px-0 pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="black"
+                depressed
+                :disabled="button"
+                dark
+                @click="cancel"
+                :small="$vuetify.breakpoint.smAndDown"
+                text
+              >
+                Cancel
+              </v-btn>
               <v-btn
                 color="primary"
-                style="text-transform: none"
                 depressed
+                :disabled="button"
                 dark
+                @click="save"
                 :small="$vuetify.breakpoint.smAndDown"
-                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                @click="openDialog"
               >
-                Add Branch
+                Save
               </v-btn>
-              <v-spacer></v-spacer>
-              <!-- Refresh Button -->
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    class="mr-2"
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="get"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-refresh</v-icon></v-btn
-                  >
-                </template>
-                <span>Refresh</span>
-              </v-tooltip>
-              <!-- Filter Button -->
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    color="grey darken-4"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="filterDialog = true"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-filter-variant</v-icon></v-btn
-                  >
-                </template>
-                <span>Filter</span>
-              </v-tooltip>
-            </v-row>
-
-            <!-- Filter Dialog -->
-            <v-dialog v-model="filterDialog" max-width="400px">
-              <v-card dark tile class="pa-2">
-                <v-toolbar dense flat class="transparent">
-                  Search Filter
-                  <v-spacer></v-spacer>
-                  <v-icon text @click="filterDialog = false">mdi-close </v-icon>
-                </v-toolbar>
-                <v-divider class="my-0"></v-divider>
-                <v-row no-gutters align="center" class="pa-2">
-                  <!-- Items Per Page -->
-                  <v-col cols="4"
-                    ><span class="text-caption text-xl-subtitle-2"
-                      >Items / Page</span
-                    ></v-col
-                  >
-                  <v-col cols="8">
-                    <v-card-actions class="px-0">
-                      <v-select
-                        dense
-                        v-model="itemsPerPage"
-                        @change="itemperpage"
-                        :items="[5, 10, 15, 20]"
-                        hide-details
-                        background-color="grey darken-3"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                      </v-select>
-                    </v-card-actions>
-                  </v-col>
-
-                  <!-- Search Field -->
-                  <v-col cols="4"
-                    ><span class="text-caption text-xl-subtitle-2"
-                      >Search</span
-                    ></v-col
-                  >
-                  <v-col cols="8">
-                    <v-card-actions class="px-0">
-                      <v-text-field
-                        v-model="search"
-                        placeholder="Branch Name"
-                        dense
-                        clearable
-                        hide-details
-                        background-color="grey darken-3"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      ></v-text-field>
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            small
-                            :x-small="$vuetify.breakpoint.smAndDown"
-                            color="red darken-2"
-                            icon
-                            v-on="data.on"
-                            @click="get"
-                            class="ml-1"
-                          >
-                            <v-icon>mdi-magnify</v-icon></v-btn
-                          >
-                        </template>
-                        <span>Search</span>
-                      </v-tooltip>
-                    </v-card-actions>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </v-dialog>
-          </v-card-actions>
-
-          <!-- Table -->
-          <v-data-table
-            id="table1"
-            :headers="headers"
-            :items="table.data"
-            :loading="progressbar"
-            :page.sync="page"
-            ref="progress"
-            :items-per-page="itemsPerPage"
-            hide-default-footer
-            @page-count="pageCount = $event"
-            class="table-striped border"
-          >
-            <!-- Progress Bar -->
-            <v-progress-linear
-              color="red darken-2"
-              class="px-0 mx-0"
-              slot="progress"
-              indeterminate
-              rounded
-            ></v-progress-linear>
-
-            <template v-slot:[`item.count`]="{ item }">
-              {{ item.row }}</template
-            >
-
-            <template v-slot:[`item.type`]="{ item }">
-              <div v-if="item.type == 0">Branch</div>
-              <div v-else>Warehouse</div>
-            </template>
-            <template v-slot:[`item.status`]="{ item }">
-              <v-chip
-                style="justify-content: center"
-                small
-                :x-small="$vuetify.breakpoint.smAndDown"
-                :color="
-                  item.status == '1'
-                    ? '#43A047'
-                    : item.status == '0'
-                    ? '#FF6F00'
-                    : ''
-                "
-                dark
-              >
-                {{ item.status == 1 ? "Available" : "Unavailable" }}
-              </v-chip>
-            </template>
-            <template v-slot:[`item.id`]="{ item }">
-              <!-- Actions Button -->
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    small
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                    v-on="data.on"
-                    @click="openViewDialog(item)"
-                  >
-                    <v-icon>mdi-eye</v-icon>
-                  </v-btn>
-                </template>
-                <span>View</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    @click="edit(item)"
-                    small
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                    v-on="data.on"
-                  >
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                </template>
-                <span>Edit</span>
-              </v-tooltip>
-            </template>
-          </v-data-table>
-
-          <!-- Paginate -->
-          <div class="pbutton text-center pt-7">
-            <v-pagination
-              v-model="page"
-              :total-visible="7"
-              :length="table.last_page"
-              color="red darken-2"
-            ></v-pagination>
-          </div>
-        </v-container>
-
-        <!-- View Dialog Form -->
-        <v-form ref="form">
-          <v-dialog v-model="viewdialog" max-width="500px">
-            <v-card tile class="pa-3">
-              <v-toolbar dark dense flat rounded class="red darken-3">
-                View Branch
-                <v-spacer></v-spacer>
-                <v-icon text @click="closeViewDialog">mdi-close </v-icon>
-              </v-toolbar>
-              <v-container class="px-1 py-0">
-                <v-card-title
-                  class="
-                    text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
-                    font-weight-bold
-                    justify-center
-                    py-xl-3 py-lg-3 py-md-2 py-sm-2 py-1
-                    my-0
-                  "
-                  style="color: #827717"
-                >
-                  {{ form.branch_name }}
-                </v-card-title>
-                <v-img
-                  :src="form.branch_image"
-                  class="mx-auto mb-4"
-                  contain
-                  max-width="480px"
-                  max-height="300px"
-                ></v-img>
-                <v-card-text
-                  class="
-                    text-body-2
-                    text-xl-subtitle-1
-                    text-lg-subtitle-1
-                    text-md-subtitle-1
-                    text-sm-subtitle-1
-                    px-1
-                    py-1
-                    my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
-                  "
-                >
-                  <v-row no-gutters>
-                    <v-col cols="1">
-                      <v-icon
-                        color="red darken-2"
-                        :small="$vuetify.breakpoint.xsOnly"
-                        >mdi-map-marker</v-icon
-                      ></v-col
-                    ><v-col cols="11" class="my-auto">{{
-                      form.location
-                    }}</v-col></v-row
-                  >
-                </v-card-text>
-                <v-card-text
-                  class="
-                    text-body-2
-                    text-xl-subtitle-1
-                    text-lg-subtitle-1
-                    text-md-subtitle-1
-                    text-sm-subtitle-1
-                    px-1
-                    py-1
-                    my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
-                  "
-                >
-                  <v-row no-gutters>
-                    <v-col cols="1">
-                      <v-icon
-                        color="red darken-2"
-                        :small="$vuetify.breakpoint.xsOnly"
-                        >mdi-email</v-icon
-                      ></v-col
-                    ><v-col cols="11" class="my-auto">{{
-                      form.email_add
-                    }}</v-col></v-row
-                  >
-                </v-card-text>
-                <v-card-text
-                  class="
-                    text-body-2
-                    text-xl-subtitle-1
-                    text-lg-subtitle-1
-                    text-md-subtitle-1
-                    text-sm-subtitle-1
-                    px-1
-                    py-1
-                    my-xl-3 my-lg-3 my-md-2 my-sm-1 my-1
-                  "
-                >
-                  <v-row no-gutters>
-                    <v-col cols="1">
-                      <v-icon
-                        color="red darken-2"
-                        :small="$vuetify.breakpoint.xsOnly"
-                        >mdi-phone</v-icon
-                      ></v-col
-                    ><v-col cols="11" class="my-auto">{{
-                      form.phone_number
-                    }}</v-col></v-row
-                  >
-                </v-card-text>
-              </v-container>
-            </v-card>
-          </v-dialog>
-        </v-form>
-
-        <!-- Dialog Form-->
-        <v-form ref="form">
-          <v-dialog
-            v-model="dialog"
-            max-width="450px"
-            persistent
-            no-click-animation
-          >
-            <v-card tile class="pa-3">
-              <v-toolbar dark dense flat rounded class="red darken-3">
-                Branch
-                <v-spacer></v-spacer>
-                <v-icon text @click="cancel">mdi-close </v-icon>
-              </v-toolbar>
-              <v-container class="px-1">
-                <v-row class="py-4">
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="6"
-                    lg="6"
-                    sm="6"
-                    md="6"
-                  >
-                    <!-- Type -->
-                    <v-select
-                      :rules="formRulesBasic"
-                      v-model="form.type"
-                      dense
-                      :items="[
-                        { name: 'Branch', id: '0' },
-                        { name: 'Warehouse', id: '1' },
-                      ]"
-                      item-text="name"
-                      item-value="id"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Type <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-select>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="6"
-                    lg="6"
-                    sm="6"
-                    md="6"
-                  >
-                    <!-- ID -->
-                    <v-text-field v-model="form.id" class="d-none" dense>
-                      <template slot="label">
-                        <div style="font-size: 12px">ID</div>
-                      </template>
-                    </v-text-field>
-
-                    <!-- Status -->
-                    <v-select
-                      :rules="formRulesNumberRange"
-                      v-model="form.status"
-                      dense
-                      :items="status"
-                      item-text="name"
-                      item-value="id"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Status <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-select>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <!-- Branch Name -->
-                    <v-text-field
-                      :rules="formRules"
-                      v-model="form.branch_name"
-                      clearable
-                      dense
-                      counter
-                      @keydown="valueKeydown($event)"
-                      maxlength="35"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Branch Name <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <!-- Location -->
-                    <v-text-field
-                      :rules="formRules"
-                      v-model="form.location"
-                      clearable
-                      dense
-                      counter
-                      @keydown="valueKeydown($event)"
-                      maxlength="35"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Location <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <!-- Contact Number -->
-                    <v-text-field
-                      :rules="formRulesNumberOnly"
-                      v-model="form.phone_number"
-                      clearable
-                      dense
-                      counter
-                      @keydown="contactKeydown($event)"
-                      maxlength="15"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                      v-mask="mask"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Contact Number <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <!-- Email Address -->
-                    <v-text-field
-                      :rules="formRulesEmail"
-                      v-model="form.email_add"
-                      clearable
-                      dense
-                      counter
-                      maxlength="64"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Email Address <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col
-                    class="py-0 px-4"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <span style="font-size: 12px">Image Attachment:</span>
-                    <!-- <v-img width="200" :src="'/storage/branches/'+form.branch_image"></v-img> -->
-                    <!-- Check if has image, then display the image -->
-                    <div style="font-size: 12px" v-if="form.branch_image">
-                      <v-row no-gutters>
-                        <!-- Upload -->
-                        <v-col cols="11">
-                          <a
-                            :href="'/storage/branches/' + form.branch_image"
-                            style="text-decoration: none"
-                            download
-                          >
-                            {{ tempfile }}
-                          </a>
-                        </v-col>
-                        <!-- Delete Button -->
-                        <v-col cols="1" class="text-center">
-                          <v-tooltip bottom>
-                            <template #activator="data">
-                              <v-icon
-                                v-on="data.on"
-                                color="red darken-2"
-                                v-if="form.branch_image"
-                                @click="deletefile"
-                                >mdi-delete</v-icon
-                              >
-                            </template>
-                            <span>Remove Image</span>
-                          </v-tooltip>
-                        </v-col>
-                      </v-row>
-                    </div>
-
-                    <!-- Progressbar For Uploading -->
-                    <v-progress-linear
-                      v-show="loading"
-                      slot="progress"
-                      color="red darken-2"
-                      indeterminate
-                    ></v-progress-linear>
-
-                    <!-- Upload Button -->
-                    <v-btn
-                      outlined
-                      color="grey darken-1"
-                      class="btn-block"
-                      style="text-transform: none; font-size: 12px"
-                      @click="clickupload"
-                      ><v-icon>mdi-upload</v-icon> Upload Image
-                    </v-btn>
-
-                    <!-- For Uploading  -->
-                    <input
-                      ref="uploader"
-                      clearable
-                      accept="image/*"
-                      class="d-none"
-                      type="file"
-                      @change="attachment"
-                    />
-                  </v-col>
-                  <v-col class="py-1" cols="12" xl="12" lg="12" sm="12" md="4">
-                    <v-text-field
-                      style="display: none"
-                      v-model="form.branch_image"
-                      label="Document"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-              <v-divider class="my-0"></v-divider>
-              <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-0 pb-0">
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="black"
-                  depressed
-                  :disabled="button"
-                  dark
-                  @click="cancel"
-                  :small="$vuetify.breakpoint.smAndDown"
-                  text
-                >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  depressed
-                  :disabled="button"
-                  dark
-                  @click="save"
-                  :small="$vuetify.breakpoint.smAndDown"
-                  text
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-form>
-      </v-container>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-form>
     </v-card>
   </div>
 </template>

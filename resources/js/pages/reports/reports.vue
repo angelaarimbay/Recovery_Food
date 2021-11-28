@@ -64,17 +64,21 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
+    <v-card class="mt-2" elevation="1" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
-        v-model="tab"
         color="red darken-2"
-        :height="height"
-        show-arrows
         center-active
         centered
+        show-arrows
+        :vertical="$vuetify.breakpoint.mdAndUp"
+        :height="height"
+        :class="{
+          'py-4 d-flex align-center justify-center':
+            $vuetify.breakpoint.mdAndUp,
+        }"
       >
-        <v-tabs-slider style="display: none"></v-tabs-slider>
+        <v-tabs-slider :style="style"></v-tabs-slider>
         <v-tab
           :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
           style="text-transform: none"
@@ -123,9 +127,7 @@
         >
           Purchase Orders Report
         </v-tab>
-      </v-tabs>
 
-      <v-tabs-items v-model="tab">
         <v-tab-item>
           <!-- Masterlist Supplies Report -->
           <masterlistsupplies1 />
@@ -165,7 +167,7 @@
           <!-- Purchase Order Report -->
           <purchaseorder1 />
         </v-tab-item>
-      </v-tabs-items>
+      </v-tabs>
     </v-card>
   </div>
 </template>
@@ -220,7 +222,6 @@ export default {
 
   //Data
   data: () => ({
-    tab: null,
     category: "",
     snackbar: {
       active: false,
@@ -351,11 +352,15 @@ export default {
       user: "auth/user",
     }),
     height() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return 35;
-        default:
-          return 42;
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return 35;
+      }
+    },
+    style() {
+      if (this.$vuetify.breakpoint.mdAndUp) {
+        return "border-radius: 0px 20px 20px 0px";
+      } else if (this.$vuetify.breakpoint.smAndDown) {
+        return "border-radius: 20px 20px 0px 0px";
       }
     },
   },
