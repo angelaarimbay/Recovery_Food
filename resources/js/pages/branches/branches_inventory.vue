@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <v-container>
       <v-layout row wrap>
         <span
@@ -38,7 +39,7 @@
       </v-layout>
     </v-container>
 
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
         v-model="tab"
@@ -80,6 +81,7 @@
             <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
               <v-row no-gutters>
                 <v-spacer></v-spacer>
+                <!-- Refresh -->
                 <v-tooltip bottom>
                   <template #activator="data">
                     <v-btn
@@ -97,6 +99,7 @@
                   </template>
                   <span>Refresh</span>
                 </v-tooltip>
+                <!-- Filter -->
                 <v-tooltip bottom>
                   <template #activator="data">
                     <v-btn
@@ -139,9 +142,7 @@
                           dense
                           v-model="itemsPerPage1"
                           @change="itemperpage1"
-                          :items="[
-                            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                          ]"
+                          :items="[5, 10, 15, 20]"
                           hide-details
                           background-color="grey darken-3"
                           flat
@@ -356,9 +357,7 @@
                           dense
                           v-model="itemsPerPage2"
                           @change="itemperpage2"
-                          :items="[
-                            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                          ]"
+                          :items="[5, 10, 15, 20]"
                           hide-details
                           background-color="grey darken-3"
                           flat
@@ -512,12 +511,20 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -548,6 +555,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -556,11 +564,11 @@ export default {
   metaInfo() {
     return { title: "Branches" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
-
     height() {
       switch (this.$vuetify.breakpoint.name) {
         case "xs":
@@ -570,6 +578,8 @@ export default {
       }
     },
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     search1: "",
@@ -588,14 +598,16 @@ export default {
     branchlist: [],
     filterDialog: false,
     filterDialog1: false,
-    // Table Headers 1
+
+    //Table Headers 1
     headers1: [
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "BRANCH",
@@ -642,14 +654,15 @@ export default {
       },
     ],
 
-    // Table Headers 2
+    //Table Headers 2
     headers2: [
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "BRANCH",
@@ -694,6 +707,7 @@ export default {
     itemsPerPage2: 5,
   }),
 
+  //Watch
   watch: {
     page1(val) {
       this.page1 = val;
@@ -704,7 +718,8 @@ export default {
       this.getProducts();
     },
   },
-  // Onload
+
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Branches")) {
       this.getSupplies();
@@ -717,6 +732,7 @@ export default {
     }
   },
 
+  //Methods
   methods: {
     itemperpage1() {
       this.page1 = 1;
@@ -728,6 +744,7 @@ export default {
       this.getProducts();
     },
 
+    //For retrieving supplies
     async getSupplies() {
       this.progressbar = true;
       this.itemsPerPage1 = parseInt(this.itemsPerPage1) ?? 0;
@@ -747,6 +764,7 @@ export default {
         });
     },
 
+    //For retrieving products
     async getProducts() {
       this.progressbar = true;
       this.itemsPerPage2 = parseInt(this.itemsPerPage2) ?? 0;
@@ -766,12 +784,14 @@ export default {
         });
     },
 
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/branches/inventory/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
+    //For retrieving branch name
     async branchName() {
       await axios
         .get("/api/branches/inventory/branchName")
@@ -780,6 +800,7 @@ export default {
         });
     },
 
+    //For retrieving product categories
     async prodCat() {
       await axios.get("/api/branches/inventory/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;

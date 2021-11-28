@@ -34,6 +34,7 @@
       </v-snackbar>
 
       <v-card-actions class="px-0 justify-center">
+        <!-- Export to PDF -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -48,6 +49,7 @@
           </template>
           <span>Export to PDF</span>
         </v-tooltip>
+        <!-- Export to Excel -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -62,6 +64,7 @@
           </template>
           <span>Export to Excel</span>
         </v-tooltip>
+        <!-- Print -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -162,10 +165,11 @@
   </v-container>
 </template>
 
-
+<!-- Script -->
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  //Computed
   computed: {
     showIcon() {
       if (this.$vuetify.breakpoint.smAndUp) {
@@ -175,6 +179,8 @@ export default {
       }
     },
   },
+
+  //Data
   data: () => ({
     dateFromPO: null,
     dateUntilPO: null,
@@ -188,6 +194,7 @@ export default {
     overlay: false,
   }),
 
+  //Onload
   created() {
     this.dateFromPO = this.getFormatDate(
       new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -198,12 +205,15 @@ export default {
       "YYYY-MM-DD"
     );
   },
+
+  //Methods
   methods: {
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
     },
 
+    //For exporting/printing
     async get(type) {
       if (this.dateFromPO == null || this.dateUntilPO == null) {
         this.snackbar = {
@@ -344,3 +354,11 @@ export default {
   },
 };
 </script>
+
+<style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+</style>

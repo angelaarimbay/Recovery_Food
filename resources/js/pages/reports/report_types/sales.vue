@@ -33,6 +33,7 @@
         </template>
       </v-snackbar>
 
+      <!-- Preview Receipt -->
       <v-dialog v-model="dialog1">
         <v-toolbar
           dense
@@ -55,6 +56,7 @@
         class="px-0 justify-center"
         v-if="!this.user.permissionslist.includes('Access POS')"
       >
+        <!-- Export to PDF -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -69,6 +71,7 @@
           </template>
           <span>Export to PDF</span>
         </v-tooltip>
+        <!-- Export to Excel -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -83,6 +86,7 @@
           </template>
           <span>Export to Excel</span>
         </v-tooltip>
+        <!-- Print -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -101,6 +105,7 @@
 
       <v-row no-gutters>
         <v-spacer></v-spacer>
+        <!-- Refresh -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -118,6 +123,7 @@
           </template>
           <span>Refresh</span>
         </v-tooltip>
+        <!-- Filter -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -158,7 +164,7 @@
                   dense
                   v-model="itemsPerPage"
                   @change="itemperpage"
-                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
+                  :items="[5, 10, 15, 20]"
                   hide-details
                   background-color="grey darken-3"
                   flat
@@ -256,10 +262,8 @@
                 v-model="date1"
                 :close-on-content-click="false"
                 :nudge-right="35"
-                lazy
                 transition="scale-transition"
                 offset-y
-                full-width
                 min-width="290px"
               >
                 <template v-slot:activator="{ on }">
@@ -308,10 +312,8 @@
                 v-model="date2"
                 :close-on-content-click="false"
                 :nudge-right="35"
-                lazy
                 transition="scale-transition"
                 offset-y
-                full-width
                 min-width="290px"
               >
                 <template v-slot:activator="{ on }">
@@ -319,7 +321,7 @@
                     <v-text-field
                       hide-details
                       v-model="dateUntilSP"
-                      label="Date Until"
+                      placeholder="Date Until""
                       prepend-inner-icon="mdi-calendar-range"
                       readonly
                       v-on="on"
@@ -480,7 +482,7 @@
         <v-card-actions class="px-0 pb-0">
           <v-spacer></v-spacer>
           <v-btn
-            color="error"
+            color="black"
             :small="$vuetify.breakpoint.smAndDown"
             depressed
             dark
@@ -506,7 +508,14 @@
   </v-container>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 iframe:focus {
   outline: none;
 }
@@ -519,6 +528,7 @@ iframe[seamless] {
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -549,10 +559,12 @@ iframe[seamless] {
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
 export default {
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -579,8 +591,9 @@ export default {
     dateUntilSP: null,
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
-    // Table Headers SP
+    itemsPerPage: 10,
+
+    //Table Headers SP
     headers: [
       {
         text: "#",
@@ -625,7 +638,7 @@ export default {
       },
     ],
 
-    // View Dialog Headers
+    //View Dialog Headers
     headers2: [
       {
         text: "PRODUCT(S)",
@@ -657,6 +670,7 @@ export default {
     ],
   }),
 
+  //Onload
   created() {
     this.dateFromSP = this.getFormatDate(
       new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -676,6 +690,7 @@ export default {
     }
   },
 
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -684,7 +699,10 @@ export default {
       return this.headers.filter((s) => this.headers.includes(s));
     },
   },
+
+  //Methods
   methods: {
+    //For generating receipt
     async getReceipt(reference_no) {
       await axios({
         url: "/api/pos/receipt",
@@ -700,6 +718,7 @@ export default {
       });
     },
 
+    //For retrieving sales report
     async getSalesReport() {
       this.progressbar = true;
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
@@ -729,6 +748,7 @@ export default {
       return numbr.format(format);
     },
 
+    //For retrieving sales report info
     async getSPInfo(item) {
       this.viewdialog = true;
       this.progressbar = true;
@@ -743,12 +763,14 @@ export default {
       });
     },
 
+    //For retrieving branch names
     async branchName() {
       await axios.get("/api/osupp/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },
 
+    //For exporting/printing
     async get(type) {
       if (
         this.branch == "" ||
@@ -777,8 +799,6 @@ export default {
               },
             }).then((response) => {
               if (response.data.size > 0) {
-                // console.log(response.data);
-                // return;
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
                 });
@@ -906,6 +926,8 @@ export default {
       this.viewdialog = false;
     },
   },
+
+  //Watch
   watch: {
     viewdialog(val) {
       val || this.closeViewDialog();

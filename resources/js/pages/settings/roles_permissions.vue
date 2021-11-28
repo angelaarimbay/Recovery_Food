@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -86,7 +87,9 @@
                 sm="12"
                 md="12"
               >
+                <!-- ID -->
                 <v-text-field v-model="role.id" class="d-none"> </v-text-field>
+                <!-- Role Name -->
                 <v-text-field
                   :rules="formRules"
                   v-model="role.name"
@@ -115,6 +118,7 @@
                 sm="12"
                 md="12"
               >
+                <!-- Role Description -->
                 <v-text-field
                   :rules="formRulesDesc"
                   v-model="role.description"
@@ -140,7 +144,7 @@
           <v-card-actions class="px-0 pb-0">
             <v-spacer></v-spacer>
             <v-btn
-              color="error"
+              color="black"
               depressed
               dark
               @click="cancelRoles"
@@ -181,8 +185,10 @@
                 sm="12"
                 md="12"
               >
+                <!-- ID -->
                 <v-text-field v-model="permission.id" class="d-none">
                 </v-text-field>
+                <!-- Permission Name -->
                 <v-text-field
                   :rules="formRules"
                   v-model="permission.name"
@@ -208,6 +214,7 @@
                 sm="12"
                 md="12"
               >
+                <!-- Permission Description -->
                 <v-text-field
                   :rules="formRules"
                   v-model="permission.description"
@@ -386,7 +393,7 @@
       </v-container>
 
       <!-- Main Card -->
-      <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+      <v-card elevation="1" class="mt-2" style="border-radius: 10px">
         <v-tabs
           slider-size="4"
           v-model="tab"
@@ -469,7 +476,7 @@
                     dark
                     :small="$vuetify.breakpoint.smAndDown"
                     @click="openDialogRoles"
-                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+                    class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 d-none"
                   >
                     Add New Role
                   </v-btn>
@@ -535,6 +542,7 @@
                           @click="addPermission(item)"
                           v-on="data.on"
                           :x-small="$vuetify.breakpoint.smAndDown"
+                          class="d-none"
                         >
                           <v-icon> mdi-plus </v-icon>
                         </v-btn>
@@ -749,7 +757,14 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .tbl.v-data-table__checkbox,
 .v-input--selection-controls__input .mdi-checkbox-marked,
 .v-input--selection-controls__input .mdi-minus-box {
@@ -801,6 +816,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios";
@@ -809,7 +825,8 @@ export default {
   metaInfo() {
     return { title: "Settings" };
   },
-  // declarations
+
+  //Data
   data: () => ({
     snackbar: {
       active: false,
@@ -824,7 +841,7 @@ export default {
     currentdataRoles: {},
     tab: null,
 
-    // Form Rules
+    //Form rules
     formRules: [
       (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
@@ -841,7 +858,8 @@ export default {
 
     progressBar: false,
     editedIndex: -1,
-    // --------------------------------------------------role
+
+    //For roles
     dialogRoles: false,
     tableRoles: [],
     page1: 1,
@@ -863,7 +881,7 @@ export default {
     ],
     role: { name: "", id: "" },
 
-    // --------------------------------------------------permission
+    //For permissions
     dialogPermissions: false,
     searchPermissions: "",
     tablePermissions: [],
@@ -879,7 +897,8 @@ export default {
       { text: "ACTION", value: "id", class: "black--text" },
     ],
     permission: { name: "", description: "", id: "" },
-    // --------------------------------------------------user role
+
+    //For user roles
     searchUserrole: "",
     tableUserrole: [],
     page2: 1,
@@ -900,7 +919,7 @@ export default {
       },
     ],
 
-    // --------------------------------------------------set role permission
+    //For setting role permissions
     dialogAddPermissions: false,
     selectedAddPermission: [],
     selectedAddPermission_cloned: [],
@@ -915,7 +934,7 @@ export default {
     ],
     rolename: "",
 
-    // --------------------------------------------------set user role
+    //For setting user roles
     dialogAddRoles: false,
     tableAddRoles: [],
     page3: 1,
@@ -929,7 +948,7 @@ export default {
     ],
   }),
 
-  // load
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Settings")) {
       this.getRoles();
@@ -940,7 +959,7 @@ export default {
     }
   },
 
-  // functions
+  //Methods
   methods: {
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
@@ -948,7 +967,7 @@ export default {
       }
     },
 
-    // Compare Roles
+    //Compare Roles
     compareRoles() {
       if (!this.currentdataRoles) {
         return true;
@@ -974,6 +993,7 @@ export default {
       }
     },
 
+    //For retrieving seeder
     async getSeeder() {
       const { data } = await axios.get("/api/seeder", {
         params: { id: this.seederTablename },
@@ -981,6 +1001,7 @@ export default {
       this.seederColumns = data;
     },
 
+    //For validation
     validate(type) {
       switch (type) {
         case "roles":
@@ -1015,6 +1036,7 @@ export default {
       }
     },
 
+    //For action
     action(type) {
       switch (type) {
         case "roles":
@@ -1032,7 +1054,7 @@ export default {
       this.snackbar2.active = false;
     },
 
-    // Get Roles
+    //Get Roles
     async getRoles() {
       let self = this;
       self.progressBar = true;
@@ -1047,7 +1069,7 @@ export default {
         .catch((result) => {});
     },
 
-    // Save Roles
+    //Save Roles
     async storeRoles() {
       if (this.$refs.mainForm.validate()) {
         if (this.compareRoles()) {
@@ -1088,7 +1110,7 @@ export default {
       }
     },
 
-    // Edit Roles
+    //Edit Roles
     editItemRoles(item) {
       this.currentdataRoles = JSON.parse(JSON.stringify(item));
       this.editedIndex = this.tableRoles.data.indexOf(item);
@@ -1098,19 +1120,19 @@ export default {
       this.dialogRoles = true;
     },
 
-    // Open Dialog Form Roles
+    //Open Dialog Form Roles
     openDialogRoles() {
       this.$refs.mainForm.resetValidation();
       this.dialogRoles = true;
     },
 
-    // Reset Form Roles
+    //Reset Form Roles
     cancelRoles() {
       this.$refs.mainForm.resetValidation();
       this.dialogRoles = false;
     },
 
-    // Permission
+    //Permission
     async getPermissions() {
       let self = this;
       self.progressBar = true;
@@ -1131,7 +1153,7 @@ export default {
         });
     },
 
-    // Save Roles
+    //Save Roles
     async storePermissions() {
       await axios
         .post("/api/useracc/storePermission", this.permission)
@@ -1155,7 +1177,7 @@ export default {
       this.close();
     },
 
-    // Edit
+    //Edit
     editItemPermissions(item) {
       this.editedIndex = this.tablePermissions.data.indexOf(item);
       this.permission.name = item.name;
@@ -1164,7 +1186,7 @@ export default {
       this.dialogPermissions = true;
     },
 
-    // User Role
+    //User Role
     async getUserRoles() {
       let self = this;
       self.progressBar = true;
@@ -1178,7 +1200,7 @@ export default {
         .catch((result) => {});
     },
 
-    // Add Role Permission
+    //Add Role Permission
     async getRolePermissions(item) {
       let self = this;
       self.progressBar = true;
@@ -1203,27 +1225,27 @@ export default {
       this.getRolePermissions(item.name);
     },
 
-    checkRolesIsValid() {
-      // if mag add ng restriction bukod dito,
-      // console this.selectedAddPermission tignan and index then get name, then gawa ka if else mo ung message
-      // lagyan mo ng return sa loob. basta mag greater than one ndi yan prproceed.
-      if (
-        this.selectedAddPermission[0].name == "Access POS" &&
-        this.selectedAddPermission[1].name == "Access Dashboard"
-      ) {
-        this.snackbar = {
-          active: true,
-          iconText: "close",
-          iconColor: "danger",
-          message: "Disable all other permissions first.",
-        };
-        return 1;
-      }
-    },
+    // checkRolesIsValid() {
+    //   // if mag add ng restriction bukod dito,
+    //   // console this.selectedAddPermission tignan and index then get name, then gawa ka if else mo ung message
+    //   // lagyan mo ng return sa loob. basta mag greater than one ndi yan prproceed.
+    //   if (
+    //     this.selectedAddPermission[0].name == "Access POS" &&
+    //     this.selectedAddPermission[1].name == "Access Dashboard"
+    //   ) {
+    //     this.snackbar = {
+    //       active: true,
+    //       iconText: "close",
+    //       iconColor: "danger",
+    //       message: "Disable all other permissions first.",
+    //     };
+    //     return 1;
+    //   }
+    // },
 
     comparePermission() {
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       if (
         this.selectedAddPermission_cloned.length ===
@@ -1248,7 +1270,7 @@ export default {
         found += 1;
       }
 
-      //if has changes
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -1258,16 +1280,15 @@ export default {
           iconColor: "warning",
           message: "No changes has been made.",
         };
-        return false;
+        this.close();
       }
     },
 
-    // Save Role Permission
+    //Save Role Permission
     async storeAddPermissions() {
-      if (this.checkRolesIsValid() > 0) {
-        return;
-      }
-
+      // if (this.checkRolesIsValid() > 0) {
+      //   return;
+      // }
       if (this.comparePermission()) {
         await axios
           .post("/api/useracc/storeRolePermission", {
@@ -1288,6 +1309,7 @@ export default {
       }
     },
 
+    //Compare User Roles
     compareUserRoles() {
       var found = 0;
       if (
@@ -1312,7 +1334,7 @@ export default {
         found += 1;
       }
 
-      //if has changes
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -1322,11 +1344,12 @@ export default {
           iconColor: "warning",
           message: "No changes has been made.",
         };
-        return false;
+        this.close();
       }
     },
-    // Set User Role
-    // Get Roles
+
+    //Set User Role
+    //Get Roles
     async getAddUserRoles(item) {
       let self = this;
       self.progressBar = true;
@@ -1342,7 +1365,7 @@ export default {
         .catch((result) => {});
     },
 
-    // Edit User Roles
+    //Edit User Roles
     addUserRole(item) {
       this.dialogAddRoles = true;
       this.userid = item.id;
@@ -1350,7 +1373,7 @@ export default {
       this.getAddUserRoles(item.id);
     },
 
-    // Save User Roles
+    //Save User Roles
     async storeUserRole() {
       if (this.compareUserRoles()) {
         await axios
@@ -1373,13 +1396,13 @@ export default {
       }
     },
 
-    // Reset Form User Roles
+    //Reset Form User Roles
     cancelUserRoles() {
       this.$refs.mainForm.resetValidation();
       this.dialogAddRoles = false;
     },
 
-    // close
+    //Close
     close() {
       this.dialogRoles = false;
       this.dialogPermissions = false;
@@ -1392,6 +1415,7 @@ export default {
         });
     },
 
+    //For deleting user role
     async remove() {
       await axios.post("/api/useracc/removeUserRole").then((result) => {
         this.snackbar = {
@@ -1404,7 +1428,7 @@ export default {
     },
   },
 
-  // New Update Title
+  //New Update Title
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -1423,7 +1447,7 @@ export default {
     },
   },
 
-  // On Changes
+  //Watch
   watch: {
     dialogRoles(val) {
       val || this.close();

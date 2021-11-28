@@ -2,20 +2,20 @@
 
 namespace App\Models;
 
-use App\Models\tbl_masterlistsupp;
+use App\Models\tbl_masterlistprod;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
-class tbl_requestsupp extends Model
+class tbl_requestprod extends Model
 {
     //Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = ['supply_name_details', 'user_details', 'quantity_available'];
+    public $appends = ['product_name_details', 'user_details', 'quantity_available'];
 
-    //For supply name info
-    public function getSupplyNameDetailsAttribute()
+    //For product name info
+    public function getProductNameDetailsAttribute()
     {
-        return tbl_masterlistsupp::where("id", $this->supply_name)->first();
+        return tbl_masterlistprod::where("id", $this->product_name)->first();
     }
 
     //For user info
@@ -29,7 +29,7 @@ class tbl_requestsupp extends Model
     {
         $date1 = date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
         $date2 = date("Y-m-t 23:59:59", strtotime(date("m") . '/' . date("t") . '/' . date("Y")));
-        return tbl_incomingsupp::where("supply_name", $this->supply_name)->whereBetween("incoming_date", [$date1, $date2])->sum('quantity')
-         - tbl_outgoingsupp::where("supply_name", $this->supply_name)->whereBetween("outgoing_date", [$date1, $date2])->sum('quantity');
+        return tbl_incomingprod::where("product_name", $this->product_name)->whereBetween("incoming_date", [$date1, $date2])->sum('quantity')
+         - tbl_outgoingprod::where("product_name", $this->product_name)->whereBetween("outgoing_date", [$date1, $date2])->sum('quantity');
     }
 }

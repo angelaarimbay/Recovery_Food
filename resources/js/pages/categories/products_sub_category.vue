@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -66,11 +67,12 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Button -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -80,9 +82,10 @@
                 class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                 @click="openDialog"
               >
-                Add Product-Sub Category
+                Add Product Subcategory
               </v-btn>
               <v-spacer></v-spacer>
+              <!-- Refresh -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -100,6 +103,7 @@
                 </template>
                 <span>Refresh</span>
               </v-tooltip>
+              <!-- Filter -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -140,9 +144,7 @@
                         dense
                         v-model="itemsPerPage"
                         @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
+                        :items="[5, 10, 15, 20]"
                         hide-details
                         background-color="grey darken-3"
                         flat
@@ -163,7 +165,7 @@
                     <v-card-actions class="px-0">
                       <v-text-field
                         v-model="search"
-                        placeholder="Product-Sub Category"
+                        placeholder="Product Subcategory"
                         single-line
                         dense
                         clearable
@@ -278,7 +280,7 @@
           >
             <v-card tile class="pa-3">
               <v-toolbar dark dense flat rounded class="red darken-3">
-                Product-Sub Category
+                Product Subcategory
                 <v-spacer></v-spacer>
                 <v-icon text @click="cancel">mdi-close </v-icon>
               </v-toolbar>
@@ -341,7 +343,7 @@
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
-                          Product-Sub Category
+                          Product Subcategory
                           <span style="color: red">*</span>
                         </div>
                       </template>
@@ -354,7 +356,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :disabled="button"
                   dark
@@ -384,12 +386,20 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -427,6 +437,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -435,6 +446,7 @@ export default {
   metaInfo() {
     return { title: "Categories" };
   },
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -451,7 +463,7 @@ export default {
     ],
     table: [],
 
-    // Form Rules
+    //Form Rules
     formRules: [
       (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
@@ -466,28 +478,29 @@ export default {
       },
     ],
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       status: null,
       prod_sub_cat_name: null,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
         width: "12%",
       },
       {
-        text: "PRODUCT-SUB CATEGORY",
+        text: "PRODUCT SUBCATEGORY",
         value: "prod_sub_cat_name",
         class: "black--text",
       },
@@ -510,17 +523,17 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
-  // Dynamic Width
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
   },
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Categories")) {
       this.get();
@@ -529,7 +542,9 @@ export default {
     }
   },
 
+  //Methods
   methods: {
+    //Keydown
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
@@ -540,23 +555,23 @@ export default {
       this.get();
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
           found += 1;
         }
       }
-      //if has changes
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -570,16 +585,16 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        // Validate first before compare
+        //Validate first before compare
         if (this.compare()) {
-          // Save or update data in the table
+          //Save or update data in the table
           await axios
             .post("/api/productssub/save", this.form)
             .then((result) => {
-              //if the value is true then save to database
+              //If the value is true then save to database
               switch (result.data) {
                 case 0:
                   this.snackbar = {
@@ -596,7 +611,7 @@ export default {
                     active: true,
                     iconText: "alert",
                     iconColor: "error",
-                    message: "The product-sub category already exists.",
+                    message: "The product subcategory already exists.",
                   };
                   break;
                 default:
@@ -604,14 +619,16 @@ export default {
               }
             })
             .catch((result) => {
-              // If false or error when saving
+              //If false or error when saving
             });
         }
       }
     },
+
+    //For retrieving product subcategories
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/productssub/get", {
@@ -622,16 +639,16 @@ export default {
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
-          this.progressbar = false; // Hide the progress bar
+          this.progressbar = false; //Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -640,19 +657,20 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

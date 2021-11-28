@@ -1,7 +1,6 @@
 <template>
   <!-- Div -->
   <div style="min-width: 310px">
-    <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
       min-width="auto"
@@ -72,7 +71,7 @@
             my-auto
           "
         >
-          Supplies Request
+          Products Request
         </span>
         <v-spacer></v-spacer>
 
@@ -95,7 +94,7 @@
             disabled
             class="px-0"
             style="text-transform: none"
-            >Supplies Request</v-btn
+            >Products Request</v-btn
           >
         </v-card-actions>
       </v-layout>
@@ -285,7 +284,7 @@
                       text-sm-subtitle-1
                       mb-0 mb-0
                     "
-                    >Supplies List</span
+                    >Products List</span
                   >
                 </v-card>
 
@@ -350,7 +349,7 @@
                         <v-card-actions class="px-0">
                           <v-text-field
                             v-model="search"
-                            placeholder="Supply Name"
+                            placeholder="Product Name"
                             single-line
                             dense
                             clearable
@@ -390,12 +389,39 @@
                           <v-select
                             hide-details
                             v-model="category"
-                            :items="suppcatlist"
-                            item-text="supply_cat_name"
+                            :items="prodcatlist"
+                            item-text="product_cat_name"
                             item-value="id"
                             clearable
                             dense
                             placeholder="Category"
+                            @change="getList"
+                            background-color="grey darken-3"
+                            flat
+                            solo
+                            style="font-size: 12px"
+                          >
+                          </v-select>
+                        </v-card-actions>
+                      </v-col>
+
+                      <!-- Subcategory Field -->
+                      <v-col cols="4"
+                        ><span class="text-caption text-xl-subtitle-2"
+                          >Subcategory</span
+                        ></v-col
+                      >
+                      <v-col cols="8">
+                        <v-card-actions class="px-0">
+                          <v-select
+                            hide-details
+                            v-model="subcategory"
+                            :items="prodsubcatlist"
+                            item-text="prod_sub_cat_name"
+                            item-value="id"
+                            clearable
+                            dense
+                            placeholder="Subcategory"
                             @change="getList"
                             background-color="grey darken-3"
                             flat
@@ -428,8 +454,8 @@
                     rounded
                   ></v-progress-linear>
 
-                  <template v-slot:[`item.supply_name`]="{ item }">
-                    {{ item.supply_name }} {{ item.description }}</template
+                  <template v-slot:[`item.product_name`]="{ item }">
+                    {{ item.product_name }} {{ item.description }}</template
                   >
 
                   <template v-slot:[`item.id`]="{ item }">
@@ -534,8 +560,8 @@
                     rounded
                   ></v-progress-linear>
 
-                  <template v-slot:[`item.supply_name`]="{ item }">
-                    {{ item.supply_name }} {{ item.description }}</template
+                  <template v-slot:[`item.product_name`]="{ item }">
+                    {{ item.product_name }} {{ item.description }}</template
                   >
 
                   <template v-slot:[`item.status`]="{ item }">
@@ -583,9 +609,9 @@
                     </v-tooltip>
                   </template>
                 </v-data-table>
+                <!-- Buttons -->
                 <v-card-actions class="pa-0 mt-4">
                   <v-spacer></v-spacer>
-                  <!-- Buttons -->
                   <v-btn
                     color="black"
                     style="text-transform: none; color: white"
@@ -630,7 +656,7 @@
                   <span
                     >Item Selected:
                     <strong
-                      >{{ selected.supply_name }}
+                      >{{ selected.product_name }}
                       {{ selected.description }}</strong
                     >
                   </span>
@@ -645,7 +671,6 @@
                   sm="12"
                   md="12"
                 >
-                  <!-- Quantity -->
                   <v-text-field
                     :rules="formRulesQuantity"
                     v-model="quantity"
@@ -810,19 +835,19 @@ export default {
     headers1: [
       {
         text: "CATEGORY",
-        value: "category.supply_cat_name",
-        class: "black--text",
+        value: "category.product_cat_name",
         filterable: false,
-      },
-      {
-        text: "SUPPLY NAME",
-        value: "supply_name",
         class: "black--text",
       },
       {
-        text: "UNIT",
-        value: "unit",
+        text: "SUBCATEGORY",
+        value: "sub_category.prod_sub_cat_name",
         filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "PRODUCT NAME",
+        value: "product_name",
         class: "black--text",
       },
       {
@@ -838,14 +863,8 @@ export default {
     //Header2
     headers2: [
       {
-        text: "SUPPLY NAME",
-        value: "supply_name",
-        class: "black--text",
-      },
-      {
-        text: "UNIT",
-        value: "unit",
-        filterable: false,
+        text: "PRODUCT NAME",
+        value: "product_name",
         class: "black--text",
       },
       {
@@ -907,16 +926,19 @@ export default {
     pageCount: 0,
     itemsPerPage: 10,
     search: "",
+    category: "",
+    subcategory: "",
     cancel_select: [],
     filterDialog: false,
-    suppcatlist: [],
-    category: "",
+    prodcatlist: [],
+    prodsubcatlist: [],
   }),
 
   //Onload
   created() {
     this.get();
-    this.suppCat();
+    this.prodCat();
+    this.prodSubCat();
   },
 
   //Watch
@@ -935,15 +957,13 @@ export default {
         e.preventDefault();
       }
     },
-
-    //Clear value of quantity text-field
+    //Clear Value of quantity text-field
     clearQ() {
       if (this.quantity == 1) {
         this.quantity = null;
       }
     },
-
-    //Reset value of quantity text-field
+    //Reset Value of quantity text-field
     resetQ() {
       if (this.quantity == null) {
         this.quantity = 1;
@@ -1005,12 +1025,16 @@ export default {
       this.snackbar2.active = false;
     },
 
-    //For retrieving supplies list
+    //For retrieving product list
     async getList() {
       this.progressbar1 = true;
       await axios
-        .get("/api/requestsupp/supplies/list", {
-          params: { search: this.search, category: this.category },
+        .get("/api/requestprod/products/list", {
+          params: {
+            search: this.search,
+            category: this.category,
+            subcategory: this.subcategory,
+          },
         })
         .then((result) => {
           this.table1 = result.data;
@@ -1018,11 +1042,11 @@ export default {
         });
     },
 
-    //For retrieving supplies request list
+    //For retrieving product request
     async get() {
       this.progressbar = true;
       await axios
-        .get("/api/requestsupp/get", {
+        .get("/api/requestprod/get", {
           params: {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
@@ -1034,10 +1058,17 @@ export default {
         });
     },
 
-    //For retrieving supply categories
-    async suppCat() {
-      await axios.get("/api/msupp/suppCat").then((supp_cat) => {
-        this.suppcatlist = supp_cat.data;
+    //For retrieving product categories
+    async prodCat() {
+      await axios.get("/api/mprod/prodCat").then((prod_cat) => {
+        this.prodcatlist = prod_cat.data;
+      });
+    },
+
+    //For retrieving product subcategories
+    async prodSubCat() {
+      await axios.get("/api/mprod/prodSubCat").then((prodsub_cat) => {
+        this.prodsubcatlist = prodsub_cat.data;
       });
     },
 
@@ -1071,11 +1102,11 @@ export default {
           } else {
             this.table2.push({
               id: row.id,
-              supply_name:
-                row.supply_name +
+
+              product_name:
+                row.product_name +
                 " " +
                 (row.description != null ? row.description : ""),
-              unit: row.unit,
               quantity: this.quantity,
               ref: "",
               status: 0,
@@ -1127,16 +1158,15 @@ export default {
 
     //For saving requests
     async storeRequest() {
-      //This is used for update request
+      //This is used for updating request
       if (this.ref) {
         for (var key in this.table2) {
           this.table2[key].ref = this.ref;
         }
       }
-
       //Save
       await axios
-        .post("/api/requestsupp/supplies/save", this.table2)
+        .post("/api/requestprod/products/save", this.table2)
         .then((result) => {
           //If the value is true then save to database
           this.snackbar = {
@@ -1153,8 +1183,8 @@ export default {
 
     //For adding requests
     addRequest() {
-      if (this.headers2.length == 5) {
-        this.headers2.splice(this.headers2.indexOf(this.headers2[3]), 1);
+      if (this.headers2.length == 4) {
+        this.headers2.splice(this.headers2.indexOf(this.headers2[2]), 1);
       }
       this.disabled = true;
       this.dialog_list = true;
@@ -1165,14 +1195,8 @@ export default {
     async viewRequest(ref) {
       (this.headers2 = [
         {
-          text: "SUPPLY NAME",
-          value: "supply_name",
-          class: "black--text",
-        },
-        {
-          text: "UNIT",
-          value: "unit",
-          filterable: false,
+          text: "PRODUCT NAME",
+          value: "product_name",
           class: "black--text",
         },
         {
@@ -1199,10 +1223,10 @@ export default {
       ]),
         (this.isHidden = true);
 
-      //For retrieving supply request list
+      //For retrieving product request list
       this.getList();
       await axios
-        .get("/api/requestsupp/request/list", { params: { ref: ref.ref } })
+        .get("/api/requestprod/request/list", { params: { ref: ref.ref } })
         .then((result) => {
           this.temp_data = JSON.parse(JSON.stringify(result.data));
           this.table2 = result.data;
@@ -1245,9 +1269,9 @@ export default {
     //For cancelling requests
     async cancelRequest() {
       await axios
-        .post("/api/requestsupp/request/cancel", this.cancel_select)
+        .post("/api/requestprod/request/cancel", this.cancel_select)
         .then((result) => {
-          //If the value is true then save to database
+          //if the value is true then save to database
           this.snackbar = {
             active: true,
             iconText: "check",
@@ -1261,9 +1285,9 @@ export default {
     //For completing requests
     async completeRequest(ref) {
       await axios
-        .post("/api/requestsupp/request/complete", ref)
+        .post("/api/requestprod/request/complete", ref)
         .then((result) => {
-          //If the value is true then save to database
+          //if the value is true then save to database
           this.snackbar = {
             active: true,
             iconText: "check",

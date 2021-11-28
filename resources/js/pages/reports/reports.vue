@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -63,7 +64,7 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-tabs
         slider-size="4"
         v-model="tab"
@@ -169,7 +170,14 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .v-pagination button {
   background-color: #212121 !important;
   color: #ffffff !important;
@@ -182,6 +190,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import masterlistsupplies1 from "./report_types/masterlist_supplies.vue";
 import incomingsupplies1 from "./report_types/incoming_supplies.vue";
@@ -209,6 +218,7 @@ export default {
     purchaseorder1,
   },
 
+  //Data
   data: () => ({
     tab: null,
     category: "",
@@ -220,7 +230,7 @@ export default {
     table1: [],
     table2: [],
 
-    // Table Headers TP
+    //Table Headers TP
     headers2: [
       { text: "#", value: "count", align: "start", filterable: false },
       {
@@ -257,6 +267,7 @@ export default {
     ],
   }),
 
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Reports")) {
       this.branchName();
@@ -265,15 +276,17 @@ export default {
     }
   },
 
+  //Methods
   methods: {
     itemperpage2() {
       this.page2 = 1;
       this.getTransactionReport();
     },
 
+    //For retrieving sales report
     async getSalesReport() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/sales_report", {
@@ -288,18 +301,19 @@ export default {
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table1 = result.data;
           this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For retrieving transaction report
     async getTransactionReport() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/transaction_report", {
@@ -314,15 +328,16 @@ export default {
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table2 = result.data;
           this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For retrieving branch names
     async branchName() {
       await axios.get("/api/osupp/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
@@ -330,6 +345,7 @@ export default {
     },
   },
 
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",

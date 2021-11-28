@@ -16,6 +16,10 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('dashboard/getProd', 'Dashboard\MainController@getProd');
     Route::get('dashboard/getPO', 'Dashboard\MainController@getPO');
     Route::get('dashboard/getUser', 'Dashboard\MainController@getUser');
+    Route::get('dashboard/getSuppExpDate', 'Dashboard\MainController@getSuppExpDate');
+    Route::get('dashboard/getProdExpDate', 'Dashboard\MainController@getProdExpDate');
+    Route::get('dashboard/getSuppRequests', 'Dashboard\MainController@getSuppRequests');
+    Route::get('dashboard/getProdRequests', 'Dashboard\MainController@getProdRequests');
     Route::get('dashboard/getSalesGraph', 'Dashboard\MainController@getSalesGraph');
     Route::get('dashboard/getProductsGraph', 'Dashboard\MainController@getProductsGraph');
 
@@ -85,12 +89,20 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('suppinven/save', 'Inventory\SuppliesInventoryController@store');
     Route::get('suppinven/get', 'Inventory\SuppliesInventoryController@get');
     Route::get('deductedsupp/get', 'Inventory\DeductedSuppliesController@get');
+
     Route::get('requestsupp/supplies/list', 'Inventory\RequestSuppliesController@getSuppliesList');
     Route::post('requestsupp/supplies/save', 'Inventory\RequestSuppliesController@storeSupplies');
     Route::get('requestsupp/get', 'Inventory\RequestSuppliesController@get');
     Route::get('requestsupp/request/list', 'Inventory\RequestSuppliesController@getRequested');
     Route::post('requestsupp/request/complete', 'Inventory\RequestSuppliesController@completeRequest');
     Route::post('requestsupp/request/cancel', 'Inventory\RequestSuppliesController@cancelRequest');
+
+    Route::get('requestprod/products/list', 'Inventory\RequestProductsController@getProductsList');
+    Route::post('requestprod/products/save', 'Inventory\RequestProductsController@storeProducts');
+    Route::get('requestprod/get', 'Inventory\RequestProductsController@get');
+    Route::get('requestprod/request/list', 'Inventory\RequestProductsController@getRequested');
+    Route::post('requestprod/request/complete', 'Inventory\RequestProductsController@completeRequest');
+    Route::post('requestprod/request/cancel', 'Inventory\RequestProductsController@cancelRequest');
 
     // Masterlist Products
     Route::post('mprod/save', 'Products\MasterlistProductsController@save');
@@ -113,6 +125,9 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('outprod/prodName', 'Products\OutgoingProductsController@prodName');
     Route::get('outprod/branchName', 'Products\OutgoingProductsController@branchName');
     Route::get('outprod/prodValidate', 'Products\OutgoingProductsController@validateQuantity');
+    Route::get('outprod/request/list', 'Products\OutgoingProductsController@getRequest');
+    Route::get('outprod/request/items/list', 'Products\OutgoingProductsController@getRequested');
+    Route::post('outprod/request/process', 'Products\OutgoingProductsController@processRequest');
 
     // Suppliers List
     Route::post('supplist/save', 'Suppliers\SuppliersListController@save');
@@ -151,8 +166,8 @@ Route::group(['middleware' => 'api'], function () {
 
     // POS
     Route::post('pos/prodlist/save', 'POS\ProductsListController@save');
-    Route::get('pos/receipt', 'Reports\ReportsController@Receipt'); //change mo nlang kung ano proper syo
-    Route::get('pos/today', 'POS\ProductsListController@getSalesToday'); //change mo nlang kung ano proper naming syo
+    Route::get('pos/receipt', 'Reports\ReportsController@Receipt');
+    Route::get('pos/today', 'POS\ProductsListController@getSalesToday');
 
     Route::get('pos/prodlist/get', 'POS\ProductsListController@get');
     Route::get('sales_report/sales_count', 'POS\ProductsListController@getSalesCount');

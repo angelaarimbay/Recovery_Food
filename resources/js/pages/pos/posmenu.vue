@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -81,6 +82,7 @@
 
           <v-row no-gutters class="mt-2" style="height: 60px" align="center">
             <v-spacer></v-spacer>
+            <!-- Refresh -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -98,6 +100,7 @@
               </template>
               <span>Refresh</span>
             </v-tooltip>
+            <!-- Filter -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -138,9 +141,7 @@
                       dense
                       v-model="itemsPerPage"
                       @change="itemperpage"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
+                      :items="[5, 10, 15, 20]"
                       hide-details
                       background-color="grey darken-3"
                       flat
@@ -187,6 +188,60 @@
                       </template>
                       <span>Search</span>
                     </v-tooltip>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Category Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Category</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="category"
+                      :items="prodcatlist"
+                      item-text="product_cat_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Category"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Subcategory Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Subcategory</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="subcategory"
+                      :items="prodsubcatlist"
+                      item-text="prod_sub_cat_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Subcategory"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
                   </v-card-actions>
                 </v-col>
               </v-row>
@@ -259,6 +314,7 @@
           </div>
         </v-card>
 
+        <!-- Preview Receipt -->
         <v-dialog v-model="dialog1">
           <v-toolbar
             dense
@@ -355,7 +411,7 @@
             <v-card-actions class="px-0 pb-0">
               <v-spacer></v-spacer>
               <v-btn
-                color="error"
+                color="black"
                 depressed
                 :disabled="button"
                 dark
@@ -581,6 +637,7 @@
           <v-card style="border-radius: 10px" class="pa-3">
             <v-row align="center" justify="center">
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
+                <!-- Payment -->
                 <v-text-field
                   class="centered-input"
                   :rules="formRulesPrice"
@@ -607,6 +664,7 @@
               </v-col>
 
               <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
+                <!-- Discount -->
                 <v-text-field
                   class="centered-input"
                   :rules="formRulesDiscount"
@@ -631,6 +689,7 @@
               </v-col>
 
               <v-col cols="12" xl="4" lg="4" md="12" sm="12" class="pb-0">
+                <!-- Change -->
                 <v-text-field
                   class="centered-input"
                   v-model="change"
@@ -652,6 +711,7 @@
               <v-col cols="12" xl="8" lg="8" md="12" sm="12">
                 <v-row no-gutters>
                   <v-col cols="3">
+                    <!-- Sales History -->
                     <v-tooltip bottom>
                       <template #activator="data">
                         <v-btn
@@ -668,6 +728,7 @@
                     </v-tooltip>
                   </v-col>
                   <v-col cols="3">
+                    <!-- Print -->
                     <v-tooltip bottom>
                       <template #activator="data">
                         <v-btn
@@ -685,6 +746,7 @@
                     </v-tooltip>
                   </v-col>
                   <v-col cols="3">
+                    <!-- Void Order -->
                     <v-tooltip bottom>
                       <template #activator="data">
                         <v-btn
@@ -706,6 +768,7 @@
                     </v-tooltip>
                   </v-col>
                   <v-col cols="3">
+                    <!-- New Order -->
                     <v-tooltip bottom>
                       <template #activator="data">
                         <v-btn
@@ -732,6 +795,7 @@
                 sm="12"
                 class="pt-0 pt-xl-3 pt-lg-3 pt-md-3 pt-sm-0"
               >
+                <!-- Checkout -->
                 <v-tooltip bottom>
                   <template #activator="data">
                     <v-btn
@@ -756,7 +820,14 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .centered-input input {
   text-align: center;
 }
@@ -776,6 +847,7 @@
   .prod_table .v-data-table-header th,
   .ord_table .v-data-table-header th {
     font-size: 15px !important;
+    text-align: center !important;
   }
   .prod_table td,
   .ord_table td {
@@ -815,6 +887,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -827,6 +900,8 @@ export default {
   components: {
     salesreport,
   },
+
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -847,6 +922,8 @@ export default {
       }
     },
   },
+
+  //Data
   data: () => ({
     pdfview: "",
     pdfview1: "",
@@ -861,6 +938,8 @@ export default {
       message: "",
     },
     search: "",
+    category: "",
+    subcategory: "",
     button: false,
     mode: "",
     quantity: 1,
@@ -886,7 +965,8 @@ export default {
     dialog1: false,
     dialog2: false,
     type: "",
-    // Form Rules
+
+    //Form Rules
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
@@ -900,19 +980,21 @@ export default {
     formRulesDiscount: [
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "Discount must be valid",
     ],
+
     form: {
       id: null,
       quantity: 1,
     },
 
-    // Table Headers
+    //Table Headers
     headers1: [
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
 
       {
@@ -945,14 +1027,15 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     renderComponent: true,
-    // Table Headers
+
+    //Table Headers
     headers2: [
       {
         text: "#",
         value: "id",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
       },
@@ -987,29 +1070,36 @@ export default {
         text: "",
         value: "row",
         align: "center",
+        filterable: false,
+        sortable: false,
       },
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
+  //Methods
   methods: {
+    //Keydown
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
+
     paymentKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
+
     discountKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
+
     getTotal() {
       this.totalamount = numeral(
         this.table2.reduce((a, b) => a + b.temp_sub_total, 0)
@@ -1038,6 +1128,7 @@ export default {
       this.get();
     },
 
+    //For retrieving product list
     async get() {
       this.progressbar1 = true;
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
@@ -1047,6 +1138,8 @@ export default {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            category: this.category,
+            subcategory: this.subcategory,
           },
         })
         .then((result) => {
@@ -1059,6 +1152,21 @@ export default {
         });
     },
 
+    //For retrieving product categories
+    async prodCat() {
+      await axios.get("/api/mprod/prodCat").then((prod_cat) => {
+        this.prodcatlist = prod_cat.data;
+      });
+    },
+
+    //For retrieving product subcategories
+    async prodSubCat() {
+      await axios.get("/api/mprod/prodSubCat").then((prodsub_cat) => {
+        this.prodsubcatlist = prodsub_cat.data;
+      });
+    },
+
+    //For generating receipt
     async getReceipt() {
       await axios({
         url: "/api/pos/receipt",
@@ -1075,6 +1183,7 @@ export default {
       });
     },
 
+    //For retrieving current sales
     async getSalesToday() {
       this.dialog2 = true;
       this.$forceUpdate();
@@ -1084,6 +1193,7 @@ export default {
       });
     },
 
+    //For validation
     validate(type) {
       switch (type) {
         case "save":
@@ -1118,6 +1228,7 @@ export default {
       }
     },
 
+    //For saving transaction info
     async save() {
       this.snackbar2.active = false;
       if (parseInt(this.payment) >= parseInt(this.totalamount)) {
@@ -1127,7 +1238,7 @@ export default {
             this.reference_no = result.data.reference_no;
             this.get();
             this.getSalesCount();
-            this.disabled1 = false; //for printer
+            this.disabled1 = false; //For printer
             this.disabled = true;
             (this.table2 = []), (this.payment = 0);
             this.discount = 0;
@@ -1140,6 +1251,7 @@ export default {
               iconColor: "success",
               message: "Successfully checked-out.",
             };
+            this.$refs.form.resetValidation();
           });
       } else {
         this.snackbar = {
@@ -1151,12 +1263,14 @@ export default {
       }
     },
 
+    //For counting sales
     async getSalesCount() {
       await axios.get("/api/sales_report/sales_count").then((result) => {
         this.salescount = result.data;
       });
     },
 
+    //For mode
     selectItem(item) {
       if (this.mode) {
         this.dialog_add = true;
@@ -1172,6 +1286,7 @@ export default {
       }
     },
 
+    //For validation
     validateQty(type) {
       if (this.$refs.form.validate()) {
         if (type == "add") {
@@ -1179,7 +1294,7 @@ export default {
           if (this.table2.length > 0) {
             var indexid = -1;
             for (var key in this.table2) {
-              //if table have value
+              //If table have value
               if (
                 parseInt(this.selectedrow.product_name.id) ===
                 parseInt(this.table2[key].product)
@@ -1190,9 +1305,9 @@ export default {
             if (indexid > -1) {
               quantity =
                 parseInt(this.table2[indexid].quantity) +
-                parseInt(this.quantity); //add current and input
+                parseInt(this.quantity); //Add current and input
               if (parseInt(this.selectedrow.quantity_diff) < quantity) {
-                //check if greather than stocks
+                //Check if greather than stocks
                 this.snackbar = {
                   active: true,
                   iconText: "alert",
@@ -1342,6 +1457,7 @@ export default {
       }
     },
 
+    //For validation
     validateDelete(item) {
       this.deleteindex = this.table2.indexOf(item);
       this.selectedrow = item;
@@ -1349,6 +1465,7 @@ export default {
       this.dialog = true;
     },
 
+    //For checking table
     checktotable2() {
       var check_existing = 0;
       //table
@@ -1364,6 +1481,7 @@ export default {
       }
     },
 
+    //For adding to table
     addtotable2() {
       this.table2.push({
         id: this.table2.length + 1,
@@ -1383,6 +1501,8 @@ export default {
         mode: this.mode,
       });
     },
+
+    //For updating table
     updatetotable2(i) {
       if (i == -1) {
         this.addtotable2();
@@ -1402,14 +1522,9 @@ export default {
       }
     },
 
-    //1st create add item
-    //2. add quantity of existing item
-    //3. add new item namay existing na
-    //4. add quantity for each.
-
+    //For appending item
     appendItem(type) {
       if (type == "add") {
-        //if
         var check_existing = -1;
         if (this.table2.length > 0) {
           for (var i in this.table2) {
@@ -1420,53 +1535,31 @@ export default {
         }
         this.updatetotable2(check_existing);
       } else {
-        //delete
-        //   this.table2.push({
-        //     id: this.table2.length + 1,
-        //     category: this.selectedrow.category.id,
-        //     sub_category: this.selectedrow.sub_category.id,
-        //     product_name: {
-        //       product_name: this.selectedrow.product_name.product_name,
-        //     },
-        //     description: this.selectedrow.product_name.description,
-        //     product: this.selectedrow.product_name.id,
-        //     unit_price: this.selectedrow.product_name.format_unit_price,
-        //     quantity: this.quantity,
-        //     sub_total: numeral(
-        //       this.quantity * this.selectedrow.product_name.price
-        //     ).format("0,0.00"),
-        //     temp_sub_total:
-        //       this.quantity * this.selectedrow.product_name.price,
-        //     mode: this.mode,
-        //   });
       }
-
       this.snackbar = {
         active: true,
         iconText: "check",
         iconColor: "success",
         message: "Successfully added.",
       };
-
       this.getTotal();
       this.getChange();
       this.cancel();
     },
 
+    //For deleting item
     deleteItem(item) {
       this.editedIndex = this.table2.indexOf(item);
       this.appendItem(item);
-
       this.snackbar = {
         active: true,
         iconText: "check",
         iconColor: "success",
         message: "Successfully removed.",
       };
-      // this.getTotal();
-      // this.getChange();
     },
 
+    //For computing the change
     getChange() {
       if (this.payment > 0) {
         if (this.discount > 0) {
@@ -1484,54 +1577,55 @@ export default {
       }
     },
 
-    // Reset Form
+    //Reset Form
     cancel() {
       this.quantity = 1;
       this.dialog = false;
     },
 
-    // Reset Value of Quantity text-field
+    //Reset value of quantity text-field
     resetQ() {
       if (this.quantity == null) {
         this.quantity = 1;
       }
     },
 
-    // Clear Value of Quantity text-field
+    //Clear value of quantity text-field
     clearQ() {
       if (this.quantity == 1) {
         this.quantity = null;
       }
     },
 
-    // Reset Value of Payment text-field
+    //Reset value of payment text-field
     resetP() {
       if (this.payment == null) {
         this.payment = 0;
       }
     },
 
-    // Clear Value of Payment text-field
+    //Clear value of payment text-field
     clearP() {
       if (this.payment == 0) {
         this.payment = null;
       }
     },
 
-    // Reset Value of Discount text-field
+    //Reset value of discount text-field
     resetD() {
       if (this.discount == null) {
         this.discount = 0;
       }
     },
 
-    // Clear Value of Discount text-field
+    //Clear value of discount text-field
     clearD() {
       if (this.discount == 0) {
         this.discount = null;
       }
     },
 
+    //For action
     action(type) {
       switch (type) {
         case "save":
@@ -1549,6 +1643,7 @@ export default {
       this.snackbar2.active = false;
     },
 
+    //For voiding order
     voidOrder() {
       this.payment = 0;
       this.discount = 0;
@@ -1565,6 +1660,7 @@ export default {
       };
     },
 
+    //For creating new order
     newOrder() {
       this.payment = 0;
       this.discount = 0;
@@ -1583,16 +1679,20 @@ export default {
     },
   },
 
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access POS")) {
       this.$store.commit("check_layout/container", "");
       this.get();
+      this.prodCat();
+      this.prodSubCat();
       this.getSalesCount();
     } else {
       this.$router.push({ name: "invalid-page" }).catch((errr) => {});
     }
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

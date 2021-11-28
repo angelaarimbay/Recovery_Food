@@ -16,15 +16,20 @@ use niklasravnsborg\LaravelPdf\Facades\Pdf;
 
 class ProductsListController extends Controller
 {
-    //
+    //Middleware
     public function __construct()
     {
         $this->middleware("auth");
     }
 
+    //For retrieving products list
     public function get(Request $t)
     {
+        $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0") .
+            ($t->subcategory ? " and sub_category=" . $t->subcategory : "");
+
         $table = tbl_outgoingprod::with(["category", "sub_category", "product_name"])
+            ->whereRaw($where)
             ->whereHas("requesting_branch", function ($q) {
                 $q->where("id", auth()->user()->branch);
             })->whereHas("product_name", function ($q1) use ($t) {
@@ -57,6 +62,7 @@ class ProductsListController extends Controller
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
+    //For retrieving sales count
     public function getSalesCount()
     {
         $count = DB::table("tbl_pos")->where(['branch' => auth()->user()->branch])
@@ -69,6 +75,7 @@ class ProductsListController extends Controller
         return ['count' => count($count), 'amount' => number_format($amount, 2)];
     }
 
+    //For saving transaction made
     public function save(Request $t)
     {
         $refno = strtotime(date("Y-m-d h:i:s.u"));
@@ -90,6 +97,7 @@ class ProductsListController extends Controller
         return $data;
     }
 
+    //For retrieving sales today
     public function getSalesToday()
     {
         $data = tbl_pos::where(['cashier' => auth()->user()->id])

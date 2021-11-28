@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class tbl_suppliesinventory extends Model
 {
+    //Always include this code for every model/table created
     protected $guarded = ['id'];
-    public $appends = [ 'category_details', 'supply_name_details'];
+    public $appends = ['category_details', 'supply_name_details'];
 
     public function getCategoryDetailsAttribute()
     {

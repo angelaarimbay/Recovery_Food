@@ -34,6 +34,7 @@
       </v-snackbar>
 
       <v-card-actions class="px-0 justify-center">
+        <!-- Export to PDF -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -48,6 +49,7 @@
           </template>
           <span>Export to PDF</span>
         </v-tooltip>
+        <!-- Export to Excel -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -62,6 +64,7 @@
           </template>
           <span>Export to Excel</span>
         </v-tooltip>
+        <!-- Print -->
         <v-tooltip bottom>
           <template #activator="data">
             <v-btn
@@ -80,7 +83,7 @@
 
       <!-- Category Field -->
       <v-row no-gutters justify="center">
-        <v-col cols="4" class="px-1" style="max-width: 150px">
+        <v-col cols="4" class="px-1" style="max-width: 150px; min-width: 150px">
           <v-card-actions class="pb-1 pt-4 px-0">
             <v-select
               hide-details
@@ -105,7 +108,14 @@
   </v-container>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 .v-list-item__content {
   color: white !important;
 }
@@ -117,9 +127,11 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import axios from "axios"; // Library for sending api request
 export default {
+  //Data
   data: () => ({
     category: "",
     suppcatlist: [],
@@ -131,10 +143,12 @@ export default {
     overlay: false,
   }),
 
+  //Onload
   created() {
     this.suppCat();
   },
 
+  //Methods
   methods: {
     async get(type) {
       if (this.category == "") {
@@ -155,8 +169,6 @@ export default {
               params: { category: this.category, type: type },
             }).then((response) => {
               if (response.data.size > 0) {
-                // console.log(response.data)
-                // return;
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
                 });
@@ -259,6 +271,8 @@ export default {
         this.overlay = false;
       }
     },
+
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
         this.suppcatlist.push({ supply_cat_name: "All", id: "All" });

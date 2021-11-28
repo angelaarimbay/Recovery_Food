@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -66,11 +67,12 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Button -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -83,6 +85,7 @@
                 Add Purchase Order
               </v-btn>
               <v-spacer></v-spacer>
+              <!-- Refresh -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -100,6 +103,7 @@
                 </template>
                 <span>Refresh</span>
               </v-tooltip>
+              <!-- Filter -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -140,9 +144,7 @@
                         dense
                         v-model="itemsPerPage"
                         @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
+                        :items="[5, 10, 15, 20]"
                         hide-details
                         background-color="grey darken-3"
                         flat
@@ -163,7 +165,7 @@
                     <v-card-actions class="px-0">
                       <v-text-field
                         v-model="search"
-                        placeholder="Supplier Name"
+                        placeholder="Invoice No."
                         single-line
                         dense
                         clearable
@@ -192,6 +194,33 @@
                     </v-card-actions>
                   </v-col>
 
+                  <!-- Supplier Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Supplier</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        v-model="supplier"
+                        :items="suppnamelist"
+                        item-text="supplier_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        placeholder="Supplier"
+                        @change="get"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
+
                   <!-- Date Picker -->
                   <v-col cols="4"
                     ><span class="text-caption text-xl-subtitle-2"
@@ -203,10 +232,8 @@
                       v-model="date1"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -250,10 +277,8 @@
                       v-model="date2"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -261,7 +286,7 @@
                           <v-text-field
                             hide-details
                             v-model="dateUntil"
-                            label="Date Until"
+                            placeholder="Date Until"
                             prepend-inner-icon="mdi-calendar-range"
                             readonly
                             v-on="on"
@@ -311,9 +336,10 @@
               indeterminate
               rounded
             ></v-progress-linear>
-            <template v-slot:[`item.supplier_name`]="{ item }"
-              >{{ item.supplier_name.supplier_name }}
-              {{ item.supplier_name.description }}</template
+            <template v-slot:[`item.supplier_name.supplier_name`]="{ item }"
+              >{{ item.supplier_name.supplier_name }} ({{
+                item.supplier_name.description
+              }})</template
             >
             <template v-slot:[`item.incoming_date`]="{ item }">
               {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
@@ -375,6 +401,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- ID -->
                     <v-text-field v-model="form.id" class="d-none" dense>
                       <template slot="label">
                         <div style="font-size: 12px">ID</div>
@@ -385,13 +412,12 @@
                       v-model="date3"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
+                        <!-- Incoming Date -->
                         <v-text-field
                           :prepend-inner-icon="
                             showIcon ? 'mdi-calendar-range' : ''
@@ -436,14 +462,15 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Invoice Number -->
                     <v-text-field
-                      :rules="formRules"
+                      :rules="formRulesInvoice"
                       v-model="form.invoice_number"
                       clearable
                       dense
                       counter
                       @keydown="invoiceKeydown($event)"
-                      maxlength="20"
+                      maxlength="15"
                       background-color="white"
                       flat
                       solo
@@ -465,6 +492,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Supplier Name -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.supplier_name"
@@ -493,6 +521,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Amount -->
                     <v-text-field
                       :rules="formRulesPrice"
                       v-model="form.amount"
@@ -520,7 +549,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :disabled="button"
                   dark
@@ -550,12 +579,20 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -593,6 +630,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -601,11 +639,21 @@ export default {
   metaInfo() {
     return { title: "Suppliers" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
+    showIcon() {
+      if (this.$vuetify.breakpoint.smAndUp) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -613,18 +661,19 @@ export default {
       message: "",
     },
     search: "",
+    supplier: "",
     button: false,
     dialog: false,
     filterDialog: false,
     table: [],
     suppnamelist: [],
 
-    // Form Rules
+    //Form rules
     formRules: [(v) => !!v || "This is required"],
     formRulesInvoice: [
       (v) => !!v || "This is required",
       (v) =>
-        /^(?:([0-9])(?!\1{9}))+$/.test(v) || "Invoice Number must be valid",
+        /^(?:([0-9]{3,})(?!\1{9}))+$/.test(v) || "Invoice Number must be valid",
     ],
     formRulesPrice: [
       (v) => !!v || "This is required",
@@ -638,7 +687,7 @@ export default {
       },
     ],
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       supplier_name: null,
@@ -647,21 +696,22 @@ export default {
       incoming_date: null,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "SUPPLIER NAME",
-        value: "supplier_name",
+        value: "supplier_name.supplier_name",
         class: "black--text",
       },
       {
@@ -695,7 +745,7 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     dateFrom: null,
     dateUntil: null,
     incomingDate: null,
@@ -704,7 +754,7 @@ export default {
     date3: false,
   }),
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Suppliers")) {
       this.dateFrom = this.getFormatDate(
@@ -722,6 +772,7 @@ export default {
     }
   },
 
+  //Methods
   methods: {
     invoiceKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
@@ -743,17 +794,16 @@ export default {
       return date.format(format);
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
@@ -779,7 +829,8 @@ export default {
           }
         }
       }
-      //if has changes
+
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -793,35 +844,50 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
-        // Validate first before compare
+        //Validate first before compare
         if (this.compare()) {
-          // Save or update data in the table
+          //Save or update data in the table
           await axios
             .post("/api/porder/save", this.form)
             .then((result) => {
-              //if the value is true then save to database
-              this.snackbar = {
-                active: true,
-                iconText: "check",
-                iconColor: "success",
-                message: "Successfully saved.",
-              };
-              this.get();
-              this.cancel();
+              //If the value is true then save to database
+              switch (result.data) {
+                case 0:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully saved.",
+                  };
+                  this.get();
+                  this.cancel();
+                  break;
+                case 1:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert",
+                    iconColor: "error",
+                    message: "The invoice number already exists.",
+                  };
+                  break;
+                default:
+                  break;
+              }
             })
             .catch((result) => {
-              // If false or error when saving
+              //If false or error when saving
             });
         }
       }
     },
 
+    //For retrieving purchase order
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/porder/get", {
@@ -829,27 +895,29 @@ export default {
             page: this.page,
             itemsPerPage: this.itemsPerPage,
             search: this.search,
+            supplier: this.supplier,
             dateFrom: this.dateFrom,
             dateUntil: this.dateUntil,
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For retrieving supplier names
     async suppName() {
       await axios.get("/api/porder/suppName").then((supp_name) => {
         this.suppnamelist = supp_name.data;
       });
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -864,19 +932,20 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

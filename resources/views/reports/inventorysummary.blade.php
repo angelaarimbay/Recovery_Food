@@ -43,14 +43,16 @@
 
 <body>
     <div class="row">
-        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong> <br>
-            Prepared By:
-            <strong>{{ $process_by }}</strong>
+        <div class="header" style="text-align: right"> Date: <strong>{{ date('F d, Y') }}</strong>
         </div>
     </div>
 
     <div style="text-align: center">
-        <img src="{{ public_path() . '/img/logo.jpg' }}" style="width: 50px"></img>
+        @if ($img != null)
+            <img src="{{ public_path() . '/storage/logo/' . $img }}" style="width: 50px"></img>
+        @else
+            <img src="{{ public_path() . '/img/logo.jpg' }}" style="width: 50px"></img>
+        @endif
     </div>
     <p class="header">Recovery Food</p>
     <p class="header">Inventory Summary Report</p>
@@ -110,8 +112,16 @@
         @endforeach
     </table>
 
+    <div class="row" style="margin-top: 15px">
+        <div class="header" style="text-align: right">
+            Prepared By:
+            <strong>{{ $process_by }}</strong>
+        </div>
+    </div>
     <!-- Page Number -->
-    <p style="bottom: 0%; position: fixed">Page {PAGENO} of {nb}</p>
+    <htmlpagefooter name="page-footer">
+        <p style="bottom: 0%;  ">Page {PAGENO} of {nb}</p>
+    </htmlpagefooter>
 </body>
 </iframe>
 

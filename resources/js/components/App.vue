@@ -17,9 +17,9 @@
 <script>
 import ft from "./Footer";
 import Loading from "./Loading";
-import axios from "axios"; // Library for sending api request
+import axios from "axios"; //Library for sending api request
 import { mapGetters } from "vuex";
-// Load layout components dynamically.
+//Load layout components dynamically.
 const requireContext = require.context("~/layouts", false, /.*\.vue$/);
 
 const layouts = requireContext
@@ -37,16 +37,18 @@ export default {
     ft,
  
   },
-
+  //Data
   data: () => ({
     layout: null,
     temppath: "",
     defaultLayout: "default",
   }),
 
+  //Computed
   computed: mapGetters({
     user: "auth/user",
   }),
+
   metaInfo() {
     const { appName } = window.config;
 
@@ -55,6 +57,7 @@ export default {
       titleTemplate: `%s | ${appName}`,
     };
   },
+
   created() {
     this.getLogo();
     this.$store.commit("check_layout/container", "container");
@@ -64,6 +67,7 @@ export default {
     this.$loading = this.$refs.loading;
   },
 
+  //Methods
   methods: {
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {

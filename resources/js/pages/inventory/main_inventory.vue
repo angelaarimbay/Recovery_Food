@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -66,11 +67,12 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-row no-gutters>
             <v-spacer></v-spacer>
+            <!-- Refresh -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -88,6 +90,7 @@
               </template>
               <span>Refresh</span>
             </v-tooltip>
+            <!-- Filter -->
             <v-tooltip bottom>
               <template #activator="data">
                 <v-btn
@@ -128,9 +131,7 @@
                       dense
                       v-model="itemsPerPage"
                       @change="itemperpage"
-                      :items="[
-                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                      ]"
+                      :items="[5, 10, 15, 20]"
                       hide-details
                       background-color="grey darken-3"
                       flat
@@ -216,7 +217,7 @@
             :headers="headers"
             :items="table.data"
             :loading="progressbar"
-            :page.sync="page" 
+            :page.sync="page"
             ref="progress"
             :items-per-page="itemsPerPage"
             hide-default-footer
@@ -235,8 +236,8 @@
               <div v-if="item.triggerpoint == 0">
                 <span style="color: red">Order</span>
               </div>
-              <div v-else-if="item.triggerpoint ==  1" class="text-black">
-                Manage
+              <div v-else-if="item.triggerpoint == 1" class="text-black">
+                <span>Manage</span>
               </div>
             </template>
             <template v-slot:[`item.net_price`]="{ item }"
@@ -249,10 +250,10 @@
               v-slot:[`item.onhand_a`]="{ item }"
               style="text-align: right"
             >
-              <small>
-                Qty : {{ item.onhand_q }} <br />
-                Value: {{ item.onhand_a }}
-              </small>
+              <span>
+                <strong>Qty:</strong> {{ item.onhand_q }} <br />
+                <strong>Value:</strong> {{ item.onhand_a }}
+              </span>
             </template>
 
             <!-- <template
@@ -398,10 +399,12 @@
                     <br />
                   </v-col>
                 </v-row>
+
                 <v-row
                   :class="{
                     'text-caption': $vuetify.breakpoint.smAndDown,
                   }"
+                  class="border rounded"
                 >
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                     <v-row>
@@ -685,6 +688,10 @@
                       </v-col>
                     </v-row>
                   </v-col>
+                  <v-divider
+                    vertical
+                    :hidden="$vuetify.breakpoint.xsOnly"
+                  ></v-divider>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                     <v-row>
                       <v-col
@@ -841,7 +848,7 @@
                         md="3"
                         sm="3"
                       >
-                        {{ currentdata.triggerpoint }}
+                        {{ currentdata.triggerpoint == 0 ? "Order" : "Manage" }}
                       </v-col>
                     </v-row>
                     <v-row>
@@ -972,7 +979,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :small="$vuetify.breakpoint.smAndDown"
                   dark
@@ -990,12 +997,20 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -1035,6 +1050,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -1043,11 +1059,14 @@ export default {
   metaInfo() {
     return { title: "Inventory" };
   },
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
     }),
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -1064,7 +1083,7 @@ export default {
     filterDialog: false,
     viewdialog: false,
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       beginning_inv_qty: null,
@@ -1074,17 +1093,18 @@ export default {
       ending_inv_qty: null,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "CATEGORY",
@@ -1134,10 +1154,10 @@ export default {
     ],
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.get();
@@ -1147,6 +1167,7 @@ export default {
     }
   },
 
+  //Methods
   methods: {
     itemperpage() {
       this.page = 1;
@@ -1158,21 +1179,22 @@ export default {
       return numbr.format(format);
     },
 
-    // View Branch Info
+    //View Branch Info
     openViewDialog(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
       this.viewdialog = true;
     },
 
-    // Close View Dialog
+    //Close View Dialog
     closeViewDialog() {
       this.viewdialog = false;
     },
 
+    //For retrieving main inventory
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/misupp/get", {
@@ -1184,22 +1206,23 @@ export default {
           },
         })
         .then((result) => {
-          //if the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; // Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/misupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -1211,19 +1234,20 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

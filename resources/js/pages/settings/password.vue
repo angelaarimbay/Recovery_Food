@@ -1,5 +1,5 @@
 <template>
-  <div style="min-width: 280px" class="pa-0">
+  <div style="min-width: 310px" class="pa-0">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -65,7 +65,7 @@
     <v-container v-if="token == ''" class="pa-2">
       <v-row no-gutters>
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2">
-          <v-card elevation="2" class="pa-2" style="border-radius: 10px">
+          <v-card elevation="1" class="pa-2" style="border-radius: 10px">
             <v-card-text>
               <v-card flat>
                 <v-row>
@@ -85,6 +85,7 @@
                 </v-row>
                 <br />
                 <v-form ref="form" id="password">
+                  <!-- Password -->
                   <v-text-field
                     :dense="$vuetify.breakpoint.smAndDown"
                     :rules="rules.passwordRules"
@@ -97,6 +98,7 @@
                     flat
                     solo
                   ></v-text-field>
+                  <!-- Confirm Password -->
                   <v-text-field
                     :dense="$vuetify.breakpoint.smAndDown"
                     :rules="[
@@ -112,7 +114,7 @@
                     flat
                     solo
                   ></v-text-field>
-
+                  <!-- Save Button -->
                   <v-btn
                     :large="$vuetify.breakpoint.mdAndUp"
                     class="
@@ -135,7 +137,7 @@
         </v-col>
 
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2">
-          <v-card elevation="2" class="pa-2" style="border-radius: 10px">
+          <v-card elevation="1" class="pa-2" style="border-radius: 10px">
             <v-card-text>
               <b> Tips for setting up a strong password:</b> <br />
               <v-icon size="10">mdi-circle</v-icon> Use a unique password that
@@ -156,7 +158,14 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1150px !important;
+  }
+}
+
 .v-application #password .white {
   border: 1px solid #bdbdbd !important;
 }
@@ -165,6 +174,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import Form from "vform";
 import axios from "axios";
@@ -174,6 +184,8 @@ export default {
   metaInfo() {
     return { title: "Password" };
   },
+
+  //Data
   data: () => ({
     snackbar: {
       active: false,
@@ -186,12 +198,14 @@ export default {
     token: "",
     value: null,
     value1: null,
+
     rules: {
       passwordRules: [
         (v) => !!v || "This is required",
         (v) => (v && v.length <= 10) || "Password must be 10 characters",
       ],
     },
+
     form: new Form({
       password: "",
       confirm: "",
@@ -199,7 +213,9 @@ export default {
     remember: false,
   }),
 
+  //Methods
   methods: {
+    //For changing
     async change() {
       if (this.$refs.form.validate()) {
         // Submit the form.

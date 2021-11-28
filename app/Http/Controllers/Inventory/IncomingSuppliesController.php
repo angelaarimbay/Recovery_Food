@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\tbl_incomingsupp;
 use App\Models\tbl_masterlistsupp;
 use App\Models\tbl_suppcat;
-use App\Models\tbl_supplist;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -14,18 +13,20 @@ use Illuminate\Support\Facades\DB;
 
 class IncomingSuppliesController extends Controller
 {
+    //Middleware
     public function __construct()
     {
         $this->middleware('auth');
     }
+
+    //For saving incoming supplies
     public function save(Request $data)
     {
-
         $table = tbl_incomingsupp::where("supply_name", "!=", null);
-
         $table_clone = clone $table;
+
         if ($table_clone->where("id", $data->id)->count() > 0) {
-            // Update
+            //Update
             $table_clone = clone $table;
             $table_clone->where("id", $data->id)->update(
                 ["category" => $data->category,
@@ -42,17 +43,17 @@ class IncomingSuppliesController extends Controller
         return 0;
     }
 
+    //For retrieving incoming supplies
     public function get(Request $t)
     {
         $where = ($t->category ? "category !=0  and category=" . $t->category : "category != 0");
-
         $table = tbl_incomingsupp::with(["category", "supply_name", 'supplier'])->whereRaw($where);
 
         if ($t->dateFrom && $t->dateUntil) {
             $table = $table->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
         }
 
-        if ($t->search) { // If has value
+        if ($t->search) { //If has value
             $table = $table->whereHas('supply_name', function ($q) use ($t) {
                 $q->where('supply_name', 'like', "%" . $t->search . "%");
             });
@@ -73,7 +74,7 @@ class IncomingSuppliesController extends Controller
             $temp['supply_name'] =
             DB::table("tbl_masterlistsupps")
                 ->selectRaw(' CONCAT(supply_name , " ", COALESCE(description,"")) as supply_name, category, net_price, unit, description, id')
-                ->where("id", $value->supply_name)->where("status", 1)->first();
+                ->where("id", $value->supply_name)->first();
             $temp['supplier'] = $value->supplier_details;
             $temp['amount'] = number_format($value->amount, 2);
             $wvat = tbl_masterlistsupp::where("id", $value->id);
@@ -85,48 +86,29 @@ class IncomingSuppliesController extends Controller
         return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
+    //For retreiving supply categories
     public function suppCat()
     {
         return tbl_suppcat::select(["supply_cat_name", "id"])->where("status", 1)->get();
     }
 
+    //For retrieving supply names
     public function suppName(Request $t)
     {
         $data = DB::table("tbl_masterlistsupps")
             ->selectRaw(' CONCAT(supply_name , " ", COALESCE(description,"")) as supply_name, category, net_price, unit, description, id')
+            ->where("supplier", (integer) $t->supplier)->where("status", 1)
             ->where("category", (integer) $t->category)->where("status", 1)->get();
         return $data;
     }
 
+    //For retrieving suppliers info
     public function suppliers()
     {
-        return tbl_supplist::get();
+        $data = DB::table("tbl_supplists")
+            ->selectRaw(' CONCAT(supplier_name , " (", COALESCE(description,"") ,")") as supplier_name, phone_number, contact_person, address, description, id')
+            ->where("status", 1)
+            ->get();
+        return $data;
     }
-
-    // public function getTotalCurrentMonth(Request $t){
-    //     //get 1 - number of days for the month
-    //     $date1 =  date("Y-m-d h:i:s",strtotime(date("m")."-01-".date("Y"). ' 00:00:00'));
-    //     $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
-    //     $date2 = date("Y-m-d h:i:s",strtotime(date("m").'/'.$date2.'/'.date("Y"). ' 11:59:59'));
-
-    //     try {
-    //            //get the group id's
-    //         $id_group = tbl_masterlistsupp::where("id",$t->item)->first()->group;
-    //         $id_array = tbl_masterlistsupp::where("group",$valid_group)->pluck('id');
-    //         $get_specific_item_amount = tbl_incomingsupp::query()
-    //         ->wherein("supply_name",$id_array)
-    //         ->whereBetween("incoming_date",[$date1,$date2])
-    //         ->sum('amount');
-    //         $get_specific_item_quantity =tbl_incomingsupp::query()
-    //         ->wherein("supply_name",$id_array)
-    //         ->whereBetween("incoming_date",[$date1,$date2])
-    //         ->sum('quantity');
-
-    //         // mali parin pla to. bakit po? w8 rewrite kopoba yung formula ulit from excel?
-
-    //        return  $get_specific_item_amount . ' '. $get_specific_item_quantity;
-    //     } catch (\Throwable $th) {
-    //         return false;
-    //     }
-    // }
 }

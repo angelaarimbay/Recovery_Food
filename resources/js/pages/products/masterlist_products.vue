@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -66,11 +67,12 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Buttons -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -83,6 +85,7 @@
                 Add Product
               </v-btn>
               <v-spacer></v-spacer>
+              <!-- Refresh -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -100,6 +103,7 @@
                 </template>
                 <span>Refresh</span>
               </v-tooltip>
+              <!-- Filter -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -140,9 +144,7 @@
                         dense
                         v-model="itemsPerPage"
                         @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
+                        :items="[5, 10, 15, 20]"
                         hide-details
                         background-color="grey darken-3"
                         flat
@@ -218,6 +220,33 @@
                       </v-select>
                     </v-card-actions>
                   </v-col>
+
+                  <!-- Subcategory Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Subcategory</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        v-model="subcategory"
+                        :items="prodsubcatlist"
+                        item-text="prod_sub_cat_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        placeholder="Subcategory"
+                        @change="get"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
                 </v-row>
               </v-card>
             </v-dialog>
@@ -271,19 +300,25 @@
                   </v-icon></template
                 >
                 <span v-if="item.days >= 1 && item.days < 8"
-                  >Near to Expire</span
+                  >Nearly Expired</span
                 >
                 <span v-else-if="item.days < 1">Expired</span> </v-tooltip
               >{{ item.product_name }} {{ item.description }}</template
             >
-            <!-- <template v-slot:[`item.diff_quantity`]="{ item }"> 
-              <div v-if="item.diff_quantity<=5">
-                <span style="color: red"> {{ item.diff_quantity }}</span>
+            <template v-slot:[`item.diff_quantity`]="{ item }">
+              <div v-if="item.diff_quantity <= item.critical_limit">
+                {{ item.diff_quantity
+                }}<v-tooltip bottom>
+                  <template #activator="data"
+                    ><v-icon v-on="data.on" color="red">mdi-alert</v-icon>
+                  </template>
+                  <span>Critical State</span>
+                </v-tooltip>
               </div>
-              <div v-else-if="item.diff_quantity>=6 && item.diff_quantity <=10">
-                <span style="color: orange"> {{ item.diff_quantity }}</span>
+              <div v-else>
+                {{ item.diff_quantity }}
               </div>
-            </template> -->
+            </template>
             <template v-slot:[`item.count`]="{ item }">
               {{ item.row }}</template
             >
@@ -358,12 +393,14 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- ID -->
                     <v-text-field v-model="form.id" class="d-none" dense>
                       <template slot="label">
                         <div style="font-size: 12px">ID</div>
                       </template>
                     </v-text-field>
 
+                    <!-- Status -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.status"
@@ -392,6 +429,7 @@
                     sm="6"
                     md="6"
                   >
+                    <!-- Product Category -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.category"
@@ -420,6 +458,7 @@
                     sm="6"
                     md="6"
                   >
+                    <!-- Product Subcategory -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.sub_category"
@@ -434,7 +473,7 @@
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
-                          Sub Category <span style="color: red">*</span>
+                          Subcategory <span style="color: red">*</span>
                         </div>
                       </template>
                     </v-select>
@@ -448,6 +487,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Product Name -->
                     <v-text-field
                       :rules="formRules"
                       v-model="form.product_name"
@@ -477,6 +517,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Description -->
                     <v-text-field
                       :rules="formRulesDesc"
                       v-model="form.description"
@@ -498,44 +539,14 @@
 
                   <v-col
                     class="tfield py-0"
-                    cols="12"
-                    xl="8"
-                    lg="8"
-                    sm="8"
-                    md="8"
-                  >
-                    <v-text-field
-                      :rules="formRulesPrice"
-                      v-model="form.price"
-                      clearable
-                      dense
-                      counter
-                      @keydown="numberKeydown($event)"
-                      @input="compute"
-                      @click:clear="compute"
-                      maxlength="15"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Price <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="4"
-                    lg="4"
-                    sm="4"
-                    md="4"
+                    cols="6"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
                   >
                     <v-layout align-center>
+                      <!-- VAT -->
                       <v-text-field
                         v-model="temp_vat"
                         disabled
@@ -564,6 +575,38 @@
                   </v-col>
 
                   <v-col
+                    class="tfield py-0"
+                    cols="6"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
+                  >
+                    <!-- Price -->
+                    <v-text-field
+                      :rules="formRulesPrice"
+                      v-model="form.price"
+                      clearable
+                      dense
+                      counter
+                      @keydown="numberKeydown($event)"
+                      @input="compute"
+                      @click:clear="compute"
+                      maxlength="15"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Price <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+
+                  <v-col
                     class="tfield py-0 d-none"
                     cols="12"
                     xl="12"
@@ -571,6 +614,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Price w/ VAT -->
                     <v-text-field
                       disabled
                       v-model="form.without_vat"
@@ -589,20 +633,49 @@
 
                   <v-col
                     class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
+                    cols="6"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
+                  >
+                    <!-- Critical Limit -->
+                    <v-text-field
+                      :rules="formRulesPrice"
+                      v-model="form.critical_limit"
+                      clearable
+                      dense
+                      @keydown="numberKeydown($event)"
+                      counter
+                      maxlength="8"
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Critical Limit<span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+
+                  <!-- Date Picker -->
+                  <v-col
+                    class="tfield py-0"
+                    cols="6"
+                    xl="6"
+                    lg="6"
+                    sm="6"
+                    md="6"
                   >
                     <v-menu
                       v-model="menu"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -645,7 +718,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :disabled="button"
                   dark
@@ -675,7 +748,14 @@
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
 /* #table1 .style-1 {
   color: #fb8c00;
 }
@@ -688,6 +768,7 @@
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -725,6 +806,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -735,6 +817,8 @@ export default {
   metaInfo() {
     return { title: "Products" };
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -743,6 +827,7 @@ export default {
     },
     search: "",
     category: "",
+    subcategory: "",
     button: false,
     dialog: false,
     sheet: false,
@@ -757,13 +842,17 @@ export default {
     date: null,
     menu: false,
 
-    // Form Rules
+    //Form rules
     formRules: [
       (v) => (!!v && v.length >= 3) || "This is required",
       (v) =>
         /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/])(?!\3{1}))+$/i.test(
           v
         ) || "This field must have a valid value",
+    ],
+    formRulesQuantity: [
+      (v) => !!v || "This is required",
+      (v) => /^[1-9][0-9]*$/.test(v) || "Quantity must be valid",
     ],
     formRulesDesc: [
       (v) =>
@@ -785,7 +874,7 @@ export default {
       (v) => Number.isInteger(Number(v)) || "The value must be an integer",
     ],
 
-    // Form Data
+    //Form Data
     form: {
       id: null,
       status: null,
@@ -796,22 +885,24 @@ export default {
       price: null,
       vat: null,
       without_vat: null,
+      critical_limit: null,
       exp_date: null,
     },
     temp_vat: null,
     vat: true,
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "CATEGORY",
@@ -820,7 +911,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "SUB-CATEGORY",
+        text: "SUBCATEGORY",
         value: "sub_category.prod_sub_cat_name",
         filterable: false,
         class: "black--text",
@@ -841,7 +932,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "QTY",
+        text: "STOCKS ON HAND",
         value: "diff_quantity",
         align: "right",
         filterable: false,
@@ -865,10 +956,10 @@ export default {
     page: 1,
     pageCount: 0,
     disabled: true,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
   }),
 
-  // Dynamic Width
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -882,7 +973,7 @@ export default {
     },
   },
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Products")) {
       this.get();
@@ -904,7 +995,7 @@ export default {
     //     }
     //   }
     // },
-
+    //Keydown
     valueKeydown(e) {
       if (/[~`!@#$%^&()_={}[\]\\"*|:;.<>+\?]/.test(e.key)) {
         e.preventDefault();
@@ -926,16 +1017,16 @@ export default {
       this.get();
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
@@ -963,7 +1054,7 @@ export default {
           }
         }
       }
-      //if has changes
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -977,49 +1068,60 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
-      this.compute();
-      if (this.$refs.form.validate()) {
-        // Validate first before compare
-        if (this.compare()) {
-          // Save or update data in the table
-          await axios
-            .post("/api/mprod/save", this.form)
-            .then((result) => {
-              //if the value is true then save to database
-              switch (result.data) {
-                case 0:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "check",
-                    iconColor: "success",
-                    message: "Successfully saved.",
-                  };
-                  this.get();
-                  this.cancel();
-                  break;
-                case 1:
-                  this.snackbar = {
-                    active: true,
-                    iconText: "alert",
-                    iconColor: "error",
-                    message: "The supply name already exists.",
-                  };
-                  break;
-                default:
-                  break;
-              }
-            })
-            .catch((result) => {
-              // If false or error when saving
-            });
+      if (this.temp_vat == null) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert",
+          iconColor: "error",
+          message: "Set the VAT first.",
+        };
+      } else {
+        this.compute();
+        if (this.$refs.form.validate()) {
+          //Validate first before compare
+          if (this.compare()) {
+            //Save or update data in the table
+            await axios
+              .post("/api/mprod/save", this.form)
+              .then((result) => {
+                //If the value is true then save to database
+                switch (result.data) {
+                  case 0:
+                    this.snackbar = {
+                      active: true,
+                      iconText: "check",
+                      iconColor: "success",
+                      message: "Successfully saved.",
+                    };
+                    this.get();
+                    this.cancel();
+                    break;
+                  case 1:
+                    this.snackbar = {
+                      active: true,
+                      iconText: "alert",
+                      iconColor: "error",
+                      message: "The product name already exists.",
+                    };
+                    break;
+                  default:
+                    break;
+                }
+              })
+              .catch((result) => {
+                //If false or error when saving
+              });
+          }
         }
       }
     },
+
+    //For retrieving masterlist products
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/mprod/get", {
@@ -1028,24 +1130,27 @@ export default {
             itemsPerPage: this.itemsPerPage,
             search: this.search,
             category: this.category,
+            subcategory: this.subcategory,
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
-          this.progressbar = false; // Hide the progress bar
+          this.progressbar = false; //Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For retrieving product categories
     async prodCat() {
       await axios.get("/api/mprod/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
     },
 
+    //For retrieving product subcategories
     async prodSubCat() {
       await axios.get("/api/mprod/prodSubCat").then((prodsub_cat) => {
         this.prodsubcatlist = prodsub_cat.data;
@@ -1057,18 +1162,17 @@ export default {
       return date.format(format);
     },
 
-    // 1. get specific item info ,eg total amount, total quantity
-    // 2. check if true then total / tem_vat
-    // 3. else wo/vat = total (total amt / quantity)
+    //For computing price with VAT
     async compute() {
       this.form.without_vat = (this.form.price / this.temp_vat).toFixed(2);
       this.form.vat = this.temp_vat;
       this.getVat();
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
+      console.log(this.currentdata);
       this.form.id = row.id;
       this.form.status = row.status;
       this.form.category = row.category.id;
@@ -1080,6 +1184,7 @@ export default {
       this.vat = true;
       this.temp_vat = row.vat;
       this.form.without_vat = row.without_vat;
+      this.form.critical_limit = row.critical_limit;
       this.form.exp_date = row.exp_date
         ? this.getFormatDate(row.exp_date, "YYYY-MM-DD")
         : "";
@@ -1088,7 +1193,7 @@ export default {
       this.compute();
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       if (this.form.temp_vat !== null) {
         this.$refs.form.resetValidation();
@@ -1100,6 +1205,8 @@ export default {
         this.dialog = true;
       }
     },
+
+    //For retrieving VAT
     async getVat() {
       await axios
         .get("/api/settings/vat/get", { params: { type: "p" } })
@@ -1108,7 +1215,7 @@ export default {
         });
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       for (var key in this.form) {
         if (key == "vat") {
@@ -1121,6 +1228,7 @@ export default {
     },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();

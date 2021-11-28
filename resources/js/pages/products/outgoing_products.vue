@@ -1,5 +1,6 @@
 <template>
-  <div style="min-width: 280px">
+  <!-- Div -->
+  <div style="min-width: 310px">
     <!-- Snackbar -->
     <v-snackbar
       :vertical="$vuetify.breakpoint.xsOnly"
@@ -66,11 +67,12 @@
     </v-container>
 
     <!-- Main Card -->
-    <v-card elevation="2" class="mt-2" style="border-radius: 10px">
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
         <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
           <v-card-actions class="px-0">
             <v-row no-gutters>
+              <!-- Add Button -->
               <v-btn
                 color="primary"
                 style="text-transform: none"
@@ -83,6 +85,25 @@
                 Add Outgoing Product
               </v-btn>
               <v-spacer></v-spacer>
+              <!-- Requests -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2"
+                    color="warning"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="openRequestDialog"
+                    v-on="data.on"
+                    icon
+                  >
+                    <v-icon>mdi-clipboard-text</v-icon>
+                  </v-btn>
+                </template>
+                <span>Request(s)</span>
+              </v-tooltip>
+              <!-- Refresh -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -100,6 +121,7 @@
                 </template>
                 <span>Refresh</span>
               </v-tooltip>
+              <!-- Filter -->
               <v-tooltip bottom>
                 <template #activator="data">
                   <v-btn
@@ -140,9 +162,7 @@
                         dense
                         v-model="itemsPerPage"
                         @change="itemperpage"
-                        :items="[
-                          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                        ]"
+                        :items="[5, 10, 15, 20]"
                         hide-details
                         background-color="grey darken-3"
                         flat
@@ -246,6 +266,33 @@
                     </v-card-actions>
                   </v-col>
 
+                  <!-- Subcategory Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Subcategory</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        hide-details
+                        v-model="subcategory"
+                        :items="prodsubcatlist"
+                        item-text="prod_sub_cat_name"
+                        item-value="id"
+                        clearable
+                        dense
+                        placeholder="Subcategory"
+                        @change="get"
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
+
                   <!-- Date Picker -->
                   <v-col cols="4"
                     ><span class="text-caption text-xl-subtitle-2"
@@ -257,10 +304,8 @@
                       v-model="date1"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -304,10 +349,8 @@
                       v-model="date2"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
@@ -435,13 +478,12 @@
                       v-model="date3"
                       :close-on-content-click="false"
                       :nudge-right="35"
-                      lazy
                       transition="scale-transition"
                       offset-y
-                      full-width
                       min-width="290px"
                     >
                       <template v-slot:activator="{ on }">
+                        <!-- Outgoing Date -->
                         <v-text-field
                           :prepend-inner-icon="
                             showIcon ? 'mdi-calendar-range' : ''
@@ -485,6 +527,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Requesting Branch -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.requesting_branch"
@@ -513,6 +556,7 @@
                     sm="6"
                     md="6"
                   >
+                    <!-- Product Category -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.category"
@@ -542,6 +586,7 @@
                     sm="6"
                     md="6"
                   >
+                    <!-- Product Subcategory -->
                     <v-select
                       :rules="formRulesNumberRange"
                       v-model="form.sub_category"
@@ -557,7 +602,7 @@
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
-                          Sub-Category <span style="color: red">*</span>
+                          Subcategory <span style="color: red">*</span>
                         </div>
                       </template>
                     </v-select>
@@ -571,6 +616,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Product Name -->
                     <v-autocomplete
                       :rules="formRules"
                       v-model="form.product_name"
@@ -594,17 +640,19 @@
                     <v-card flat class="px-4 pb-6" v-if="form.product_name">
                       <table style="width: 100%; font-size: 11px">
                         <tr>
-                          <th
+                          <td
                             class="text-left pr-2"
-                            style="width: 60%"
+                            style="width: 50%"
                             v-if="form.product_name.description"
                           >
                             Description:
-                          </th>
+                          </td>
                           <th>{{ form.product_name.description }}</th>
                         </tr>
                         <tr>
-                          <th class="text-left pr-2">Net Price:</th>
+                          <td class="text-left pr-2" style="width: 50%">
+                            Net Price:
+                          </td>
                           <th>
                             {{
                               getFormatCurrency(
@@ -615,7 +663,9 @@
                           </th>
                         </tr>
                         <tr>
-                          <th class="text-left pr-2">Available Quantity:</th>
+                          <td class="text-left pr-2" style="width: 50%">
+                            Available Quantity:
+                          </td>
                           <th>{{ getQuantity }}</th>
                         </tr>
                       </table>
@@ -630,6 +680,7 @@
                     sm="12"
                     md="12"
                   >
+                    <!-- Quantity -->
                     <v-text-field
                       :rules="formRulesQuantity"
                       v-model="form.quantity"
@@ -645,7 +696,7 @@
                     >
                       <template slot="label">
                         <div style="font-size: 12px">
-                          Product Quantity <span style="color: red">*</span>
+                          Quantity <span style="color: red">*</span>
                         </div>
                       </template>
                     </v-text-field>
@@ -657,7 +708,7 @@
               <v-card-actions class="px-0 pb-0">
                 <v-spacer></v-spacer>
                 <v-btn
-                  color="error"
+                  color="black"
                   depressed
                   :disabled="button"
                   dark
@@ -682,17 +733,381 @@
             </v-card>
           </v-dialog>
         </v-form>
+
+        <!-- Branch Request List -->
+        <v-dialog
+          v-model="dialog1"
+          fullscreen
+          transition="dialog-bottom-transition"
+          persistent
+          no-click-animation
+        >
+          <v-toolbar
+            dense
+            dark
+            class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
+          >
+            Branch Request(s)
+            <v-spacer></v-spacer>
+            <v-icon
+              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              text
+              @click="dialog1 = false"
+              >mdi-close
+            </v-icon>
+          </v-toolbar>
+
+          <v-card tile height="auto" style="background-color: #f1ffff">
+            <v-card-text class="py-2 px-3">
+              <v-container class="pa-xl-3 pa-lg-3 pa-md-2 pa-sm-0 pa-0">
+                <v-card elevation="1" class="mt-2" style="border-radius: 10px">
+                  <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-4">
+                    <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
+                      <v-row no-gutters>
+                        <v-spacer></v-spacer>
+                        <!-- Refresh -->
+                        <v-tooltip bottom>
+                          <template #activator="data">
+                            <v-btn
+                              class="mr-2"
+                              color="success"
+                              style="text-transform: none"
+                              depressed
+                              :small="$vuetify.breakpoint.smAndDown"
+                              dark
+                              @click="requestList"
+                              v-on="data.on"
+                              icon
+                              ><v-icon>mdi-refresh</v-icon></v-btn
+                            >
+                          </template>
+                          <span>Refresh</span>
+                        </v-tooltip>
+                      </v-row>
+
+                      <!-- Table -->
+                      <v-data-table
+                        id="table1"
+                        :headers="headers1"
+                        :items="table1.data"
+                        :loading="progressbar1"
+                        :page.sync="page1"
+                        ref="progress"
+                        :items-per-page="itemsPerPage1"
+                        hide-default-footer
+                        @page-count="pageCount1 = $event"
+                        class="mt-2 table-striped border"
+                      >
+                        <!-- Progress Bar -->
+                        <v-progress-linear
+                          color="red darken-2"
+                          class="px-0 mx-0"
+                          slot="progress"
+                          indeterminate
+                          rounded
+                        ></v-progress-linear>
+                        <template v-slot:[`item.request_date`]="{ item }">
+                          {{
+                            getFormatDate(
+                              item.request_date,
+                              "YYYY-MM-DD hh:mm A"
+                            )
+                          }}
+                        </template>
+                        <template v-slot:[`item.product_name`]="{ item }">
+                          {{ item.product_name }}
+                          {{ item.description }}</template
+                        >
+
+                        <template v-slot:[`item.status`]="{ item }">
+                          <div v-if="item.status == 1" class="text-warning">
+                            Pending
+                          </div>
+                          <div v-else-if="item.status == 2" class="text-info">
+                            Confirmed / For Delivery
+                          </div>
+                          <div
+                            v-else-if="item.status == 3"
+                            class="text-success"
+                          >
+                            Completed
+                          </div>
+                        </template>
+
+                        <template v-slot:[`item.id`]="{ item }">
+                          <v-tooltip bottom>
+                            <template #activator="data">
+                              <v-btn
+                                icon
+                                color="red darken-2"
+                                @click="viewRequestDialog(item)"
+                                small
+                                :x-small="$vuetify.breakpoint.smAndDown"
+                                v-on="data.on"
+                              >
+                                <v-icon>mdi-eye</v-icon>
+                              </v-btn>
+                            </template>
+                            <span>View</span>
+                          </v-tooltip>
+                        </template>
+                      </v-data-table>
+                      <!-- Paginate -->
+                      <div class="pbutton text-center pt-7">
+                        <v-pagination
+                          v-model="page1"
+                          :total-visible="7"
+                          :length="table1.last_page"
+                          color="red darken-2"
+                        ></v-pagination>
+                      </div>
+                    </v-container>
+                  </v-container>
+                </v-card>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+
+        <!-- View Requested Products List Form -->
+        <v-dialog v-model="dialog2" width="900px">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Requested Products List
+              <v-spacer></v-spacer>
+              <v-icon text @click="dialog2 = false">mdi-close </v-icon>
+            </v-toolbar>
+            <v-card-text class="px-0">
+              <v-card-text>
+                <div class="px-0" v-if="table2.length > 0">
+                  <v-row no-gutters>
+                    <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                      Requested By:<br /><strong
+                        >{{ table2[0].branch }}
+                        -
+                        {{ table2[0].user }}</strong
+                      >
+                    </v-col>
+                    <v-col
+                      :class="{ 'text-right': $vuetify.breakpoint.smAndUp }"
+                      cols="12"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                    >
+                      Date Requested:<br /><strong>{{
+                        getFormatDate(
+                          table2[0].request_date,
+                          "YYYY-MM-DD hh:mm A"
+                        )
+                      }}</strong>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card-text>
+
+              <!-- Table -->
+              <v-data-table
+                id="table1"
+                :headers="headers2"
+                show-select
+                :items="table2"
+                dense
+                item-key="product_id"
+                :items-per-page="10"
+                v-model="selected"
+                class="table-striped border"
+              >
+                <template
+                  v-slot:[`item.data-table-select`]="{
+                    item,
+                    isSelected,
+                    select,
+                  }"
+                >
+                  <v-simple-checkbox
+                    :value="
+                      item.status !== 3 &&
+                      isSelected &&
+                      item.status !== 2 &&
+                      isSelected
+                    "
+                    :readonly="item.status == 3 || item.status == 2"
+                    :disabled="item.status == 3 || item.status == 2"
+                    @input="select($event)"
+                  ></v-simple-checkbox>
+                </template>
+                <template v-slot:[`item.product_name`]="{ item }">
+                  {{ item.product_name }} {{ item.description }}</template
+                >
+
+                <template v-slot:[`item.status`]="{ item }">
+                  <div v-if="item.status == 1" class="text-warning">
+                    Pending
+                  </div>
+                  <div v-else-if="item.status == 2" class="text-info">
+                    Confirmed / For Delivery
+                  </div>
+                  <div v-else-if="item.status == 3" class="text-success">
+                    Completed
+                  </div>
+                </template>
+
+                <template v-slot:[`item.product_id`]="{ item }">
+                  <div v-if="item.status == 1">
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          icon
+                          color="red darken-2"
+                          @click="editRequest(item)"
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          v-on="data.on"
+                        >
+                          <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Edit</span>
+                    </v-tooltip>
+                  </div>
+                </template>
+              </v-data-table>
+            </v-card-text>
+            <v-divider class="my-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="px-0 pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                color="primary"
+                @click="processRequest"
+                :disabled="!disabled"
+                text
+              >
+                Approve Request
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <!-- Quantity Dialog Form -->
+        <v-dialog v-model="dialog3" max-width="450px">
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Enter Quantity
+              <v-spacer></v-spacer>
+              <v-icon text @click="dialog3 = false">mdi-close </v-icon>
+            </v-toolbar>
+            <v-card-text class="px-0 py-0">
+              <v-container class="px-2">
+                <v-row>
+                  <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                    <span
+                      >Item Selected:
+                      <strong>{{ selectedItem.product_name }}</strong></span
+                    >
+                  </v-col>
+                </v-row>
+                <v-row class="mt-0">
+                  <v-col
+                    class="tfield py-0"
+                    cols="12"
+                    xl="12"
+                    lg="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <v-card-actions class="px-0">
+                      <!-- Quantity -->
+                      <v-text-field
+                        :rules="formRulesQuantity"
+                        v-model="quantity"
+                        dense
+                        autocomplete="off"
+                        @keydown="quantityKeydown($event)"
+                        class="mr-2"
+                        clearable
+                        background-color="white"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 12px">
+                            Quantity <span style="color: red">*</span>
+                          </div>
+                        </template>
+                      </v-text-field>
+                      <v-btn
+                        outlined
+                        color="primary"
+                        class="py-4 px-2 mb-6"
+                        text
+                        @click="allQuantity(selectedItem)"
+                      >
+                        MAX
+                      </v-btn>
+                    </v-card-actions>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+            <v-divider class="my-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="px-0 pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="black"
+                depressed
+                :disabled="button"
+                dark
+                @click="dialog3 = false"
+                :small="$vuetify.breakpoint.smAndDown"
+                text
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                color="primary"
+                depressed
+                :disabled="button"
+                dark
+                :small="$vuetify.breakpoint.smAndDown"
+                @click="updateQuantity(selectedItem)"
+                text
+              >
+                OK
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-container>
     </v-card>
   </div>
 </template>
 
+<!-- Style -->
 <style>
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+
+.tbl.v-data-table__checkbox,
+.v-input--selection-controls__input .mdi-checkbox-marked,
+.v-input--selection-controls__input .mdi-minus-box {
+  color: #d32f2f !important;
+}
+
 #table1 .v-data-table-header th {
   white-space: nowrap;
 }
 #table1 .v-data-table-header th {
   font-size: 12px !important;
+  text-align: center !important;
 }
 #table1 td {
   font-size: 12px !important;
@@ -730,6 +1145,7 @@
 }
 </style>
 
+<!-- Script -->
 <script>
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
@@ -738,6 +1154,8 @@ export default {
   metaInfo() {
     return { title: "Products" };
   },
+
+  //Computed
   computed: {
     ...mapGetters({
       user: "auth/user",
@@ -749,7 +1167,16 @@ export default {
         return false;
       }
     },
+    disabled() {
+      if (this.selected.length == 0) {
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
+
+  //Data
   data: () => ({
     progressbar: false,
     snackbar: {
@@ -759,6 +1186,7 @@ export default {
     search: "",
     branch: "",
     category: "",
+    subcategory: "",
     button: false,
     dialog: false,
     table: [],
@@ -769,7 +1197,7 @@ export default {
     filterDialog: false,
     quantity: 0,
 
-    // Form Rules
+    //Form rules
     formRules: [(v) => !!v || "This is required"],
     formRulesQuantity: [
       (v) => !!v || "This is required",
@@ -782,7 +1210,7 @@ export default {
       },
     ],
 
-    // Form Data
+    //Form Data
     form: {
       category: null,
       sub_category: null,
@@ -792,17 +1220,18 @@ export default {
       outgoing_date: null,
     },
 
-    // For comparing data
+    //For comparing data
     currentdata: {},
 
-    // Table Headers
+    //Table Headers
     headers: [
       {
         text: "#",
         value: "count",
-        align: "start",
+        align: "right",
         filterable: false,
         class: "black--text",
+        sortable: false,
       },
       {
         text: "CATEGORY",
@@ -811,7 +1240,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "SUB-CATEGORY",
+        text: "SUBCATEGORY",
         value: "sub_category.prod_sub_cat_name",
         class: "black--text",
       },
@@ -856,18 +1285,104 @@ export default {
         class: "black--text",
       },
     ],
-    getQuantity: 0,
+
     page: 1,
     pageCount: 0,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     dateFrom: null,
     dateUntil: null,
     date1: false,
     date2: false,
     date3: false,
+    getQuantity: 0,
+
+    //Header1 request list
+    headers1: [
+      {
+        text: "REQUEST DATE",
+        value: "request_date",
+        class: "black--text",
+      },
+      {
+        text: "REFERENCE NO.",
+        align: "right",
+        value: "ref",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "BRANCH",
+        value: "branch",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
+        value: "status",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION",
+        value: "id",
+        align: "center",
+        filterable: false,
+        sortable: false,
+        class: "black--text",
+      },
+    ],
+    progressbar1: false,
+    table1: [],
+    dialog1: false,
+    page1: 1,
+    pageCount1: 0,
+    itemsPerPage1: 5,
+
+    //Header2 requestlist items
+    headers2: [
+      {
+        text: "PRODUCT NAME",
+        value: "product_name",
+        class: "black--text",
+      },
+      {
+        text: "REQUESTED QTY",
+        value: "quantity_requested",
+        filterable: false,
+        align: "right",
+        class: "black--text",
+      },
+      {
+        text: "AVAILABLE QTY",
+        value: "quantity_available",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "STATUS",
+        value: "status",
+        filterable: false,
+        class: "black--text",
+      },
+      {
+        text: "ACTION",
+        value: "product_id",
+        align: "center",
+        filterable: false,
+        sortable: false,
+        class: "black--text",
+      },
+    ],
+    table2: [],
+    dialog2: false,
+    selected: [],
+
+    dialog3: false,
+    selectedItem: [],
   }),
 
-  // Onload
+  //Onload
   created() {
     if (this.user.permissionslist.includes("Access Products")) {
       this.dateFrom = this.getFormatDate(
@@ -887,12 +1402,15 @@ export default {
     }
   },
 
+  //Methods
   methods: {
+    //Keydown
     quantityKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,.<>+'\/?-]/.test(e.key)) {
         e.preventDefault();
       }
     },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -907,16 +1425,16 @@ export default {
       return numbr.format(format);
     },
 
-    // Format for everytime we call on database
-    // Always add await and async
+    //Format for everytime we call on database
+    //Always add await and async
     compare() {
-      // Compare exsiting data vs edited data
-      // If nothing change then no request
+      //Compare exsiting data vs edited data
+      //If nothing change then no request
       if (!this.currentdata) {
         return true;
       }
-      // Check if not existed
-      // Check each value if the same or not
+      //Check if not existed
+      //Check each value if the same or not
       var found = 0;
       for (var key in this.form) {
         if (this.currentdata[key] != this.form[key]) {
@@ -963,7 +1481,7 @@ export default {
           }
         }
       }
-      //if has changes
+      //If has changes
       if (found > 0) {
         return true;
       } else {
@@ -977,7 +1495,7 @@ export default {
       }
     },
 
-    // Saving data to database
+    //Saving data to database
     async save() {
       if (this.$refs.form.validate()) {
         if (this.getQuantity < this.form.quantity) {
@@ -990,13 +1508,13 @@ export default {
           return;
         }
 
-        // Validate first before compare
+        //Validate first before compare
         if (this.compare()) {
-          // Save or update data in the table
+          //Save or update data in the table
           await axios
             .post("/api/outprod/save", this.form)
             .then((result) => {
-              //if the value is true then save to database
+              //If the value is true then save to database
               this.snackbar = {
                 active: true,
                 iconText: "check",
@@ -1007,14 +1525,16 @@ export default {
               this.cancel();
             })
             .catch((result) => {
-              // If false or error when saving
+              //If false or error when saving
             });
         }
       }
     },
+
+    //For retrieving outgoing products
     async get() {
-      this.progressbar = true; // Show the progress bar
-      // Get data from tables
+      this.progressbar = true; //Show the progress bar
+      //Get data from tables
       this.itemsPerPage = parseInt(this.itemsPerPage) ?? 0;
       await axios
         .get("/api/outprod/get", {
@@ -1024,44 +1544,45 @@ export default {
             search: this.search,
             branch: this.branch,
             category: this.category,
+            subcategory: this.subcategory,
             dateFrom: this.dateFrom,
             dateUntil: this.dateUntil,
           },
         })
         .then((result) => {
-          // If the value is true then get the data
+          //If the value is true then get the data
           this.table = result.data;
-          this.progressbar = false; // Hide the progress bar
+          this.progressbar = false; //Hide the progress bar
         })
         .catch((result) => {
-          // If false or error when saving
+          //If false or error when saving
         });
     },
 
+    //For quantity validation
     async prodValidate(id = "", edit = "") {
       await axios
         .get("/api/outprod/prodValidate", { params: { id: id.id } })
         .then((result) => {
-          if (!edit) {
-            this.getQuantity = result.data + this.form.quantity;
-          } else {
-            this.getQuantity = result.data;
-          }
+          this.getQuantity = result.data;
         });
     },
 
+    //For retrieving product categories
     async prodCat() {
       await axios.get("/api/outprod/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
     },
 
+    //For retrieving product subcategories
     async prodSubCat() {
       await axios.get("/api/outprod/prodSubCat").then((supp_name) => {
         this.prodsubcatlist = supp_name.data;
       });
     },
 
+    //For retrieving product names
     async prodName() {
       this.form.product_name = null;
       await axios
@@ -1076,13 +1597,14 @@ export default {
         });
     },
 
+    //For retrieving branch names
     async branchName() {
       await axios.get("/api/outprod/branchName").then((bran_name) => {
         this.branchlist = bran_name.data;
       });
     },
 
-    // Editing/updating of row
+    //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
       this.form.id = row.id;
@@ -1100,19 +1622,124 @@ export default {
       this.dialog = true;
     },
 
-    // Open Dialog Form
+    //Open Dialog Form
     openDialog() {
       this.$refs.form.reset();
       this.dialog = true;
     },
 
-    // Reset Forms
+    //Reset Forms
     cancel() {
       this.$refs.form.reset();
       this.dialog = false;
     },
+
+    //For retrieving request list
+    async requestList() {
+      this.progressbar1 = true;
+      await axios
+        .get("/api/outprod/request/list", {
+          params: {
+            page: this.page1,
+            itemsPerPage: this.itemsPerPage1,
+          },
+        })
+        .then((result) => {
+          this.table1 = result.data;
+          this.progressbar1 = false;
+        });
+    },
+
+    openRequestDialog() {
+      this.dialog1 = true;
+      this.requestList();
+    },
+
+    //For viewing requests
+    async viewRequestDialog(ref) {
+      await axios
+        .get("/api/outprod/request/items/list", {
+          params: {
+            ref: ref.id,
+          },
+        })
+        .then((result) => {
+          this.table2 = result.data;
+        });
+      this.selected = [];
+      this.dialog2 = true;
+    },
+
+    editRequest(row) {
+      this.selectedItem = row;
+      this.quantity = row.quantity_requested;
+      this.dialog3 = true;
+    },
+
+    updateQuantity() {
+      if (
+        this.quantity <=
+        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
+      ) {
+        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested =
+          this.quantity;
+        this.dialog3 = false;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-circle",
+          iconColor: "error",
+          message: "Insufficient stocks.",
+        };
+      }
+    },
+
+    allQuantity() {
+      this.quantity = this.selectedItem.quantity_available;
+    },
+
+    //For processing requests
+    async processRequest() {
+      var found = 0;
+      for (var key in this.selected) {
+        if (
+          this.selected[key].quantity_available <
+          this.selected[key].quantity_requested
+        ) {
+          found += 1;
+        }
+      }
+
+      if (found > 0) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-circle",
+          iconColor: "error",
+          message: "Insufficient stocks.",
+        };
+        return;
+      }
+
+      await axios
+        .post("/api/outprod/request/process", {
+          checked: this.selected,
+          actual: this.table2,
+        })
+        .then((result) => {
+          //If the value is true then save to database
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Request has been successfully proccessed.",
+          };
+          this.requestList();
+          this.dialog2 = false;
+        });
+    },
   },
 
+  //Watch
   watch: {
     dialog(val) {
       val || this.cancel();
@@ -1120,6 +1747,10 @@ export default {
     page(val) {
       this.page = val;
       this.get();
+    },
+    page1(val) {
+      this.page1 = val;
+      this.requestList();
     },
     id: {
       handler: function (v) {},
