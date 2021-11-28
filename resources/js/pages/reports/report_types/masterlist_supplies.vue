@@ -102,6 +102,29 @@
         </v-card-actions>
       </v-col>
     </v-row>
+
+     <!-- Supplier Field -->
+    <v-row no-gutters justify="center">
+      <v-col cols="4" class="px-1" style="max-width: 150px; min-width: 150px">
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-select
+            hide-details
+            :items="supplier_name"
+            item-text="supplier_name"
+            item-value="id"
+            v-model="category"
+            dense
+            placeholder="Supplier"
+            background-color="grey darken-3"
+            dark
+            flat
+            solo
+            style="font-size: 12px"
+          >
+          </v-select>
+        </v-card-actions>
+      </v-col>
+    </v-row>
     <iframe id="print0" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
@@ -133,6 +156,7 @@ export default {
   data: () => ({
     category: "",
     suppcatlist: [],
+    supplier_name: [],
     print: "",
     snackbar: {
       active: false,
@@ -144,6 +168,7 @@ export default {
   //Onload
   created() {
     this.suppCat();
+   this.suppList();
   },
 
   //Methods
@@ -187,7 +212,9 @@ export default {
                   iconColor: "warning",
                   message: "Nothing to export.",
                 };
+  
               }
+              
             });
             break;
           case "excel":
@@ -228,9 +255,12 @@ export default {
                   iconText: "alert-box",
                   iconColor: "warning",
                   message: "Nothing to export.",
-                };
+                }
+                ;
               }
-            });
+            }
+            
+            );
             break;
           case "print":
             await axios({
@@ -259,7 +289,9 @@ export default {
                   iconText: "alert-box",
                   iconColor: "warning",
                   message: "Nothing to print.",
-                };
+                  
+                }
+                ;
               }
             });
             break;
@@ -268,7 +300,9 @@ export default {
         }
         this.overlay = false;
       }
-    },
+    }
+    ,
+
 
     //For retrieving supply categories
     async suppCat() {
@@ -281,7 +315,9 @@ export default {
           });
         }
       });
-    },
+    }
+    ,
+    
   },
 };
 </script>

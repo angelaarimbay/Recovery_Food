@@ -95,6 +95,7 @@
                 <th>
                     <h6>TOTAL AMT</h6>
                 </th>
+               
                 <th>
                     <h6>INCOMING DATE</h6>
                 </th>
@@ -128,6 +129,7 @@
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
+            
         </tr>
         <tr>
 
@@ -151,6 +153,7 @@
             <td style=" border: none;width: auto"> </td>
             <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
+           
         </tr> --}}
     </table>
 
