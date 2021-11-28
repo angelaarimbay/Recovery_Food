@@ -81,6 +81,7 @@
         </v-tooltip></v-card-actions
       >
 
+
       <v-row no-gutters justify="center">
         <!-- Date Picker -->
         <v-col cols="6" class="px-1" style="max-width: 150px">
@@ -355,6 +356,8 @@ export default {
 };
 </script>
 
+
+<!-- Style -->
 <style>
 @media (min-width: 1200px) {
   .container {
@@ -362,3 +365,6 @@ export default {
   }
 }
 </style>
+
+
+

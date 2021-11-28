@@ -141,6 +141,9 @@ class ReportsController extends Controller
         $g_net_p = 0; //Grand Total
         $g_wvat_p = 0; //Grand Total
         $g_total_p = 0; //Grand Total
+        
+      
+       
 
         foreach (tbl_incomingsupp::whereRaw($where)
             ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
@@ -149,6 +152,11 @@ class ReportsController extends Controller
             $net_p = 0; //Sub-Total
             $wvat_p = 0; //Sub-Total
             $total_p = 0; //Sub-Total
+            
+       
+
+            
+            
             //Each category add to inner array
             foreach (tbl_incomingsupp::with("category")->where("category", $value)
                 ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
@@ -157,10 +165,14 @@ class ReportsController extends Controller
                 $net_p += $value1->supply_name_details['net_price'];
                 $wvat_p += $value1->with_vat;
                 $total_p += $value1->quantity_amount;
+                
+              
 
                 $g_net_p += $value1->supply_name_details['net_price'];
                 $g_wvat_p += $value1->with_vat;
                 $g_total_p += $value1->quantity_amount;
+                
+               
 
                 $ar = [
                     'category_details' => $value1->category_details['supply_cat_name'],

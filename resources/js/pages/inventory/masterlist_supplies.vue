@@ -1319,8 +1319,8 @@ export default {
 
     //For suppliers info
     async suppliers() {
-      await axios.get("/api/msupp/suppliers", {}).then((result) => {
-        this.supplierlist = result.data;
+      await axios.get("/api/msupp/supplist", {}).then((result) => {
+        this.suppliers = result.data;
       });
     },
 
@@ -1364,6 +1364,13 @@ export default {
         this.suppcatlist = supp_cat.data;
       });
     },
+
+     async supplist() {
+      await axios.get("/api/msupp/supplist").then((supplist) => {
+        this.supplist = supplist.data;
+      });
+    },
+
 
     //For computing amount with VAT
     async compute() {

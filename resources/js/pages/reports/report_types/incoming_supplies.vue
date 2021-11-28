@@ -197,7 +197,7 @@
   color: white !important;
 }
 .v-menu__content.theme--light .v-list {
-  background: #212121 !important;
+  background: hsl(0, 0%, 13%) !important;
 }
 .theme--light.v-list-item:hover:before {
   opacity: 0.2 !important;

@@ -57,6 +57,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('msupp/validateItem', 'Inventory\MasterlistSuppliesController@validateItem');
     Route::get('msupp/sum', 'Inventory\MasterlistSuppliesController@sum');
     Route::get('msupp/suppliers', 'Inventory\MasterlistSuppliesController@suppliers');
+    Route::get('msupp/supplist', 'Inventory\MasterlistSuppliesController@supplist');
+
 
     // Incoming Supplies
     Route::post('isupp/save', 'Inventory\IncomingSuppliesController@save');
@@ -174,6 +176,8 @@ Route::group(['middleware' => 'api'], function () {
 
     // Reports
     Route::get('reports/masterlistsupplies/get', 'Reports\ReportsController@MasterlistSuppliesReport');
+    Route::get('reports/masterlistsupplist/get', 'Reports\ReportsController@MasterlistSuppliesReport');
+    
     Route::get('reports/incomingsupplies/get', 'Reports\ReportsController@IncomingSuppliesReport');
     Route::get('reports/outgoingsupplies/get', 'Reports\ReportsController@OutgoingSuppliesReport');
     Route::get('reports/maininventory/get', 'Reports\ReportsController@MainInventoryReport');
@@ -181,6 +185,7 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('reports/sales/get', 'Reports\ReportsController@SalesReport');
     Route::get('reports/transaction/get', 'Reports\ReportsController@TransactionReport');
     Route::get('reports/purchaseorder/get', 'Reports\ReportsController@PurchaseOrderReport');
+
 
     Route::get('sales_report/list', 'Reports\ReportsController@ListSP');
     Route::get('sales_report', 'Reports\ReportsController@ExportSP');
