@@ -69,601 +69,580 @@
     <!-- Main Card -->
     <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-        <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-card-actions class="px-0">
-            <v-row no-gutters>
-              <!-- Add Button -->
-              <v-btn
-                color="primary"
-                style="text-transform: none"
-                depressed
-                dark
-                :small="$vuetify.breakpoint.smAndDown"
-                class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
-                @click="openDialog"
-              >
-                Add Incoming Supply
-              </v-btn>
-              <v-spacer></v-spacer>
-              <!-- Refresh -->
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    class="mr-2"
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="get"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-refresh</v-icon></v-btn
-                  >
-                </template>
-                <span>Refresh</span>
-              </v-tooltip>
-              <!-- Filter -->
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    color="grey darken-4"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="filterDialog = true"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-filter-variant</v-icon></v-btn
-                  >
-                </template>
-                <span>Filter</span>
-              </v-tooltip>
-            </v-row>
-
-            <!-- Filter Dialog -->
-            <v-dialog v-model="filterDialog" max-width="400px">
-              <v-card dark tile class="pa-2">
-                <v-toolbar dense flat class="transparent">
-                  Search Filter
-                  <v-spacer></v-spacer>
-                  <v-icon text @click="filterDialog = false">mdi-close </v-icon>
-                </v-toolbar>
-                <v-divider class="my-0"></v-divider>
-                <v-row no-gutters align="center" class="pa-2">
-                  <!-- Items Per Page -->
-                  <v-col cols="4"
-                    ><span class="text-caption text-xl-subtitle-2"
-                      >Items / Page</span
-                    ></v-col
-                  >
-                  <v-col cols="8">
-                    <v-card-actions class="px-0">
-                      <v-select
-                        dense
-                        v-model="itemsPerPage"
-                        @change="itemperpage"
-                        :items="[5, 10, 15, 20]"
-                        hide-details
-                        background-color="grey darken-3"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                      </v-select>
-                    </v-card-actions>
-                  </v-col>
-
-                  <!-- Search Field -->
-                  <v-col cols="4"
-                    ><span class="text-caption text-xl-subtitle-2"
-                      >Search</span
-                    ></v-col
-                  >
-                  <v-col cols="8">
-                    <v-card-actions class="px-0">
-                      <v-text-field
-                        v-model="search"
-                        placeholder="Supply Name"
-                        single-line
-                        dense
-                        clearable
-                        hide-details
-                        background-color="grey darken-3"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      ></v-text-field>
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            small
-                            :x-small="$vuetify.breakpoint.smAndDown"
-                            color="red darken-2"
-                            icon
-                            v-on="data.on"
-                            @click="get"
-                            class="ml-1"
-                          >
-                            <v-icon>mdi-magnify</v-icon></v-btn
-                          >
-                        </template>
-                        <span>Search</span>
-                      </v-tooltip>
-                    </v-card-actions>
-                  </v-col>
-
-                  <!-- Category Field -->
-                  <v-col cols="4"
-                    ><span class="text-caption text-xl-subtitle-2"
-                      >Category</span
-                    ></v-col
-                  >
-                  <v-col cols="8">
-                    <v-card-actions class="px-0">
-                      <v-select
-                        hide-details
-                        :items="suppcatlist"
-                        item-text="supply_cat_name"
-                        item-value="id"
-                        clearable
-                        dense
-                        v-model="category"
-                        placeholder="Category"
-                        @change="get"
-                        background-color="grey darken-3"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      >
-                      </v-select>
-                    </v-card-actions>
-                  </v-col>
-
-                  <!-- Date Picker -->
-                  <v-col cols="4"
-                    ><span class="text-caption text-xl-subtitle-2"
-                      >Date From</span
-                    ></v-col
-                  >
-                  <v-col cols="8">
-                    <v-menu
-                      v-model="date1"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-card-actions class="px-0">
-                          <v-text-field
-                            hide-details
-                            v-model="dateFrom"
-                            placeholder="Date From"
-                            prepend-inner-icon="mdi-calendar-range"
-                            readonly
-                            v-on="on"
-                            dense
-                            clearable
-                            background-color="grey darken-3"
-                            flat
-                            solo
-                            style="font-size: 12px"
-                          ></v-text-field>
-                        </v-card-actions>
-                      </template>
-                      <v-date-picker
-                        v-model="dateFrom"
-                        @input="date1 = false"
-                        scrollable
-                        no-title
-                        color="red darken-2"
-                        dark
-                        @change="get"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-col>
-
-                  <!-- Date Picker -->
-                  <v-col cols="4"
-                    ><span class="text-caption text-xl-subtitle-2"
-                      >Date Until</span
-                    ></v-col
-                  >
-                  <v-col cols="8">
-                    <v-menu
-                      v-model="date2"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-card-actions class="px-0">
-                          <v-text-field
-                            hide-details
-                            v-model="dateUntil"
-                            placeholder="Date Until"
-                            prepend-inner-icon="mdi-calendar-range"
-                            readonly
-                            v-on="on"
-                            dense
-                            clearable
-                            background-color="grey darken-3"
-                            flat
-                            solo
-                            style="font-size: 12px"
-                          ></v-text-field>
-                        </v-card-actions>
-                      </template>
-                      <v-date-picker
-                        v-model="dateUntil"
-                        @input="date2 = false"
-                        scrollable
-                        no-title
-                        color="red darken-2"
-                        dark
-                        @change="get"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </v-dialog>
-          </v-card-actions>
-
-          <!-- Table -->
-          <v-data-table
-            id="table1"
-            :headers="headers"
-            :items="table.data"
-            :loading="progressbar"
-            :page.sync="page"
-            ref="progress"
-            :items-per-page="itemsPerPage"
-            hide-default-footer
-            @page-count="pageCount = $event"
-            class="table-striped border"
-          >
-            <!-- Progress Bar -->
-            <v-progress-linear
-              color="red darken-2"
-              class="px-0 mx-0"
-              slot="progress"
-              indeterminate
-              rounded
-            ></v-progress-linear>
-            <template v-slot:[`item.supply_name.net_price`]="{ item }"
-              >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
-            </template>
-            <template v-slot:[`item.incoming_date`]="{ item }">
-              {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
+        <v-card-actions class="px-0">
+          <v-row no-gutters>
+            <!-- Add Button -->
+            <v-btn
+              color="primary"
+              style="text-transform: none"
+              depressed
+              dark
+              :small="$vuetify.breakpoint.smAndDown"
+              class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
+              @click="openDialog"
             >
-            <template v-slot:[`item.count`]="{ item }">
-              {{ item.row }}</template
-            >
-            <template v-slot:[`item.id`]="{ item }">
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    @click="edit(item)"
-                    small
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                    v-on="data.on"
-                  >
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                </template>
-                <span>Edit</span>
-              </v-tooltip>
-            </template>
-          </v-data-table>
+              Add Incoming Supply
+            </v-btn>
+            <v-spacer></v-spacer>
+            <!-- Refresh -->
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  class="mr-2"
+                  color="success"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="get"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-refresh</v-icon></v-btn
+                >
+              </template>
+              <span>Refresh</span>
+            </v-tooltip>
+            <!-- Filter -->
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  color="grey darken-4"
+                  style="text-transform: none"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="filterDialog = true"
+                  v-on="data.on"
+                  icon
+                  ><v-icon>mdi-filter-variant</v-icon></v-btn
+                >
+              </template>
+              <span>Filter</span>
+            </v-tooltip>
+          </v-row>
 
-          <!-- Paginate -->
-          <div class="pbutton text-center pt-7">
-            <v-pagination
-              v-model="page"
-              :total-visible="7"
-              :length="table.last_page"
-              color="red darken-2"
-            ></v-pagination>
-          </div>
-        </v-container>
-
-        <!--Dialog Form-->
-        <v-form ref="form">
-          <v-dialog
-            v-model="dialog"
-            max-width="450px"
-            persistent
-            no-click-animation
-          >
-            <v-card tile class="pa-3">
-              <v-toolbar dark dense flat rounded class="red darken-3">
-                Incoming Supply
+          <!-- Filter Dialog -->
+          <v-dialog v-model="filterDialog" max-width="400px">
+            <v-card dark tile class="pa-2">
+              <v-toolbar dense flat class="transparent">
+                Search Filter
                 <v-spacer></v-spacer>
-                <v-icon text @click="cancel">mdi-close </v-icon>
+                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
               </v-toolbar>
-              <v-container class="px-1">
-                <v-row class="py-4">
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <v-text-field v-model="form.id" class="d-none" dense>
-                      <template slot="label">
-                        <div style="font-size: 12px">ID</div>
-                      </template>
-                    </v-text-field>
-
-                    <v-menu
-                      v-model="date3"
-                      :close-on-content-click="false"
-                      :nudge-right="35"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <!-- Incoming Date -->
-                        <v-text-field
-                          :prepend-inner-icon="
-                            showIcon ? 'mdi-calendar-range' : ''
-                          "
-                          :rules="formRules"
-                          v-model="form.incoming_date"
-                          readonly
-                          v-on="on"
-                          class="py-0"
-                          dense
-                          clearable
-                          label=""
-                          background-color="white"
-                          flat
-                          solo
-                          style="font-size: 12px"
-                        >
-                          <template slot="label">
-                            <div style="font-size: 12px">
-                              Incoming Date <span style="color: red">*</span>
-                            </div>
-                          </template>
-                        </v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="form.incoming_date"
-                        @input="date3 = false"
-                        scrollable
-                        no-title
-                        color="red darken-2"
-                        dark
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <!-- Supplier -->
+              <v-divider class="my-0"></v-divider>
+              <v-row no-gutters align="center" class="pa-2">
+                <!-- Items Per Page -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Items / Page</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
                     <v-select
-                      :rules="formRules"
-                      v-model="form.supplier"
                       dense
-                      :items="supplierlist"
-                      item-text="supplier_name"
-                      item-value="id"
-                      @change="suppName"
-                      autocomplete
-                      background-color="white"
+                      v-model="itemsPerPage"
+                      @change="itemperpage"
+                      :items="[5, 10, 15, 20]"
+                      hide-details
+                      background-color="grey darken-3"
                       flat
                       solo
                       style="font-size: 12px"
                     >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Supplier <span style="color: red">*</span>
-                        </div>
-                      </template>
                     </v-select>
-                  </v-col>
+                  </v-card-actions>
+                </v-col>
 
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <!-- Supply Category -->
-                    <v-select
-                      :rules="formRulesNumberRange"
-                      v-model="form.category"
+                <!-- Search Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Search</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      v-model="search"
+                      placeholder="Supply Name"
+                      single-line
                       dense
+                      clearable
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          @click="get"
+                          class="ml-1"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Category Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Category</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
                       :items="suppcatlist"
                       item-text="supply_cat_name"
                       item-value="id"
-                      @change="suppName"
-                      background-color="white"
+                      clearable
+                      dense
+                      v-model="category"
+                      placeholder="Category"
+                      @change="get"
+                      background-color="grey darken-3"
                       flat
                       solo
                       style="font-size: 12px"
                     >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Supply Category <span style="color: red">*</span>
-                        </div>
-                      </template>
                     </v-select>
-                  </v-col>
+                  </v-card-actions>
+                </v-col>
 
-                  <v-col
-                    class="tfield py-0"
-                    cols="12"
-                    xl="12"
-                    lg="12"
-                    sm="12"
-                    md="12"
-                  >
-                    <!-- Supply Name -->
-                    <v-autocomplete
-                      :rules="formRules"
-                      v-model="form.supply_name"
-                      :items="suppnamelist"
-                      item-text="supply_name"
-                      return-object
-                      dense
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Supply Name <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-autocomplete>
-
-                    <v-card flat class="px-4 pb-6" v-if="form.supply_name">
-                      <table style="width: 100%; font-size: 11px">
-                        <tr>
-                          <td
-                            class="text-left pr-2"
-                            style="width: 50%"
-                            v-if="form.supply_name.description"
-                          >
-                            Description:
-                          </td>
-                          <th>{{ form.supply_name.description }}</th>
-                        </tr>
-                        <tr>
-                          <td class="text-left pr-2" style="width: 50%">
-                            Net Price:
-                          </td>
-                          <th>
-                            {{
-                              getFormatCurrency(
-                                form.supply_name.net_price,
-                                "0,0.00"
-                              )
-                            }}
-                          </th>
-                        </tr>
-                        <tr>
-                          <td class="text-left pr-2" style="width: 50%">
-                            Unit:
-                          </td>
-                          <th>{{ form.supply_name.unit }}</th>
-                        </tr>
-                      </table>
-                    </v-card>
-                  </v-col>
-                  <v-col
-                    class="tfield py-0"
-                    cols="6"
-                    xl="5"
-                    lg="5"
-                    sm="5"
-                    md="5"
-                  >
-                    <!-- Quantity -->
-                    <v-text-field
-                      :rules="formRulesQuantity"
-                      v-model="form.quantity"
-                      clearable
-                      dense
-                      @keydown="quantityKeydown($event)"
-                      counter
-                      maxlength="4"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Quantity <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-
-                  <v-col
-                    class="tfield py-0"
-                    cols="6"
-                    xl="7"
-                    lg="7"
-                    sm="7"
-                    md="7"
-                  >
-                    <!-- Amount -->
-                    <v-text-field
-                      :rules="formRulesPrice"
-                      v-model="form.amount"
-                      clearable
-                      dense
-                      @keydown="numberKeydown($event)"
-                      counter
-                      maxlength="15"
-                      background-color="white"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                      <template slot="label">
-                        <div style="font-size: 12px">
-                          Amount <span style="color: red">*</span>
-                        </div>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-              <v-divider class="my-0"></v-divider>
-              <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-0 pb-0">
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="black"
-                  depressed
-                  :small="$vuetify.breakpoint.smAndDown"
-                  dark
-                  @click="cancel"
-                  text
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Date From</span
+                  ></v-col
                 >
-                  Cancel
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  depressed
-                  :disabled="button"
-                  dark
-                  @click="save"
-                  :small="$vuetify.breakpoint.smAndDown"
-                  text
+                <v-col cols="8">
+                  <v-menu
+                    v-model="date1"
+                    :close-on-content-click="false"
+                    :nudge-right="35"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-card-actions class="px-0">
+                        <v-text-field
+                          hide-details
+                          v-model="dateFrom"
+                          placeholder="Date From"
+                          prepend-inner-icon="mdi-calendar-range"
+                          readonly
+                          v-on="on"
+                          dense
+                          clearable
+                          background-color="grey darken-3"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        ></v-text-field>
+                      </v-card-actions>
+                    </template>
+                    <v-date-picker
+                      v-model="dateFrom"
+                      @input="date1 = false"
+                      scrollable
+                      no-title
+                      color="red darken-2"
+                      dark
+                      @change="get"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Date Until</span
+                  ></v-col
                 >
-                  Save
-                </v-btn>
-              </v-card-actions>
+                <v-col cols="8">
+                  <v-menu
+                    v-model="date2"
+                    :close-on-content-click="false"
+                    :nudge-right="35"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-card-actions class="px-0">
+                        <v-text-field
+                          hide-details
+                          v-model="dateUntil"
+                          placeholder="Date Until"
+                          prepend-inner-icon="mdi-calendar-range"
+                          readonly
+                          v-on="on"
+                          dense
+                          clearable
+                          background-color="grey darken-3"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        ></v-text-field>
+                      </v-card-actions>
+                    </template>
+                    <v-date-picker
+                      v-model="dateUntil"
+                      @input="date2 = false"
+                      scrollable
+                      no-title
+                      color="red darken-2"
+                      dark
+                      @change="get"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+              </v-row>
             </v-card>
           </v-dialog>
-        </v-form>
+        </v-card-actions>
+
+        <!-- Table -->
+        <v-data-table
+          id="table1"
+          :headers="headers"
+          :items="table.data"
+          :loading="progressbar"
+          :page.sync="page"
+          ref="progress"
+          :items-per-page="itemsPerPage"
+          hide-default-footer
+          @page-count="pageCount = $event"
+          class="table-striped border"
+        >
+          <!-- Progress Bar -->
+          <v-progress-linear
+            color="red darken-2"
+            class="px-0 mx-0"
+            slot="progress"
+            indeterminate
+            rounded
+          ></v-progress-linear>
+          <template v-slot:[`item.supply_name.net_price`]="{ item }"
+            >{{ getFormatCurrency(item.supply_name.net_price, "0,0.00") }}
+          </template>
+          <template v-slot:[`item.incoming_date`]="{ item }">
+            {{ getFormatDate(item.incoming_date, "YYYY-MM-DD") }}</template
+          >
+          <template v-slot:[`item.count`]="{ item }"> {{ item.row }}</template>
+          <template v-slot:[`item.id`]="{ item }">
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn
+                  icon
+                  color="red darken-2"
+                  @click="edit(item)"
+                  small
+                  :x-small="$vuetify.breakpoint.smAndDown"
+                  v-on="data.on"
+                >
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+              </template>
+              <span>Edit</span>
+            </v-tooltip>
+          </template>
+        </v-data-table>
+
+        <!-- Paginate -->
+        <div class="pbutton text-center pt-7">
+          <v-pagination
+            v-model="page"
+            :total-visible="7"
+            :length="table.last_page"
+            color="red darken-2"
+          ></v-pagination>
+        </div>
       </v-container>
+
+      <!--Dialog Form-->
+      <v-form ref="form">
+        <v-dialog
+          v-model="dialog"
+          max-width="450px"
+          persistent
+          no-click-animation
+        >
+          <v-card tile class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Incoming Supply
+              <v-spacer></v-spacer>
+              <v-icon text @click="cancel">mdi-close </v-icon>
+            </v-toolbar>
+            <v-container class="px-1">
+              <v-row class="py-4">
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <v-text-field v-model="form.id" class="d-none" dense>
+                    <template slot="label">
+                      <div style="font-size: 12px">ID</div>
+                    </template>
+                  </v-text-field>
+
+                  <v-menu
+                    v-model="date3"
+                    :close-on-content-click="false"
+                    :nudge-right="35"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <!-- Incoming Date -->
+                      <v-text-field
+                        :prepend-inner-icon="
+                          showIcon ? 'mdi-calendar-range' : ''
+                        "
+                        :rules="formRules"
+                        v-model="form.incoming_date"
+                        readonly
+                        v-on="on"
+                        class="py-0"
+                        dense
+                        clearable
+                        label=""
+                        background-color="white"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                        <template slot="label">
+                          <div style="font-size: 12px">
+                            Incoming Date <span style="color: red">*</span>
+                          </div>
+                        </template>
+                      </v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="form.incoming_date"
+                      @input="date3 = false"
+                      scrollable
+                      no-title
+                      color="red darken-2"
+                      dark
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <!-- Supplier -->
+                  <v-select
+                    :rules="formRules"
+                    v-model="form.supplier"
+                    dense
+                    :items="supplierlist"
+                    item-text="supplier_name"
+                    item-value="id"
+                    @change="suppName"
+                    autocomplete
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Supplier <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-select>
+                </v-col>
+
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <!-- Supply Category -->
+                  <v-select
+                    :rules="formRulesNumberRange"
+                    v-model="form.category"
+                    dense
+                    :items="suppcatlist"
+                    item-text="supply_cat_name"
+                    item-value="id"
+                    @change="suppName"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Supply Category <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-select>
+                </v-col>
+
+                <v-col
+                  class="tfield py-0"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <!-- Supply Name -->
+                  <v-autocomplete
+                    :rules="formRules"
+                    v-model="form.supply_name"
+                    :items="suppnamelist"
+                    item-text="supply_name"
+                    return-object
+                    dense
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Supply Name <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-autocomplete>
+
+                  <v-card flat class="px-4 pb-6" v-if="form.supply_name">
+                    <table style="width: 100%; font-size: 11px">
+                      <tr>
+                        <td
+                          class="text-left pr-2"
+                          style="width: 50%"
+                          v-if="form.supply_name.description"
+                        >
+                          Description:
+                        </td>
+                        <th>{{ form.supply_name.description }}</th>
+                      </tr>
+                      <tr>
+                        <td class="text-left pr-2" style="width: 50%">
+                          Net Price:
+                        </td>
+                        <th>
+                          {{
+                            getFormatCurrency(
+                              form.supply_name.net_price,
+                              "0,0.00"
+                            )
+                          }}
+                        </th>
+                      </tr>
+                      <tr>
+                        <td class="text-left pr-2" style="width: 50%">Unit:</td>
+                        <th>{{ form.supply_name.unit }}</th>
+                      </tr>
+                    </table>
+                  </v-card>
+                </v-col>
+                <v-col class="tfield py-0" cols="6" xl="5" lg="5" sm="5" md="5">
+                  <!-- Quantity -->
+                  <v-text-field
+                    :rules="formRulesQuantity"
+                    v-model="form.quantity"
+                    clearable
+                    dense
+                    @keydown="quantityKeydown($event)"
+                    counter
+                    maxlength="4"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Quantity <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+
+                <v-col class="tfield py-0" cols="6" xl="7" lg="7" sm="7" md="7">
+                  <!-- Amount -->
+                  <v-text-field
+                    :rules="formRulesPrice"
+                    v-model="form.amount"
+                    clearable
+                    dense
+                    @keydown="numberKeydown($event)"
+                    counter
+                    maxlength="15"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                    <template slot="label">
+                      <div style="font-size: 12px">
+                        Amount <span style="color: red">*</span>
+                      </div>
+                    </template>
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-divider class="my-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="px-0 pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="black"
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                dark
+                @click="cancel"
+                text
+              >
+                Cancel
+              </v-btn>
+              <v-btn
+                color="primary"
+                depressed
+                :disabled="button"
+                dark
+                @click="save"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-form>
     </v-card>
   </div>
 </template>

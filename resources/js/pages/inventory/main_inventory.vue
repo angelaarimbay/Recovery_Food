@@ -69,194 +69,191 @@
     <!-- Main Card -->
     <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
-        <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-          <v-row no-gutters>
-            <v-spacer></v-spacer>
-            <!-- Refresh -->
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  class="mr-2 mb-3"
-                  color="success"
-                  style="text-transform: none"
-                  depressed
-                  :small="$vuetify.breakpoint.smAndDown"
-                  dark
-                  @click="get"
-                  v-on="data.on"
-                  icon
-                  ><v-icon>mdi-refresh</v-icon></v-btn
-                >
-              </template>
-              <span>Refresh</span>
-            </v-tooltip>
-            <!-- Filter -->
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  color="grey darken-4"
-                  style="text-transform: none"
-                  depressed
-                  :small="$vuetify.breakpoint.smAndDown"
-                  dark
-                  @click="filterDialog = true"
-                  v-on="data.on"
-                  icon
-                  ><v-icon>mdi-filter-variant</v-icon></v-btn
-                >
-              </template>
-              <span>Filter</span>
-            </v-tooltip>
-          </v-row>
+        <v-row no-gutters>
+          <v-spacer></v-spacer>
+          <!-- Refresh -->
+          <v-tooltip bottom>
+            <template #activator="data">
+              <v-btn
+                class="mr-2 mb-3"
+                color="success"
+                style="text-transform: none"
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                dark
+                @click="get"
+                v-on="data.on"
+                icon
+                ><v-icon>mdi-refresh</v-icon></v-btn
+              >
+            </template>
+            <span>Refresh</span>
+          </v-tooltip>
+          <!-- Filter -->
+          <v-tooltip bottom>
+            <template #activator="data">
+              <v-btn
+                color="grey darken-4"
+                style="text-transform: none"
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                dark
+                @click="filterDialog = true"
+                v-on="data.on"
+                icon
+                ><v-icon>mdi-filter-variant</v-icon></v-btn
+              >
+            </template>
+            <span>Filter</span>
+          </v-tooltip>
+        </v-row>
 
-          <!-- Filter Dialog -->
-          <v-dialog v-model="filterDialog" max-width="400px">
-            <v-card dark tile class="pa-2">
-              <v-toolbar dense flat class="transparent">
-                Search Filter
-                <v-spacer></v-spacer>
-                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
-              </v-toolbar>
-              <v-divider class="my-0"></v-divider>
-              <v-row no-gutters align="center" class="pa-2">
-                <!-- Items Per Page -->
-                <v-col cols="4"
-                  ><span class="text-caption text-xl-subtitle-2"
-                    >Items / Page</span
-                  ></v-col
-                >
-                <v-col cols="8">
-                  <v-card-actions class="px-0">
-                    <v-select
-                      dense
-                      v-model="itemsPerPage"
-                      @change="itemperpage"
-                      :items="[5, 10, 15, 20]"
-                      hide-details
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
+        <!-- Filter Dialog -->
+        <v-dialog v-model="filterDialog" max-width="400px">
+          <v-card dark tile class="pa-2">
+            <v-toolbar dense flat class="transparent">
+              Search Filter
+              <v-spacer></v-spacer>
+              <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+            </v-toolbar>
+            <v-divider class="my-0"></v-divider>
+            <v-row no-gutters align="center" class="pa-2">
+              <!-- Items Per Page -->
+              <v-col cols="4"
+                ><span class="text-caption text-xl-subtitle-2"
+                  >Items / Page</span
+                ></v-col
+              >
+              <v-col cols="8">
+                <v-card-actions class="px-0">
+                  <v-select
+                    dense
+                    v-model="itemsPerPage"
+                    @change="itemperpage"
+                    :items="[5, 10, 15, 20]"
+                    hide-details
+                    background-color="grey darken-3"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                  </v-select>
+                </v-card-actions>
+              </v-col>
 
-                <!-- Search Field -->
-                <v-col cols="4"
-                  ><span class="text-caption text-xl-subtitle-2"
-                    >Search</span
-                  ></v-col
-                >
-                <v-col cols="8">
-                  <v-card-actions class="px-0">
-                    <v-text-field
-                      v-model="search"
-                      placeholder="Supply Name"
-                      single-line
-                      dense
-                      clearable
-                      hide-details
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    ></v-text-field>
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          small
-                          :x-small="$vuetify.breakpoint.smAndDown"
-                          color="red darken-2"
-                          icon
-                          v-on="data.on"
-                          @click="get"
-                          class="ml-1"
-                        >
-                          <v-icon>mdi-magnify</v-icon></v-btn
-                        >
-                      </template>
-                      <span>Search</span>
-                    </v-tooltip>
-                  </v-card-actions>
-                </v-col>
+              <!-- Search Field -->
+              <v-col cols="4"
+                ><span class="text-caption text-xl-subtitle-2"
+                  >Search</span
+                ></v-col
+              >
+              <v-col cols="8">
+                <v-card-actions class="px-0">
+                  <v-text-field
+                    v-model="search"
+                    placeholder="Supply Name"
+                    single-line
+                    dense
+                    clearable
+                    hide-details
+                    background-color="grey darken-3"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  ></v-text-field>
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        small
+                        :x-small="$vuetify.breakpoint.smAndDown"
+                        color="red darken-2"
+                        icon
+                        v-on="data.on"
+                        @click="get"
+                        class="ml-1"
+                      >
+                        <v-icon>mdi-magnify</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Search</span>
+                  </v-tooltip>
+                </v-card-actions>
+              </v-col>
 
-                <!-- Category Field -->
-                <v-col cols="4"
-                  ><span class="text-caption text-xl-subtitle-2"
-                    >Category</span
-                  ></v-col
-                >
-                <v-col cols="8">
-                  <v-card-actions class="px-0">
-                    <v-select
-                      hide-details
-                      v-model="category"
-                      :items="suppcatlist"
-                      item-text="supply_cat_name"
-                      item-value="id"
-                      clearable
-                      dense
-                      placeholder="Category"
-                      @change="get"
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-dialog>
+              <!-- Category Field -->
+              <v-col cols="4"
+                ><span class="text-caption text-xl-subtitle-2"
+                  >Category</span
+                ></v-col
+              >
+              <v-col cols="8">
+                <v-card-actions class="px-0">
+                  <v-select
+                    hide-details
+                    v-model="category"
+                    :items="suppcatlist"
+                    item-text="supply_cat_name"
+                    item-value="id"
+                    clearable
+                    dense
+                    placeholder="Category"
+                    @change="get"
+                    background-color="grey darken-3"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  >
+                  </v-select>
+                </v-card-actions>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-dialog>
 
-          <!-- Table -->
-          <v-data-table
-            id="table1"
-            :headers="headers"
-            :items="table.data"
-            :loading="progressbar"
-            :page.sync="page"
-            ref="progress"
-            :items-per-page="itemsPerPage"
-            hide-default-footer
-            @page-count="pageCount = $event"
-            class="table-striped border"
+        <!-- Table -->
+        <v-data-table
+          id="table1"
+          :headers="headers"
+          :items="table.data"
+          :loading="progressbar"
+          :page.sync="page"
+          ref="progress"
+          :items-per-page="itemsPerPage"
+          hide-default-footer
+          @page-count="pageCount = $event"
+          class="table-striped border"
+        >
+          <!-- Progress Bar -->
+          <v-progress-linear
+            color="red darken-2"
+            class="px-0 mx-0"
+            slot="progress"
+            indeterminate
+            rounded
+          ></v-progress-linear>
+          <template v-slot:[`item.triggerpoint`]="{ item }">
+            <div v-if="item.triggerpoint == 0">
+              <span style="color: red">Order</span>
+            </div>
+            <div v-else-if="item.triggerpoint == 1" class="text-black">
+              <span>Manage</span>
+            </div>
+          </template>
+          <template v-slot:[`item.net_price`]="{ item }"
+            >{{ getFormatCurrency(item.net_price, "0,0.00") }}
+          </template>
+          <template v-slot:[`item.count`]="{ item }"> {{ item.row }}</template>
+          <template
+            v-slot:[`item.onhand_a`]="{ item }"
+            style="text-align: right"
           >
-            <!-- Progress Bar -->
-            <v-progress-linear
-              color="red darken-2"
-              class="px-0 mx-0"
-              slot="progress"
-              indeterminate
-              rounded
-            ></v-progress-linear>
-            <template v-slot:[`item.triggerpoint`]="{ item }">
-              <div v-if="item.triggerpoint == 0">
-                <span style="color: red">Order</span>
-              </div>
-              <div v-else-if="item.triggerpoint == 1" class="text-black">
-                <span>Manage</span>
-              </div>
-            </template>
-            <template v-slot:[`item.net_price`]="{ item }"
-              >{{ getFormatCurrency(item.net_price, "0,0.00") }}
-            </template>
-            <template v-slot:[`item.count`]="{ item }">
-              {{ item.row }}</template
-            >
-            <template
-              v-slot:[`item.onhand_a`]="{ item }"
-              style="text-align: right"
-            >
-              <span>
-                <strong>Qty:</strong> {{ item.onhand_q }} <br />
-                <strong>Value:</strong> {{ item.onhand_a }}
-              </span>
-            </template>
+            <span>
+              <strong>Qty:</strong> {{ item.onhand_q }} <br />
+              <strong>Value:</strong> {{ item.onhand_a }}
+            </span>
+          </template>
 
-            <!-- <template
+          <!-- <template
               v-slot:[`item.begining_a`]="{ item }"
               style="text-align: right"
             >
@@ -337,661 +334,660 @@
                 {{ item.ideal_a }}
               </small>
             </template> -->
-            <template v-slot:[`item.id`]="{ item }">
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    small
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                    v-on="data.on"
-                    @click="openViewDialog(item)"
-                  >
-                    <v-icon>mdi-eye</v-icon>
-                  </v-btn>
-                </template>
-                <span>View</span>
-              </v-tooltip>
-            </template>
-          </v-data-table>
-
-          <!-- Paginate -->
-          <div class="pbutton text-center pt-7">
-            <v-pagination
-              v-model="page"
-              :total-visible="7"
-              :length="table.last_page"
-              color="red darken-2"
-            ></v-pagination>
-          </div>
-
-          <v-dialog v-model="viewdialog" max-width="900px">
-            <v-card tile id="dialog" class="pa-3">
-              <v-toolbar dark dense flat rounded class="red darken-3">
-                Main Inventory
-                <v-spacer></v-spacer>
-                <v-icon
-                  class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                  text
-                  @click="closeViewDialog"
-                  >mdi-close
-                </v-icon>
-              </v-toolbar>
-
-              <v-card-text class="py-2">
-                <!-- Data -->
-                <v-row>
-                  <v-col class="px-0">
-                    Category: <strong>{{ currentdata.category }}</strong>
-                    <br />
-                    Supply Name:
-                    <strong
-                      >{{ currentdata.supply_name }}
-                      {{ currentdata.description }}</strong
-                    >
-                    <br />
-                    Unit: <strong>{{ currentdata.unit }}</strong> <br />
-                    Net Price:
-                    <strong>{{
-                      getFormatCurrency(currentdata.net_price, "0,0.00")
-                    }}</strong>
-                    <br />
-                  </v-col>
-                </v-row>
-
-                <v-row
-                  :class="{
-                    'text-caption': $vuetify.breakpoint.smAndDown,
-                  }"
-                  class="border rounded"
-                >
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6">
-                    <v-row>
-                      <v-col
-                        class="py-1 px-0"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                      ></v-col>
-                      <v-col
-                        class="
-                          py-1
-                          px-0
-                          text-uppercase
-                          font-weight-bold
-                          text-center
-                        "
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        Qty
-                      </v-col>
-                      <v-col
-                        class="
-                          py-1
-                          px-0
-                          text-uppercase
-                          font-weight-bold
-                          text-center
-                        "
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        Value
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Beginning Inventory</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.begining_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.begining_a }}</v-col
-                      >
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Incoming Supplies</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.incoming_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.incoming_a }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Total Stocks</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.total_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.total_a }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Outgoing Supplies</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.outgoing_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.outgoing_a }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Stocks On Hand</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.onhand_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.onhand_a }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Average Daily Usage</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.average_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.average_a }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Lead Time</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      ></v-col>
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.lead_time }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Order Point</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      ></v-col>
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.orderpoint }}
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  <v-divider
-                    vertical
-                    :hidden="$vuetify.breakpoint.xsOnly"
-                  ></v-divider>
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6">
-                    <v-row>
-                      <v-col
-                        class="py-1 hidden-sm-and-down"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                      ></v-col>
-                      <v-col
-                        class="
-                          py-1
-                          px-0
-                          text-uppercase
-                          font-weight-bold
-                          text-center
-                          hidden-sm-and-down
-                        "
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        Qty
-                      </v-col>
-                      <v-col
-                        class="
-                          py-1
-                          px-0
-                          text-uppercase
-                          font-weight-bold
-                          text-center
-                          hidden-sm-and-down
-                        "
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        Value
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Minimum Order Qty</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      ></v-col>
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.minimum_order_quantity }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Order Qty</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      ></v-col>
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.ordr }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Order Frequency</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      ></v-col>
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.order_frequency }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Trigger Point</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      ></v-col>
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.triggerpoint == 0 ? "Order" : "Manage" }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Ending Inventory</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.ending_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.ending_a }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Consumption</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.consumption_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.consumption_a }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Ideal Inventory</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.ideal_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.ideal_a }}
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col
-                        class="py-1 px-2 text-uppercase font-weight-bold"
-                        cols="6"
-                        xl="6"
-                        lg="6"
-                        md="6"
-                        sm="6"
-                        >Variance</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                        >{{ currentdata.variance_q }}</v-col
-                      >
-                      <v-col
-                        class="py-1 px-2 text-right"
-                        cols="3"
-                        xl="3"
-                        lg="3"
-                        md="3"
-                        sm="3"
-                      >
-                        {{ currentdata.variance_a }}
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-              <v-divider class="mt-4 mb-0"></v-divider>
-              <!-- Dialog Form Buttons -->
-              <v-card-actions class="px-0 pb-0">
-                <v-spacer></v-spacer>
+          <template v-slot:[`item.id`]="{ item }">
+            <v-tooltip bottom>
+              <template #activator="data">
                 <v-btn
-                  color="black"
-                  depressed
-                  :small="$vuetify.breakpoint.smAndDown"
-                  dark
-                  @click="closeViewDialog"
-                  text
+                  icon
+                  color="red darken-2"
+                  small
+                  :x-small="$vuetify.breakpoint.smAndDown"
+                  v-on="data.on"
+                  @click="openViewDialog(item)"
                 >
-                  Close
+                  <v-icon>mdi-eye</v-icon>
                 </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-container>
+              </template>
+              <span>View</span>
+            </v-tooltip>
+          </template>
+        </v-data-table>
+
+        <!-- Paginate -->
+        <div class="pbutton text-center pt-7">
+          <v-pagination
+            v-model="page"
+            :total-visible="7"
+            :length="table.last_page"
+            color="red darken-2"
+          ></v-pagination>
+        </div>
+
+        <v-dialog v-model="viewdialog" max-width="900px">
+          <v-card tile id="dialog" class="pa-3">
+            <v-toolbar dark dense flat rounded class="red darken-3">
+              Main Inventory
+              <v-spacer></v-spacer>
+              <v-icon
+                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                text
+                @click="closeViewDialog"
+                >mdi-close
+              </v-icon>
+            </v-toolbar>
+
+            <v-card-text class="py-2">
+              <!-- Data -->
+              <v-row>
+                <v-col class="px-0">
+                  Category: <strong>{{ currentdata.category }}</strong>
+                  <br />
+                  Supply Name:
+                  <strong
+                    >{{ currentdata.supply_name }}
+                    {{ currentdata.description }}</strong
+                  >
+                  <br />
+                  Unit: <strong>{{ currentdata.unit }}</strong> <br />
+                  Net Price:
+                  <strong>{{
+                    getFormatCurrency(currentdata.net_price, "0,0.00")
+                  }}</strong>
+                  <br />
+                </v-col>
+              </v-row>
+
+              <v-row
+                :class="{
+                  'text-caption': $vuetify.breakpoint.smAndDown,
+                }"
+                class="border rounded"
+              >
+                <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                  <v-row>
+                    <v-col
+                      class="py-1 px-0"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                    ></v-col>
+                    <v-col
+                      class="
+                        py-1
+                        px-0
+                        text-uppercase
+                        font-weight-bold
+                        text-center
+                      "
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      Qty
+                    </v-col>
+                    <v-col
+                      class="
+                        py-1
+                        px-0
+                        text-uppercase
+                        font-weight-bold
+                        text-center
+                      "
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      Value
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Beginning Inventory</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.begining_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.begining_a }}</v-col
+                    >
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Incoming Supplies</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.incoming_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.incoming_a }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Total Stocks</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.total_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.total_a }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Outgoing Supplies</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.outgoing_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.outgoing_a }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Stocks On Hand</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.onhand_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.onhand_a }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Average Daily Usage</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.average_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.average_a }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Lead Time</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    ></v-col>
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.lead_time }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Order Point</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    ></v-col>
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.orderpoint }}
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-divider
+                  vertical
+                  :hidden="$vuetify.breakpoint.xsOnly"
+                ></v-divider>
+                <v-col cols="12" xl="6" lg="6" md="6" sm="6">
+                  <v-row>
+                    <v-col
+                      class="py-1 hidden-sm-and-down"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                    ></v-col>
+                    <v-col
+                      class="
+                        py-1
+                        px-0
+                        text-uppercase
+                        font-weight-bold
+                        text-center
+                        hidden-sm-and-down
+                      "
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      Qty
+                    </v-col>
+                    <v-col
+                      class="
+                        py-1
+                        px-0
+                        text-uppercase
+                        font-weight-bold
+                        text-center
+                        hidden-sm-and-down
+                      "
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      Value
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Minimum Order Qty</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    ></v-col>
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.minimum_order_quantity }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Order Qty</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    ></v-col>
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.ordr }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Order Frequency</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    ></v-col>
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.order_frequency }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Trigger Point</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    ></v-col>
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.triggerpoint == 0 ? "Order" : "Manage" }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Ending Inventory</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.ending_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.ending_a }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Consumption</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.consumption_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.consumption_a }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Ideal Inventory</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.ideal_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.ideal_a }}
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      class="py-1 px-2 text-uppercase font-weight-bold"
+                      cols="6"
+                      xl="6"
+                      lg="6"
+                      md="6"
+                      sm="6"
+                      >Variance</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                      >{{ currentdata.variance_q }}</v-col
+                    >
+                    <v-col
+                      class="py-1 px-2 text-right"
+                      cols="3"
+                      xl="3"
+                      lg="3"
+                      md="3"
+                      sm="3"
+                    >
+                      {{ currentdata.variance_a }}
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-divider class="mt-4 mb-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="px-0 pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                color="black"
+                depressed
+                :small="$vuetify.breakpoint.smAndDown"
+                dark
+                @click="closeViewDialog"
+                text
+              >
+                Close
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-container>
     </v-card>
   </div>

@@ -1,316 +1,310 @@
 <template>
   <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-    <v-container class="pa-xl-4 pa-lg-4 pa-md-3 pa-sm-1 pa-0">
-      <!-- Progress Circular -->
-      <v-overlay :value="overlay">
-        <v-progress-circular size="55" color="red darken-2" indeterminate>
-        </v-progress-circular>
-      </v-overlay>
-      <!-- Snackbar -->
-      <v-snackbar
-        :vertical="$vuetify.breakpoint.xsOnly"
-        min-width="auto"
-        v-model="snackbar.active"
-        timeout="2500"
-        class="text-center pb-0"
-        :left="$vuetify.breakpoint.smAndUp"
+    <!-- Progress Circular -->
+    <v-overlay :value="overlay">
+      <v-progress-circular size="55" color="red darken-2" indeterminate>
+      </v-progress-circular>
+    </v-overlay>
+    <!-- Snackbar -->
+    <v-snackbar
+      :vertical="$vuetify.breakpoint.xsOnly"
+      min-width="auto"
+      v-model="snackbar.active"
+      timeout="2500"
+      class="text-center pb-0"
+      :left="$vuetify.breakpoint.smAndUp"
+    >
+      <span
+        ><v-icon :color="snackbar.iconColor">{{
+          `mdi-${snackbar.iconText}`
+        }}</v-icon></span
       >
-        <span
-          ><v-icon :color="snackbar.iconColor">{{
-            `mdi-${snackbar.iconText}`
-          }}</v-icon></span
+      {{ snackbar.message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :small="$vuetify.breakpoint.smAndDown"
+          v-bind="attrs"
+          color="primary"
+          text
+          @click="snackbar.active = false"
+          >Close</v-btn
         >
-        {{ snackbar.message }}
-        <template v-slot:action="{ attrs }">
+      </template>
+    </v-snackbar>
+
+    <v-card-actions class="px-0 justify-center">
+      <!-- Export to PDF -->
+      <v-tooltip bottom>
+        <template #activator="data">
           <v-btn
+            dark
+            color="red accent-4"
+            class="mx-1"
+            v-on="data.on"
+            @click="get('pdf')"
             :small="$vuetify.breakpoint.smAndDown"
-            v-bind="attrs"
-            color="primary"
-            text
-            @click="snackbar.active = false"
-            >Close</v-btn
+            ><v-icon>mdi-file-pdf</v-icon></v-btn
           >
         </template>
-      </v-snackbar>
+        <span>Export to PDF</span>
+      </v-tooltip>
+      <!-- Export to Excel -->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn
+            dark
+            color="green darken-4"
+            class="mx-1"
+            v-on="data.on"
+            @click="get('excel')"
+            :small="$vuetify.breakpoint.smAndDown"
+            ><v-icon>mdi-file-excel</v-icon></v-btn
+          >
+        </template>
+        <span>Export to Excel</span>
+      </v-tooltip>
+      <!-- Print -->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn
+            dark
+            color="blue-grey darken-1"
+            class="mx-1"
+            @click="get('print')"
+            v-on="data.on"
+            :small="$vuetify.breakpoint.smAndDown"
+            ><v-icon>mdi-printer</v-icon></v-btn
+          >
+        </template>
+        <span>Print</span>
+      </v-tooltip></v-card-actions
+    >
+    <v-row no-gutters>
+      <v-spacer></v-spacer>
+      <!-- Refresh -->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn
+            class="mr-2 mb-3"
+            color="success"
+            style="text-transform: none"
+            depressed
+            :small="$vuetify.breakpoint.smAndDown"
+            dark
+            @click="getTransactionReport"
+            v-on="data.on"
+            icon
+            ><v-icon>mdi-refresh</v-icon></v-btn
+          >
+        </template>
+        <span>Refresh</span>
+      </v-tooltip>
+      <!-- Filter -->
+      <v-tooltip bottom>
+        <template #activator="data">
+          <v-btn
+            color="grey darken-4"
+            style="text-transform: none"
+            depressed
+            :small="$vuetify.breakpoint.smAndDown"
+            dark
+            @click="filterDialog = true"
+            v-on="data.on"
+            icon
+            ><v-icon>mdi-filter-variant</v-icon></v-btn
+          >
+        </template>
+        <span>Filter</span>
+      </v-tooltip>
+    </v-row>
 
-      <v-card-actions class="px-0 justify-center">
-        <!-- Export to PDF -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="red accent-4"
-              class="mx-1"
-              v-on="data.on"
-              @click="get('pdf')"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-file-pdf</v-icon></v-btn
-            >
-          </template>
-          <span>Export to PDF</span>
-        </v-tooltip>
-        <!-- Export to Excel -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="green darken-4"
-              class="mx-1"
-              v-on="data.on"
-              @click="get('excel')"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-file-excel</v-icon></v-btn
-            >
-          </template>
-          <span>Export to Excel</span>
-        </v-tooltip>
-        <!-- Print -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              dark
-              color="blue-grey darken-1"
-              class="mx-1"
-              @click="get('print')"
-              v-on="data.on"
-              :small="$vuetify.breakpoint.smAndDown"
-              ><v-icon>mdi-printer</v-icon></v-btn
-            >
-          </template>
-          <span>Print</span>
-        </v-tooltip></v-card-actions
-      >
-      <v-row no-gutters>
-        <v-spacer></v-spacer>
-        <!-- Refresh -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              class="mr-2 mb-3"
-              color="success"
-              style="text-transform: none"
-              depressed
-              :small="$vuetify.breakpoint.smAndDown"
-              dark
-              @click="getTransactionReport"
-              v-on="data.on"
-              icon
-              ><v-icon>mdi-refresh</v-icon></v-btn
-            >
-          </template>
-          <span>Refresh</span>
-        </v-tooltip>
-        <!-- Filter -->
-        <v-tooltip bottom>
-          <template #activator="data">
-            <v-btn
-              color="grey darken-4"
-              style="text-transform: none"
-              depressed
-              :small="$vuetify.breakpoint.smAndDown"
-              dark
-              @click="filterDialog = true"
-              v-on="data.on"
-              icon
-              ><v-icon>mdi-filter-variant</v-icon></v-btn
-            >
-          </template>
-          <span>Filter</span>
-        </v-tooltip>
-      </v-row>
-
-      <!-- Filter Dialog -->
-      <v-dialog v-model="filterDialog" max-width="400px">
-        <v-card dark tile class="pa-2">
-          <v-toolbar dense flat class="transparent">
-            Search Filter
-            <v-spacer></v-spacer>
-            <v-icon text @click="filterDialog = false">mdi-close </v-icon>
-          </v-toolbar>
-          <v-divider class="my-0"></v-divider>
-          <v-row no-gutters align="center" class="pa-2">
-            <!-- Items Per Page -->
-            <v-col cols="4"
-              ><span class="text-caption text-xl-subtitle-2"
-                >Items / Page</span
-              ></v-col
-            >
-            <v-col cols="8">
-              <v-card-actions class="px-0">
-                <v-select
-                  dense
-                  v-model="itemsPerPage"
-                  @change="itemperpage"
-                  :items="[5, 10, 15, 20]"
-                  hide-details
-                  background-color="grey darken-3"
-                  flat
-                  solo
-                  style="font-size: 12px"
-                >
-                </v-select>
-              </v-card-actions>
-            </v-col>
-
-            <!-- Search Field -->
-            <v-col cols="4"
-              ><span class="text-caption text-xl-subtitle-2"
-                >Search</span
-              ></v-col
-            >
-            <v-col cols="8">
-              <v-card-actions class="px-0">
-                <v-text-field
-                  v-model="search"
-                  placeholder="Reference No."
-                  single-line
-                  dense
-                  clearable
-                  hide-details
-                  background-color="grey darken-3"
-                  flat
-                  solo
-                  style="font-size: 12px"
-                ></v-text-field>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      small
-                      :x-small="$vuetify.breakpoint.smAndDown"
-                      color="red darken-2"
-                      icon
-                      v-on="data.on"
-                      @click="getTransactionReport"
-                      class="ml-1"
-                    >
-                      <v-icon>mdi-magnify</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Search</span>
-                </v-tooltip>
-              </v-card-actions>
-            </v-col>
-
-            <!-- Branch Field -->
-            <v-col cols="4"
-              ><span class="text-caption text-xl-subtitle-2"
-                >Branch</span
-              ></v-col
-            >
-            <v-col cols="8">
-              <v-card-actions class="px-0">
-                <v-select
-                  hide-details
-                  :items="branchlist"
-                  item-text="branch_name"
-                  item-value="id"
-                  clearable
-                  v-model="branch"
-                  dense
-                  @change="getTransactionReport"
-                  placeholder="Branch"
-                  background-color="grey darken-3"
-                  flat
-                  solo
-                  style="font-size: 12px"
-                >
-                </v-select>
-              </v-card-actions>
-            </v-col>
-
-            <!-- Date Picker -->
-            <v-col cols="4"
-              ><span class="text-caption text-xl-subtitle-2"
-                >Date From</span
-              ></v-col
-            >
-            <v-col cols="8">
-              <v-menu
-                v-model="date1"
-                :close-on-content-click="false"
-                :nudge-right="35"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
+    <!-- Filter Dialog -->
+    <v-dialog v-model="filterDialog" max-width="400px">
+      <v-card dark tile class="pa-2">
+        <v-toolbar dense flat class="transparent">
+          Search Filter
+          <v-spacer></v-spacer>
+          <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+        </v-toolbar>
+        <v-divider class="my-0"></v-divider>
+        <v-row no-gutters align="center" class="pa-2">
+          <!-- Items Per Page -->
+          <v-col cols="4"
+            ><span class="text-caption text-xl-subtitle-2"
+              >Items / Page</span
+            ></v-col
+          >
+          <v-col cols="8">
+            <v-card-actions class="px-0">
+              <v-select
+                dense
+                v-model="itemsPerPage"
+                @change="itemperpage"
+                :items="[5, 10, 15, 20]"
+                hide-details
+                background-color="grey darken-3"
+                flat
+                solo
+                style="font-size: 12px"
               >
-                <template v-slot:activator="{ on }">
-                  <v-card-actions class="px-0">
-                    <v-text-field
-                      hide-details
-                      v-model="dateFromTP"
-                      placeholder="Date From"
-                      prepend-inner-icon="mdi-calendar-range"
-                      readonly
-                      v-on="on"
-                      dense
-                      clearable
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    ></v-text-field>
-                  </v-card-actions>
-                </template>
-                <v-date-picker
-                  v-model="dateFromTP"
-                  @input="date1 = false"
-                  scrollable
-                  no-title
-                  color="red darken-2"
-                  dark
-                  @change="getTransactionReport"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
+              </v-select>
+            </v-card-actions>
+          </v-col>
 
-            <!-- Date Picker -->
-            <v-col cols="4"
-              ><span class="text-caption text-xl-subtitle-2"
-                >Date Until</span
-              ></v-col
-            >
-            <v-col cols="8">
-              <v-menu
-                v-model="date2"
-                :close-on-content-click="false"
-                :nudge-right="35"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-card-actions class="px-0">
-                    <v-text-field
-                      hide-details
-                      v-model="dateUntilTP"
-                      placeholder="Date Until"
-                      prepend-inner-icon="mdi-calendar-range"
-                      readonly
-                      v-on="on"
-                      dense
-                      clearable
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    ></v-text-field>
-                  </v-card-actions>
+          <!-- Search Field -->
+          <v-col cols="4"
+            ><span class="text-caption text-xl-subtitle-2">Search</span></v-col
+          >
+          <v-col cols="8">
+            <v-card-actions class="px-0">
+              <v-text-field
+                v-model="search"
+                placeholder="Reference No."
+                single-line
+                dense
+                clearable
+                hide-details
+                background-color="grey darken-3"
+                flat
+                solo
+                style="font-size: 12px"
+              ></v-text-field>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    small
+                    :x-small="$vuetify.breakpoint.smAndDown"
+                    color="red darken-2"
+                    icon
+                    v-on="data.on"
+                    @click="getTransactionReport"
+                    class="ml-1"
+                  >
+                    <v-icon>mdi-magnify</v-icon></v-btn
+                  >
                 </template>
-                <v-date-picker
-                  v-model="dateUntilTP"
-                  @input="date2 = false"
-                  scrollable
-                  no-title
-                  color="red darken-2"
-                  dark
-                  @change="getTransactionReport"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-dialog>
-    </v-container>
+                <span>Search</span>
+              </v-tooltip>
+            </v-card-actions>
+          </v-col>
+
+          <!-- Branch Field -->
+          <v-col cols="4"
+            ><span class="text-caption text-xl-subtitle-2">Branch</span></v-col
+          >
+          <v-col cols="8">
+            <v-card-actions class="px-0">
+              <v-select
+                hide-details
+                :items="branchlist"
+                item-text="branch_name"
+                item-value="id"
+                clearable
+                v-model="branch"
+                dense
+                @change="getTransactionReport"
+                placeholder="Branch"
+                background-color="grey darken-3"
+                flat
+                solo
+                style="font-size: 12px"
+              >
+              </v-select>
+            </v-card-actions>
+          </v-col>
+
+          <!-- Date Picker -->
+          <v-col cols="4"
+            ><span class="text-caption text-xl-subtitle-2"
+              >Date From</span
+            ></v-col
+          >
+          <v-col cols="8">
+            <v-menu
+              v-model="date1"
+              :close-on-content-click="false"
+              :nudge-right="35"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-card-actions class="px-0">
+                  <v-text-field
+                    hide-details
+                    v-model="dateFromTP"
+                    placeholder="Date From"
+                    prepend-inner-icon="mdi-calendar-range"
+                    readonly
+                    v-on="on"
+                    dense
+                    clearable
+                    background-color="grey darken-3"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  ></v-text-field>
+                </v-card-actions>
+              </template>
+              <v-date-picker
+                v-model="dateFromTP"
+                @input="date1 = false"
+                scrollable
+                no-title
+                color="red darken-2"
+                dark
+                @change="getTransactionReport"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+
+          <!-- Date Picker -->
+          <v-col cols="4"
+            ><span class="text-caption text-xl-subtitle-2"
+              >Date Until</span
+            ></v-col
+          >
+          <v-col cols="8">
+            <v-menu
+              v-model="date2"
+              :close-on-content-click="false"
+              :nudge-right="35"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-card-actions class="px-0">
+                  <v-text-field
+                    hide-details
+                    v-model="dateUntilTP"
+                    placeholder="Date Until"
+                    prepend-inner-icon="mdi-calendar-range"
+                    readonly
+                    v-on="on"
+                    dense
+                    clearable
+                    background-color="grey darken-3"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  ></v-text-field>
+                </v-card-actions>
+              </template>
+              <v-date-picker
+                v-model="dateUntilTP"
+                @input="date2 = false"
+                scrollable
+                no-title
+                color="red darken-2"
+                dark
+                @change="getTransactionReport"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
 
     <!-- Table -->
     <v-data-table

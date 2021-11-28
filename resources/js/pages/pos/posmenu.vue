@@ -429,7 +429,6 @@
                 v-if="dialog_add"
                 :small="$vuetify.breakpoint.smAndDown"
                 @click="validateQty('add')"
-                text
               >
                 Save
               </v-btn>
@@ -441,7 +440,6 @@
                 dark
                 :small="$vuetify.breakpoint.smAndDown"
                 @click="validateQty('delete')"
-                text
               >
                 Remove
               </v-btn>
