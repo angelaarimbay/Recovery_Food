@@ -144,14 +144,14 @@
           <v-card-actions class="px-0 pb-0">
             <v-spacer></v-spacer>
             <v-btn
-              color="black"
+              color="grey"
               depressed
               dark
               @click="cancelRoles"
               :small="$vuetify.breakpoint.smAndDown"
-              text
+              outlined
             >
-              Cancel
+              <span style="color: #1976d2">Cancel</span>
             </v-btn>
             <v-btn
               color="primary"
@@ -159,7 +159,6 @@
               dark
               @click="storeRoles"
               :small="$vuetify.breakpoint.smAndDown"
-              text
             >
               Save
             </v-btn>
@@ -239,7 +238,6 @@
               dark
               @click="validate('permission')"
               :small="$vuetify.breakpoint.smAndDown"
-              text
             >
               Save
             </v-btn>
@@ -290,7 +288,6 @@
               dark
               @click="validate('permission')"
               :small="$vuetify.breakpoint.smAndDown"
-              text
             >
               Save
             </v-btn>
@@ -330,7 +327,16 @@
             </v-data-table>
 
             <!-- Paginate -->
-            <div class="pbutton tbl text-center pt-7 d-none">
+            <div
+              class="
+                pbutton
+                tbl
+                text-center
+                pt-7
+                pb-xl-3 pb-lg-3 pb-md-3 pb-sm-2 pb-2
+                d-none
+              "
+            >
               <v-pagination
                 v-model="page3"
                 :total-visible="7"
@@ -349,7 +355,6 @@
               dark
               @click="validate('userrole')"
               :small="$vuetify.breakpoint.smAndDown"
-              text
             >
               Save
             </v-btn>
@@ -401,16 +406,17 @@
           :height="height"
           :class="{ 'pa-2': $vuetify.breakpoint.smAndUp }"
         >
-          <v-tabs-slider style="border-radius: 20px 20px 0px 0px"></v-tabs-slider>
+          <v-tabs-slider
+            style="border-radius: 20px 20px 0px 0px"
+          ></v-tabs-slider>
           <v-tab
             class="
-              text-body-2
+              text-caption
               text-xl-subtitle-1
               text-lg-subtitle-1
               text-md-subtitle-2
               text-sm-body-1
             "
-            :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
             style="text-transform: none"
             @click="getRoles"
           >
@@ -418,14 +424,13 @@
           </v-tab>
           <v-tab
             class="
-              text-body-2
+              text-caption
               text-xl-subtitle-1
               text-lg-subtitle-1
               text-md-subtitle-2
               text-sm-body-1
               d-none
             "
-            :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
             style="text-transform: none"
             @click="getPermissions"
           >
@@ -433,13 +438,12 @@
           </v-tab>
           <v-tab
             class="
-              text-body-2
+              text-caption
               text-xl-subtitle-1
               text-lg-subtitle-1
               text-md-subtitle-2
               text-sm-body-1
             "
-            :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
             style="text-transform: none"
             @click="getUserRoles"
           >
@@ -459,9 +463,9 @@
             Dev
           </v-tab> -->
 
+          <!-- Roles List -->
           <v-tab-item>
-            <!-- Roles List -->
-            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-1">
               <v-card-actions class="px-0">
                 <!-- Buttons -->
                 <v-btn
@@ -476,22 +480,24 @@
                   Add New Role
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="success"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="getRoles"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-refresh</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Refresh</span>
-                </v-tooltip>
+                <v-card color="red darken-3" flat style="border-radius: 20px">
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        class="mx-4"
+                        color="white"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getRoles"
+                        v-on="data.on"
+                        icon
+                        ><v-icon size="20">mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
+                </v-card>
               </v-card-actions>
 
               <!-- Roles List Table -->
@@ -502,7 +508,7 @@
                 :loading="progressBar"
                 :headers="headersRoles"
                 :items="tableRoles.data"
-                class="table-striped border"
+                class="table-striped border mt-2"
               >
                 <v-progress-linear
                   v-show="progressBar"
@@ -548,7 +554,15 @@
               </v-data-table>
 
               <!-- Paginate -->
-              <div class="tbl pbutton text-center pt-7">
+              <div
+                class="
+                  tbl
+                  pbutton
+                  text-center
+                  pt-7
+                  pb-xl-3 pb-lg-3 pb-md-3 pb-sm-2 pb-2
+                "
+              >
                 <v-pagination
                   v-model="page1"
                   :total-visible="7"
@@ -561,7 +575,7 @@
 
           <v-tab-item class="d-none">
             <!-- Permissions List -->
-            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-1">
               <v-card-actions class="px-0">
                 <v-btn
                   color="primary"
@@ -570,27 +584,28 @@
                   :small="$vuetify.breakpoint.smAndDown"
                   dark
                   @click="dialogPermissions = true"
-                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                 >
                   Add New Permission
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="success"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="getPermissions"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-refresh</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Refresh</span>
-                </v-tooltip>
+                <v-card color="red darken-3" flat style="border-radius: 20px">
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        class="mx-4"
+                        color="white"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getPermissions"
+                        v-on="data.on"
+                        icon
+                        ><v-icon size="20">mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
+                </v-card>
               </v-card-actions>
 
               <!-- Permissions List Table -->
@@ -601,7 +616,7 @@
                 hide-default-footer
                 :headers="headersPermissions"
                 :items="tablePermissions.data"
-                class="table-striped border"
+                class="table-striped border mt-2"
               >
                 <v-progress-linear
                   v-show="progressBar"
@@ -625,7 +640,15 @@
               </v-data-table>
 
               <!-- Paginate -->
-              <div class="tbl pbutton text-center pt-7">
+              <div
+                class="
+                  tbl
+                  pbutton
+                  text-center
+                  pt-7
+                  pb-xl-3 pb-lg-3 pb-md-3 pb-sm-2 pb-2
+                "
+              >
                 <v-pagination
                   v-model="page4"
                   :total-visible="7"
@@ -638,25 +661,27 @@
 
           <v-tab-item>
             <!-- User Roles -->
-            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
+            <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-1">
               <v-card-actions class="px-0">
                 <v-spacer></v-spacer>
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <v-btn
-                      color="success"
-                      style="text-transform: none"
-                      depressed
-                      :small="$vuetify.breakpoint.smAndDown"
-                      dark
-                      @click="getUserRoles"
-                      v-on="data.on"
-                      icon
-                      ><v-icon>mdi-refresh</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Refresh</span>
-                </v-tooltip>
+                <v-card color="red darken-3" flat style="border-radius: 20px">
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        class="mx-4"
+                        color="white"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getUserRoles"
+                        v-on="data.on"
+                        icon
+                        ><v-icon size="20">mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
+                </v-card>
               </v-card-actions>
 
               <!-- User Roles Table -->
@@ -667,7 +692,7 @@
                 :loading="progressBar"
                 :headers="headersUserrole"
                 :items="tableUserrole.data"
-                class="table-striped border"
+                class="table-striped border mt-2"
               >
                 <v-progress-linear
                   v-show="progressBar"
@@ -708,7 +733,15 @@
               </v-data-table>
 
               <!-- Paginate -->
-              <div class="tbl pbutton text-center pt-7">
+              <div
+                class="
+                  tbl
+                  pbutton
+                  text-center
+                  pt-7
+                  pb-xl-3 pb-lg-3 pb-md-3 pb-sm-2 pb-2
+                "
+              >
                 <v-pagination
                   v-model="page2"
                   :total-visible="7"

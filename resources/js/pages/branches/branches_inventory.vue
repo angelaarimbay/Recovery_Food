@@ -45,12 +45,12 @@
         color="red darken-2"
         :centered="$vuetify.breakpoint.xsOnly"
         :height="height"
-        :class="{'pa-2' : $vuetify.breakpoint.smAndUp}"
+        :class="{ 'pa-2': $vuetify.breakpoint.smAndUp }"
       >
         <v-tabs-slider style="border-radius: 20px 20px 0px 0px"></v-tabs-slider>
         <v-tab
           class="
-            text-body-2
+            text-caption
             text-xl-subtitle-1
             text-lg-subtitle-1
             text-md-subtitle-2
@@ -61,7 +61,7 @@
         >
         <v-tab
           class="
-            text-body-2
+            text-caption
             text-xl-subtitle-1
             text-lg-subtitle-1
             text-md-subtitle-2
@@ -73,45 +73,47 @@
 
         <!-- Branch Supplies Inventory -->
         <v-tab-item>
-          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-            <v-row no-gutters>
-              <v-spacer></v-spacer>
-              <!-- Refresh -->
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    class="mr-2 mb-3"
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="getSupplies"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-refresh</v-icon></v-btn
-                  >
-                </template>
-                <span>Refresh</span>
-              </v-tooltip>
-              <!-- Filter -->
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    color="grey darken-4"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="filterDialog = true"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-filter-variant</v-icon></v-btn
-                  >
-                </template>
-                <span>Filter</span>
-              </v-tooltip>
-            </v-row>
+          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-1">
+            <v-card-actions class="px-0">
+              <v-row align="center" no-gutters>
+                <v-spacer></v-spacer>
+                <v-card color="red darken-3" flat style="border-radius: 20px">
+                  <!-- Refresh -->
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        class="mr-2"
+                        color="white"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="refresh"
+                        v-on="data.on"
+                        icon
+                        ><v-icon size="20">mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
+                  <!-- Filter -->
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="white"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="filterDialog = true"
+                        v-on="data.on"
+                        icon
+                        ><v-icon size="20">mdi-filter-variant</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Filter</span>
+                  </v-tooltip>
+                </v-card>
+              </v-row>
+            </v-card-actions>
 
             <!-- Filter Dialog -->
             <v-dialog v-model="filterDialog" max-width="400px">
@@ -254,7 +256,7 @@
               :items-per-page="itemsPerPage1"
               hide-default-footer
               @page-count="pageCount = $event"
-              class="table-striped border"
+              class="table-striped border mt-2"
             >
               <!-- Progress Bar -->
               <v-progress-linear
@@ -274,7 +276,14 @@
             </v-data-table>
 
             <!-- Paginate -->
-            <div class="pbutton text-center pt-7">
+            <div
+              class="
+                pbutton
+                text-center
+                pt-7
+                pb-xl-3 pb-lg-3 pb-md-3 pb-sm-2 pb-2
+              "
+            >
               <v-pagination
                 v-model="page1"
                 :length="table1.last_page"
@@ -286,43 +295,45 @@
 
         <!-- Branch Products List -->
         <v-tab-item>
-          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2">
-            <v-row no-gutters>
-              <v-spacer></v-spacer>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    class="mr-2 mb-3"
-                    color="success"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="getProducts"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-refresh</v-icon></v-btn
-                  >
-                </template>
-                <span>Refresh</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    color="grey darken-4"
-                    style="text-transform: none"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="filterDialog1 = true"
-                    v-on="data.on"
-                    icon
-                    ><v-icon>mdi-filter-variant</v-icon></v-btn
-                  >
-                </template>
-                <span>Filter</span>
-              </v-tooltip>
-            </v-row>
+          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-1">
+            <v-card-actions class="px-0">
+              <v-row no-gutters>
+                <v-spacer></v-spacer>
+                <v-card color="red darken-3" flat style="border-radius: 20px">
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        class="mr-2"
+                        color="white"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="getProducts"
+                        v-on="data.on"
+                        icon
+                        ><v-icon size="20">mdi-refresh</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Refresh</span>
+                  </v-tooltip>
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        color="white"
+                        depressed
+                        :small="$vuetify.breakpoint.smAndDown"
+                        dark
+                        @click="filterDialog1 = true"
+                        v-on="data.on"
+                        icon
+                        ><v-icon size="20">mdi-filter-variant</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Filter</span>
+                  </v-tooltip>
+                </v-card>
+              </v-row>
+            </v-card-actions>
 
             <!-- Filter Dialog -->
             <v-dialog v-model="filterDialog1" max-width="400px">
@@ -466,7 +477,7 @@
               :items-per-page="itemsPerPage2"
               hide-default-footer
               @page-count="pageCount = $event"
-              class="table-striped border"
+              class="table-striped border mt-2"
             >
               <!-- Progress Bar -->
               <v-progress-linear
@@ -486,7 +497,14 @@
             </v-data-table>
 
             <!-- Paginate -->
-            <div class="pbutton text-center pt-7">
+            <div
+              class="
+                pbutton
+                text-center
+                pt-7
+                pb-xl-3 pb-lg-3 pb-md-3 pb-sm-2 pb-2
+              "
+            >
               <v-pagination
                 v-model="page2"
                 :total-visible="7"
@@ -503,10 +521,8 @@
 
 <!-- Style -->
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
 }
 
 #table1 .v-data-table-header th {
@@ -791,6 +807,15 @@ export default {
       await axios.get("/api/branches/inventory/prodCat").then((prod_cat) => {
         this.prodcatlist = prod_cat.data;
       });
+    },
+
+    //For refresh
+    refresh() {
+      this.getSupplies();
+      this.getProducts();
+      this.suppCat();
+      this.branchName();
+      this.prodCat();
     },
   },
 };

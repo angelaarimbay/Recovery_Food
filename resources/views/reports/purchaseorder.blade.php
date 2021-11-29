@@ -90,7 +90,6 @@
                 <td style="width: auto"> {{ $items['invoice_number'] }} </td>
                 <td style="width: auto; text-align: right"> {{ $items['format_amount'] }} </td>
                 <td style="width: auto"> {{ date('Y-m-d', strtotime($items['incoming_date'])) }} </td>
-
             </tr>
         @endforeach
     </table>
