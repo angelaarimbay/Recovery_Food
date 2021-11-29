@@ -96,6 +96,9 @@
                     <h6>TOTAL AMT</h6>
                 </th>
                 <th>
+                    <h6>FLUCTUATION IMPACT</h6>
+                </th>
+                <th>
                     <h6>INCOMING DATE</h6>
                 </th>
             </tr>
@@ -140,6 +143,7 @@
             <td style=" border: none;width: auto"> </td>
             <td style=" border-top: none;  border-left: none; border-right: none; width: auto">
                 {{ number_format($quantity_amount, 2) }} </td>
+            <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
         </tr>
         <tr>
