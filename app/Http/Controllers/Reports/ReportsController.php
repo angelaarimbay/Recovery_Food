@@ -142,6 +142,7 @@ class ReportsController extends Controller
         $g_wvat_p = 0; //Grand Total
         $g_total_p = 0; //Grand Total
         $g_quantity_p = 0; //Grand Total
+        $g_fluctuation_p = 0; //Grand Total
 
         foreach (tbl_incomingsupp::whereRaw($where)
             ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
@@ -151,6 +152,7 @@ class ReportsController extends Controller
             $wvat_p = 0; //Sub-Total
             $total_p = 0; //Sub-Total
             $quantity_p = 0;//SubTotal
+            $fluctuation_p = 0;//SubTotal
 
             //Each category add to inner array
             foreach (tbl_incomingsupp::with("category")->where("category", $value)
@@ -161,12 +163,14 @@ class ReportsController extends Controller
                 $wvat_p += $value1->with_vat;
                 $total_p += $value1->quantity_amount;
                 $quantity_p += $value1->quantity;
+                $fluctuation_p +=$value1->fluctuation;
+            
 
                 $g_net_p += $value1->supply_name_details['net_price'];
                 $g_wvat_p += $value1->with_vat;
                 $g_total_p += $value1->quantity_amount;
                 $g_quantity_p += $value1->quantity;
-
+                $g_fluctuation_p += $value1->fluctuation;
                 $ar = [
                     'category_details' => $value1->category_details['supply_cat_name'],
                     'supply_name' => $value1->supply_name_details['supply_name'],
@@ -176,6 +180,7 @@ class ReportsController extends Controller
                     'with_vat' => $value1->with_vat,
                     'quantity' => $value1->quantity,
                     'quantity_amount' => $value1->quantity_amount,
+                    'fluctuation' => $value1 ->fluctuation,
                     'incoming_date' => $value1->incoming_date,
                 ];
                 array_push($group, $ar);
@@ -191,6 +196,7 @@ class ReportsController extends Controller
                 'with_vat' => $wvat_p,
                 'quantity' => $quantity_p,
                 'quantity_amount' => $total_p,
+                'fluctuation' => $fluctuation_p,
                 'incoming_date' => '',
             ];
             array_push($group, $ar);
@@ -206,6 +212,7 @@ class ReportsController extends Controller
                     $content['with_vat'] = $g_wvat_p;
                     $content['quantity_amount'] = $g_total_p;
                     $content['quantity'] = $g_quantity_p;
+                    $content['fluctuation'] =$g_fluctuation_p;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to];
                     if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
@@ -237,6 +244,7 @@ class ReportsController extends Controller
                         $temp['with_vat'] = $value1['with_vat'];
                         $temp['quantity'] = $value1['quantity'];
                         $temp['total_amount'] = $value1['quantity_amount'];
+                        $temp['fluctuation'] =$value1['fluctuation'];
                         $temp['incoming_date'] = ($value1['incoming_date'] ? date("Y-m-d", strtotime($value[$key]['incoming_date'])) : null);
                         array_push($dataitems, $temp);
                     }
