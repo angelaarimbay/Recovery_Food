@@ -93,10 +93,10 @@
                     <h6>QTY</h6>
                 </th>
                 <th>
-                    <h6>TOTAL AMT</h6>
+                    <h6>FLUCTUATION IMPACT</h6>
                 </th>
                 <th>
-                    <h6>FLUCTUATION IMPACT</h6>
+                    <h6>TOTAL AMT</h6>
                 </th>
                 <th>
                     <h6>INCOMING DATE</h6>
@@ -117,6 +117,8 @@
                     <td style="width: auto; text-align: right"> {{ $items['quantity'] }} </td>
                     <td style="width: auto; text-align: right">
                         {{ $items['quantity_amount'] ? number_format($items['quantity_amount'], 2) : '' }} </td>
+                    <td style="width: auto; text-align: right">
+                        {{ $items['fluctuation'] ? number_format($items['fluctuation'], 2) : '' }} </td>
                     <td style="width: auto">
                         {{ $items['incoming_date'] ? date('Y-m-d', strtotime($items['incoming_date'])) : null }}
                     </td>
@@ -131,6 +133,8 @@
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
+            <td style=" border: none;width: auto"> </td>
+
         </tr>
         <tr>
 
@@ -145,6 +149,8 @@
                 {{ number_format($quantity_amount, 2) }} </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
+            <td style=" border: none;width: auto"> </td>
+            
         </tr>
         <tr>
 
@@ -154,6 +160,7 @@
             <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
+            <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
         </tr> --}}
     </table>
