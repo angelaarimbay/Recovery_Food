@@ -884,7 +884,7 @@ class ReportsController extends Controller
                 $dataitems = [];
                 foreach ($data as $key => $value) {
                     $temp = [];
-                    $temp['supplier_name'] = tbl_supplist::where("id", $value->supplier_name)->first()->supplier_name . ' ' . tbl_supplist::where("id", $value->supplier_name)->first()->description;
+                    $temp['supplier_name'] = tbl_supplist::where("id", $value->supplier_name)->first()->supplier_name . ' ' . '(' . tbl_supplist::where("id", $value->supplier_name)->first()->description . ')';
                     $temp['invoice_number'] = $value->invoice_number;
                     $temp['format_amount'] = $value->format_amount;
                     $temp['incoming_date'] = date("Y-m-d", strtotime($value->incoming_date));

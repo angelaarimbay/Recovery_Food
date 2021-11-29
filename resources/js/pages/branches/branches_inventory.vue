@@ -45,7 +45,7 @@
         color="red darken-2"
         :centered="$vuetify.breakpoint.xsOnly"
         :height="height"
-        :class="{ 'pa-2': $vuetify.breakpoint.smAndUp }"
+        :class="{ 'pt-2': $vuetify.breakpoint.smAndUp }"
       >
         <v-tabs-slider style="border-radius: 20px 20px 0px 0px"></v-tabs-slider>
         <v-tab
@@ -73,7 +73,8 @@
 
         <!-- Branch Supplies Inventory -->
         <v-tab-item>
-          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-1">
+          <v-divider class="my-0"></v-divider>
+          <v-container class="py-2 px-3">
             <v-card-actions class="px-0">
               <v-row align="center" no-gutters>
                 <v-spacer></v-spacer>
@@ -295,7 +296,8 @@
 
         <!-- Branch Products List -->
         <v-tab-item>
-          <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-2 px-1">
+          <v-divider class="my-0"></v-divider>
+          <v-container class="py-2 px-3">
             <v-card-actions class="px-0">
               <v-row no-gutters>
                 <v-spacer></v-spacer>

@@ -86,7 +86,7 @@
         @foreach ($data as $items)
             <tr>
                 <td style="width: auto; text-align: left"> {{ $items['supplier_name_details']['supplier_name'] }}
-                    {{ $items['supplier_name_details']['description'] }}</td>
+                    ({{ $items['supplier_name_details']['description'] }})</td>
                 <td style="width: auto"> {{ $items['invoice_number'] }} </td>
                 <td style="width: auto; text-align: right"> {{ $items['format_amount'] }} </td>
                 <td style="width: auto"> {{ date('Y-m-d', strtotime($items['incoming_date'])) }} </td>
