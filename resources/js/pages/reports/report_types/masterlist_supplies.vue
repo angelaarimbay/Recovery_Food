@@ -125,6 +125,9 @@
         </v-card-actions>
       </v-col>
     </v-row>
+
+
+      
     <iframe id="print0" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
@@ -168,7 +171,6 @@ export default {
   //Onload
   created() {
     this.suppCat();
-   this.suppList();
   },
 
   //Methods
@@ -205,17 +207,20 @@ export default {
                   iconColor: "success",
                   message: "Successfully exported.",
                 };
-              } else {
+              } 
+              else {
                 this.snackbar = {
                   active: true,
                   iconText: "alert-box",
                   iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-  
+                  message: "Nothing to export.",  
+                }
+                ;
               }
-              
-            });
+            }
+            )
+            ;
+
             break;
           case "excel":
             await axios({
@@ -257,7 +262,9 @@ export default {
                   message: "Nothing to export.",
                 }
                 ;
+                
               }
+              
             }
             
             );
@@ -302,8 +309,6 @@ export default {
       }
     }
     ,
-
-
     //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
@@ -317,7 +322,13 @@ export default {
       });
     }
     ,
-    
   },
 };
 </script>
+
+
+
+
+
+
+

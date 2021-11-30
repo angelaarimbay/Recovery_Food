@@ -190,4 +190,7 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('sales_report/list', 'Reports\ReportsController@ListSP');
     Route::get('sales_report', 'Reports\ReportsController@ExportSP');
     Route::get('sales_report/info', 'Reports\ReportsController@getSPInfo');
+
+
+    
 });

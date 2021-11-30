@@ -387,8 +387,19 @@ export default {
                   iconColor: "warning",
                   message: "Nothing to print.",
                 };
+                
+                
               }
+              
+
+              
             });
+
+
+
+
+
+            
             break;
           default:
             break;
@@ -396,6 +407,8 @@ export default {
         this.overlay = false;
       }
     },
+
+    
 
     //For retrieving supply categories
     async suppCat() {
