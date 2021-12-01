@@ -93,10 +93,10 @@
                     <h6>QTY</h6>
                 </th>
                 <th>
-                    <h6>FLUCTUATION IMPACT</h6>
+                    <h6>TOTAL AMT</h6>
                 </th>
                 <th>
-                    <h6>TOTAL AMT</h6>
+                    <h6>FLUCTUATION IMPACT</h6>
                 </th>
                 <th>
                     <h6>INCOMING DATE</h6>
