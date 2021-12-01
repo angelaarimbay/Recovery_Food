@@ -33,6 +33,7 @@ class IncomingSuppliesController extends Controller
                     "supply_name" => $data->supply_name['id'],
                     "quantity" => $data->quantity,
                     "amount" => $data->amount,
+                    
                     "incoming_date" => date("Y-m-d h:i:s", strtotime($data->incoming_date . ' ' . date("h:i:s"))),
                 ]
             );

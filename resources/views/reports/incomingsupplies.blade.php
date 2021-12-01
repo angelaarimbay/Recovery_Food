@@ -72,7 +72,7 @@
         @foreach ($data as $array)
 
             <tr>
-                <td colspan="7" style="text-align: center; font-size: 17px; background-color: red; color: white">
+                <td colspan="8" style="text-align: center; font-size: 17px; background-color: red; color: white">
                     {{ $array[0]['category_details'] }}
                 </td>
             </tr>
@@ -95,7 +95,9 @@
                 <th>
                     <h6>TOTAL AMT</h6>
                 </th>
-               
+                <th>
+                    <h6>FLUCTUATION IMPACT</h6>
+                </th>
                 <th>
                     <h6>INCOMING DATE</h6>
                 </th>
@@ -115,6 +117,8 @@
                     <td style="width: auto; text-align: right"> {{ $items['quantity'] }} </td>
                     <td style="width: auto; text-align: right">
                         {{ $items['quantity_amount'] ? number_format($items['quantity_amount'], 2) : '' }} </td>
+                        <td style="width: auto; text-align: right">
+                        {{ $items['quantity_amount'] ? number_format($items['quantity_amount'], 2) : '' }} </td>
                     <td style="width: auto">
                         {{ $items['incoming_date'] ? date('Y-m-d', strtotime($items['incoming_date'])) : null }}
                     </td>
@@ -122,6 +126,7 @@
             @endforeach
         @endforeach
         {{-- <tr>
+            <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
@@ -143,6 +148,7 @@
             <td style=" border-top: none;  border-left: none; border-right: none; width: auto">
                 {{ number_format($quantity_amount, 2) }} </td>
             <td style=" border: none;width: auto"> </td>
+            <td style=" border: none;width: auto"> </td>
         </tr>
         <tr>
 
@@ -152,6 +158,7 @@
             <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
+            <td style=" border: none;width: auto"> </td>
             <td style=" border: none;width: auto"> </td>
            
         </tr> --}}
