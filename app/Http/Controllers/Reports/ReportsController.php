@@ -134,6 +134,8 @@ class ReportsController extends Controller
     //For incoming supplies report
     public function IncomingSuppliesReport(Request $t)
     {
+
+
         //Filter if all or specific
         $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
         $data = []; //Main array
@@ -142,10 +144,6 @@ class ReportsController extends Controller
         $g_wvat_p = 0; //Grand Total
         $g_total_p = 0; //Grand Total
         $g_quantity_p = 0; //GrandTotal
-       
-        
-      
-       
 
         foreach (tbl_incomingsupp::whereRaw($where)
             ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
@@ -155,11 +153,12 @@ class ReportsController extends Controller
             $wvat_p = 0; //Sub-Total
             $total_p = 0; //Sub-Total
             $quantity_p =0;//SubTotal
-           
-            
-       
+            $weighted_p  = 0;
+            $fluctuation_p =0;   
 
-            
+         //WAIT BERNS CR LANGS BINURA KO ERROR E 
+ 
+           
             
             //Each category add to inner array
             foreach (tbl_incomingsupp::with("category")->where("category", $value)
@@ -171,15 +170,14 @@ class ReportsController extends Controller
                 $total_p += $value1->quantity_amount;
                 $quantity_p += $value1->quantity;
              
-
-
+             
                 $g_net_p += $value1->supply_name_details['net_price'];
                 $g_wvat_p += $value1->with_vat;
                 $g_total_p += $value1->quantity_amount;
                 $g_quantity_p += $value1 ->quantity;
+               
            
                 
-               
 
                 $ar = [
                     'category_details' => $value1->category_details['supply_cat_name'],
@@ -189,7 +187,9 @@ class ReportsController extends Controller
                     'net_price' => $value1->supply_name_details['net_price'],
                     'with_vat' => $value1->with_vat,
                     'quantity' => $value1->quantity,
+                    
                     'quantity_amount' => $value1->quantity_amount,
+                    
                    
                     'incoming_date' => $value1->incoming_date,
                 ];
@@ -240,7 +240,7 @@ class ReportsController extends Controller
                 break;
             case 'excel':
                 //Columns
-                $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'QTY', 'TOTAL AMT', 'INCOMING DATE'];
+                $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'QTY', 'TOTAL AMT','FLUCTUATION IMPACT', 'INCOMING DATE'];
                 //Data
                 $dataitems = [];
 
@@ -681,7 +681,7 @@ class ReportsController extends Controller
         $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-" . date("t"))));
         //Current month
         $date1 = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month . "-01"));
-        $date2 = date("Y-m-t 23:59:59", strtotime($t->year . '-' . $t->month . '-' . date("t")));
+       $date2 = date("Y-m-t 23:59:59", strtotime($t->year . '-' . $t->month . '-' . date("t")));
 
         $data = [];
 
