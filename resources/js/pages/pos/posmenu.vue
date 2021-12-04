@@ -904,9 +904,6 @@ export default {
     }),
     disabled2() {
       for (var key in this.temp_data) {
-        console.log(this.temp_data.data);
-        console.log(this.table2);
-
         for (var key1 in this.temp_data[key]) {
           if (this.temp_data[key][key1] != this.table2[key][key1]) {
             alert("d magkatulad");

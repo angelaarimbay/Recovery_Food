@@ -1136,7 +1136,6 @@ export default {
     //Editing/updating of row
     edit(row) {
       this.currentdata = JSON.parse(JSON.stringify(row));
-      console.log(this.currentdata);
       this.form.id = row.id;
       this.form.status = row.status;
       this.form.category = row.category.id;
