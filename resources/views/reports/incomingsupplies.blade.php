@@ -118,7 +118,7 @@
                     <td style="width: auto; text-align: right">
                         {{ $items['quantity_amount'] ? number_format($items['quantity_amount'], 2) : '' }} </td>
                         <td style="width: auto; text-align: right">
-                        {{ $items['quantity_amount'] ? number_format($items['quantity_amount'], 2) : '' }} </td>
+                        {{ $items['fluctuation'] ? number_format($items['fluctuation'], 2) : '' }} </td>
                     <td style="width: auto">
                         {{ $items['incoming_date'] ? date('Y-m-d', strtotime($items['incoming_date'])) : null }}
                     </td>

@@ -613,7 +613,10 @@
                     </template>
                   </v-text-field>
                 </v-col>
-               
+
+             
+        
+
               </v-row>
             </v-container>
             <v-divider class="my-0"></v-divider>
@@ -823,6 +826,13 @@ export default {
       {
         text: "TOTAL AMT",
         value: "amount",
+        align: "right",
+        filterable: false,
+        class: "black--text",
+      },
+       {
+        text: "FLUCTUATION",
+        value: "fluctuation",
         align: "right",
         filterable: false,
         class: "black--text",
