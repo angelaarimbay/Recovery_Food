@@ -68,7 +68,7 @@ class ReportsController extends Controller
             //Add inner array to main array (Nested array)
             $ar = [
                 'category_details' => '',
-                'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
+                'supply_name' => ($t->type == 'excel' ? 'GRAND TOTAL' : '<b>GRAND TOTAL</b>'),
                 'description' => '',
                 'unit' => '',
                 'net_price' => $net_p,
@@ -179,7 +179,7 @@ class ReportsController extends Controller
             //Add inner array to main array (Nested array)
             $ar = [
                 'category_details' => '',
-                'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
+                'supply_name' => ($t->type == 'excel' ? 'GRAND TOTAL' : '<b>GRAND TOTAL</b>'),
                 'description' => '',
                 'unit' => '',
                 'net_price' => $net_p,
@@ -302,7 +302,7 @@ class ReportsController extends Controller
             // Add inner array to main array (Nested array)
             $ar = [
                 'category_details' => '',
-                'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
+                'supply_name' => ($t->type == 'excel' ? 'GRAND TOTAL' : '<b>GRAND TOTAL</b>'),
                 'description' => '',
                 'unit' => '',
                 'net_price' => $net_p,
@@ -536,7 +536,7 @@ class ReportsController extends Controller
             $ar = [
                 'row' => '',
                 'category' => '',
-                'supply_name' => ($t->type == 'excel' ? 'TOTALS' : '<b>TOTALS</b>'),
+                'supply_name' => ($t->type == 'excel' ? 'GRAND TOTAL' : '<b>GRAND TOTAL</b>'),
                 'unit' => '',
                 'net_price' => '',
                 'lead_time' => '',
@@ -708,9 +708,9 @@ class ReportsController extends Controller
                     $temp[$key1] = ($temp[$key1] ?? 0) + $value[$key1];
                 } else {
                     if ($t->type == 'excel') {
-                        $temp[$key1] = 'GRAND TOTALS';
+                        $temp[$key1] = 'GRAND TOTAL';
                     } else {
-                        $temp[$key1] = '<b>GRAND TOTALS</b>';
+                        $temp[$key1] = '<b>GRAND TOTAL</b>';
                     }
                 }
             }
