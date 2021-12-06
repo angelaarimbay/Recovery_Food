@@ -85,8 +85,8 @@ class tbl_incomingsupp extends Model
     public function getFluctuationAttribute()
     {
         //For list with VAT column
-        $date1 = date("Y-m-d h:i:s", strtotime(date("m") . "-01-" . date("Y")));
-        $date2 = date("Y-m-t h:i:s", strtotime(date("m") . '/' . date('t') . '/' . date("Y")));
+        $date1 = date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("m") . '/' . date("t") . '/' . date("Y")));
 
         //Get the amount from incoming
         $get_amount = tbl_incomingsupp::where("supply_name", $this->supply_name)
@@ -98,7 +98,8 @@ class tbl_incomingsupp extends Model
         if ($get_quantity->sum('amount') < 1) {
             $get_wov = 0;
         } else {
-            $get_wov = $get_quantity->sum('quantity') * (($get_amount->sum('amount') / $get_quantity->sum('quantity')) - tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price);
+            $get_wov = $get_quantity->sum('quantity') * (($get_amount->sum('amount') / $get_quantity->sum('quantity')) - 
+            tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price);
         }
         return $get_wov;
     }

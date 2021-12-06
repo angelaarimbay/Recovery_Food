@@ -63,7 +63,7 @@
 
         @foreach ($data as $array)
             <tr>
-                <td colspan="29" style="text-align: center; font-size: 17px; background-color: red; color: white">
+                <td colspan="29" style="text-align: center; font-size: 16px; background-color: red; color: white">
                     <h5>{{ $array[0]['category'] }}</h5>
                 </td>
             </tr>

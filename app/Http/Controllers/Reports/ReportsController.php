@@ -134,6 +134,9 @@ class ReportsController extends Controller
     //For incoming supplies report
     public function IncomingSuppliesReport(Request $t)
     {
+
+ 
+
         //Filter if all or specific
         $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
         $data = []; //Main array
@@ -146,37 +149,80 @@ class ReportsController extends Controller
             ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
             ->groupBy('category')->pluck('category') as $key => $value) {
             $group = []; //Inner Array
+       
+           
             $net_p = 0; //Sub-Total
             $wvat_p = 0; //Sub-Total
             $total_p = 0; //Sub-Total
             //Each category add to inner array
-            foreach (tbl_incomingsupp::with("category")->where("category", $value)
+            foreach ( tbl_incomingsupp::with("category")
+            ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+            ->join('tbl_masterlistsupps', 'tbl_masterlistsupps.id', '=', 'tbl_incomingsupps.supply_name')
+            ->orderBy('tbl_masterlistsupps.supply_name', 'ASC')
+            ->groupBy('tbl_incomingsupps.supply_name')
+            ->pluck('tbl_incomingsupps.supply_name') as $key2 => $value2) {
+            $group2 = [];
+            $ar2 = [];
+
+            $s_total_a = 0;
+            $s_qty = 0; //Sub-Total
+            $s_flc = 0;
+       
+            
+                foreach (tbl_incomingsupp::with("category")->where("category", $value)->where("supply_name",$value2)
+                    ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+                    ->get() as $key1 => $value1) {
+
+                    $net_p += $value1->supply_name_details['net_price'];
+                    $wvat_p += $value1->with_vat;
+                    $total_p += $value1->quantity_amount;
+
+                    $s_total_a += $value1->quantity_amount;
+                    $s_qty +=  $value1->quantity;
+
+                    $s_flc =  number_format($value1->fluctuation,2); //condition mo nlang. 
+ 
+                    $g_net_p += $value1->supply_name_details['net_price'];
+                    $g_wvat_p += $value1->with_vat;
+                    $g_total_p += $value1->quantity_amount;
+
+            
+                    $ar = [
+                        'category_details' => $value1->category_details['supply_cat_name'],
+                        'supply_name' => $value1->supply_name_details['supply_name'],
+                        'description' => $value1->supply_name_details['description'],
+                        'unit' => $value1->supply_name_details['unit'],
+                        'net_price' => $value1->supply_name_details['net_price'],
+                        'with_vat' => $value1->with_vat,
+                        'quantity' => $value1->quantity,
+                        'quantity_amount' => $value1->quantity_amount,
+                        'incoming_date' => $value1->incoming_date,
+                    ]; 
+                    array_push($group2, $ar);
+                }
+                if(tbl_incomingsupp::with("category")->where("category", $value)->where("supply_name",$value2)
                 ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-                ->get() as $key1 => $value1) {
+                ->count() > 0){
+                    $ar2 = [ 
+                        'category_details' =>'',
+                        'supply_name' => 'Total Amount: '.$s_total_a. '<br> Total Quantity: '.$s_qty. ' <br> Fluctuation: '.$s_flc,
+                        'description' => '',
+                        'unit' =>'',
+                        'net_price' => '',
+                        'with_vat' => '',
+                        'quantity' => '',
+                        'quantity_amount' =>'',
+                        'incoming_date' =>'',
+                    ];
+    
+                    array_push($group2, $ar2);  //Add inner array to main array (Nested array)
+                }
+                
 
-                $net_p += $value1->supply_name_details['net_price'];
-                $wvat_p += $value1->with_vat;
-                $total_p += $value1->quantity_amount;
-
-                $g_net_p += $value1->supply_name_details['net_price'];
-                $g_wvat_p += $value1->with_vat;
-                $g_total_p += $value1->quantity_amount;
-
-                $ar = [
-                    'category_details' => $value1->category_details['supply_cat_name'],
-                    'supply_name' => $value1->supply_name_details['supply_name'],
-                    'description' => $value1->supply_name_details['description'],
-                    'unit' => $value1->supply_name_details['unit'],
-                    'net_price' => $value1->supply_name_details['net_price'],
-                    'with_vat' => $value1->with_vat,
-                    'quantity' => $value1->quantity,
-                    'quantity_amount' => $value1->quantity_amount,
-                    'incoming_date' => $value1->incoming_date,
-                ];
-                array_push($group, $ar);
+                array_push($group, $group2);
+              
             }
-
-            //Add inner array to main array (Nested array)
+         
             $ar = [
                 'category_details' => '',
                 'supply_name' => ($t->type == 'excel' ? 'GRAND TOTAL' : '<b>GRAND TOTAL</b>'),
@@ -188,7 +234,8 @@ class ReportsController extends Controller
                 'quantity_amount' => $total_p,
                 'incoming_date' => '',
             ];
-            array_push($group, $ar);
+            array_push($group2,$ar);
+            array_push($group, $group2);
             array_push($data, $group);
         }
 
@@ -222,17 +269,21 @@ class ReportsController extends Controller
                 $dataitems = [];
 
                 foreach ($data as $key => $value) {
-                    foreach ($value as $key1 => $value1) {
-                        $temp = [];
-                        $temp['category'] = $value1['category_details'];
-                        $temp['supply_name'] = $value1['supply_name'] . " " . $value1['description'];
-                        $temp['unit'] = $value1['unit'];
-                        $temp['net_price'] = $value1['net_price'];
-                        $temp['with_vat'] = $value1['with_vat'];
-                        $temp['quantity'] = $value1['quantity'];
-                        $temp['total_amount'] = $value1['quantity_amount'];
-                        $temp['incoming_date'] = ($value1['incoming_date'] ? date("Y-m-d", strtotime($value[$key]['incoming_date'])) : null);
-                        array_push($dataitems, $temp);
+                    foreach ($value as $key2=> $value2) {
+                        foreach ($value2 as $key1 => $value1) {
+                             
+                                $temp = [];
+                                $temp['category'] = $value1['category_details'];
+                                $temp['supply_name'] = $value1['supply_name'] . " " . $value1['description'];
+                                $temp['unit'] = $value1['unit'];
+                                $temp['net_price'] = $value1['net_price'];
+                                $temp['with_vat'] = $value1['with_vat'];
+                                $temp['quantity'] = $value1['quantity'];
+                                $temp['total_amount'] = $value1['quantity_amount'];
+                                $temp['incoming_date'] = ($value1['incoming_date'] ? date("Y-m-d", strtotime($value1['incoming_date'])) : null);
+                                array_push($dataitems, $temp);
+                           
+                        }
                     }
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Incoming Supplies Report.xlsx");
@@ -355,7 +406,7 @@ class ReportsController extends Controller
                         $temp['with_vat'] = $value1['with_vat'];
                         $temp['quantity'] = $value1['quantity'];
                         $temp['amount'] = $value1['quantity_amount'];
-                        $temp['outgoing_date'] = ($value1['outgoing_date'] ? date("Y-m-d", strtotime($value[$key]['outgoing_date'])) : null);
+                        $temp['outgoing_date'] = ($value1['outgoing_date'] ? date("Y-m-d", strtotime($value1['outgoing_date'])) : null);
                         array_push($dataitems, $temp);
                     }
                 }
@@ -854,14 +905,52 @@ class ReportsController extends Controller
     //For purchase order report
     public function PurchaseOrderReport(Request $t)
     {
-        DB::statement(DB::raw("set @row:=0"));
-        $data = tbl_purchaseord::whereBetween('incoming_date', [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-            ->selectRaw("*, @row:=@row+1 as row ")->get();
+        //Filter if all or specific
+        $where = ($t->supplier == 'All' ? "   supplier_name != -1 " : ' supplier_name =' . $t->supplier);
+        $data = []; //Main array
+        //Get all the supplier then loop
+        $g_total_a = 0;
 
+        foreach (tbl_purchaseord::whereRaw($where)
+            ->whereBetween('incoming_date', [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+            ->groupBy('supplier_name')->pluck('supplier_name') as $key => $value) {
+            $group = [];
+            $total_a = 0;
+            //Each supplier add to inner array
+            foreach (tbl_purchaseord::with("supplier_name")->where("supplier_name", $value)
+                ->whereBetween('incoming_date', [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+                ->get() as $key1 => $value1) {
+
+                $total_a += $value1->amount;
+
+                $ar = [
+                    'supplier_name' => $value1->supplier_name_details['supplier_name'],
+                    'description' => $value1->supplier_name_details['description'],
+                    'invoice_number' => $value1->invoice_number,
+                    'amount' => $value1->amount,
+                    'incoming_date' => $value1->incoming_date,
+                ];
+                array_push($group, $ar);
+            }
+
+            //Add inner to main array (Nested array)
+            $ar = [
+                'supplier_name' => '',
+                'description' => '',
+                'invoice_number' => ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>'),
+                'amount' => $total_a,
+                'incoming_date' => '',
+            ];
+            array_push($group, $ar);
+            array_push($data, $group);
+        }
+
+        $content = [];
         switch ($t->type) {
             case 'pdf':
                 if (count($data) > 0) {
                     $content['data'] = $data;
+                    $content['amount'] = $g_total_a;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to];
                     if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
@@ -882,13 +971,16 @@ class ReportsController extends Controller
                 $columns = ['SUPPLIER NAME', 'INVOICE NUMBER', 'AMT', 'DATE'];
                 //Data
                 $dataitems = [];
+
                 foreach ($data as $key => $value) {
-                    $temp = [];
-                    $temp['supplier_name'] = tbl_supplist::where("id", $value->supplier_name)->first()->supplier_name . ' ' . '(' . tbl_supplist::where("id", $value->supplier_name)->first()->description . ')';
-                    $temp['invoice_number'] = $value->invoice_number;
-                    $temp['format_amount'] = $value->format_amount;
-                    $temp['incoming_date'] = date("Y-m-d", strtotime($value->incoming_date));
-                    array_push($dataitems, $temp);
+                    foreach ($value as $key1 => $value1) {
+                        $temp = [];
+                        $temp['supplier_name'] = $value1['supplier_name'] ? $value1['supplier_name'] . " " . '(' . $value1['description'] . ')' : null;
+                        $temp['invoice_number'] = $value1['invoice_number'];
+                        $temp['amount'] = $value1['amount'];
+                        $temp['incoming_date'] = ($value1['incoming_date'] ? date("Y-m-d", strtotime($value1['incoming_date'])) : null);
+                        array_push($dataitems, $temp);
+                    }
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Purchase Order Report.xlsx");
                 break;

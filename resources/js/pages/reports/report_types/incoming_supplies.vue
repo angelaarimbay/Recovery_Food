@@ -79,9 +79,10 @@
         <span>Print</span>
       </v-tooltip></v-card-actions
     >
-    <!-- Category Field -->
+    
     <v-row no-gutters justify="center">
       <v-col cols="4" class="px-1" style="max-width: 150px">
+        <!-- Category Field -->
         <v-card-actions class="pb-1 pt-4 px-0">
           <v-select
             hide-details
@@ -185,9 +186,9 @@
 
 <!-- Style -->
 <style>
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
+}
 
 .v-list-item__content {
   color: white !important;
@@ -271,7 +272,7 @@ export default {
             await axios({
               url: "/api/reports/incomingsupplies/get",
               method: "GET",
-              responseType: "blob",
+             responseType: "blob",
               params: {
                 type: type,
                 category: this.category,
@@ -279,6 +280,7 @@ export default {
                 to: this.incoming_to,
               },
             }).then((response) => {
+             
               if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",

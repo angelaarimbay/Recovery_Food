@@ -90,7 +90,6 @@
             :items="suppnamelist"
             item-text="supplier_name"
             item-value="id"
-            clearable
             dense
             placeholder="Supplier"
             @change="get"
@@ -384,7 +383,6 @@ export default {
                 };
               }
             });
-
             break;
           default:
             break;
@@ -399,5 +397,15 @@ export default {
 <style>
 .container {
   max-width: 1500px !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>
