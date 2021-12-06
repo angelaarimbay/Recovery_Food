@@ -320,8 +320,6 @@
           :items="table.data"
           :loading="progressbar"
           :page.sync="page"
-          :sort-by="['supply_name.supply_name']"
-          :sort-desc="[false]"
           ref="progress"
           :items-per-page="itemsPerPage"
           hide-default-footer
@@ -792,10 +790,6 @@ export default {
         text: "SUPPLY NAME",
         value: "supply_name.supply_name",
         class: "black--text",
-      }, {
-        text: "FLUCTUATION",
-        value: "fluctuation",
-        class: "black--text",
       },
       {
         text: "UNIT",
@@ -1013,7 +1007,6 @@ export default {
           },
         })
         .then((result) => {
-          console.log(result.data);
           //If the value is true then get the data
           this.table = result.data;
           this.progressbar = false; //Hide the progress bar

@@ -79,7 +79,7 @@
         <span>Print</span>
       </v-tooltip></v-card-actions
     >
-    
+
     <v-row no-gutters justify="center">
       <v-col cols="4" class="px-1" style="max-width: 150px">
         <!-- Category Field -->
@@ -272,7 +272,7 @@ export default {
             await axios({
               url: "/api/reports/incomingsupplies/get",
               method: "GET",
-             responseType: "blob",
+              responseType: "blob",
               params: {
                 type: type,
                 category: this.category,
@@ -280,7 +280,6 @@ export default {
                 to: this.incoming_to,
               },
             }).then((response) => {
-             
               if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
@@ -366,6 +365,8 @@ export default {
                 to: this.incoming_to,
               },
             }).then((response) => {
+              // console.log(response.data);
+              // return;
               if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",

@@ -69,11 +69,10 @@
     <!-- Table -->
     <table style="width: 100%">
         <!-- Header -->
-        @foreach ($data as $array)
-            @
+        @foreach ($data as $key => $array)
             <tr>
                 <td colspan="7" style="text-align: center; font-size: 16px; background-color: red; color: white">
-           
+                    {{ $array[$key][$loop->index]['category_details'] }}
                 </td>
             </tr>
             <tr>
@@ -100,8 +99,9 @@
                 </th>
             </tr>
             @foreach ($array as $dt)
-            <!-- Rows -->
-                @foreach ($dt as $items )
+                <!-- Rows -->
+
+                @foreach ($dt as $items)
                     <tr>
                         <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
                         </td>
@@ -119,7 +119,7 @@
                             {{ $items['incoming_date'] ? date('Y-m-d', strtotime($items['incoming_date'])) : null }}
                         </td>
                     </tr>
-                @endforeach  
+                @endforeach
             @endforeach
         @endforeach
         {{-- <tr>
