@@ -428,6 +428,8 @@ export default {
                 to: this.outgoing_to,
               },
             }).then((response) => {
+              // console.log(response.data);
+              // return;
               if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
@@ -475,7 +477,13 @@ export default {
     //For retrieving branch names
     async branchName() {
       await axios.get("api/osupp/branchName").then((bran_name) => {
-        this.branchlist = bran_name.data;
+        this.branchlist.push({ branch_name: "All", id: "All" });
+        for (var key in bran_name.data) {
+          this.branchlist.push({
+            branch_name: bran_name.data[key]["branch_name"],
+            id: bran_name.data[key]["id"],
+          })
+        }
       });
     },
   },

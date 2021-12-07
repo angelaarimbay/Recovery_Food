@@ -73,7 +73,7 @@
 
             <tr>
                 <td colspan="3" style="text-align: center; font-size: 16px; background-color: red; color: white">
-                    {{ $array[0]['supplier_name'] }}
+                    {{ $array[0]['supplier_name'] }} ({{$array[0]['description']}})
                 </td>
             </tr>
             <tr>
@@ -90,7 +90,7 @@
             <!-- Rows -->
             @foreach ($array as $items)
                 <tr>
-                    <td style="width: auto"> {{ $items['invoice_number'] }} </td>
+                    <td style="width: auto"> {!! $items['invoice_number'] !!} </td>
                     <td style="width: auto; text-align: right">
                         {{ $items['amount'] ? number_format($items['amount'], 2) : '' }} </td>
                     <td style="width: auto">

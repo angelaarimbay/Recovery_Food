@@ -56,7 +56,7 @@
     </div>
     <p class="header">Recovery Food</p>
     <p class="header">Outgoing Supplies Report</p>
-    <p class="header">@if (count($data[0]) > 0) {{ $data[0][0]['branch'] }} @endif</p>
+    <p class="header">@if (count($data[0]) > 0) {{ $data[0][0][0]['branch'] }} @endif</p>
 
     <table style="border:none; width: 100%">
         <tr>
@@ -69,12 +69,10 @@
     <!-- Table -->
     <table style="width: 100%">
         <!-- Header -->
-
-        <!-- Rows -->
         @foreach ($data as $array)
             <tr>
                 <td colspan="7" style="text-align: center; font-size: 16px; background-color: red; color: white">
-                    {{ $array[0]['category_details'] }}
+                    {{ $array[0][0]['category_details'] }}
                 </td>
             </tr>
             <tr>
@@ -100,25 +98,27 @@
                     <h6>OUTGOING DATE</h6>
                 </th>
             </tr>
-
-            @foreach ($array as $items)
-                <tr>
-                    <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
-                    </td>
-                    <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
-                    <td style="width: auto; text-align: right">
-                        {{ $items['net_price'] ? number_format($items['net_price'], 2) : '' }}
-                    </td>
-                    <td style="width: auto; text-align: right">
-                        {{ $items['with_vat'] ? number_format($items['with_vat'], 2) : '' }}
-                    </td>
-                    <td style="width: auto; text-align: right"> {{ $items['quantity'] }} </td>
-                    <td style="width: auto; text-align: right">
-                        {{ $items['quantity_amount'] ? number_format($items['quantity_amount'], 2) : '' }} </td>
-                    <td style="width: auto">
-                        {{ $items['outgoing_date'] ? date('Y-m-d', strtotime($items['outgoing_date'])) : null }}
-                    </td>
-                </tr>
+            @foreach ($array as $dt)
+                <!-- Rows -->
+                @foreach ($dt as $items)
+                    <tr>
+                        <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
+                        </td>
+                        <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
+                        <td style="width: auto; text-align: right">
+                            {{ $items['net_price'] ? number_format($items['net_price'], 2) : '' }}
+                        </td>
+                        <td style="width: auto; text-align: right">
+                            {{ $items['with_vat'] ? number_format($items['with_vat'], 2) : '' }}
+                        </td>
+                        <td style="width: auto; text-align: right"> {{ $items['quantity'] }} </td>
+                        <td style="width: auto; text-align: right">
+                            {{ $items['quantity_amount'] ? number_format($items['quantity_amount'], 2) : '' }} </td>
+                        <td style="width: auto">
+                            {{ $items['outgoing_date'] ? date('Y-m-d', strtotime($items['outgoing_date'])) : null }}
+                        </td>
+                    </tr>
+                @endforeach
             @endforeach
         @endforeach
         {{-- <tr>

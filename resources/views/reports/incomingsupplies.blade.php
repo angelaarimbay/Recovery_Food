@@ -69,10 +69,10 @@
     <!-- Table -->
     <table style="width: 100%">
         <!-- Header -->
-        @foreach ($data as $key => $array)
+        @foreach ($data as $array)
             <tr>
                 <td colspan="7" style="text-align: center; font-size: 16px; background-color: red; color: white">
-                    {{ $array[$key][$loop->index]['category_details'] }}
+                    {{ $array[0][0]['category_details'] }}
                 </td>
             </tr>
             <tr>
