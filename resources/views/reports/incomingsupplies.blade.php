@@ -100,7 +100,6 @@
             </tr>
             @foreach ($array as $dt)
                 <!-- Rows -->
-
                 @foreach ($dt as $items)
                     <tr>
                         <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
@@ -132,7 +131,6 @@
             <td style=" border: none;width: auto"> </td>
         </tr>
         <tr>
-
             <td style=" border: none;width: auto"> Grand Total </td>
             <td style=" border: none;width: auto"> </td>
             <td style=" border-top: none;  border-left: none; border-right: none; width: auto">
