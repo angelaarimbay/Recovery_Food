@@ -360,6 +360,8 @@ export default {
                 supplier: this.supplier,
               },
             }).then((response) => {
+              // console.log(response.data);
+              // return;
               if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",

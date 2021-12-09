@@ -51,6 +51,8 @@ class ReportsController extends Controller
                 $wovat_p += $value1->without_vat;
 
                 $ar = [
+                    'supplier_name' => $value1->supplier_name_details['supplier_name'],
+                    'supplier_desc' => $value1->supplier_name_details['description'],
                     'category_details' => $value1->category_details['supply_cat_name'],
                     'supply_name' => $value1->supply_name,
                     'description' => $value1->description,
@@ -66,6 +68,8 @@ class ReportsController extends Controller
 
             //Add inner array to main array (Nested array)
             $ar = [
+                'supplier_name' => '',
+                'supplier_desc' => '',
                 'category_details' => '',
                 'supply_name' => ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>'),
                 'description' => '',
@@ -222,8 +226,8 @@ class ReportsController extends Controller
                 'supply_name' => ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>'),
                 'description' => '',
                 'unit' => '',
-                'net_price' => $net_p,
-                'with_vat' => $wvat_p,
+                'net_price' => '',
+                'with_vat' => '',
                 'quantity' => '',
                 'quantity_amount' => $total_p,
                 'incoming_date' => '',
@@ -395,8 +399,8 @@ class ReportsController extends Controller
                 'supply_name' => ($t->branch == 'All' ? '' : ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>')),
                 'description' => '',
                 'unit' => '',
-                'net_price' => $net_p,
-                'with_vat' => $wvat_p,
+                'net_price' => '',
+                'with_vat' => '',
                 'quantity' => '',
                 'quantity_amount' => $total_p,
                 'outgoing_date' => '',
@@ -952,19 +956,22 @@ class ReportsController extends Controller
         $where = ($t->supplier == 'All' ? "   supplier_name != -1 " : ' supplier_name =' . $t->supplier);
         $data = []; //Main array
         //Get all the supplier then loop
-        $g_total_a = 0;
+        $g_total_a = 0; //Grand Total
 
         foreach (tbl_purchaseord::whereRaw($where)
             ->whereBetween('incoming_date', [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
             ->groupBy('supplier_name')->pluck('supplier_name') as $key => $value) {
             $group = [];
             $total_a = 0;
+
             //Each supplier add to inner array
             foreach (tbl_purchaseord::with("supplier_name")->where("supplier_name", $value)
                 ->whereBetween('incoming_date', [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                 ->get() as $key1 => $value1) {
 
                 $total_a += $value1->amount;
+
+                $g_total_a += $value1->amount;
 
                 $ar = [
                     'supplier_name' => $value1->supplier_name_details['supplier_name'],
@@ -995,7 +1002,7 @@ class ReportsController extends Controller
                     $content['data'] = $data;
                     $content['amount'] = $g_total_a;
                     $content['process_by'] = auth()->user()->name;
-                    $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                    $content['param'] = ['from' => $t->from, 'to' => $t->to, 'supplier' => $t->supplier];
                     if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
                         $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
                     } else {

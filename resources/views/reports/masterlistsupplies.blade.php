@@ -61,11 +61,14 @@
 
         @foreach ($data as $array)
             <tr>
-                <td colspan="7" style="text-align: center; font-size: 16px; background-color: red; color: white">
+                <td colspan="8" style="text-align: center; font-size: 16px; background-color: red; color: white">
                     {{ $array[0]['category_details'] }}
                 </td>
             </tr>
             <tr>
+                <th>
+                    <h6>SUPPLIER NAME</h6>
+                </th>
                 <th>
                     <h6>SUPPLY NAME</h6>
                 </th>
@@ -92,6 +95,7 @@
             <!-- Rows -->
             @foreach ($array as $items)
                 <tr>
+                    <td style="width: auto; text-align: left"> {{ $items['supplier_name'] }} ({{ $items['supplier_desc'] }})
                     <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
                     </td>
                     <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>

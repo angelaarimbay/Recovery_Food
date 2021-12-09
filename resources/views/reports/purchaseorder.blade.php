@@ -56,6 +56,13 @@
     </div>
     <p class="header">Recovery Food</p>
     <p class="header">Purchase Order Report</p>
+    <p class="header">
+        @if (count($data[0]) > 0)
+            @if ($param['supplier'] == 'All')
+                All Suppliers
+            @endif
+        @endif
+    </p>
 
     <table style="border:none; width: 100%">
         <tr>
@@ -66,14 +73,13 @@
     </table>
 
     <!-- Table -->
-    <table style="width: 100%">
+    <table style="width: 100%; border: 1px solid black">
         <!-- Header -->
 
         @foreach ($data as $array)
-
             <tr>
                 <td colspan="3" style="text-align: center; font-size: 16px; background-color: red; color: white">
-                    {{ $array[0]['supplier_name'] }} ({{$array[0]['description']}})
+                    {{ $array[0]['supplier_name'] }} ({{ $array[0]['description'] }})
                 </td>
             </tr>
             <tr>
@@ -99,6 +105,12 @@
                 </tr>
             @endforeach
         @endforeach
+        <tr style="background-color: #8db4e2">
+            <td style="width: auto"> <b>GRAND TOTAL</b> </td>
+            <td style="width: auto; text-align: right">
+                {{ number_format($amount, 2) }} </td>
+            <td style="width: auto"></td>
+        </tr>
     </table>
 
     <div class="row" style="margin-top: 15px">
