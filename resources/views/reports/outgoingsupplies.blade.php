@@ -56,7 +56,15 @@
     </div>
     <p class="header">Recovery Food</p>
     <p class="header">Outgoing Supplies Report</p>
-    <p class="header">@if (count($data[0]) > 0) {{ $data[0][0][0]['branch'] }} @endif</p>
+    <p class="header">
+        @if (count($data[0]) > 0)
+            @if ($param['branch'] == 'All')
+                All Branch
+            @else
+                {{ $data[0][0][0]['branch'] }}
+            @endif
+        @endif
+    </p>
 
     <table style="border:none; width: 100%">
         <tr>
@@ -71,11 +79,20 @@
         <!-- Header -->
         @foreach ($data as $array)
             <tr>
-                <td colspan="7" style="text-align: center; font-size: 16px; background-color: red; color: white">
-                    {{ $array[0][0]['category_details'] }}
+                @if ($param['branch'] == 'All')
+                    <td colspan="8" style="text-align: center; font-size: 16px; background-color: red; color: white">
+                    @else
+                    <td colspan="7" style="text-align: center; font-size: 16px; background-color: red; color: white">
+                @endif
+                {{ $array[0][0]['category_details'] }}
                 </td>
             </tr>
             <tr>
+                @if ($param['branch'] == 'All')
+                    <th>
+                        <h6>BRANCH</h6>
+                    </th>
+                @endif
                 <th>
                     <h6>SUPPLY NAME</h6>
                 </th>
@@ -102,6 +119,9 @@
                 <!-- Rows -->
                 @foreach ($dt as $items)
                     <tr>
+                        @if ($param['branch'] == 'All')
+                            <td style="width: auto; text-align: left"> {!! $items['branch'] !!} </td>
+                        @endif
                         <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
                         </td>
                         <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>

@@ -75,7 +75,7 @@ class tbl_outgoingsupp extends Model
         } else {
             $get_wov = tbl_masterlistsupp::where('id', $this->supply_name)->first()->net_price;
         }
-        return $get_wov;
+        return number_format($get_wov, 2);
     }
 
     //For net price

@@ -170,7 +170,7 @@ class ReportsController extends Controller
                     ->get() as $key1 => $value1) {
 
                     $net_p += $value1->supply_name_details['net_price'];
-                    $wvat_p += $value1->with_vat;
+                    $wvat_p += $value1->supply_name_details['with_vat'];
                     $total_p += $value1->quantity_amount;
 
                     $s_total_a += $value1->quantity_amount;
@@ -178,7 +178,7 @@ class ReportsController extends Controller
                     $s_flc = number_format($value1->fluctuation, 2);
 
                     $g_net_p += $value1->supply_name_details['net_price'];
-                    $g_wvat_p += $value1->with_vat;
+                    $g_wvat_p += $value1->supply_name_details['with_vat'];
                     $g_total_p += $value1->quantity_amount;
 
                     $ar = [
@@ -187,7 +187,7 @@ class ReportsController extends Controller
                         'description' => $value1->supply_name_details['description'],
                         'unit' => $value1->supply_name_details['unit'],
                         'net_price' => $value1->supply_name_details['net_price'],
-                        'with_vat' => $value1->with_vat,
+                        'with_vat' => $value1->supply_name_details['with_vat'],
                         'quantity' => $value1->quantity,
                         'quantity_amount' => $value1->quantity_amount,
                         'incoming_date' => $value1->incoming_date,
@@ -290,8 +290,16 @@ class ReportsController extends Controller
     public function OutgoingSuppliesReport(Request $t)
     {
         //Filter if all or specific
-        $where = ($t->category == 'All' ? "   category != -1 " : ' category = ' . $t->category) .
-            ($t->branch == 'All' ? " and requesting_branch != -1 " : ' and requesting_branch = ' . $t->branch);
+        $datax = tbl_outgoingsupp::whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+        ;
+        //Filter if all or specific
+        if ($t->category != 'All') {
+            $datax = $datax->where("category", $t->category);
+        }
+
+        if ($t->branch != 'All') {
+            $datax = $datax->where("requesting_branch", $t->branch);
+        }
         $data = []; //Main array
 
         //Get all the category then loop
@@ -300,10 +308,8 @@ class ReportsController extends Controller
         $g_total_p = 0; //Grand Total
         $g_quantity = 0; //Grand Total
         $g_total_amount = 0; //Grand Total
-
-        foreach (tbl_outgoingsupp::whereRaw($where)
-            ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-            ->groupBy('category')->pluck('category') as $key => $value) {
+        $clone_datax = clone $datax;
+        foreach ($clone_datax->select("category")->groupBy('category')->pluck('category') as $key => $value) {
             $group = []; //Inner Array
 
             $net_p = 0; //Sub-Total
@@ -312,8 +318,9 @@ class ReportsController extends Controller
             $total_p = 0; //Sub-Total
 
             //Each supply name add to inner array
-            foreach (tbl_outgoingsupp::with("category")
-                ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
+            $clone1_datax = clone $datax;
+            foreach ($clone1_datax
+                ->where("category", $value)
                 ->groupBy('supply_name')
                 ->pluck('supply_name') as $key2 => $value2) {
                 $group2 = [];
@@ -323,14 +330,9 @@ class ReportsController extends Controller
                 $s_qty = 0; //Sub-Total Qty
                 $s_flc = 0; //Sub-Total Fluc
 
-                if ($t->branch) {
-                    $t_branch = ' requesting_branch =' . $t->branch;
-                }
-
                 //Each category add to inner array
-                foreach (tbl_outgoingsupp::with("category")
-                    ->whereRaw($t_branch)
-                    ->where("category", $value)
+                $clone2_datax = clone $datax;
+                foreach ($clone2_datax
                     ->where("supply_name", $value2)
                     ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                     ->get() as $key1 => $value1) {
@@ -350,6 +352,7 @@ class ReportsController extends Controller
                     $g_quantity += $value1->quantity;
 
                     $ar = [
+                        'branch' => $value1->requesting_branch_details['branch_name'],
                         'category_details' => $value1->category_details['supply_cat_name'],
                         'supply_name' => $value1->supply_name_details['supply_name'],
                         'description' => $value1->supply_name_details['description'],
@@ -358,27 +361,25 @@ class ReportsController extends Controller
                         'with_vat' => $value1->with_vat_price,
                         'quantity' => $value1->quantity,
                         'quantity_amount' => $value1->with_vat_price * $value1->quantity,
-                        'branch' => $value1->requesting_branch_details['branch_name'],
                         'outgoing_date' => $value1->outgoing_date,
                     ];
                     array_push($group2, $ar);
                 }
-                if (tbl_outgoingsupp::with("category")
-                    ->whereRaw($t_branch)
-                    ->where("category", $value)
+                $clone3_datax = clone $datax;
+                if ($clone3_datax
                     ->where("supply_name", $value2)
                     ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                     ->count() > 0) {
                     $ar2 = [
+                        'branch' => ($t->branch == 'All' ? ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : '<b>Fluctuation Impact: </b> ' . $s_flc) : ''),
                         'category_details' => '',
-                        'supply_name' => ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : '<b>Fluctuation Impact: </b> ' . $s_flc),
+                        'supply_name' => ($t->branch == 'All' ? '' : ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : '<b>Fluctuation Impact: </b> ' . $s_flc)),
                         'description' => '',
                         'unit' => '',
                         'net_price' => '',
                         'with_vat' => '',
                         'quantity' => $s_qty,
                         'quantity_amount' => $s_total_a,
-                        'branch' => '',
                         'outgoing_date' => '',
                     ];
                     array_push($group2, $ar2); //Add inner array to main array (Nested array)
@@ -389,15 +390,15 @@ class ReportsController extends Controller
 
             // Add inner array to main array (Nested array)
             $ar = [
+                'branch' => ($t->branch == 'All' ? ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>') : ''),
                 'category_details' => '',
-                'supply_name' => ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>'),
+                'supply_name' => ($t->branch == 'All' ?  '' : ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>')),
                 'description' => '',
                 'unit' => '',
                 'net_price' => $net_p,
                 'with_vat' => $wvat_p,
                 'quantity' => '',
                 'quantity_amount' => $total_p,
-                'branch' => '',
                 'outgoing_date' => '',
             ];
             array_push($group2, $ar);
@@ -416,7 +417,7 @@ class ReportsController extends Controller
                     $content['quantity'] = $g_quantity;
                     $content['quantity_amount'] = $g_total_p;
                     $content['process_by'] = auth()->user()->name;
-                    $content['param'] = ['from' => $t->from, 'to' => $t->to];
+                    $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => $t->branch];
                     if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
                         $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
                     } else {
@@ -432,7 +433,7 @@ class ReportsController extends Controller
                 break;
             case 'excel':
                 //Columns
-                $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'QTY', 'TOTAL AMT', 'OUTGOING DATE'];
+                $columns = ['BRANCH', 'CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'QTY', 'TOTAL AMT', 'OUTGOING DATE'];
                 //Data
                 $dataitems = [];
 
@@ -440,6 +441,7 @@ class ReportsController extends Controller
                     foreach ($value as $key2 => $value2) {
                         foreach ($value2 as $key1 => $value1) {
                             $temp = [];
+                            $temp['branch'] = $value1['branch'];
                             $temp['category'] = $value1['category_details'];
                             $temp['supply_name'] = $value1['supply_name'] . " " . $value1['description'];
                             $temp['unit'] = $value1['unit'];

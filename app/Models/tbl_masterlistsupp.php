@@ -39,7 +39,7 @@ class tbl_masterlistsupp extends Model
             $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)
                 ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
 
-            $incoming = number_format($get_specific_item_amount->get()->sum('amount') / $get_specific_item_quantity->get()->sum("quantity"), 6, ".", ",");
+            $incoming = number_format($get_specific_item_amount->get()->sum('amount') / $get_specific_item_quantity->get()->sum("quantity"), 2, ".", ",");
         } catch (\Throwable $th) {
             $incoming = $this->net_price;
         }
@@ -49,20 +49,32 @@ class tbl_masterlistsupp extends Model
     //For without VAT
     public function getWithoutVatAttribute()
     {
-        $date1 = date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
-        $date2 = date("Y-m-t 23:59:59", strtotime(date("m") . '/' . date("t") . '/' . date("Y")));
-        $incoming = 0;
-        try {
-            $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t H:i:s", strtotime($date2))]);
-            $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t H:i:s", strtotime($date2))]);
+        $date1 = date("Y-m-d h:i:s", strtotime(date("m") . "-01-" . date("Y") . ' 00:00:00'));
+        $date2 = cal_days_in_month(CAL_GREGORIAN, date("m"), date("Y"));
+        $date2 = date("Y-m-d h:i:s", strtotime(date("m") . '/' . $date2 . '/' . date("Y") . ' 23:59:59'));
 
-            $incoming = number_format($get_specific_item_amount->get()->sum('amount') / $get_specific_item_quantity->get()->sum('quantity'), 2, ".", ",");
-
-            return $this->vatable == 0 ? number_format($incoming, 2, ".", ",") : number_format($this->net_price / $this->vat, 2, ".", ",");
-        } catch (\Throwable $th) {
-
-            return $incoming = $this->net_price;
+        //Get the amount from incoming
+        $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
+            ->whereBetween('incoming_date', [$date1, $date2]);
+        $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
+            ->whereBetween('incoming_date', [$date1, $date2]);
+        
+        //Get average amount
+        if ($get_quantity->sum('quantity') > 0) {
+            $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity');
+        } else {
+            $get_wov = $this->net_price;
         }
+
+        //Get VAT
+        if ($this->vatable == 1) {
+            if ($get_wov > 0) {
+                $get_wov = $get_wov / $this->vat;
+            } else {
+                $get_wov = $this->net_price / $this->vat;
+            }
+        }
+        return $get_wov;
     }
 
     //For formatting net price
@@ -136,6 +148,7 @@ class tbl_masterlistsupp extends Model
         //Get the amount from incoming
         $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
             ->whereBetween('incoming_date', [$date1, $date2]);
+        
         $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name", $this->id)
             ->whereBetween('incoming_date', [$date1, $date2]);
         

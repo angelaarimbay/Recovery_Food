@@ -115,10 +115,10 @@ class tbl_incomingsupp extends Model
             $get_specific_item_amount = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
             $get_specific_item_quantity = tbl_incomingsupp::where("supply_name", $this->id)->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($date1)), date("Y-m-t 23:59:59", strtotime($date2))]);
 
-            $incoming = number_format($get_specific_item_amount / $get_specific_item_quantity, 6, ".", ",");
+            $incoming = $get_specific_item_amount / $get_specific_item_quantity;
         } catch (\Throwable $th) {
             $incoming = $this->net_price;
         }
-        return $this->vatable == 0 ? number_format($incoming, 6, ".", ",") : number_format($this->net_price, 6, ".", ",");
+        return $this->vatable == 0 ? number_format($incoming, 2) : number_format($this->net_price, 2);
     }
 }
