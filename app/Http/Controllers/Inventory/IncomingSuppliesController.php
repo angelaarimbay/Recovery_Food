@@ -78,7 +78,7 @@ class IncomingSuppliesController extends Controller
             $temp['supplier'] = $value->supplier_details;
             $temp['amount'] = number_format($value->amount, 2);
             $wvat = tbl_masterlistsupp::where("id", $value->id);
-            $temp['with_vat_price'] = number_format(($wvat->count() > 0 ? tbl_masterlistsupp::where("id", $value->supply_name_details['id'])->first()->with_vat_price : 0), 2);
+            $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
             $temp['fluctuation'] = number_format($value->fluctuation, 2);
             array_push($return, $temp);
         }
