@@ -392,7 +392,7 @@ class ReportsController extends Controller
             $ar = [
                 'branch' => ($t->branch == 'All' ? ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>') : ''),
                 'category_details' => '',
-                'supply_name' => ($t->branch == 'All' ?  '' : ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>')),
+                'supply_name' => ($t->branch == 'All' ? '' : ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>')),
                 'description' => '',
                 'unit' => '',
                 'net_price' => $net_p,
@@ -760,27 +760,26 @@ class ReportsController extends Controller
             $temp = [];
             $temp['category'] = $value->supply_cat_name;
 
-            $temp['beginning'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount");
+            $temp['beginning'] = round(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount"), 2);
             //Get incoming based on from, to, and category, then sum amounts
-            $temp['incoming'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount");
+            $temp['incoming'] = round(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount"), 2);
             //Beginning + incoming
-            $temp['total'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount");
+            $temp['total'] = round(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount"), 2);
             //Get outgoing based on from, to, and category, then sum outgoing_amount based on masterlist supplies net price
-            $temp['outgoing'] = tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount");
+            $temp['outgoing'] = round(tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"), 2);
             //Stocks = total - outgoing
-            $temp['stocks'] = (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount")) - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount");
+            $temp['stocks'] = round((tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount")) - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"), 2);
+
             try {
                 $temp['ending'] =
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date2])->get()->sum("quantity") - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity")) *
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity"));
+                    round((tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date2])->get()->sum("quantity") - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity")) *
+                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity")), 2);
             } catch (\Throwable $th) {
                 $temp['ending'] = 0;
             }
 
             try {
-                $temp['variance'] = $temp['ending'] - (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity") - tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("quantity")) *
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity"))(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("amount")
-                     - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"));
+                $temp['variance'] = round($temp['ending'] - $temp['stocks'], 2);
             } catch (\Throwable $th) {
                 $temp['variance'] = 0;
             }
@@ -797,15 +796,14 @@ class ReportsController extends Controller
 
         $temp = [];
         foreach ($data as $key => $value) {
-
             foreach ($value as $key1 => $value1) {
                 if ($key1 != 'category') {
                     $temp[$key1] = ($temp[$key1] ?? 0) + $value[$key1];
                 } else {
                     if ($t->type == 'excel') {
-                        $temp[$key1] = 'SUB-TOTAL';
+                        $temp[$key1] = 'GRAND TOTALS';
                     } else {
-                        $temp[$key1] = '<b>SUB-TOTAL</b>';
+                        $temp[$key1] = '<b>GRAND TOTALS</b>';
                     }
                 }
             }
@@ -818,6 +816,7 @@ class ReportsController extends Controller
                 if (count($data) > 0) {
                     $content['data'] = $data;
                     $content['process_by'] = auth()->user()->name;
+                    $content['param'] = ['month' => $t->month];
                     if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
                         $content['img'] = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
                     } else {

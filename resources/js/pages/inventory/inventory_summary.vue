@@ -196,7 +196,7 @@
 
           <template slot="body.append">
             <tr class="hidden-xs-only">
-              <th class="text-uppercase">Grand Totals</th>
+              <th class="text-uppercase">GRAND TOTALS</th>
               <td style="text-align: right; font-size: 15px">
                 {{ sumField("begining_orig") }}
               </td>
@@ -355,7 +355,7 @@ export default {
     ],
   }),
 
-  //OlLoad
+  //On Load
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.list();
@@ -397,6 +397,7 @@ export default {
           },
         })
         .then((result) => {
+          console.log(result.data);
           this.table = result.data;
           this.progressbar = false;
         });

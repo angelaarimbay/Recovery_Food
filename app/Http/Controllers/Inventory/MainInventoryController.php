@@ -123,9 +123,9 @@ class MainInventoryController extends Controller
             $a = clone $incoming_and_past;
             $b = clone $outgoing;
             if (($a->sum('quantity') - $b->sum('quantity')) < ($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2)) {
-                $temp['triggerpoint'] = 0; // order
+                $temp['triggerpoint'] = 0; //Order
             } else {
-                $temp['triggerpoint'] = 1; // manage
+                $temp['triggerpoint'] = 1; //Manage
             }
 
             //For Ending
