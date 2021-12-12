@@ -83,18 +83,14 @@ class InventorySummaryController extends Controller
 
             //For computing fluctuation
             try {
-                $temp['fluctuation'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity") *
-                    ((tbl_masterlistsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("with_vat")) -
-                        (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("net_price")));
+                $temp['fluctuation'] = number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("fluctuation"), 2);
             } catch (\Throwable $th) {
                 $temp['fluctuation'] = number_format(0, 2);
             }
 
             //For computing fluctuation original
             try {
-                $temp['fluctuation_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity") *
-                ((tbl_masterlistsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("with_vat")) -
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("net_price")));
+                $temp['fluctuation_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("fluctuation");
             } catch (\Throwable $th) {
                 $temp['fluctuation_orig'] = 0;
             }
