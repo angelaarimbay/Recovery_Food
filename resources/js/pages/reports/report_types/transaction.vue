@@ -459,14 +459,14 @@
         <v-card-actions class="px-0 pb-0 pt-3">
           <v-spacer></v-spacer>
           <v-btn
-            color="black"
+            color="grey"
             :small="$vuetify.breakpoint.smAndDown"
             depressed
             dark
             @click="closeViewDialog"
-            text
+            outlined
           >
-            Close
+            <span style="color: #00794b">Close</span>
           </v-btn>
         </v-card-actions>
       </v-card>

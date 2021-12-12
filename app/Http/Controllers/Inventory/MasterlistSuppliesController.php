@@ -82,9 +82,10 @@ class MasterlistSuppliesController extends Controller
         }
 
         $return = [];
-        foreach ($table->orderByRaw("  days desc ")->get() as $key => $value) {
+        $row = 1;
+        foreach ($table->orderBy("category")->orderByRaw("  days desc ")->get() as $key => $value) {
             $temp = [];
-            $temp['row'] = $key + 1;
+            $temp['row'] = $row++;
             $temp['id'] = $value->id;
             $temp['status'] = $value->status;
             $temp['supplier'] =

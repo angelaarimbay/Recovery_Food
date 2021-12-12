@@ -478,14 +478,14 @@
         <v-card-actions class="px-0 pb-0 pt-3">
           <v-spacer></v-spacer>
           <v-btn
-            color="black"
+            color="grey"
             :small="$vuetify.breakpoint.smAndDown"
             depressed
             dark
             @click="closeViewDialog"
-            text
+            outlined
           >
-            Close
+            <span style="color: #00794b">Close</span>
           </v-btn>
           <v-btn
             @click="getReceipt(table2[0]['reference_no'])"
@@ -493,7 +493,6 @@
             :small="$vuetify.breakpoint.smAndDown"
             depressed
             dark
-            text
           >
             Print
           </v-btn>
@@ -877,9 +876,9 @@ export default {
                 type: "pdf",
               },
             }).then((response) => {
+              // console.log(response.data);
+              // return;
               if (response.data.size > 0) {
-                // console.log(response.data);
-                // return;
                 let blob = new Blob([response.data], {
                   type: "application/pdf",
                 });

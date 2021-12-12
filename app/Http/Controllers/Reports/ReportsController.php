@@ -51,7 +51,7 @@ class ReportsController extends Controller
                 $wovat_p += $value1->without_vat;
 
                 $ar = [
-                    'supplier_name' => $value1->supplier_name_details['supplier_name'],
+                    'supplier_name' => $value1->supplier_name_details['supplier_name'] . " " . "(" . $value1->supplier_name_details['description'] . ")",
                     'supplier_desc' => $value1->supplier_name_details['description'],
                     'category_details' => $value1->category_details['supply_cat_name'],
                     'supply_name' => $value1->supply_name,
@@ -68,10 +68,10 @@ class ReportsController extends Controller
 
             //Add inner array to main array (Nested array)
             $ar = [
-                'supplier_name' => '',
+                'supplier_name' => ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>'),
                 'supplier_desc' => '',
                 'category_details' => '',
-                'supply_name' => ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>'),
+                'supply_name' => '',
                 'description' => '',
                 'unit' => '',
                 'net_price' => $net_p,
@@ -109,13 +109,14 @@ class ReportsController extends Controller
                 break;
             case 'excel':
                 //Columns
-                $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'VAT', 'WITHOUT VAT', 'EXPIRATION DATE'];
+                $columns = ['SUPPLIER NAME', 'CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'VAT', 'WITHOUT VAT', 'EXPIRATION DATE'];
                 //Data
                 $dataitems = [];
 
                 foreach ($data as $key => $value) {
                     foreach ($value as $key1 => $value1) {
                         $temp = [];
+                        $temp['supplier_name'] = $value1['supplier_name'] ? $value1['supplier_name'] . " " . "(" . $value1['supplier_desc'] . ")" : '';
                         $temp['category'] = $value1['category_details'];
                         $temp['supply_name'] = $value1['supply_name'] . " " . $value1['description'];
                         $temp['unit'] = $value1['unit'];
@@ -851,7 +852,7 @@ class ReportsController extends Controller
     //For sales report
     public function SalesReport(Request $t)
     {
-        DB::statement(DB::raw("set @row:=0"));
+        $array = []; //Main Array
 
         $data = tbl_pos::where("branch", $t->branch)
             ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
@@ -859,10 +860,40 @@ class ReportsController extends Controller
             ->groupby(["branch", "created_at", "reference_no"])
             ->get();
 
+        foreach (tbl_pos::where("branch", $t->branch)->groupBy("branch")->pluck("branch") as $key => $value) {
+            $group = []; //Inner Array
+
+            $total_sa = 0; //Total Sales Amount
+
+            //Each branch add to inner array
+            foreach ($data as $key1 => $value1) {
+
+                $total_sa += $value1->sub_total_discounted;
+
+                $ar = [
+                    'branch' => $value1->branch_name_details['branch_name'],
+                    'created_at' => $value1->created_at,
+                    'reference_no' => $value1->reference_no,
+                    'sales_amount' => $value1->sub_total_discounted,
+                ];
+                array_push($group, $ar);
+            }
+
+            //Add inner array to main array (Nested array)
+            $ar = [
+                'branch' => ($t->type == 'excel' ? ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>') : ''),
+                'created_at' => '',
+                'reference_no' => ($t->type == 'excel' ? '' : ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>')),
+                'sales_amount' => '<b>' . $total_sa . '</b>',
+            ];
+            array_push($group, $ar);
+            array_push($array, $group);
+        }
+
         switch ($t->type) {
             case 'pdf':
-                if (count($data) > 0) {
-                    $content['data'] = $data;
+                if (count($array) > 0) {
+                    $content['data'] = $array;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
                     if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
@@ -883,13 +914,16 @@ class ReportsController extends Controller
                 $columns = ['BRANCH', 'DATE', 'REFERENCE NO', 'SALES AMOUNT'];
                 //Data
                 $dataitems = [];
-                foreach ($data as $key => $value) {
-                    $temp = [];
-                    $temp['branch_name'] = $value->branch_name_details['branch_name'];
-                    $temp['created_at'] = date("Y-m-d", strtotime($value->created_at));
-                    $temp['reference_no'] = $value->reference_no;
-                    $temp['sub_total_discounted'] = $value->sub_total_discounted;
-                    array_push($dataitems, $temp);
+
+                foreach ($array as $key => $value) {
+                    foreach ($value as $key1 => $value1) {
+                        $temp = [];
+                        $temp['branch'] = $value1['branch'];
+                        $temp['created_at'] = ($value1['created_at'] ? date("Y-m-d", strtotime($value1['created_at'])) : null);
+                        $temp['reference_no'] = $value1['reference_no'];
+                        $temp['sales_amount'] = $value1['sales_amount'];
+                        array_push($dataitems, $temp);
+                    }
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Sales Report.xlsx");
                 break;

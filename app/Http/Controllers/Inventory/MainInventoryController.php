@@ -39,7 +39,7 @@ class MainInventoryController extends Controller
 
         $return = [];
         $row = 1;
-        foreach ($table->get() as $key => $value) {
+        foreach ($table->orderBy("category")->get() as $key => $value) {
             $temp = [];
             $temp['row'] = $row++;
             $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
@@ -173,7 +173,7 @@ class MainInventoryController extends Controller
         }
 
         $items = Collection::make($return);
-        return new LengthAwarePaginator(collect($items)->sortBy('triggerpoint')->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
     //For retrieving supply categories

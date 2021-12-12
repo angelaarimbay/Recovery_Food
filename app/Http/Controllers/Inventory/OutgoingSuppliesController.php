@@ -80,9 +80,10 @@ class OutgoingSuppliesController extends Controller
         }
 
         $return = [];
-        foreach ($table->get() as $key => $value) {
+        $row = 1;
+        foreach ($table->orderBy("supply_name")->get() as $key => $value) {
             $temp = [];
-            $temp['row'] = $key + 1;
+            $temp['row'] = $row++;
             $temp['id'] = $value->id;
             $temp['status'] = $value->status;
             $temp['category'] = $value->category_details;

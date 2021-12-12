@@ -44,10 +44,12 @@ class RequestSuppliesController extends Controller
             ->where('branch', auth()->user()->branch)
             ->orderBy("request_date", "desc")
             ->get();
+
         $return = [];
+        $row = 1;
         foreach ($table as $key => $value) {
             $temp = [];
-            $temp['row'] = $key + 1;
+            $temp['row'] = $row++;
             $temp['id'] = $value->ref;
             $temp['ref'] = $value->ref;
             $temp['status'] = $value->status;

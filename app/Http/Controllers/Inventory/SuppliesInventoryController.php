@@ -53,9 +53,10 @@ class SuppliesInventoryController extends Controller
         }
 
         $return = [];
+        $row = 1;
         foreach ($table->get() as $key => $value) {
             $temp = [];
-            $temp['row'] = $key + 1;
+            $temp['row'] = $row++;
             $temp['id'] = $value->id;
             $temp['category'] = $value->category_details;
             $temp['quantity'] = $value->quantity - tbl_suppliesinventory::where(['branch' => auth()->user()->branch, 'ref' => $value->id])->sum('quantity');

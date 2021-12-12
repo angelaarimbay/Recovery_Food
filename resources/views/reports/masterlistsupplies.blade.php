@@ -95,15 +95,15 @@
             <!-- Rows -->
             @foreach ($array as $items)
                 <tr>
-                    <td style="width: auto; text-align: left"> {{ $items['supplier_name'] }} ({{ $items['supplier_desc'] }})
-                    <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
+                    <td style="width: auto; text-align: left"> {!! $items['supplier_name'] !!} </td>
+                    <td style="width: auto; text-align: left"> {{ $items['supply_name'] }} {{ $items['description'] }}
                     </td>
                     <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
-                    <td style="width: auto; text-align: right"> {!! $items['net_price'] ? number_format($items['net_price'], 2) : '' !!} </td>
-                    <td style="width: auto; text-align: right"> {!! $items['with_vat'] ? number_format($items['with_vat'], 2) : '' !!} </td>
+                    <td style="width: auto; text-align: right"> {{ $items['net_price'] ? number_format($items['net_price'], 2) : '' }} </td>
+                    <td style="width: auto; text-align: right"> {{ $items['with_vat'] ? number_format($items['with_vat'], 2) : '' }} </td>
                     <td style="width: auto"> {{ $items['vat'] }} </td>
-                    <td style="width: auto; text-align: right"> {!! $items['without_vat'] ? number_format($items['without_vat'], 2) : '' !!} </td>
-                    <td style="width: auto">
+                    <td style="width: auto; text-align: right"> {{ $items['without_vat'] ? number_format($items['without_vat'], 2) : '' }} </td>
+                    <td style="width: 10%">
                         {{ $items['exp_date'] ? date('Y-m-d', strtotime($items['exp_date'])) : null }} </td>
                 </tr>
             @endforeach
