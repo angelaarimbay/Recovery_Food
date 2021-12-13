@@ -83,14 +83,14 @@ class InventorySummaryController extends Controller
 
             //For computing fluctuation
             try {
-                $temp['fluctuation'] = number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("fluctuation"), 2);
+                $temp['fluctuation'] = number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->first()->fluctuation, 2);
             } catch (\Throwable $th) {
                 $temp['fluctuation'] = number_format(0, 2);
             }
 
             //For computing fluctuation original
             try {
-                $temp['fluctuation_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("fluctuation");
+                $temp['fluctuation_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->first()->fluctuation;
             } catch (\Throwable $th) {
                 $temp['fluctuation_orig'] = 0;
             }

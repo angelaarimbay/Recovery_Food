@@ -18,7 +18,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use niklasravnsborg\LaravelPdf\Facades\Pdf;
 
@@ -174,16 +173,42 @@ class ReportsController extends Controller
                     ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                     ->get() as $key1 => $value1) {
 
+                    //Get the amount from incoming
+                    $get_amount = tbl_incomingsupp::where("supply_name", $value2)
+                        ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))]);
+                    $get_quantity = tbl_incomingsupp::where("supply_name", $value2)
+                        ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))]);
+
+                    //Get average amount
+                    if ($get_quantity->sum('quantity') > 0) {
+                        $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity');
+                    } else {
+                        $get_wov = tbl_masterlistsupp::where('id', $value2)->first()->net_price;
+                    }
+ 
+                    //Get average amount
+                    if ($get_quantity->sum('amount') < 1) {
+                    $get_fl = 0;
+                    } else {
+                    $get_fl = $get_quantity->sum('quantity') 
+                    * 
+                    (($get_amount->sum('amount') / $get_quantity->sum('quantity')) - 
+                    tbl_masterlistsupp::where("id", $value2)->first()->net_price);
+                    }
+                    
+
+
+
                     $net_p += $value1->supply_name_details['net_price'];
-                    $wvat_p += $value1->supply_name_details['with_vat'];
+                    $wvat_p += $get_wov;
                     $total_p += $value1->quantity_amount;
 
                     $s_total_a += $value1->quantity_amount;
                     $s_qty += $value1->quantity;
-                    $s_flc = number_format($value1->fluctuation, 2);
+                    $s_flc = number_format($get_fl, 2);
 
                     $g_net_p += $value1->supply_name_details['net_price'];
-                    $g_wvat_p += $value1->supply_name_details['with_vat'];
+                    $g_wvat_p += $get_wov;
                     $g_total_p += $value1->quantity_amount;
 
                     $ar = [
@@ -192,7 +217,7 @@ class ReportsController extends Controller
                         'description' => $value1->supply_name_details['description'],
                         'unit' => $value1->supply_name_details['unit'],
                         'net_price' => $value1->supply_name_details['net_price'],
-                        'with_vat' => $value1->supply_name_details['with_vat'],
+                        'with_vat' => number_format($get_wov, 2),
                         'quantity' => $value1->quantity,
                         'quantity_amount' => $value1->quantity_amount,
                         'incoming_date' => $value1->incoming_date,
