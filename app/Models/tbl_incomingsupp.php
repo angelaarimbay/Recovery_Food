@@ -97,12 +97,12 @@ class tbl_incomingsupp extends Model
         if ($get_quantity->sum('amount') < 1) {
             $get_wov = 0;
         } else {
-            $get_wov = $get_quantity->sum('quantity') 
-            * 
-            (($get_amount->sum('amount') / $get_quantity->sum('quantity')) - 
-            tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price);
+            $get_wov = $get_quantity->sum('quantity')
+                 *
+                (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
+                tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price);
         }
-        return      round($get_wov, 2);
+        return round($get_wov, 2);
     }
 
     //For with VAT

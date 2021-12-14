@@ -179,25 +179,22 @@ class ReportsController extends Controller
                     $get_quantity = tbl_incomingsupp::where("supply_name", $value2)
                         ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))]);
 
-                    //Get average amount
+                    //Get with vat
                     if ($get_quantity->sum('quantity') > 0) {
-                        $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity');
+                        $get_wov = number_format($get_amount->sum('amount') / $get_quantity->sum('quantity'), 2);
                     } else {
-                        $get_wov = tbl_masterlistsupp::where('id', $value2)->first()->net_price;
+                        $get_wov = number_format(tbl_masterlistsupp::where('id', $value2)->first()->net_price, 2);
                     }
- 
-                    //Get average amount
+
+                    //Get fluctuation
                     if ($get_quantity->sum('amount') < 1) {
-                    $get_fl = 0;
+                        $get_fl = 0;
                     } else {
-                    $get_fl = $get_quantity->sum('quantity') 
-                    * 
-                    (($get_amount->sum('amount') / $get_quantity->sum('quantity')) - 
-                    tbl_masterlistsupp::where("id", $value2)->first()->net_price);
+                        $get_fl = $get_quantity->sum('quantity')
+                             *
+                            (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
+                            tbl_masterlistsupp::where("id", $value2)->first()->net_price);
                     }
-                    
-
-
 
                     $net_p += $value1->supply_name_details['net_price'];
                     $wvat_p += $get_wov;
@@ -217,7 +214,7 @@ class ReportsController extends Controller
                         'description' => $value1->supply_name_details['description'],
                         'unit' => $value1->supply_name_details['unit'],
                         'net_price' => $value1->supply_name_details['net_price'],
-                        'with_vat' => number_format($get_wov, 2),
+                        'with_vat' => $get_wov,
                         'quantity' => $value1->quantity,
                         'quantity_amount' => $value1->quantity_amount,
                         'incoming_date' => $value1->incoming_date,
@@ -367,17 +364,40 @@ class ReportsController extends Controller
                     ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                     ->get() as $key1 => $value1) {
 
+                    //Get the amount from incoming
+                    $get_amount = tbl_outgoingsupp::where("supply_name", $value2)
+                        ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))]);
+                    $get_quantity = tbl_outgoingsupp::where("supply_name", $value2)
+                        ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))]);
+
+                    //Get with vat
+                    if ($get_quantity->sum('quantity') > 0) {
+                        $get_wov = number_format($get_amount->sum('amount') / $get_quantity->sum('quantity'), 2);
+                    } else {
+                        $get_wov = number_format(tbl_masterlistsupp::where('id', $value2)->first()->net_price, 2);
+                    }
+
+                    //Get fluctuation
+                    if ($get_quantity->sum('amount') < 1) {
+                        $get_fl = 0;
+                    } else {
+                        $get_fl = $get_quantity->sum('quantity')
+                             *
+                            (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
+                            tbl_masterlistsupp::where("id", $value2)->first()->net_price);
+                    }
+
                     $net_p += $value1->supply_name_details['net_price'];
-                    $wvat_p += $value1->with_vat_price;
+                    $wvat_p += $get_wov;
                     $total_p += $value1->with_vat_price * $value1->quantity;
                     $quantity += $value1->quantity;
 
                     $s_total_a += $value1->with_vat_price * $value1->quantity;
                     $s_qty += $value1->quantity;
-                    $s_flc = number_format($value1->fluctuation, 2);
+                    $s_flc = number_format($get_fl, 2);
 
                     $g_net_p += $value1->supply_name_details['net_price'];
-                    $g_wvat_p += $value1->with_vat_price;
+                    $g_wvat_p += $get_wov;
                     $g_total_p += $value1->with_vat_price * $value1->quantity;
                     $g_quantity += $value1->quantity;
 
@@ -388,7 +408,7 @@ class ReportsController extends Controller
                         'description' => $value1->supply_name_details['description'],
                         'unit' => $value1->supply_name_details['unit'],
                         'net_price' => $value1->supply_name_details['net_price'],
-                        'with_vat' => $value1->with_vat_price,
+                        'with_vat' => $get_wov,
                         'quantity' => $value1->quantity,
                         'quantity_amount' => $value1->with_vat_price * $value1->quantity,
                         'outgoing_date' => $value1->outgoing_date,
@@ -720,7 +740,7 @@ class ReportsController extends Controller
             case 'excel':
                 $columns = [
                     'CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'BEGINNING INVENTORY', '',
-                    'INCOMING SUPPLIES', '', 'TOTAL STOCKS', '', 'OUTGOING SUPPLIES', '',
+                    'INCOMING SUPPLIES', '', 'TOTAL INVENTORY', '', 'OUTGOING SUPPLIES', '',
                     'STOCKS ON HAND', '', 'AVERAGE DAILY USAGE', '', 'LEAD TIME', 'ORDER POINT',
                     'MINIMUM ORDER QTY', 'ORDER QTY', 'TRIGGER POINT', 'ENDING INVENTORY', '',
                     'CONSUMPTION', '', 'IDEAL INVENTORY', '', 'VARIANCE', '',
@@ -815,9 +835,7 @@ class ReportsController extends Controller
             }
 
             try {
-                $temp['fluctuation'] = $temp['ending'] - (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity") - tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("quantity")) *
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity"))(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("amount")
-                     - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"));
+                $temp['fluctuation'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->first()->fluctuation;
             } catch (\Throwable $th) {
                 $temp['fluctuation'] = 0;
             }
@@ -863,7 +881,7 @@ class ReportsController extends Controller
             case 'excel':
                 //Columns
                 $columns = [
-                    'SUPPLIES CATEGORY', 'BEGINNING INVENTORY', 'PURCHASES', 'TOTAL STOCKS',
+                    'SUPPLIES CATEGORY', 'BEGINNING INVENTORY', 'PURCHASES', 'TOTAL INVENTORY',
                     'OUTGOING SUPPLIES', 'STOCKS ON HAND', 'ENDING INVENTORY', 'VARIANCE',
                     'FLUCTUATION',
                 ];

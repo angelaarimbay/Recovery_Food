@@ -80,7 +80,7 @@
                 <h6>PURCHASES</h6>
             </th>
             <th style="color: white">
-                <h6>TOTAL STOCKS</h6>
+                <h6>TOTAL INVENTORY</h6>
             </th>
             <th style="color: white">
                 <h6>OUTGOING SUPPLIES</h6>

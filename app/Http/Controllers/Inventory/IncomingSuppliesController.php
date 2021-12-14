@@ -62,6 +62,13 @@ class IncomingSuppliesController extends Controller
         $return = [];
         $row = 1;
         foreach ($table->orderBy("supply_name")->get() as $key => $value) {
+
+            //Get the total qty and amount from incoming
+            $get_amount = tbl_incomingsupp::where("supply_name", $value->supply_name)
+                ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
+            $get_quantity = tbl_incomingsupp::where("supply_name", $value->supply_name)
+                ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
+
             $temp = [];
             $temp['row'] = $row++;
             $temp['id'] = $value->id;
@@ -79,8 +86,12 @@ class IncomingSuppliesController extends Controller
             $temp['supplier'] = $value->supplier_details;
             $temp['amount'] = number_format($value->amount, 2);
             $wvat = tbl_masterlistsupp::where("id", $value->id);
-            $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
-            $temp['fluctuation'] = number_format($value->fluctuation, 2);
+            //Get with vat
+            if ($get_quantity->sum('quantity') > 0) {
+                $temp['with_vat_price'] =  number_format($get_amount->sum('amount') / $get_quantity->sum('quantity'), 2);
+            } else {
+                $temp['with_vat_price'] = number_format($value->net_price, 2);
+            }
             array_push($return, $temp);
         }
         $items = Collection::make($return);
