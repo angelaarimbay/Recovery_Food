@@ -29,6 +29,10 @@ class InventorySummaryController extends Controller
         $date1 = date("Y-m-d 00:00:00", strtotime($request->year . "-" . $request->month . "-01"));
         $date2 = date("Y-m-t 23:59:59", strtotime($request->year . '-' . $request->month . '-' . date("t") . ' '));
 
+        //For fluctuation
+        $date1flc = date("Y-m-d 00:00:00", strtotime($request->year . "-" . $request->month));
+        $date2flc = date("Y-m-t 23:59:59", strtotime($request->year . "-" . $request->month));
+
         //Set array for temporary table
         $return = [];
         foreach ($data as $key => $value) {
@@ -81,16 +85,25 @@ class InventorySummaryController extends Controller
                 $temp['variance_orig'] = 0;
             }
 
+            //Get the total amount and qty from incoming
+            $get_amount = tbl_incomingsupp::where("supply_name", $value->id)
+                ->whereBetween("incoming_date", [$date1flc, $date2flc]);
+            $get_quantity = tbl_incomingsupp::where("supply_name", $value->id)
+                ->whereBetween("incoming_date", [$date1flc, $date2flc]);
+
             //For computing fluctuation
-            try {
-                $temp['fluctuation'] = number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->first()->fluctuation, 2);
-            } catch (\Throwable $th) {
+            if ($get_quantity->sum('amount') < 1) {
                 $temp['fluctuation'] = number_format(0, 2);
+            } else {
+                $temp['fluctuation'] = number_format($get_quantity->sum('quantity')
+                     *
+                    (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
+                        tbl_masterlistsupp::where("id", $value->id)->first()->net_price), 2);
             }
 
             //For computing fluctuation original
             try {
-                $temp['fluctuation_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->first()->fluctuation;
+                $temp['fluctuation_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1flc, $date2flc])->first()->fluctuation;
             } catch (\Throwable $th) {
                 $temp['fluctuation_orig'] = 0;
             }

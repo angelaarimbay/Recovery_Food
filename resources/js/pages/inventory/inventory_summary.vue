@@ -310,7 +310,7 @@ export default {
         class: "black--text",
       },
       {
-        text: "TOTAL STOCKS",
+        text: "TOTAL INVENTORY",
         value: "total",
         align: "right",
         filterable: false,
@@ -397,6 +397,7 @@ export default {
           },
         })
         .then((result) => {
+          // console.log(result.data);
           this.table = result.data;
           this.progressbar = false;
         });

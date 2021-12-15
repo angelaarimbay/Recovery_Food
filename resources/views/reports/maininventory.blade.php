@@ -85,7 +85,7 @@
                     <h6>INCOMING SUPPLIES</h6>
                 </th>
                 <th colspan="2">
-                    <h6>TOTAL STOCKS</h6>
+                    <h6>TOTAL INVENTORY</h6>
                 </th>
                 <th colspan="2">
                     <h6>OUTGOING SUPPLIES</h6>

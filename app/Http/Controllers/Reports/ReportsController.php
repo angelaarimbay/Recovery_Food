@@ -173,7 +173,7 @@ class ReportsController extends Controller
                     ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                     ->get() as $key1 => $value1) {
 
-                    //Get the amount from incoming
+                    //Get the total amount and qty from incoming
                     $get_amount = tbl_incomingsupp::where("supply_name", $value2)
                         ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))]);
                     $get_quantity = tbl_incomingsupp::where("supply_name", $value2)
