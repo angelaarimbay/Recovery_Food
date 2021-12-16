@@ -804,6 +804,10 @@ class ReportsController extends Controller
         $date1 = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month . "-01"));
         $date2 = date("Y-m-t 23:59:59", strtotime($t->year . '-' . $t->month . '-' . date("t")));
 
+        //For fluctuation
+        $date1flc = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month));
+        $date2flc = date("Y-m-t 23:59:59", strtotime($t->year . "-" . $t->month));
+
         $data = [];
 
         foreach (tbl_suppcat::all() as $key => $value) {
@@ -834,10 +838,20 @@ class ReportsController extends Controller
                 $temp['variance'] = 0;
             }
 
-            try {
-                $temp['fluctuation'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->first()->fluctuation;
-            } catch (\Throwable $th) {
-                $temp['fluctuation'] = 0;
+            //Get the total amount and qty from incoming
+            $get_amount = tbl_incomingsupp::where("supply_name", $value->id)
+                ->whereBetween("incoming_date", [$date1flc, $date2flc]);
+            $get_quantity = tbl_incomingsupp::where("supply_name", $value->id)
+                ->whereBetween("incoming_date", [$date1flc, $date2flc]);
+
+            //For computing fluctuation
+            if ($get_quantity->sum('amount') < 1) {
+                $temp['fluctuation'] = number_format(0, 2);
+            } else {
+                $temp['fluctuation'] = number_format($get_quantity->sum('quantity')
+                     *
+                    (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
+                        tbl_masterlistsupp::where("id", $value->id)->first()->net_price), 2);
             }
             array_push($data, $temp);
         }
