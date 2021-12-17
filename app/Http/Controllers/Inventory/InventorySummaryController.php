@@ -24,14 +24,10 @@ class InventorySummaryController extends Controller
 
         //Previous month
         $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime($request->year . "-" . $request->month . "-01")));
-        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($request->year . "-" . $request->month . "-" . date("t"))));
+        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($request->year . "-" . $request->month . "-01")));
         //Current month
         $date1 = date("Y-m-d 00:00:00", strtotime($request->year . "-" . $request->month . "-01"));
-        $date2 = date("Y-m-t 23:59:59", strtotime($request->year . '-' . $request->month . '-' . date("t") . ' '));
-
-        //For fluctuation
-        $date1flc = date("Y-m-d 00:00:00", strtotime($request->year . "-" . $request->month));
-        $date2flc = date("Y-m-t 23:59:59", strtotime($request->year . "-" . $request->month));
+        $date2 = date("Y-m-t 23:59:59", strtotime($request->year . '-' . $request->month . '-' . date("t")));
 
         //Set array for temporary table
         $return = [];
@@ -55,6 +51,7 @@ class InventorySummaryController extends Controller
             $temp['stocks_orig'] = (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount")) - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount");
             $temp['stocks'] = number_format((tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount")) - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"), 2);
 
+            //For computing ending inventory
             try {
                 $temp['ending'] = number_format(
                     (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date2])->get()->sum("quantity") - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity")) *
@@ -85,25 +82,36 @@ class InventorySummaryController extends Controller
                 $temp['variance_orig'] = 0;
             }
 
-            //Get the total amount and qty from incoming
-            $get_amount = tbl_incomingsupp::where("supply_name", $value->id)
-                ->whereBetween("incoming_date", [$date1flc, $date2flc]);
-            $get_quantity = tbl_incomingsupp::where("supply_name", $value->id)
-                ->whereBetween("incoming_date", [$date1flc, $date2flc]);
+            $get_total_flc = 0;
+            //Get the supplies id
+            $temp['fluctuation'] = number_format(0, 2);
+            foreach (tbl_incomingsupp::select('supply_name')->where("category", $value->id)
+                ->whereBetween("incoming_date", [$date1, $date2])->
+                groupBy("supply_name")->get()->pluck('supply_name') as $keyx => $valuex) {
+                $get_total_flc = 0;
 
-            //For computing fluctuation
-            if ($get_quantity->sum('amount') < 1) {
-                $temp['fluctuation'] = number_format(0, 2);
-            } else {
-                $temp['fluctuation'] = number_format($get_quantity->sum('quantity')
-                     *
-                    (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
-                        tbl_masterlistsupp::where("id", $value->id)->first()->net_price), 2);
+                //Get the total amount and qty from incoming via supply, category and date
+                $get_amount = tbl_incomingsupp::where("supply_name", $valuex)
+                    ->whereBetween("incoming_date", [$date1, $date2]);
+                $get_quantity = tbl_incomingsupp::where("supply_name", $valuex)->where("supply_name", $valuex)
+                    ->whereBetween("incoming_date", [$date1, $date2]);
+
+                //Add fluc
+                if ($get_quantity->sum('amount') < 1) {
+                } else {
+                    $temp['fluctuation'] += $get_quantity->sum('quantity')
+                         *
+                        (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
+                        tbl_masterlistsupp::where("id", $valuex)->first()->net_price);
+                    $get_total_flc += $temp['fluctuation'];
+                }
+
             }
+            $temp['fluctuation'] = number_format($temp['fluctuation'], 2);
 
             //For computing fluctuation original
             try {
-                $temp['fluctuation_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1flc, $date2flc])->first()->fluctuation;
+                $temp['fluctuation_orig'] = $get_total_flc;
             } catch (\Throwable $th) {
                 $temp['fluctuation_orig'] = 0;
             }

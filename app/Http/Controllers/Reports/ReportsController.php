@@ -516,7 +516,8 @@ class ReportsController extends Controller
     {
         //Previous month
         $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
-        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-" . date("t"))));
+        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
+
         //Current month
         $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
         $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
@@ -562,8 +563,8 @@ class ReportsController extends Controller
                 $a = clone $incoming_past;
                 $temp['beginning_q'] = $a->sum('quantity');
                 $a = clone $incoming_past;
-                $temp['beginning_a'] = $a->sum('amount');
-                $st_beginning_a += $a->sum('amount'); //Sub-Total
+                $temp['beginning_a'] = $temp['beginning_q'] * $value->net_price;
+                $st_beginning_a += $temp['beginning_a']; //Sub-Total
 
                 //Incoming (total of current month)
                 $a = clone $incoming;
@@ -626,7 +627,7 @@ class ReportsController extends Controller
                 //Trigger Point  (lead time of item * total quantity / day today) + outgoing quantity / day today
                 $a = clone $incoming_and_past;
                 $b = clone $outgoing;
-                if (($a->sum('quantity') - $b->sum('quantity')) < ($value->lead_time * ($a->sum('quantity') / date('d'))) + (($a->sum('quantity') / date('d')) * 2)) {
+                if ($temp['onhand_q'] < $temp['orderpoint']) {
                     $temp['triggerpoint'] = 'Order';
                 } else {
                     $temp['triggerpoint'] = 'Manage';
@@ -637,7 +638,7 @@ class ReportsController extends Controller
                 $b = clone $outgoing;
                 $aa = clone $incoming;
                 $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
-                if ($aa->sum('amount') > 0) {
+                if ($temp['ending_q'] > 0 && $aa->sum('quantity') > 0) {
                     $temp['ending_a'] = $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                     $st_ending_a += $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
@@ -799,14 +800,14 @@ class ReportsController extends Controller
     {
         //Previous month
         $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-01")));
-        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-" . date("t"))));
+        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-01")));
         //Current month
         $date1 = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month . "-01"));
         $date2 = date("Y-m-t 23:59:59", strtotime($t->year . '-' . $t->month . '-' . date("t")));
 
-        //For fluctuation
-        $date1flc = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month));
-        $date2flc = date("Y-m-t 23:59:59", strtotime($t->year . "-" . $t->month));
+        // //For fluctuation
+        // $date1flc = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month));
+        // $date2flc = date("Y-m-t 23:59:59", strtotime($t->year . "-" . $t->month));
 
         $data = [];
 
@@ -838,21 +839,29 @@ class ReportsController extends Controller
                 $temp['variance'] = 0;
             }
 
-            //Get the total amount and qty from incoming
-            $get_amount = tbl_incomingsupp::where("supply_name", $value->id)
-                ->whereBetween("incoming_date", [$date1flc, $date2flc]);
-            $get_quantity = tbl_incomingsupp::where("supply_name", $value->id)
-                ->whereBetween("incoming_date", [$date1flc, $date2flc]);
+            //Get the supplies id
+            $temp['fluctuation'] = number_format(0, 2);
+            foreach (tbl_incomingsupp::select('supply_name')->where("category", $value->id)
+                ->whereBetween("incoming_date", [$date1, $date2])->
+                groupBy("supply_name")->get()->pluck('supply_name') as $keyx => $valuex) {
 
-            //For computing fluctuation
-            if ($get_quantity->sum('amount') < 1) {
-                $temp['fluctuation'] = number_format(0, 2);
-            } else {
-                $temp['fluctuation'] = number_format($get_quantity->sum('quantity')
-                     *
-                    (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
-                        tbl_masterlistsupp::where("id", $value->id)->first()->net_price), 2);
+                //Get the total amount and qty from incoming via supply, category and date
+                $get_amount = tbl_incomingsupp::where("supply_name", $valuex)
+                    ->whereBetween("incoming_date", [$date1, $date2]);
+                $get_quantity = tbl_incomingsupp::where("supply_name", $valuex)->where("supply_name", $valuex)
+                    ->whereBetween("incoming_date", [$date1, $date2]);
+
+                //Add fluc
+                if ($get_quantity->sum('amount') < 1) {
+                } else {
+                    $temp['fluctuation'] += $get_quantity->sum('quantity')
+                         *
+                        (($get_amount->sum('amount') / $get_quantity->sum('quantity')) -
+                        tbl_masterlistsupp::where("id", $valuex)->first()->net_price);
+                }
+
             }
+            $temp['fluctuation'] = number_format($temp['fluctuation'], 2);
             array_push($data, $temp);
         }
 
