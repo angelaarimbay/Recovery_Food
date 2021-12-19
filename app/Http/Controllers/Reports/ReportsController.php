@@ -955,7 +955,7 @@ class ReportsController extends Controller
                     'branch' => $value1->branch_name_details['branch_name'],
                     'created_at' => $value1->created_at,
                     'reference_no' => $value1->reference_no,
-                    'sales_amount' => $value1->sub_total_discounted,
+                    'sales_amount' => number_format($value1->sub_total_discounted, 2),
                 ];
                 array_push($group, $ar);
             }
@@ -965,7 +965,7 @@ class ReportsController extends Controller
                 'branch' => ($t->type == 'excel' ? ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>') : ''),
                 'created_at' => '',
                 'reference_no' => ($t->type == 'excel' ? '' : ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>')),
-                'sales_amount' => ($t->type == 'excel' ? $total_sa : '<b>' . $total_sa . '</b>'),
+                'sales_amount' => ($t->type == 'excel' ? $total_sa : '<b>' . number_format($total_sa, 2) . '</b>'),
             ];
             array_push($group, $ar);
             array_push($array, $group);
@@ -1016,6 +1016,10 @@ class ReportsController extends Controller
     //For transaction report
     public function TransactionReport(Request $t)
     {
+        $array = []; //Main Array
+
+        // return tbl_pos::get();
+
         $data = tbl_pos::whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
             ->selectRaw(" sum(quantity) as quantity,
         sum(sub_total_discounted) as sub_total_discounted,
@@ -1024,10 +1028,44 @@ class ReportsController extends Controller
         reference_no")->groupby(["branch", "created_at", "reference_no"])
             ->get();
 
+        foreach (tbl_pos::where("branch", $t->branch)->groupBy("branch")->pluck("branch") as $key => $value) {
+            $group = []; //Inner Array
+
+            $total_p = 0; //Total Products
+            $total_a = 0; //Total Amount
+
+            //Each branch add to inner array
+            foreach ($data as $key1 => $value1) {
+
+                $total_p += $value1->quantity;
+                $total_a += $value1->sub_total_discounted;
+
+                $ar = [
+                    'branch' => $value1->branch_name_details['branch_name'],
+                    'created_at' => $value1->created_at,
+                    'reference_no' => $value1->reference_no,
+                    'total_prod' => $value1->quantity,
+                    'total_amount' => number_format($value1->sub_total_discounted, 2),
+                ];
+                array_push($group, $ar);
+            }
+
+            //Add inner array to main array (Nested array)
+            $ar = [
+                'branch' => ($t->type == 'excel' ? ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>') : ''),
+                'created_at' => '',
+                'reference_no' => ($t->type == 'excel' ? '' : ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>')),
+                'total_prod' => ($t->type == 'excel' ? $total_p : '<b>' . $total_p . '</b>'),
+                'total_amount' => ($t->type == 'excel' ? $total_a : '<b>' . number_format($total_a, 2) . '</b>'),
+            ];
+            array_push($group, $ar);
+            array_push($array, $group);
+        }
+
         switch ($t->type) {
             case 'pdf':
-                if (count($data) > 0) {
-                    $content['data'] = $data;
+                if (count($array) > 0) {
+                    $content['data'] = $array;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to, 'branch' => tbl_branches::where("id", $t->branch)->first()->branch_name];
                     if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
@@ -1048,14 +1086,17 @@ class ReportsController extends Controller
                 $columns = ['BRANCH', 'DATE ', 'REFERENCE NO', 'TOTAL PRODUCT(S)', 'TOTAL AMT'];
                 //Data
                 $dataitems = [];
-                foreach ($data as $key => $value) {
-                    $temp = [];
-                    $temp['branch_name'] = $value->branch_name_details['branch_name'];
-                    $temp['created_at'] = date("Y-m-d", strtotime($value->created_at));
-                    $temp['reference_no'] = $value->reference_no;
-                    $temp['quantity'] = $value->quantity;
-                    $temp['total_amount'] = $value->total_amount;
-                    array_push($dataitems, $temp);
+
+                foreach ($array as $key => $value) {
+                    foreach ($value as $key1 => $value1) {
+                        $temp = [];
+                        $temp['branch'] = $value1['branch'];
+                        $temp['created_at'] = ($value1['created_at'] ? date("Y-m-d", strtotime($value1['created_at'])) : null);
+                        $temp['reference_no'] = $value1['reference_no'];
+                        $temp['total_prod'] = $value1['total_prod'];
+                        $temp['total_amount'] = $value1['total_amount'];
+                        array_push($dataitems, $temp);
+                    }
                 }
                 return Excel::download(new InventoryExport($dataitems, $columns), "Transaction Report.xlsx");
                 break;

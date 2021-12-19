@@ -121,76 +121,92 @@
           </v-row>
 
           <!-- Filter Dialog -->
-          <v-dialog v-model="filterDialog" max-width="400px">
-            <v-card dark tile class="pa-2">
-              <v-toolbar dense flat class="transparent">
-                Search Filter
+          <v-dialog v-model="filterDialog" max-width="400px" scrollable>
+            <v-card dark tile>
+              <v-toolbar dense flat class="transparent px-1">
+                <span
+                  class="
+                    text-xl-subtitle-1
+                    text-lg-subtitle-1
+                    text-md-subtitle-1
+                    text-sm-subtitle-1
+                    text-subtitle-2
+                  "
+                  >Search Filter</span
+                >
                 <v-spacer></v-spacer>
-                <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+                <v-icon
+                  :small="$vuetify.breakpoint.xsOnly"
+                  text
+                  @click="filterDialog = false"
+                  >mdi-close
+                </v-icon>
               </v-toolbar>
               <v-divider class="my-0"></v-divider>
-              <v-row no-gutters align="center" class="pa-2">
-                <!-- Items Per Page -->
-                <v-col cols="4"
-                  ><span class="text-caption text-xl-subtitle-2"
-                    >Items / Page</span
-                  ></v-col
-                >
-                <v-col cols="8">
-                  <v-card-actions class="px-0">
-                    <v-select
-                      dense
-                      v-model="itemsPerPage"
-                      @change="itemperpage"
-                      :items="[5, 10, 15, 20]"
-                      hide-details
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    >
-                    </v-select>
-                  </v-card-actions>
-                </v-col>
+              <v-card-text class="px-5 py-2" style="height: 125px">
+                <v-row no-gutters align="center">
+                  <!-- Items Per Page -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Items / Page</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-select
+                        dense
+                        v-model="itemsPerPage"
+                        @change="itemperpage"
+                        :items="[5, 10, 15, 20]"
+                        hide-details
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      >
+                      </v-select>
+                    </v-card-actions>
+                  </v-col>
 
-                <!-- Search Field -->
-                <v-col cols="4"
-                  ><span class="text-caption text-xl-subtitle-2"
-                    >Search</span
-                  ></v-col
-                >
-                <v-col cols="8">
-                  <v-card-actions class="px-0">
-                    <v-text-field
-                      v-model="search"
-                      placeholder="Branch Name"
-                      dense
-                      clearable
-                      hide-details
-                      background-color="grey darken-3"
-                      flat
-                      solo
-                      style="font-size: 12px"
-                    ></v-text-field>
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-btn
-                          small
-                          :x-small="$vuetify.breakpoint.smAndDown"
-                          color="red darken-2"
-                          icon
-                          v-on="data.on"
-                          @click="get"
-                          class="ml-1"
-                        >
-                          <v-icon>mdi-magnify</v-icon></v-btn
-                        >
-                      </template>
-                      <span>Search</span>
-                    </v-tooltip>
-                  </v-card-actions>
-                </v-col>
-              </v-row>
+                  <!-- Search Field -->
+                  <v-col cols="4"
+                    ><span class="text-caption text-xl-subtitle-2"
+                      >Search</span
+                    ></v-col
+                  >
+                  <v-col cols="8">
+                    <v-card-actions class="px-0">
+                      <v-text-field
+                        v-model="search"
+                        placeholder="Branch Name"
+                        dense
+                        clearable
+                        hide-details
+                        background-color="grey darken-3"
+                        flat
+                        solo
+                        style="font-size: 12px"
+                      ></v-text-field>
+                      <v-tooltip bottom>
+                        <template #activator="data">
+                          <v-btn
+                            small
+                            :x-small="$vuetify.breakpoint.smAndDown"
+                            color="red darken-2"
+                            icon
+                            v-on="data.on"
+                            @click="get"
+                            class="ml-1"
+                          >
+                            <v-icon>mdi-magnify</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Search</span>
+                      </v-tooltip>
+                    </v-card-actions>
+                  </v-col>
+                </v-row>
+              </v-card-text>
             </v-card>
           </v-dialog>
         </v-card-actions>
@@ -290,14 +306,28 @@
 
       <!-- View Dialog Form -->
       <v-form ref="form">
-        <v-dialog v-model="viewdialog" max-width="500px">
-          <v-card tile class="pa-3">
-            <v-toolbar dark dense flat rounded class="red darken-3">
-              View Branch
+        <v-dialog v-model="viewdialog" max-width="500px" scrollable>
+          <v-card>
+            <v-toolbar dark dense flat class="red darken-3 px-1">
+              <span
+                class="
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  text-subtitle-2
+                "
+                >View Branch</span
+              >
               <v-spacer></v-spacer>
-              <v-icon text @click="closeViewDialog">mdi-close </v-icon>
+              <v-icon
+                :small="$vuetify.breakpoint.xsOnly"
+                text
+                @click="closeViewDialog"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
-            <v-container class="px-1 py-0">
+            <v-card-text style="height: 540px">
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -389,7 +419,7 @@
                   }}</v-col></v-row
                 >
               </v-card-text>
-            </v-container>
+            </v-card-text>
           </v-card>
         </v-dialog>
       </v-form>
@@ -401,17 +431,29 @@
           max-width="450px"
           persistent
           no-click-animation
+          scrollable
         >
-          <v-card tile class="pa-3">
-            <v-toolbar dark dense flat rounded class="red darken-3">
-              Branch
+          <v-card>
+            <v-toolbar dark dense flat class="red darken-3 px-1">
+              <span
+                class="
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  text-subtitle-2
+                "
+                >Branch</span
+              >
               <v-spacer></v-spacer>
-              <v-icon text @click="cancel">mdi-close </v-icon>
+              <v-icon :small="$vuetify.breakpoint.xsOnly" text @click="cancel"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
-            <v-container class="px-1">
-              <v-row class="py-4">
+            <v-card-text style="height: 450px">
+              <v-row class="mt-4 px-1">
                 <v-col
-                  class="tfield py-0"
+                  class="tfield py-0 px-1"
                   cols="12"
                   xl="6"
                   lg="6"
@@ -443,7 +485,7 @@
                 </v-col>
 
                 <v-col
-                  class="tfield py-0"
+                  class="tfield py-0 px-1"
                   cols="12"
                   xl="6"
                   lg="6"
@@ -479,7 +521,7 @@
                 </v-col>
 
                 <v-col
-                  class="tfield py-0"
+                  class="tfield py-0 px-1"
                   cols="12"
                   xl="12"
                   lg="12"
@@ -509,7 +551,7 @@
                 </v-col>
 
                 <v-col
-                  class="tfield py-0"
+                  class="tfield py-0 px-1"
                   cols="12"
                   xl="12"
                   lg="12"
@@ -539,7 +581,7 @@
                 </v-col>
 
                 <v-col
-                  class="tfield py-0"
+                  class="tfield py-0 px-1"
                   cols="12"
                   xl="12"
                   lg="12"
@@ -570,7 +612,7 @@
                 </v-col>
 
                 <v-col
-                  class="tfield py-0"
+                  class="tfield py-0 px-1"
                   cols="12"
                   xl="12"
                   lg="12"
@@ -599,7 +641,7 @@
                 </v-col>
 
                 <v-col
-                  class="py-0 px-4"
+                  class="py-0 px-1"
                   cols="12"
                   xl="12"
                   lg="12"
@@ -675,32 +717,70 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-            </v-container>
+            </v-card-text>
             <v-divider class="my-0"></v-divider>
             <!-- Dialog Form Buttons -->
-            <v-card-actions class="px-0 pb-0 pt-3">
-              <v-spacer></v-spacer>
-              <v-btn
-                color="grey"
-                depressed
-                :disabled="button"
-                dark
-                @click="cancel"
-                :small="$vuetify.breakpoint.smAndDown"
-                outlined
-              >
-                <span style="color: #1976d2">Cancel</span>
-              </v-btn>
-              <v-btn
-                color="primary"
-                depressed
-                :disabled="button"
-                dark
-                @click="save"
-                :small="$vuetify.breakpoint.smAndDown"
-              >
-                Save
-              </v-btn>
+            <v-card-actions class="pa-3">
+              <template v-if="$vuetify.breakpoint.xsOnly">
+                <v-row no-gutters>
+                  <v-col cols="6" class="px-1">
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      style="text-transform: none"
+                      color="grey"
+                      depressed
+                      :disabled="button"
+                      dark
+                      @click="cancel"
+                      :small="$vuetify.breakpoint.xsOnly"
+                      outlined
+                      block
+                    >
+                      <span style="color: #1976d2">Cancel</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6" class="px-1">
+                    <v-btn
+                      style="text-transform: none"
+                      color="primary"
+                      depressed
+                      :disabled="button"
+                      dark
+                      @click="save"
+                      :small="$vuetify.breakpoint.xsOnly"
+                      block
+                    >
+                      Save
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </template>
+              <template v-else>
+                <v-spacer></v-spacer>
+                <v-btn
+                  style="text-transform: none"
+                  color="grey"
+                  depressed
+                  :disabled="button"
+                  dark
+                  @click="cancel"
+                  :small="$vuetify.breakpoint.xsOnly"
+                  outlined
+                >
+                  <span style="color: #1976d2">Cancel</span>
+                </v-btn>
+                <v-btn
+                  style="text-transform: none"
+                  color="primary"
+                  depressed
+                  :disabled="button"
+                  dark
+                  @click="save"
+                  :small="$vuetify.breakpoint.xsOnly"
+                >
+                  Save
+                </v-btn>
+              </template>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -711,6 +791,10 @@
 
 <!-- Style -->
 <style>
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 .container {
   max-width: 1500px !important;
 }
@@ -845,23 +929,32 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "right",
+        align: "center",
         filterable: false,
         class: "black--text",
         sortable: false,
+        width: "10%",
       },
-      { text: "BRANCH NAME", value: "branch_name", class: "black--text" },
+      {
+        text: "BRANCH NAME",
+        value: "branch_name",
+        class: "black--text",
+        width: "30%",
+      },
       {
         text: "TYPE",
         value: "type",
         filterable: false,
         class: "black--text",
+        width: "20%",
       },
       {
         text: "STATUS",
         value: "status",
+        align: "center",
         filterable: false,
         class: "black--text",
+        width: "20%",
       },
       {
         text: "ACTION",
@@ -870,6 +963,7 @@ export default {
         sortable: false,
         filterable: false,
         class: "black--text",
+        width: "20%",
       },
     ],
     page: 1,

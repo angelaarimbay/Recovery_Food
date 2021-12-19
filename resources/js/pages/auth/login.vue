@@ -24,9 +24,10 @@
           class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
         >
           <v-card
-            elevation="1"
+            elevation="3"
             style="border-radius: 10px"
             class="d-flex align-center justify-center"
+            max-width="500px"
           >
             <v-form ref="form" @submit.prevent="submitHandler">
               <v-card-text class="pa-4 pa-xl-7 pa-lg-7 pa-md-5 pa-sm-5">
@@ -45,7 +46,7 @@
                 </v-row>
                 <v-row>
                   <!-- Email Field -->
-                  <v-col cols="12" md="12" class="py-1" id="email">
+                  <v-col cols="12" md="12" class="py-0" id="email">
                     <v-text-field
                       :rules="formRulesEmail"
                       label="Email"
@@ -61,10 +62,11 @@
                       background-color="white"
                       flat
                       solo
+                      autocomplete="on"
                     ></v-text-field>
                   </v-col>
                   <!-- Password Field -->
-                  <v-col cols="12" sm="12" class="py-1" id="password">
+                  <v-col cols="12" sm="12" class="py-0" id="password">
                     <v-text-field
                       :rules="passwordRules"
                       label="Password"
@@ -87,7 +89,7 @@
                   </v-col>
                 </v-row>
                 <!-- Login Button -->
-                <v-row>
+                <v-row class="mt-0">
                   <v-col cols="12">
                     <v-btn
                       :large="$vuetify.breakpoint.mdAndUp"
