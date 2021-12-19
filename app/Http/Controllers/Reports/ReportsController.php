@@ -115,7 +115,7 @@ class ReportsController extends Controller
                 foreach ($data as $key => $value) {
                     foreach ($value as $key1 => $value1) {
                         $temp = [];
-                        $temp['supplier_name'] = $value1['supplier_name'] ? $value1['supplier_name'] . " " . "(" . $value1['supplier_desc'] . ")" : '';
+                        $temp['supplier_name'] = $value1['supplier_name'];
                         $temp['category'] = $value1['category_details'];
                         $temp['supply_name'] = $value1['supply_name'] . " " . $value1['description'];
                         $temp['unit'] = $value1['unit'];
@@ -642,7 +642,8 @@ class ReportsController extends Controller
                     $temp['ending_a'] = $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                     $st_ending_a += $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
-                    $temp['ending_a'] = 0;
+                    $temp['ending_a'] = $temp['ending_q'] * $value->with_vat_price;
+                    $st_ending_a += $temp['ending_q'] * $value->with_vat_price;
                 }
 
                 //Consumption
@@ -660,11 +661,12 @@ class ReportsController extends Controller
                 $b = clone $outgoing;
                 $temp['ideal_q'] = $a->sum('quantity') - $b->sum('quantity'); //total from last month and this month - outgoing this month
                 $aa = clone $incoming;
-                if ($aa->sum('amount') > 0) {
+                if ($temp['ideal_q'] > 0 && $aa->sum('quantity') > 0) {
                     $temp['ideal_a'] = $temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                     $st_ideal_a += $temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
-                    $temp['ideal_a'] = 0;
+                    $temp['ideal_a'] = $temp['ending_q'] * $value->with_vat_price;
+                    $st_ideal_a += $temp['ending_q'] * $value->with_vat_price;
                 }
 
                 //Variance
@@ -825,14 +827,27 @@ class ReportsController extends Controller
             //Stocks = total - outgoing
             $temp['stocks'] = round((tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount")) - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"), 2);
 
-            try {
-                $temp['ending'] =
-                    round((tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date2])->get()->sum("quantity") - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity")) *
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity")), 2);
-            } catch (\Throwable $th) {
-                $temp['ending'] = 0;
-            }
+            //For computing ending
+            $temp['ending'] = 0;
+            $ending_q = 0;
+            foreach (tbl_masterlistsupp::where("category", $value->id)->get() as $key1 => $value1) {
+                $incoming_and_past = tbl_incomingsupp::where('supply_name', $value1->id)->whereBetween('incoming_date', [$date11, $date2]);
+                $outgoing = tbl_outgoingsupp::where('supply_name', $value1->id)->whereBetween('outgoing_date', [$date1, $date2]);
+                $incoming = tbl_incomingsupp::where('supply_name', $value1->id)->whereBetween('incoming_date', [$date1, $date2]);
 
+                $a = clone $incoming_and_past;
+                $b = clone $outgoing;
+                $aa = clone $incoming;
+                $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
+                if ($ending_q > 0 && $aa->sum('quantity') > 0) {
+                    $temp['ending'] += $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
+                } else {
+                    $temp['ending'] += $temp['ending_q'] * $value1->with_vat_price;
+                }
+            }
+            $temp['ending'] = $temp['ending'];
+
+            //For computing variance
             try {
                 $temp['variance'] = round($temp['ending'] - $temp['stocks'], 2);
             } catch (\Throwable $th) {
@@ -950,7 +965,7 @@ class ReportsController extends Controller
                 'branch' => ($t->type == 'excel' ? ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>') : ''),
                 'created_at' => '',
                 'reference_no' => ($t->type == 'excel' ? '' : ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>')),
-                'sales_amount' => '<b>' . $total_sa . '</b>',
+                'sales_amount' => ($t->type == 'excel' ? $total_sa : '<b>' . $total_sa . '</b>'),
             ];
             array_push($group, $ar);
             array_push($array, $group);

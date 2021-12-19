@@ -153,9 +153,9 @@ class tbl_masterlistsupp extends Model
         $get_wov = $this->net_price;
         if ($get_quantity->sum('quantity') > 0) {
             $get_wov = $get_amount->sum('amount') / $get_quantity->sum('quantity');
-            return round($get_wov, 2);
+            return $get_wov;
         } elseif ($get_quantity->sum('quantity') < 1) {
-            return round($this->net_price, 2);
+            return $this->net_price;
         }
     }
 }

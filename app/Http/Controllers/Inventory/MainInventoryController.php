@@ -136,7 +136,7 @@ class MainInventoryController extends Controller
             if ($temp['ending_q'] > 0 && $aa->sum('quantity') > 0) {
                 $temp['ending_a'] = number_format($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
-                $temp['ending_a'] = 0;
+                $temp['ending_a'] = number_format($temp['ending_q'] * $value->with_vat_price, 2);
             }
 
             //For consumption
@@ -157,7 +157,7 @@ class MainInventoryController extends Controller
             if ($temp['ideal_q'] > 0 && $aa->sum('quantity') > 0) {
                 $temp['ideal_a'] = number_format($temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
-                $temp['ideal_a'] = 0;
+                $temp['ideal_a'] = number_format($temp['ending_q'] * $value->with_vat_price, 2);
             }
 
             //For variance
