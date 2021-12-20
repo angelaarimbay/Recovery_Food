@@ -406,8 +406,10 @@
           slider-size="4"
           color="red darken-2"
           :centered="$vuetify.breakpoint.xsOnly"
+          :center-active="$vuetify.breakpoint.xsOnly"
           :height="height"
           :class="{ 'pt-2': $vuetify.breakpoint.smAndUp }"
+          show-arrows
         >
           <v-tabs-slider
             style="border-radius: 20px 20px 0px 0px"
