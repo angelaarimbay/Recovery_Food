@@ -167,12 +167,17 @@
       </v-dialog>
 
       <!-- Permission Dialog Form -->
-      <v-dialog v-model="dialogPermissions" max-width="450px">
+      <v-dialog
+        v-model="dialogPermissions"
+        max-width="450px"
+        persistent
+        no-click-animation
+      >
         <v-card tile class="pa-3">
           <v-toolbar dark dense flat rounded class="red darken-3">
-            Add New Permission
+            Permission
             <v-spacer></v-spacer>
-            <v-icon text @click="dialogPermissions = false">mdi-close </v-icon>
+            <v-icon text @click="cancelPermissions">mdi-close </v-icon>
           </v-toolbar>
           <v-container class="px-1">
             <v-row class="py-4">
@@ -236,10 +241,20 @@
           <v-card-actions class="px-0 pb-0">
             <v-spacer></v-spacer>
             <v-btn
+              color="grey"
+              depressed
+              dark
+              @click="cancelPermissions"
+              :small="$vuetify.breakpoint.smAndDown"
+              outlined
+            >
+              <span style="color: #1976d2">Cancel</span>
+            </v-btn>
+            <v-btn
               color="primary"
               depressed
               dark
-              @click="validate('permission')"
+              @click="storePermissions"
               :small="$vuetify.breakpoint.smAndDown"
             >
               Save
@@ -270,7 +285,7 @@
               dense
               :loading="progressBar"
               :headers="headersAddPermissions"
-              :items="tablePermissions"
+              :items="tablePermission"
               show-select
             >
               <v-progress-linear
@@ -328,25 +343,6 @@
                 indeterminate
               ></v-progress-linear>
             </v-data-table>
-
-            <!-- Paginate -->
-            <div
-              class="
-                pbutton
-                tbl
-                text-center
-                pt-7
-                pb-xl-3 pb-lg-3 pb-md-3 pb-sm-2 pb-2
-                d-none
-              "
-            >
-              <v-pagination
-                v-model="page3"
-                :total-visible="7"
-                :length="tableAddRoles.last_page"
-                color="red darken-2"
-              ></v-pagination>
-            </div>
           </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
@@ -480,7 +476,6 @@
                   dark
                   :small="$vuetify.breakpoint.smAndDown"
                   @click="openDialogRoles"
-                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                 >
                   Add New Role
                 </v-btn>
@@ -577,18 +572,19 @@
             </v-container>
           </v-tab-item>
 
+          <!-- Permissions List -->
           <v-tab-item>
             <v-divider class="my-0"></v-divider>
-            <!-- Permissions List -->
             <v-container class="py-2 px-3">
               <v-card-actions class="px-0">
+                <!-- Buttons -->
                 <v-btn
                   color="primary"
                   style="text-transform: none"
                   depressed
-                  :small="$vuetify.breakpoint.smAndDown"
                   dark
-                  @click="dialogPermissions = true"
+                  :small="$vuetify.breakpoint.smAndDown"
+                  @click="openDialogPermissions"
                 >
                   Add New Permission
                 </v-btn>
@@ -615,10 +611,10 @@
 
               <!-- Permissions List Table -->
               <v-data-table
+                hide-default-footer
                 id="table"
                 :items-per-page="10"
                 :loading="progressBar"
-                hide-default-footer
                 :headers="headersPermissions"
                 :items="tablePermissions.data"
                 class="table-striped border mt-2"
@@ -661,7 +657,7 @@
                 "
               >
                 <v-pagination
-                  v-model="page4"
+                  v-model="page2"
                   :total-visible="7"
                   :length="tablePermissions.last_page"
                   color="red darken-2"
@@ -670,9 +666,9 @@
             </v-container>
           </v-tab-item>
 
+          <!-- User Roles List -->
           <v-tab-item>
             <v-divider class="my-0"></v-divider>
-            <!-- User Roles -->
             <v-container class="py-2 px-3">
               <v-card-actions class="px-0">
                 <v-spacer></v-spacer>
@@ -755,7 +751,7 @@
                 "
               >
                 <v-pagination
-                  v-model="page2"
+                  v-model="page3"
                   :total-visible="7"
                   :length="tableUserrole.last_page"
                   color="red darken-2"
@@ -919,7 +915,7 @@ export default {
     dialogPermissions: false,
     searchPermissions: "",
     tablePermissions: [],
-    page4: 1,
+    page2: 1,
     headersPermissions: [
       {
         text: "PERMISSION NAME",
@@ -935,7 +931,7 @@ export default {
     //For user roles
     searchUserrole: "",
     tableUserrole: [],
-    page2: 1,
+    page3: 1,
     headersUserrole: [
       {
         text: "USER",
@@ -971,7 +967,6 @@ export default {
     //For setting user roles
     dialogAddRoles: false,
     tableAddRoles: [],
-    page3: 1,
     selectedAddRoles: [],
     selectedAddRoles_cloned: [],
     username: "",
@@ -1088,7 +1083,7 @@ export default {
       this.snackbar2.active = false;
     },
 
-    //Get Roles
+    //Get Roles List
     async getRoles() {
       this.progressBar = true;
       await axios
@@ -1101,7 +1096,7 @@ export default {
         .catch((result) => {});
     },
 
-    //Save Roles
+    //Save Roles In List
     async storeRoles() {
       if (this.$refs.mainForm.validate()) {
         if (this.compareRoles()) {
@@ -1124,6 +1119,7 @@ export default {
                     iconColor: "success",
                     message: "Successfully saved.",
                   };
+                  this.getRoles();
                   this.close();
                   break;
                 case 1:
@@ -1164,11 +1160,11 @@ export default {
       this.dialogRoles = false;
     },
 
-    //Permission
+    //Get Permissions List
     async getPermissions() {
       this.progressBar = true;
       await axios
-        .get("/api/useracc/getPermission")
+        .get("/api/useracc/getPermission", { params: { page: this.page2 } })
         .then((result) => {
           this.tablePermissions = result.data.data;
           this.progressBar = false;
@@ -1176,31 +1172,34 @@ export default {
         .catch((result) => {});
     },
 
-    //Save Roles
+    //Save Permissions In List
     async storePermissions() {
-      await axios
-        .post("/api/useracc/storePermission", this.permission)
-        .then((result) => {
-          if (this.editedIndex > -1) {
-            Object.assign(
-              this.tablePermissions.data[this.editedIndex],
-              result.data
-            );
-          } else {
-            this.tablePermissions.data.push(result.data);
-          }
-          this.snackbar = {
-            active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully saved.",
-          };
-        })
-        .catch((result) => {});
-      this.close();
+      if (this.$refs.mainForm.validate()) {
+        await axios
+          .post("/api/useracc/storePermission", this.permission)
+          .then((result) => {
+            if (this.editedIndex > -1) {
+              Object.assign(
+                this.tablePermissions.data[this.editedIndex],
+                result.data.data
+              );
+            } else {
+              this.tablePermissions.data.push(result.data.data);
+            }
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully saved.",
+            };
+            this.getPermissions();
+            this.close();
+          })
+          .catch((result) => {});
+      }
     },
 
-    //Edit
+    //Edit Permissions
     editItemPermissions(item) {
       this.editedIndex = this.tablePermissions.data.indexOf(item);
       this.permission.name = item.name;
@@ -1209,11 +1208,23 @@ export default {
       this.dialogPermissions = true;
     },
 
+    //Open Dialog Form Permissions
+    openDialogPermissions() {
+      this.$refs.mainForm.resetValidation();
+      this.dialogPermissions = true;
+    },
+
+    //Reset Form Permissions
+    cancelPermissions() {
+      this.$refs.mainForm.resetValidation();
+      this.dialogPermissions = false;
+    },
+
     //User Role
     async getUserRoles() {
       this.progressBar = true;
       await axios
-        .get("/api/useracc/getUserRole", { params: { page: this.page2 } })
+        .get("/api/useracc/getUserRole", { params: { page: this.page3 } })
         .then((result) => {
           this.tableUserrole = result.data;
           this.progressBar = false;
@@ -1224,13 +1235,13 @@ export default {
     //Add Role Permission
     async getRolePermissions(item) {
       let self = this;
-      self.tablePermissions = [];
+      self.tablePermission = [];
       await axios
         .get("/api/useracc/getPermission", {
-          params: { role: item, page: this.page4 },
+          params: { role: item },
         })
         .then((result) => {
-          self.tablePermissions = result.data.all;
+          self.tablePermission = result.data.all;
           self.selectedAddPermission = result.data.selected;
           self.selectedAddPermission_cloned = result.data.selected;
         })
@@ -1321,9 +1332,9 @@ export default {
               message: "Successfully saved.",
             };
             this.getUserRoles();
+            this.close();
           })
           .catch((result) => {});
-        this.close();
       }
     },
 
@@ -1475,15 +1486,11 @@ export default {
       this.page1 = val;
       this.getRoles();
     },
-    page4(val) {
-      this.page4 = val;
-      this.getRolePermissions();
+    page2(val) {
+      this.page2 = val;
+      this.getPermissions();
     },
     page3(val) {
-      this.page3 = val;
-      this.getRoles();
-    },
-    page2(val) {
       this.page2 = val;
       this.getUserRoles();
     },

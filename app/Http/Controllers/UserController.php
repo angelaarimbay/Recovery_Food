@@ -156,7 +156,7 @@ class UserController extends Controller
         return ['data' => $paginates, 'all' => Permission::get(), 'selected' => $permissions];
     }
 
-    //For retrieving roles
+    //For retrieving roles list
     public function getRoles(Request $request)
     {
         $roles = [];
