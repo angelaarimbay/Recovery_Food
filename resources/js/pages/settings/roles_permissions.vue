@@ -217,9 +217,12 @@
                 <v-text-field
                   :rules="formRules"
                   v-model="permission.description"
-                  outlined
                   clearable
+                  background-color="white"
+                  flat
+                  solo
                   dense
+                  style="font-size: 12px"
                 >
                   <template slot="label">
                     <div style="font-size: 12px">Permission Description</div>
@@ -429,7 +432,6 @@
               text-lg-subtitle-1
               text-md-subtitle-2
               text-sm-body-1
-              d-none
             "
             style="text-transform: none"
             @click="getPermissions"
@@ -476,7 +478,7 @@
                   dark
                   :small="$vuetify.breakpoint.smAndDown"
                   @click="openDialogRoles"
-                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 d-none"
+                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1"
                 >
                   Add New Role
                 </v-btn>
@@ -505,7 +507,7 @@
               <v-data-table
                 hide-default-footer
                 id="table"
-                :items-per-page="5"
+                :items-per-page="10"
                 :loading="progressBar"
                 :headers="headersRoles"
                 :items="tableRoles.data"
@@ -544,7 +546,6 @@
                         @click="addPermission(item)"
                         v-on="data.on"
                         :x-small="$vuetify.breakpoint.smAndDown"
-                        class="d-none"
                       >
                         <v-icon> mdi-plus </v-icon>
                       </v-btn>
@@ -574,7 +575,7 @@
             </v-container>
           </v-tab-item>
 
-          <v-tab-item class="d-none">
+          <v-tab-item>
             <v-divider class="my-0"></v-divider>
             <!-- Permissions List -->
             <v-container class="py-2 px-3">
@@ -613,7 +614,7 @@
               <!-- Permissions List Table -->
               <v-data-table
                 id="table"
-                :items-per-page="5"
+                :items-per-page="10"
                 :loading="progressBar"
                 hide-default-footer
                 :headers="headersPermissions"
@@ -630,14 +631,20 @@
                 ></v-progress-linear>
 
                 <template v-slot:[`item.id`]="{ item }">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    @click="editItemPermissions(item)"
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                  >
-                    <v-icon> mdi-pencil </v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        icon
+                        color="red darken-2"
+                        @click="editItemPermissions(item)"
+                        v-on="data.on"
+                        :x-small="$vuetify.breakpoint.smAndDown"
+                      >
+                        <v-icon> mdi-pencil </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Edit Permission</span>
+                  </v-tooltip>
                 </template>
               </v-data-table>
 
@@ -1081,15 +1088,13 @@ export default {
 
     //Get Roles
     async getRoles() {
-      let self = this;
-      self.progressBar = true;
-      self.tableRoles = [];
+      this.progressBar = true;
       await axios
         .get("/api/useracc/getRoles", { params: { page: this.page1 } })
         .then((result) => {
-          self.tableRoles = result.data.data;
-          self.tableUserrole = result.data.data;
-          self.progressBar = false;
+          this.tableRoles = result.data.data;
+          this.tableUserrole = result.data.data;
+          this.progressBar = false;
         })
         .catch((result) => {});
     },
@@ -1159,23 +1164,14 @@ export default {
 
     //Permission
     async getPermissions() {
-      let self = this;
-      self.progressBar = true;
-      self.tablePermissions = [];
+      this.progressBar = true;
       await axios
         .get("/api/useracc/getPermission")
         .then((result) => {
-          self.tablePermissions = result.data.data;
-          self.progressBar = false;
+          this.tablePermissions = result.data.data;
+          this.progressBar = false;
         })
-        .catch((result) => {
-          this.snackbar = {
-            active: true,
-            iconText: "alert",
-            iconColor: "warning",
-            message: "Error!",
-          };
-        });
+        .catch((result) => {});
     },
 
     //Save Roles
@@ -1213,14 +1209,12 @@ export default {
 
     //User Role
     async getUserRoles() {
-      let self = this;
-      self.progressBar = true;
-      self.tableUserrole = [];
+      this.progressBar = true;
       await axios
         .get("/api/useracc/getUserRole", { params: { page: this.page2 } })
         .then((result) => {
-          self.tableUserrole = result.data;
-          self.progressBar = false;
+          this.tableUserrole = result.data;
+          this.progressBar = false;
         })
         .catch((result) => {});
     },
@@ -1228,7 +1222,6 @@ export default {
     //Add Role Permission
     async getRolePermissions(item) {
       let self = this;
-      self.progressBar = true;
       self.tablePermissions = [];
       await axios
         .get("/api/useracc/getPermission", {
@@ -1238,8 +1231,6 @@ export default {
           self.tablePermissions = result.data.all;
           self.selectedAddPermission = result.data.selected;
           self.selectedAddPermission_cloned = result.data.selected;
-
-          self.progressBar = false;
         })
         .catch((result) => {});
     },
@@ -1377,7 +1368,6 @@ export default {
     //Get Roles
     async getAddUserRoles(item) {
       let self = this;
-      self.progressBar = true;
       self.tableAddRoles = [];
       await axios
         .get("/api/useracc/getRoles", { params: { user: item } })
@@ -1385,7 +1375,6 @@ export default {
           self.tableAddRoles = result.data.data;
           self.selectedAddRoles = result.data.selected;
           self.selectedAddRoles_cloned = result.data.selected;
-          self.progressBar = false;
         })
         .catch((result) => {});
     },
@@ -1474,6 +1463,12 @@ export default {
     dialogRoles(val) {
       val || this.close();
     },
+    dialogPermissions(val) {
+      val || this.close();
+    },
+    dialogAddRoles(val) {
+      val || this.close();
+    },
     page1(val) {
       this.page1 = val;
       this.getRoles();
@@ -1489,12 +1484,6 @@ export default {
     page2(val) {
       this.page2 = val;
       this.getUserRoles();
-    },
-    dialogPermissions(val) {
-      val || this.close();
-    },
-    dialogAddRoles(val) {
-      val || this.close();
     },
   },
 };

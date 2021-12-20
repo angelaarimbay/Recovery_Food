@@ -151,7 +151,7 @@ class UserController extends Controller
         }
 
         $items = Collection::make(Permission::get());
-        $paginates = new LengthAwarePaginator(collect($items)->forPage($request->page, 5)->values(), $items->count(), 5, $request->page, []);
+        $paginates = new LengthAwarePaginator(collect($items)->forPage($request->page, 10)->values(), $items->count(), 10, $request->page, []);
 
         return ['data' => $paginates, 'all' => Permission::get(), 'selected' => $permissions];
     }
@@ -173,7 +173,7 @@ class UserController extends Controller
             }
         }
         $items = Collection::make(Role::get());
-        $paginates = new LengthAwarePaginator(collect($items)->forPage($request->page, 5)->values(), $items->count(), 5, $request->page, []);
+        $paginates = new LengthAwarePaginator(collect($items)->forPage($request->page, 10)->values(), $items->count(), 10, $request->page, []);
 
         return ['data' => $paginates, 'selected' => $roles];
     }
@@ -183,7 +183,6 @@ class UserController extends Controller
     {
         $items = Collection::make(User::with(["roles"])->get());
         return new LengthAwarePaginator(collect($items)->forPage($request->page, 5)->values(), $items->count(), 5, $request->page, []);
-
     }
 
     //For saving roles
