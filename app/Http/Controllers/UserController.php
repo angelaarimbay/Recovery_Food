@@ -212,19 +212,23 @@ class UserController extends Controller
     public function storePermission(Request $request)
     {
         $data = Permission::query();
+
         if ($data->where("id", $request->id)->count() > 0) {
-            $temp = $data->where("id", $request->id)
+            $data = Permission::where("id", $request->id)
                 ->update([
                     'name' => $request->name,
                     'description' => $request->description,
                 ]);
         } else {
-            $temp = $data->create([
+            if (Permission::where('name', $request->name)->count() > 0) {
+                return ['type' => 1];
+            }
+            $data = Permission::create([
                 'name' => $request->name,
                 'description' => $request->description,
             ]);
         }
-        return $request->all();
+        return ['data' => $request->all(), 'type' => 0];
     }
 
     //For saving role permissions

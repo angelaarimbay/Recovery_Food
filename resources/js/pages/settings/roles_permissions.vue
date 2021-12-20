@@ -870,6 +870,7 @@ export default {
     seederColumns: "",
     seederTablename: "",
     currentdataRoles: {},
+    currentdataPerms: {},
 
     //Form rules
     formRules: [
@@ -1005,6 +1006,32 @@ export default {
       var found = 0;
       for (var key in this.role) {
         if (this.currentdataRoles[key] != this.role[key]) {
+          found += 1;
+        }
+      }
+
+      if (found > 0) {
+        return true;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "warning",
+          message: "No changes has been made.",
+        };
+        this.close();
+      }
+    },
+
+    //Compare Permissions
+    comparePerms() {
+      if (!this.currentdataPerms) {
+        return true;
+      }
+
+      var found = 0;
+      for (var key in this.permission) {
+        if (this.currentdataPerms[key] != this.permission[key]) {
           found += 1;
         }
       }
@@ -1175,32 +1202,49 @@ export default {
     //Save Permissions In List
     async storePermissions() {
       if (this.$refs.mainForm.validate()) {
-        await axios
-          .post("/api/useracc/storePermission", this.permission)
-          .then((result) => {
-            if (this.editedIndex > -1) {
-              Object.assign(
-                this.tablePermissions.data[this.editedIndex],
-                result.data.data
-              );
-            } else {
-              this.tablePermissions.data.push(result.data.data);
-            }
-            this.snackbar = {
-              active: true,
-              iconText: "check",
-              iconColor: "success",
-              message: "Successfully saved.",
-            };
-            this.getPermissions();
-            this.close();
-          })
-          .catch((result) => {});
+        if (this.comparePerms()) {
+          await axios
+            .post("/api/useracc/storePermission", this.permission)
+            .then((result) => {
+              switch (result.data.type) {
+                case 0:
+                  if (this.editedIndex > -1) {
+                    Object.assign(
+                      this.tablePermissions.data[this.editedIndex],
+                      result.data.data
+                    );
+                  } else {
+                    this.tablePermissions.data.push(result.data.data);
+                  }
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully saved.",
+                  };
+                  this.getPermissions();
+                  this.close();
+                  break;
+                case 1:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert",
+                    iconColor: "error",
+                    message: "The permission name already exists.",
+                  };
+                  break;
+                default:
+                  break;
+              }
+            })
+            .catch((result) => {});
+        }
       }
     },
 
     //Edit Permissions
     editItemPermissions(item) {
+      this.currentdataPerms = JSON.parse(JSON.stringify(item));
       this.editedIndex = this.tablePermissions.data.indexOf(item);
       this.permission.name = item.name;
       this.permission.description = item.description;
