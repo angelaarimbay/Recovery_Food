@@ -70,17 +70,32 @@
         max-width="450px"
         persistent
         no-click-animation
+        scrollable
       >
-        <v-card tile class="pa-3">
-          <v-toolbar dark dense flat rounded class="red darken-3">
-            Role
+        <v-card>
+          <v-toolbar dark dense flat class="red darken-3 px-1">
+            <span
+              class="
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-1
+                text-sm-subtitle-1
+                text-subtitle-2
+              "
+              >Role</span
+            >
             <v-spacer></v-spacer>
-            <v-icon text @click="cancelRoles">mdi-close </v-icon>
+            <v-icon
+              :small="$vuetify.breakpoint.xsOnly"
+              text
+              @click="cancelRoles"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-          <v-container class="px-1">
-            <v-row class="py-4">
+          <v-card-text style="height: 160px">
+            <v-row class="mt-4 px-1">
               <v-col
-                class="tfield py-0"
+                class="tfield py-0 px-1"
                 cols="12"
                 xl="12"
                 lg="12"
@@ -111,7 +126,7 @@
                 </v-text-field>
               </v-col>
               <v-col
-                class="tfield py-0"
+                class="tfield py-0 px-1"
                 cols="12"
                 xl="12"
                 lg="12"
@@ -138,30 +153,65 @@
                 </v-text-field>
               </v-col>
             </v-row>
-          </v-container>
+          </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-0 pb-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="grey"
-              depressed
-              dark
-              @click="cancelRoles"
-              :small="$vuetify.breakpoint.smAndDown"
-              outlined
-            >
-              <span style="color: #1976d2">Cancel</span>
-            </v-btn>
-            <v-btn
-              color="primary"
-              depressed
-              dark
-              @click="storeRoles"
-              :small="$vuetify.breakpoint.smAndDown"
-            >
-              Save
-            </v-btn>
+          <v-card-actions class="pa-3">
+            <template v-if="$vuetify.breakpoint.xsOnly">
+              <v-row no-gutters>
+                <v-col cols="6" class="px-1">
+                  <v-btn
+                    style="text-transform: none"
+                    color="grey"
+                    depressed
+                    dark
+                    @click="cancelRoles"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    outlined
+                    block
+                  >
+                    <span style="color: #1976d2">Cancel</span>
+                  </v-btn>
+                </v-col>
+                <v-col cols="6" class="px-1">
+                  <v-btn
+                    style="text-transform: none"
+                    color="primary"
+                    depressed
+                    dark
+                    @click="storeRoles"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    block
+                  >
+                    Save
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </template>
+            <template v-else>
+              <v-spacer></v-spacer>
+              <v-btn
+                style="text-transform: none"
+                color="grey"
+                depressed
+                dark
+                @click="cancelRoles"
+                :small="$vuetify.breakpoint.smAndDown"
+                outlined
+              >
+                <span style="color: #1976d2">Cancel</span>
+              </v-btn>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="storeRoles"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </template>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -172,17 +222,32 @@
         max-width="450px"
         persistent
         no-click-animation
+        scrollable
       >
-        <v-card tile class="pa-3">
-          <v-toolbar dark dense flat rounded class="red darken-3">
-            Permission
+        <v-card>
+          <v-toolbar dark dense flat class="red darken-3 px-1">
+            <span
+              class="
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-1
+                text-sm-subtitle-1
+                text-subtitle-2
+              "
+              >Permission</span
+            >
             <v-spacer></v-spacer>
-            <v-icon text @click="cancelPermissions">mdi-close </v-icon>
+            <v-icon
+              :small="$vuetify.breakpoint.xsOnly"
+              text
+              @click="cancelPermissions"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-          <v-container class="px-1">
-            <v-row class="py-4">
+          <v-card-text style="height: 160px">
+            <v-row class="mt-4 px-1">
               <v-col
-                class="tfield py-0"
+                class="tfield py-0 px-1"
                 cols="12"
                 xl="12"
                 lg="12"
@@ -211,7 +276,7 @@
                 </v-text-field>
               </v-col>
               <v-col
-                class="tfield py-0"
+                class="tfield py-0 px-1"
                 cols="12"
                 xl="12"
                 lg="12"
@@ -235,53 +300,97 @@
                 </v-text-field>
               </v-col>
             </v-row>
-          </v-container>
+          </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-0 pb-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="grey"
-              depressed
-              dark
-              @click="cancelPermissions"
-              :small="$vuetify.breakpoint.smAndDown"
-              outlined
-            >
-              <span style="color: #1976d2">Cancel</span>
-            </v-btn>
-            <v-btn
-              color="primary"
-              depressed
-              dark
-              @click="storePermissions"
-              :small="$vuetify.breakpoint.smAndDown"
-            >
-              Save
-            </v-btn>
+          <v-card-actions class="pa-3">
+            <template v-if="$vuetify.breakpoint.xsOnly">
+              <v-row no-gutters>
+                <v-col cols="6" class="px-1">
+                  <v-btn
+                    style="text-transform: none"
+                    color="grey"
+                    depressed
+                    dark
+                    @click="cancelPermissions"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    outlined
+                    block
+                  >
+                    <span style="color: #1976d2">Cancel</span>
+                  </v-btn>
+                </v-col>
+                <v-col cols="6" class="px-1">
+                  <v-btn
+                    style="text-transform: none"
+                    color="primary"
+                    depressed
+                    dark
+                    @click="storePermissions"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    block
+                  >
+                    Save
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </template>
+            <template v-else>
+              <v-spacer></v-spacer>
+              <v-btn
+                style="text-transform: none"
+                color="grey"
+                depressed
+                dark
+                @click="cancelPermissions"
+                :small="$vuetify.breakpoint.smAndDown"
+                outlined
+              >
+                <span style="color: #1976d2">Cancel</span>
+              </v-btn>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="storePermissions"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </template>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
       <!-- Add Permission To Role Dialog -->
-      <v-dialog v-model="dialogAddPermissions" max-width="700px">
-        <v-card tile class="pa-3">
-          <v-toolbar dark dense flat rounded class="red darken-3">
-            Add Role Permission(s)
+      <v-dialog v-model="dialogAddPermissions" max-width="900px" scrollable>
+        <v-card>
+          <v-toolbar dark dense flat class="red darken-3 px-1">
+            <span
+              class="
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-1
+                text-sm-subtitle-1
+                text-subtitle-2
+              "
+              >Add Role Permission(s)</span
+            >
             <v-spacer></v-spacer>
             <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              :small="$vuetify.breakpoint.xsOnly"
               text
               @click="dialogAddPermissions = false"
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-container class="px-0">
+          <v-card-text style="height: 400px" class="px-4">
             <v-data-table
               id="table1"
-              class="tbl px-4 table-striped border"
+              class="tbl px-4 mt-6 table-striped border"
               v-model="selectedAddPermission"
-              :items-per-page="5"
+              :items-per-page="10"
               dense
               :loading="progressBar"
               :headers="headersAddPermissions"
@@ -295,33 +404,63 @@
                 indeterminate
               ></v-progress-linear>
             </v-data-table>
-          </v-container>
+          </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-0 pb-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              depressed
-              dark
-              @click="validate('permission')"
-              :small="$vuetify.breakpoint.smAndDown"
-            >
-              Save
-            </v-btn>
+          <v-card-actions class="pa-3">
+            <template v-if="$vuetify.breakpoint.xsOnly">
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="validate('permission')"
+                :small="$vuetify.breakpoint.smAndDown"
+                block
+              >
+                Save
+              </v-btn>
+            </template>
+            <template v-else>
+              <v-spacer></v-spacer>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="validate('permission')"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </template>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
       <!-- Add User Role Dialog -->
-      <v-dialog v-model="dialogAddRoles" max-width="700px">
-        <v-card tile class="pa-3">
-          <v-toolbar dark dense flat rounded class="red darken-3">
-            Add User Role(s)
+      <v-dialog v-model="dialogAddRoles" max-width="900px" scrollable>
+        <v-card>
+          <v-toolbar dark dense flat class="red darken-3 px-1">
+            <span
+              class="
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-1
+                text-sm-subtitle-1
+                text-subtitle-2
+              "
+              >Add User Role(s)</span
+            >
             <v-spacer></v-spacer>
-            <v-icon text @click="cancelUserRoles">mdi-close </v-icon>
+            <v-icon
+              :small="$vuetify.breakpoint.xsOnly"
+              text
+              @click="cancelUserRoles"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-          <v-card-text class="px-0">
+          <v-card-text style="height: 400px" class="px-4">
             <v-card-text>
               Selected User: <strong>{{ username }}</strong>
             </v-card-text>
@@ -329,7 +468,7 @@
               id="table1"
               class="tbl px-4 table-striped border"
               v-model="selectedAddRoles"
-              :items-per-page="5"
+              :items-per-page="10"
               dense
               :loading="progressBar"
               :headers="headersAddRoles"
@@ -346,17 +485,33 @@
           </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-0 pb-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              depressed
-              dark
-              @click="validate('userrole')"
-              :small="$vuetify.breakpoint.smAndDown"
-            >
-              Save
-            </v-btn>
+          <v-card-actions class="pa-3">
+            <template v-if="$vuetify.breakpoint.xsOnly">
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="validate('userrole')"
+                :small="$vuetify.breakpoint.smAndDown"
+                block
+              >
+                Save
+              </v-btn>
+            </template>
+            <template v-else>
+              <v-spacer></v-spacer>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="validate('userrole')"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </template>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -695,7 +850,7 @@
               <!-- User Roles Table -->
               <v-data-table
                 id="table"
-                :items-per-page="5"
+                :items-per-page="10"
                 hide-default-footer
                 :loading="progressBar"
                 :headers="headersUserrole"
@@ -790,6 +945,10 @@
 
 <!-- Style -->
 <style>
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 @media (min-width: 1200px) {
   .container {
     max-width: 1500px !important;
@@ -900,14 +1059,21 @@ export default {
         align: "start",
         value: "name",
         class: "black--text",
+        width: "40%",
       },
-      { text: "ROLE DESCRIPTION", value: "description", class: "black--text" },
+      {
+        text: "ROLE DESCRIPTION",
+        value: "description",
+        class: "black--text",
+        width: "40%",
+      },
       {
         text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
         class: "black--text",
+        width: "20%",
       },
     ],
     role: { name: "", id: "" },
@@ -923,9 +1089,15 @@ export default {
         align: "start",
         value: "name",
         class: "black--text",
+        width: "40%",
       },
-      { text: "DESCRIPTION", value: "description", class: "black--text" },
-      { text: "ACTION", value: "id", class: "black--text" },
+      {
+        text: "DESCRIPTION",
+        value: "description",
+        class: "black--text",
+        width: "40%",
+      },
+      { text: "ACTION", value: "id", class: "black--text", width: "20%" },
     ],
     permission: { name: "", description: "", id: "" },
 
@@ -939,14 +1111,21 @@ export default {
         align: "start",
         value: "name",
         class: "black--text",
+        width: "40%",
       },
-      { text: "CURRENT ROLE(S)", value: "roles.name", class: "black--text" },
+      {
+        text: "CURRENT ROLE(S)",
+        value: "roles.name",
+        class: "black--text",
+        width: "40%",
+      },
       {
         text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
         class: "black--text",
+        width: "20%",
       },
     ],
 
@@ -960,8 +1139,14 @@ export default {
         align: "start",
         value: "name",
         class: "black--text",
+        width: "50%",
       },
-      { text: "DESCRIPTION", value: "description", class: "black--text" },
+      {
+        text: "DESCRIPTION",
+        value: "description",
+        class: "black--text",
+        width: "50%",
+      },
     ],
     rolename: "",
 
@@ -973,8 +1158,19 @@ export default {
     username: "",
     userid: "",
     headersAddRoles: [
-      { text: "ROLE", align: "start", value: "name", class: "black--text" },
-      { text: "DESCRIPTION", value: "description", class: "black--text" },
+      {
+        text: "ROLE",
+        align: "start",
+        value: "name",
+        class: "black--text",
+        width: "50%",
+      },
+      {
+        text: "DESCRIPTION",
+        value: "description",
+        class: "black--text",
+        width: "50%",
+      },
     ],
   }),
 
@@ -1482,7 +1678,7 @@ export default {
       (this.editedIndex = -1),
         this.$nextTick(() => {
           this.role = { name: "", id: "" };
-          this.permission = { name: "", id: "" };
+          this.permission = { name: "", description: "", id: "" };
         });
     },
 
@@ -1507,7 +1703,6 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "ADD NEW " : "UPDATE ";
     },
-
     height() {
       if (this.$vuetify.breakpoint.smAndDown) {
         return 35;

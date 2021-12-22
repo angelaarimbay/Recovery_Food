@@ -68,9 +68,16 @@
       <!-- Main Card -->
       <v-card elevation="1" class="mt-2" style="border-radius: 10px">
         <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
-          <v-row>
+          <v-row justify="center">
             <!-- Image -->
-            <v-col cols="12" xl="6" lg="6" md="12" sm="12">
+            <v-col
+              cols="12"
+              xl="6"
+              lg="6"
+              md="12"
+              sm="12"
+              style="max-width: 550px"
+            >
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -170,7 +177,14 @@
             </v-col>
 
             <!-- VAT -->
-            <v-col cols="12" xl="6" lg="6" md="12" sm="12">
+            <v-col
+              cols="12"
+              xl="6"
+              lg="6"
+              md="12"
+              sm="12"
+              style="max-width: 500px"
+            >
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -210,15 +224,15 @@
                     <v-col cols="2" class="text-center">
                       <v-tooltip bottom>
                         <template #activator="data">
-                          <v-icon
+                          <v-btn
+                            icon
                             v-on="data.on"
-                            x-large
                             color="primary"
                             @click="saveVat('s')"
-                            :large="$vuetify.breakpoint.smAndDown"
                             depressed
-                            >mdi-content-save</v-icon
                           >
+                            <v-icon size="38">mdi-content-save</v-icon>
+                          </v-btn>
                         </template>
                         <span>Save</span>
                       </v-tooltip>
@@ -255,15 +269,15 @@
                     <v-col cols="2" class="text-center">
                       <v-tooltip bottom>
                         <template #activator="data">
-                          <v-icon
+                          <v-btn
+                            icon
                             v-on="data.on"
-                            x-large
                             color="primary"
                             @click="saveVat('p')"
-                            :large="$vuetify.breakpoint.smAndDown"
                             depressed
-                            >mdi-content-save</v-icon
                           >
+                            <v-icon size="38">mdi-content-save</v-icon>
+                          </v-btn>
                         </template>
                         <span>Save</span>
                       </v-tooltip>
@@ -271,6 +285,7 @@
                   </v-row>
                 </v-col>
               </v-row>
+              ABC
             </v-col>
           </v-row>
         </v-container>
