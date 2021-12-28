@@ -215,7 +215,9 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-form>
 
+    <v-form ref="mainForm1" id="mainForm1">
       <!-- Permission Dialog Form -->
       <v-dialog
         v-model="dialogPermissions"
@@ -362,7 +364,9 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-form>
 
+    <v-form ref="mainForm2" id="mainForm2">
       <!-- Add Permission To Role Dialog -->
       <v-dialog v-model="dialogAddPermissions" max-width="900px" scrollable>
         <v-card>
@@ -437,7 +441,9 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-form>
 
+    <v-form ref="mainForm3" id="mainForm3">
       <!-- Add User Role Dialog -->
       <v-dialog v-model="dialogAddRoles" max-width="900px" scrollable>
         <v-card>
@@ -515,6 +521,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-form>
 
       <v-container>
         <v-layout row wrap>
@@ -939,7 +946,6 @@
           </v-tab-item>
         </v-tabs>
       </v-card>
-    </v-form>
   </div>
 </template>
 
@@ -1397,7 +1403,7 @@ export default {
 
     //Save Permissions In List
     async storePermissions() {
-      if (this.$refs.mainForm.validate()) {
+      if (this.$refs.mainForm1.validate()) {
         if (this.comparePerms()) {
           await axios
             .post("/api/useracc/storePermission", this.permission)
@@ -1450,13 +1456,13 @@ export default {
 
     //Open Dialog Form Permissions
     openDialogPermissions() {
-      this.$refs.mainForm.resetValidation();
+      this.$refs.mainForm1.resetValidation();
       this.dialogPermissions = true;
     },
 
     //Reset Form Permissions
     cancelPermissions() {
-      this.$refs.mainForm.resetValidation();
+      this.$refs.mainForm1.resetValidation();
       this.dialogPermissions = false;
     },
 

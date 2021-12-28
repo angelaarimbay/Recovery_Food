@@ -838,11 +838,11 @@ class ReportsController extends Controller
                 $a = clone $incoming_and_past;
                 $b = clone $outgoing;
                 $aa = clone $incoming;
-                $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
+                $endingquantity = ($a->sum('quantity') - $b->sum('quantity'));
                 if ($ending_q > 0 && $aa->sum('quantity') > 0) {
-                    $temp['ending'] += $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
+                    $temp['ending'] += $endingquantity * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
-                    $temp['ending'] += $temp['ending_q'] * $value1->with_vat_price;
+                    $temp['ending'] += $endingquantity * $value1->with_vat_price;
                 }
             }
             $temp['ending'] = $temp['ending'];

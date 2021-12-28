@@ -85,194 +85,210 @@
         </v-card-actions>
 
         <!-- Filter Dialog -->
-        <v-dialog v-model="filterDialog" max-width="400px">
-          <v-card dark tile class="pa-2">
-            <v-toolbar dense flat class="transparent">
-              Search Filter
+        <v-dialog v-model="filterDialog" max-width="400px" scrollable>
+          <v-card dark tile>
+            <v-toolbar dense flat class="transparent px-1">
+              <span
+                class="
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  text-subtitle-2
+                "
+                >Search Filter</span
+              >
               <v-spacer></v-spacer>
-              <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              <v-icon
+                :small="$vuetify.breakpoint.xsOnly"
+                text
+                @click="filterDialog = false"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-divider class="my-0"></v-divider>
-            <v-row no-gutters align="center" class="pa-2">
-              <!-- Items Per Page -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Items / Page</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-card-actions class="px-0">
-                  <v-select
-                    dense
-                    v-model="itemsPerPage"
-                    @change="itemperpage"
-                    :items="[5, 10, 15, 20]"
-                    hide-details
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  >
-                  </v-select>
-                </v-card-actions>
-              </v-col>
+            <v-card-text class="px-5 py-2" style="height: 290px">
+              <v-row no-gutters align="center">
+                <!-- Items Per Page -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Items / Page</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      dense
+                      v-model="itemsPerPage"
+                      @change="itemperpage"
+                      :items="[5, 10, 15, 20]"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
 
-              <!-- Search Field -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Search</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-card-actions class="px-0">
-                  <v-text-field
-                    v-model="search"
-                    placeholder="Supply Name"
-                    single-line
-                    dense
-                    clearable
-                    hide-details
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  ></v-text-field>
-                  <v-tooltip bottom>
-                    <template #activator="data">
-                      <v-btn
-                        small
-                        :x-small="$vuetify.breakpoint.smAndDown"
-                        color="red darken-2"
-                        icon
-                        v-on="data.on"
-                        @click="get"
-                        class="ml-1"
-                      >
-                        <v-icon>mdi-magnify</v-icon></v-btn
-                      >
+                <!-- Search Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Search</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      v-model="search"
+                      placeholder="Supply Name"
+                      single-line
+                      dense
+                      clearable
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          @click="get"
+                          class="ml-1"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Category Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Category</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="category"
+                      :items="suppcatlist"
+                      item-text="supply_cat_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Category"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Date From</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-menu
+                    v-model="date1"
+                    :close-on-content-click="false"
+                    :nudge-right="35"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-card-actions class="px-0">
+                        <v-text-field
+                          hide-details
+                          v-model="dateFrom"
+                          placeholder="Date From"
+                          prepend-inner-icon="mdi-calendar-range"
+                          readonly
+                          v-on="on"
+                          dense
+                          clearable
+                          background-color="grey darken-3"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        ></v-text-field>
+                      </v-card-actions>
                     </template>
-                    <span>Search</span>
-                  </v-tooltip>
-                </v-card-actions>
-              </v-col>
+                    <v-date-picker
+                      v-model="dateFrom"
+                      @input="date1 = false"
+                      scrollable
+                      no-title
+                      color="red darken-2"
+                      dark
+                      @change="get"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
 
-              <!-- Category Field -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Category</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-card-actions class="px-0">
-                  <v-select
-                    hide-details
-                    v-model="category"
-                    :items="suppcatlist"
-                    item-text="supply_cat_name"
-                    item-value="id"
-                    clearable
-                    dense
-                    placeholder="Category"
-                    @change="get"
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Date Until</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-menu
+                    v-model="date2"
+                    :close-on-content-click="false"
+                    :nudge-right="35"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
                   >
-                  </v-select>
-                </v-card-actions>
-              </v-col>
-
-              <!-- Date Picker -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Date From</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-menu
-                  v-model="date1"
-                  :close-on-content-click="false"
-                  :nudge-right="35"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-card-actions class="px-0">
-                      <v-text-field
-                        hide-details
-                        v-model="dateFrom"
-                        placeholder="Date From"
-                        prepend-inner-icon="mdi-calendar-range"
-                        readonly
-                        v-on="on"
-                        dense
-                        clearable
-                        background-color="grey darken-3"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      ></v-text-field>
-                    </v-card-actions>
-                  </template>
-                  <v-date-picker
-                    v-model="dateFrom"
-                    @input="date1 = false"
-                    scrollable
-                    no-title
-                    color="red darken-2"
-                    dark
-                    @change="get"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-
-              <!-- Date Picker -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Date Until</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-menu
-                  v-model="date2"
-                  :close-on-content-click="false"
-                  :nudge-right="35"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-card-actions class="px-0">
-                      <v-text-field
-                        hide-details
-                        v-model="dateUntil"
-                        placeholder="Date Until"
-                        prepend-inner-icon="mdi-calendar-range"
-                        readonly
-                        v-on="on"
-                        dense
-                        clearable
-                        background-color="grey darken-3"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      ></v-text-field>
-                    </v-card-actions>
-                  </template>
-                  <v-date-picker
-                    v-model="dateUntil"
-                    @input="date2 = false"
-                    scrollable
-                    no-title
-                    color="red darken-2"
-                    dark
-                    @change="get"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-            </v-row>
+                    <template v-slot:activator="{ on }">
+                      <v-card-actions class="px-0">
+                        <v-text-field
+                          hide-details
+                          v-model="dateUntil"
+                          placeholder="Date Until"
+                          prepend-inner-icon="mdi-calendar-range"
+                          readonly
+                          v-on="on"
+                          dense
+                          clearable
+                          background-color="grey darken-3"
+                          flat
+                          solo
+                          style="font-size: 12px"
+                        ></v-text-field>
+                      </v-card-actions>
+                    </template>
+                    <v-date-picker
+                      v-model="dateUntil"
+                      @input="date2 = false"
+                      scrollable
+                      no-title
+                      color="red darken-2"
+                      dark
+                      @change="get"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-col>
+              </v-row>
+            </v-card-text>
           </v-card>
         </v-dialog>
 
@@ -334,6 +350,10 @@
 
 <!-- Style -->
 <style>
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 .container {
   max-width: 1500px !important;
 }
@@ -409,27 +429,31 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "right",
+        align: "center",
         filterable: false,
         class: "black--text",
         sortable: false,
+        width: "5%",
       },
       {
         text: "CATEGORY",
         value: "category.supply_cat_name",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "SUPPLY NAME",
         value: "supply_full",
         class: "black--text",
+        width: "20%",
       },
       {
         text: "UNIT",
         value: "supply_name.unit",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "NET PRICE",
@@ -437,6 +461,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "WITH VAT",
@@ -444,6 +469,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "QTY",
@@ -451,6 +477,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "TOTAL AMT",
@@ -458,12 +485,15 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "15%",
       },
       {
         text: "DATE",
         value: "outgoing_date",
+        align: "center",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
     ],
     page: 1,
