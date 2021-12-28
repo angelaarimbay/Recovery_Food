@@ -29,162 +29,162 @@
       </template>
     </v-snackbar>
 
-    <v-form ref="mainForm" id="mainForm">
-      <v-container>
-        <v-layout row wrap>
-          <h4
-            class="font-weight-bold heading my-auto"
-            :class="{ h5: $vuetify.breakpoint.smAndDown }"
+    <v-container>
+      <v-layout row wrap>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Company
+        </h4>
+        <v-spacer></v-spacer>
+
+        <!-- Breadcrumbs -->
+        <v-card-actions class="px-0 py-0">
+          <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
+            plain
+            color="primary"
+            v-ripple="false"
+            to="/dashboard"
+            class="px-0"
+            style="text-decoration: none; text-transform: none"
+            >Home</v-btn
           >
-            Company
-          </h4>
-          <v-spacer></v-spacer>
+          /
+          <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
+            text
+            disabled
+            class="px-0"
+            style="text-transform: none"
+            >Company</v-btn
+          >
+        </v-card-actions>
+      </v-layout>
+    </v-container>
 
-          <!-- Breadcrumbs -->
-          <v-card-actions class="px-0 py-0">
-            <v-btn
-              :small="$vuetify.breakpoint.smAndDown"
-              plain
-              color="primary"
-              v-ripple="false"
-              to="/dashboard"
-              class="px-0"
-              style="text-decoration: none; text-transform: none"
-              >Home</v-btn
+    <!-- Main Card -->
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
+      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
+        <v-row justify="center">
+          <!-- Image -->
+          <v-col
+            cols="12"
+            xl="6"
+            lg="6"
+            md="12"
+            sm="12"
+            style="max-width: 550px"
+          >
+            <v-card-title
+              class="
+                text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                p-0
+                justify-center
+              "
+              >Logo/Image</v-card-title
             >
-            /
-            <v-btn
-              :small="$vuetify.breakpoint.smAndDown"
-              text
-              disabled
-              class="px-0"
-              style="text-transform: none"
-              >Company</v-btn
-            >
-          </v-card-actions>
-        </v-layout>
-      </v-container>
+            <v-img
+              style="border: 2px solid #757575; border-radius: 10px"
+              contain
+              :src="temppath"
+              height="320"
+            ></v-img>
+            <v-progress-linear
+              v-show="progressBar"
+              color="red darken-2"
+              indeterminate
+              rounded
+            ></v-progress-linear>
+            <v-row no-gutters>
+              <v-col cols="12" class="py-2">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <!-- Upload Button -->
+                    <v-btn
+                      v-on="data.on"
+                      block
+                      outlined
+                      color="grey darken-1"
+                      class="btn-block"
+                      style="text-transform: none; font-size: 12px"
+                      @click="clickupload"
+                      :small="$vuetify.breakpoint.smAndDown"
+                    >
+                      <v-icon>mdi-upload</v-icon> Upload Image
+                    </v-btn>
+                  </template>
+                  <span>Choose an image</span>
+                </v-tooltip>
+              </v-col>
 
-      <!-- Main Card -->
-      <v-card elevation="1" class="mt-2" style="border-radius: 10px">
-        <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
-          <v-row justify="center">
-            <!-- Image -->
-            <v-col
-              cols="12"
-              xl="6"
-              lg="6"
-              md="12"
-              sm="12"
-              style="max-width: 550px"
-            >
-              <v-card-title
-                class="
-                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
-                  p-0
-                  justify-center
-                "
-                >Logo/Image</v-card-title
-              >
-              <v-img
-                class="border"
-                contain
-                :src="temppath"
-                height="320"
-              ></v-img>
-              <v-progress-linear
-                v-show="progressBar"
-                color="red darken-2"
-                indeterminate
-                rounded
-              ></v-progress-linear>
-              <v-row no-gutters>
-                <v-col cols="12" class="py-2">
-                  <v-tooltip bottom>
-                    <template #activator="data">
-                      <!-- Upload Button -->
-                      <v-btn
-                        v-on="data.on"
-                        block
-                        outlined
-                        color="grey darken-1"
-                        class="btn-block"
-                        style="text-transform: none; font-size: 12px"
-                        @click="clickupload"
-                        :small="$vuetify.breakpoint.smAndDown"
-                      >
-                        <v-icon>mdi-upload</v-icon> Upload Image
-                      </v-btn>
-                    </template>
-                    <span>Choose an image</span>
-                  </v-tooltip>
+              <v-col cols="12" v-if="form.attachment">
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <!-- Save Button -->
+                    <v-btn
+                      v-on="data.on"
+                      block
+                      class="primary"
+                      style="text-transform: none"
+                      @click="savefile"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      depressed
+                    >
+                      <v-icon color="white">mdi-content-save</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Save Logo/Image</span>
+                </v-tooltip>
+              </v-col>
+            </v-row>
+            <input
+              ref="uploader"
+              clearable
+              accept="image/*"
+              class="d-none"
+              type="file"
+              @change="uploaddocument"
+            />
+            <div style="font-size: 12px" class="pt-2" v-if="form.attachment">
+              <span>Image Attachment:</span>
+              <v-row no-gutters justify="center" align="center">
+                <v-col cols="10">
+                  <a :href="temppath" download>
+                    {{ tempfile }}
+                  </a>
                 </v-col>
 
-                <v-col cols="12" v-if="form.attachment">
+                <v-col cols="2" class="text-center">
+                  <!-- Delete Button -->
                   <v-tooltip bottom>
                     <template #activator="data">
-                      <!-- Save Button -->
-                      <v-btn
+                      <v-icon
                         v-on="data.on"
-                        block
-                        class="primary"
-                        style="text-transform: none"
-                        @click="savefile"
-                        :small="$vuetify.breakpoint.smAndDown"
-                        depressed
+                        color="red darken-2"
+                        class="text-center"
+                        @click="deletefile"
+                        >mdi-delete</v-icon
                       >
-                        <v-icon color="white">mdi-content-save</v-icon>
-                      </v-btn>
                     </template>
-                    <span>Save Logo/Image</span>
+                    <span>Remove Image</span>
                   </v-tooltip>
                 </v-col>
               </v-row>
-              <input
-                ref="uploader"
-                clearable
-                accept="image/*"
-                class="d-none"
-                type="file"
-                @change="uploaddocument"
-              />
-              <div style="font-size: 12px" class="pt-2" v-if="form.attachment">
-                <span>Image Attachment:</span>
-                <v-row no-gutters justify="center" align="center">
-                  <v-col cols="10">
-                    <a :href="temppath" download>
-                      {{ tempfile }}
-                    </a>
-                  </v-col>
+            </div>
+          </v-col>
 
-                  <v-col cols="2" class="text-center">
-                    <!-- Delete Button -->
-                    <v-tooltip bottom>
-                      <template #activator="data">
-                        <v-icon
-                          v-on="data.on"
-                          color="red darken-2"
-                          class="text-center"
-                          @click="deletefile"
-                          >mdi-delete</v-icon
-                        >
-                      </template>
-                      <span>Remove Image</span>
-                    </v-tooltip>
-                  </v-col>
-                </v-row>
-              </div>
-            </v-col>
-
-            <!-- VAT -->
-            <v-col
-              cols="12"
-              xl="6"
-              lg="6"
-              md="12"
-              sm="12"
-              style="max-width: 500px"
-            >
+          <!-- VAT -->
+          <v-col
+            cols="12"
+            xl="6"
+            lg="6"
+            md="12"
+            sm="12"
+            style="max-width: 500px"
+          >
+            <v-form ref="mainForm" id="mainForm">
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -200,7 +200,7 @@
                   lg="6"
                   md="6"
                   sm="6"
-                  class="tfield py-1"
+                  class="tfield py-1 px-0"
                 >
                   <v-row no-gutters>
                     <span style="font-size: 12px">Supplies VAT</span>
@@ -245,7 +245,7 @@
                   lg="6"
                   md="6"
                   sm="6"
-                  class="tfield py-1"
+                  class="tfield py-1 px-0"
                 >
                   <v-row no-gutters>
                     <span style="font-size: 12px">Products VAT</span>
@@ -285,17 +285,101 @@
                   </v-row>
                 </v-col>
               </v-row>
-              ABC
+            </v-form>
+            <v-divider class="my-2"></v-divider>
+            <v-card-title
+              class="
+                text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                p-0
+                justify-center
+              "
+              >Mission</v-card-title
+            >
+            <v-col
+              cols="12"
+              xl="12"
+              lg="12"
+              md="12"
+              sm="12"
+              class="tfield py-1 px-0"
+            >
+              <v-textarea
+                :rules="formRulesText"
+                v-model="form3.mission"
+                dense
+                clearable
+                counter
+                @keydown="textKeydown($event)"
+                maxlength="300"
+                background-color="white"
+                flat
+                solo
+                style="font-size: 12px"
+              >
+                <template slot="label">
+                  <div style="font-size: 12px">Insert text here</div>
+                </template></v-textarea
+              >
             </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
-    </v-form>
+            <v-card-title
+              class="
+                text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                p-0
+                justify-center
+              "
+              >Vision</v-card-title
+            >
+            <v-col
+              cols="12"
+              xl="12"
+              lg="12"
+              md="12"
+              sm="12"
+              class="tfield py-1 px-0"
+            >
+              <v-textarea
+                :rules="formRulesText"
+                v-model="form3.vision"
+                dense
+                clearable
+                counter
+                @keydown="textKeydown($event)"
+                maxlength="300"
+                background-color="white"
+                flat
+                solo
+                style="font-size: 12px"
+              >
+                <template slot="label">
+                  <div style="font-size: 12px">Insert text here</div>
+                </template></v-textarea
+              >
+            </v-col>
+            <v-btn
+              style="text-transform: none"
+              color="primary"
+              depressed
+              :disabled="button"
+              dark
+              @click="save"
+              :small="$vuetify.breakpoint.xsOnly"
+              block
+            >
+              Save
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
   </div>
 </template>
 
 <!-- Style -->
 <style>
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 .container {
   max-width: 1500px !important;
 }
@@ -331,6 +415,7 @@ export default {
     temppath: "/img/Logo.jpg",
     isSelecting: false,
     progressBar: false,
+    button: false,
     snackbar: {
       active: false,
       message: "",
@@ -338,11 +423,18 @@ export default {
     form: { attachment: "" },
     form1: { vat: 0, type: "" },
     form2: { vat: 0, type: "" },
+    form3: { mission: "", vision: "" },
 
     //Form rules
     formRulesVAT: [
       (v) => !!v || "This is required",
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
+    ],
+    formRulesText: [
+      (v) =>
+        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()#])(?!\3{1}))+$/i.test(
+          v
+        ) || "This field must have a valid value",
     ],
   }),
 
@@ -351,6 +443,7 @@ export default {
     this.getLogo();
     this.getVat("s");
     this.getVat("p");
+    this.get();
   },
 
   //Methods
@@ -358,6 +451,11 @@ export default {
     //Keydown
     VATKeydown(e) {
       if (/[\s~`!@#$%^&()_={}[\]\\"*|:;,<>+'\/?-]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
+    textKeydown(e) {
+      if (/[~`!@$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
         e.preventDefault();
       }
     },
@@ -497,6 +595,32 @@ export default {
             default:
               break;
           }
+        });
+    },
+
+    //For saving Mission & Vision
+    async save() {
+      await axios
+        .post("/api/settings/company/save", this.form3)
+        .then((result) => {
+          this.snackbar = {
+            active: true,
+            iconText: "check",
+            iconColor: "success",
+            message: "Successfully saved.",
+          };
+        });
+    },
+
+    //For saving Mission & Vision
+    async get() {
+      await axios
+        .get("/api/settings/company/get")
+        .then((result) => {
+          this.form3 = result.data;
+        })
+        .catch((result) => {
+          //If false or error when saving
         });
     },
   },

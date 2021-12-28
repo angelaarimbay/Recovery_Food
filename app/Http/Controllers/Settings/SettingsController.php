@@ -76,4 +76,16 @@ class SettingsController extends Controller
     {
         return tbl_vat::where("type", $t->type)->orderby("created_at", 'desc')->first();
     }
+
+    //For saving Mission & Vision
+    public function save(Request $data)
+    {
+        tbl_company::create($data->all());
+    }
+
+    //For retrieving Mission & Vision
+    public function get()
+    {
+        return tbl_company::get();
+    }
 }
