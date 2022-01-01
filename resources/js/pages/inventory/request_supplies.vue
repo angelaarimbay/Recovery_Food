@@ -352,7 +352,7 @@
                       </v-icon>
                     </v-toolbar>
                     <v-divider class="my-0"></v-divider>
-                    <v-card-text class="px-5 py-2" style="height: 125px">
+                    <v-card-text class="px-5 py-2" style="height: auto">
                       <v-row no-gutters align="center">
                         <!-- Search Field -->
                         <v-col cols="4"
@@ -649,7 +649,7 @@
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-card-text style="height: 130px">
+          <v-card-text style="height: auto">
             <v-row class="mt-1">
               <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
                 <span

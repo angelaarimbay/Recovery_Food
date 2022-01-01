@@ -742,7 +742,11 @@
                 text-md-subtitle-2
                 text-sm-body-2
               "
-              style="color: #d32f2f; font-weight: bold"
+              style="
+                color: #d32f2f;
+                font-weight: bold;
+                background-color: #e0e0e0;
+              "
               >Sales Graph</v-card-title
             >
             <v-divider class="my-0"></v-divider>
@@ -778,7 +782,11 @@
                 text-md-subtitle-2
                 text-sm-body-2
               "
-              style="color: #d32f2f; font-weight: bold"
+              style="
+                color: #d32f2f;
+                font-weight: bold;
+                background-color: #e0e0e0;
+              "
               >Purchase Graph</v-card-title
             >
             <v-divider class="my-0"></v-divider>

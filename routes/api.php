@@ -138,6 +138,8 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('porder/suppName', 'Suppliers\PurchaseOrdersController@suppName');
 
     // Company
+    //For VAT
+    Route::get('settings/vat/get', 'Settings\SettingsController@getVat');
     //For image
     Route::post('settings/company/logo/upload', 'Settings\SettingsController@uploadLogo');
     Route::post('settings/company/logo/store', 'Settings\SettingsController@storeLogo');

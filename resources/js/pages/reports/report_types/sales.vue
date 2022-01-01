@@ -166,7 +166,7 @@
           </v-icon>
         </v-toolbar>
         <v-divider class="my-0"></v-divider>
-        <v-card-text class="px-5 py-2" style="height: 290px">
+        <v-card-text class="px-5 py-2" style="height: auto">
           <v-row no-gutters align="center">
             <!-- Items Per Page -->
             <v-col cols="4"
@@ -437,7 +437,7 @@
             >mdi-close
           </v-icon>
         </v-toolbar>
-        <v-card-text style="height: 400px" class="px-4">
+        <v-card-text style="height: auto" class="px-4">
           <div v-if="table2.length > 0">
             <v-card color="#f1f3f4" flat class="px-4 my-6">
               <v-row no-gutters>
@@ -860,135 +860,145 @@ export default {
           message: "Error! Please complete the fields first.",
         };
       } else {
-        this.overlay = true;
-        switch (type) {
-          case "pdf":
-            await axios({
-              url: "/api/reports/sales/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                branch: this.branch,
-                from: this.dateFromSP,
-                to: this.dateUntilSP,
-                type: type,
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Sales Report.pdf";
-                link.click();
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully exported.",
-                };
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "excel":
-            await axios({
-              url: "/api/reports/sales/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                branch: this.branch,
-                from: this.dateFromSP,
-                to: this.dateUntilSP,
-                type: "pdf",
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                axios
-                  .get("/api/reports/sales/get", {
-                    method: "GET",
-                    responseType: "arraybuffer",
-                    params: {
-                      branch: this.branch,
-                      from: this.dateFromSP,
-                      to: this.dateUntilSP,
-                      type: type,
-                    },
-                  })
-                  .then((res) => {
-                    let blob = new Blob([res.data], {
-                      type: "application/excel",
-                    });
-                    let link = document.createElement("a");
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Sales Report.xlsx";
-                    link.click();
-                    this.snackbar = {
-                      active: true,
-                      iconText: "check",
-                      iconColor: "success",
-                      message: "Successfully exported.",
-                    };
+        try {
+          this.overlay = true;
+          switch (type) {
+            case "pdf":
+              await axios({
+                url: "/api/reports/sales/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  branch: this.branch,
+                  from: this.dateFromSP,
+                  to: this.dateUntilSP,
+                  type: type,
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
                   });
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/sales/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                branch: this.branch,
-                from: this.dateFromSP,
-                to: this.dateUntilSP,
-                type: "pdf",
-              },
-            }).then((response) => {
-              // console.log(response.data);
-              // return;
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                this.print = window.URL.createObjectURL(blob);
-                this.snackbar = {
-                  active: true,
-                  iconText: "information",
-                  iconColor: "primary",
-                  message: "Printing... Please wait.",
-                };
-                setTimeout(function () {
-                  document.getElementById("print6").contentWindow.print();
-                }, 3000);
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to print.",
-                };
-              }
-            });
-            break;
-          default:
-            break;
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Sales Report.pdf";
+                  link.click();
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully exported.",
+                  };
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+              break;
+            case "excel":
+              await axios({
+                url: "/api/reports/sales/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  branch: this.branch,
+                  from: this.dateFromSP,
+                  to: this.dateUntilSP,
+                  type: "pdf",
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  axios
+                    .get("/api/reports/sales/get", {
+                      method: "GET",
+                      responseType: "arraybuffer",
+                      params: {
+                        branch: this.branch,
+                        from: this.dateFromSP,
+                        to: this.dateUntilSP,
+                        type: type,
+                      },
+                    })
+                    .then((res) => {
+                      let blob = new Blob([res.data], {
+                        type: "application/excel",
+                      });
+                      let link = document.createElement("a");
+                      link.href = window.URL.createObjectURL(blob);
+                      link.download = "Sales Report.xlsx";
+                      link.click();
+                      this.snackbar = {
+                        active: true,
+                        iconText: "check",
+                        iconColor: "success",
+                        message: "Successfully exported.",
+                      };
+                    });
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+              break;
+            case "print":
+              await axios({
+                url: "/api/reports/sales/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  branch: this.branch,
+                  from: this.dateFromSP,
+                  to: this.dateUntilSP,
+                  type: "pdf",
+                },
+              }).then((response) => {
+                // console.log(response.data);
+                // return;
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
+                  });
+                  this.print = window.URL.createObjectURL(blob);
+                  this.snackbar = {
+                    active: true,
+                    iconText: "information",
+                    iconColor: "primary",
+                    message: "Printing... Please wait.",
+                  };
+                  setTimeout(function () {
+                    document.getElementById("print6").contentWindow.print();
+                  }, 3000);
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to print.",
+                  };
+                }
+              });
+              break;
+            default:
+              break;
+          }
+          this.overlay = false;
+        } catch (error) {
+          this.overlay = false;
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Something went wrong! Please try again.",
+          };
         }
-        this.overlay = false;
       }
     },
 

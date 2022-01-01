@@ -134,7 +134,7 @@
               </v-icon>
             </v-toolbar>
             <v-divider class="my-0"></v-divider>
-            <v-card-text class="px-5 py-2" style="height: 180px">
+            <v-card-text class="px-5 py-2" style="height: auto">
               <v-row no-gutters align="center">
                 <!-- Items Per Page -->
                 <v-col cols="4"
@@ -319,7 +319,7 @@
                 >mdi-close
               </v-icon>
             </v-toolbar>
-            <v-card-text style="height: 90px">
+            <v-card-text style="height: auto">
               <v-row class="mt-4 px-1">
                 <v-col class="py-0" cols="12" xl="12" lg="12" sm="12" md="12">
                   <v-text-field v-model="form.id" class="d-none" dense>

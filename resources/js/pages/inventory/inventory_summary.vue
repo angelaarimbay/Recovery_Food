@@ -133,7 +133,7 @@
               </v-icon>
             </v-toolbar>
             <v-divider class="my-0"></v-divider>
-            <v-card-text class="px-5 py-2" style="height: 125px">
+            <v-card-text class="px-5 py-2" style="height: auto">
               <v-row no-gutters align="center" justify="center">
                 <!-- Date Picker -->
                 <v-col cols="4"

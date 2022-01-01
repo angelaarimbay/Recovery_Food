@@ -92,7 +92,7 @@
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-card-text style="height: 160px">
+          <v-card-text style="height: auto">
             <v-row class="mt-4 px-1">
               <v-col
                 class="tfield py-0 px-1"
@@ -246,7 +246,7 @@
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-card-text style="height: 160px">
+          <v-card-text style="height: auto">
             <v-row class="mt-4 px-1">
               <v-col
                 class="tfield py-0 px-1"
@@ -389,7 +389,7 @@
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-card-text style="height: 400px" class="px-4">
+          <v-card-text style="height: auto" class="px-4">
             <v-data-table
               id="table1"
               class="tbl px-4 mt-6 table-striped border"
@@ -466,7 +466,7 @@
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-card-text style="height: 400px" class="px-4">
+          <v-card-text style="height: auto" class="px-4">
             <v-card-text>
               Selected User: <strong>{{ username }}</strong>
             </v-card-text>
@@ -564,10 +564,8 @@
           slider-size="4"
           color="red darken-2"
           :centered="$vuetify.breakpoint.xsOnly"
-          :center-active="$vuetify.breakpoint.xsOnly"
           :height="height"
           :class="{ 'pt-2': $vuetify.breakpoint.smAndUp }"
-          show-arrows
         >
           <v-tabs-slider
             style="border-radius: 20px 20px 0px 0px"
@@ -592,6 +590,7 @@
               text-lg-subtitle-1
               text-md-subtitle-2
               text-sm-body-1
+              d-none
             "
             style="text-transform: none"
             @click="getPermissions"
@@ -611,19 +610,20 @@
           >
             User Roles
           </v-tab>
-          <v-tab
+          <!-- <v-tab
             class="
               text-body-2
               text-xl-subtitle-1
               text-lg-subtitle-1
               text-md-subtitle-2
-              text-sm-body-1 
+              text-sm-body-1
+              d-none
             "
             :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
             style="text-transform: none"
           >
             Dev
-          </v-tab>
+          </v-tab> -->
 
           <!-- Roles List -->
           <v-tab-item>
@@ -735,7 +735,7 @@
           </v-tab-item>
 
           <!-- Permissions List -->
-          <v-tab-item>
+          <v-tab-item class="d-none">
             <v-divider class="my-0"></v-divider>
             <v-container class="py-2 px-3">
               <v-card-actions class="px-0">
@@ -923,7 +923,7 @@
           </v-tab-item>
 
           <!-- Dev-->
-          <v-tab-item>
+          <v-tab-item class="d-none">
             <v-card-text>
               <v-text-field
                 class=""

@@ -143,7 +143,7 @@
                 </v-icon>
               </v-toolbar>
               <v-divider class="my-0"></v-divider>
-              <v-card-text class="px-5 py-2" style="height: 125px">
+              <v-card-text class="px-5 py-2" style="height: auto">
                 <v-row no-gutters align="center">
                   <!-- Items Per Page -->
                   <v-col cols="4"
@@ -327,7 +327,7 @@
                 >mdi-close
               </v-icon>
             </v-toolbar>
-            <v-card-text style="max-height: 540px">
+            <v-card-text style="max-height: auto">
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -347,6 +347,7 @@
                 max-width="480px"
                 max-height="300px"
               ></v-img>
+              <v-divider class="my-0"></v-divider>
               <v-card-text
                 class="
                   text-body-2
@@ -450,7 +451,7 @@
                 >mdi-close
               </v-icon>
             </v-toolbar>
-            <v-card-text style="height: 450px">
+            <v-card-text style="height: auto">
               <v-row class="mt-4 px-1">
                 <v-col
                   class="tfield py-0 px-1"
@@ -1180,7 +1181,10 @@ export default {
 
     //Open Dialog Form
     openDialog() {
-      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
+      for (var key in this.form) {
+        this.form[key] = "";
+      }
       this.dialog = true;
     },
 
@@ -1203,7 +1207,9 @@ export default {
 
     //Reset Forms
     cancel() {
-      this.$refs.form.reset();
+      for (var key in this.form) {
+        this.form[key] = "";
+      }
       this.dialog = false;
     },
 

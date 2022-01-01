@@ -238,9 +238,9 @@
 
 <!-- Style -->
 <style>
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
+}
 
 .v-list-item__content {
   color: white !important;
@@ -323,141 +323,151 @@ export default {
           message: "Error! Please complete the fields first.",
         };
       } else {
-        this.overlay = true;
-        switch (type) {
-          case "pdf":
-            await axios({
-              url: "/api/reports/outgoingsupplies/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                type: type,
-                branch: this.branch,
-                category: this.category,
-                from: this.outgoing_from,
-                to: this.outgoing_to,
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
+        try {
+          this.overlay = true;
+          switch (type) {
+            case "pdf":
+              await axios({
+                url: "/api/reports/outgoingsupplies/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  type: type,
+                  branch: this.branch,
+                  category: this.category,
+                  from: this.outgoing_from,
+                  to: this.outgoing_to,
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  // console.log(response.data);
+                  // return;
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
+                  });
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Outgoing Supplies Report.pdf";
+                  link.click();
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully exported.",
+                  };
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+              break;
+            case "excel":
+              await axios({
+                url: "/api/reports/outgoingsupplies/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  type: "pdf",
+                  branch: this.branch,
+                  category: this.category,
+                  from: this.outgoing_from,
+                  to: this.outgoing_to,
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  axios
+                    .get("/api/reports/outgoingsupplies/get", {
+                      method: "GET",
+                      responseType: "arraybuffer",
+                      params: {
+                        type: type,
+                        branch: this.branch,
+                        category: this.category,
+                        from: this.outgoing_from,
+                        to: this.outgoing_to,
+                      },
+                    })
+                    .then((res) => {
+                      let blob = new Blob([res.data], {
+                        type: "application/excel",
+                      });
+                      let link = document.createElement("a");
+                      link.href = window.URL.createObjectURL(blob);
+                      link.download = "Outgoing Supplies Report.xlsx";
+                      link.click();
+                      this.snackbar = {
+                        active: true,
+                        iconText: "check",
+                        iconColor: "success",
+                        message: "Successfully exported.",
+                      };
+                    });
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+              break;
+            case "print":
+              await axios({
+                url: "/api/reports/outgoingsupplies/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  type: "pdf",
+                  branch: this.branch,
+                  category: this.category,
+                  from: this.outgoing_from,
+                  to: this.outgoing_to,
+                },
+              }).then((response) => {
                 // console.log(response.data);
                 // return;
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Outgoing Supplies Report.pdf";
-                link.click();
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully exported.",
-                };
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "excel":
-            await axios({
-              url: "/api/reports/outgoingsupplies/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                type: "pdf",
-                branch: this.branch,
-                category: this.category,
-                from: this.outgoing_from,
-                to: this.outgoing_to,
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                axios
-                  .get("/api/reports/outgoingsupplies/get", {
-                    method: "GET",
-                    responseType: "arraybuffer",
-                    params: {
-                      type: type,
-                      branch: this.branch,
-                      category: this.category,
-                      from: this.outgoing_from,
-                      to: this.outgoing_to,
-                    },
-                  })
-                  .then((res) => {
-                    let blob = new Blob([res.data], {
-                      type: "application/excel",
-                    });
-                    let link = document.createElement("a");
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Outgoing Supplies Report.xlsx";
-                    link.click();
-                    this.snackbar = {
-                      active: true,
-                      iconText: "check",
-                      iconColor: "success",
-                      message: "Successfully exported.",
-                    };
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
                   });
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/outgoingsupplies/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                type: "pdf",
-                branch: this.branch,
-                category: this.category,
-                from: this.outgoing_from,
-                to: this.outgoing_to,
-              },
-            }).then((response) => {
-              // console.log(response.data);
-              // return;
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                this.print = window.URL.createObjectURL(blob);
-                this.snackbar = {
-                  active: true,
-                  iconText: "information",
-                  iconColor: "primary",
-                  message: "Printing... Please wait.",
-                };
-                setTimeout(function () {
-                  document.getElementById("print2").contentWindow.print();
-                }, 3000);
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to print.",
-                };
-              }
-            });
-            break;
-          default:
-            break;
+                  this.print = window.URL.createObjectURL(blob);
+                  this.snackbar = {
+                    active: true,
+                    iconText: "information",
+                    iconColor: "primary",
+                    message: "Printing... Please wait.",
+                  };
+                  setTimeout(function () {
+                    document.getElementById("print2").contentWindow.print();
+                  }, 3000);
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to print.",
+                  };
+                }
+              });
+              break;
+            default:
+              break;
+          }
+          this.overlay = false;
+        } catch (error) {
+          this.overlay = false;
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Something went wrong! Please try again.",
+          };
         }
-        this.overlay = false;
       }
     },
 
@@ -482,7 +492,7 @@ export default {
           this.branchlist.push({
             branch_name: bran_name.data[key]["branch_name"],
             id: bran_name.data[key]["id"],
-          })
+          });
         }
       });
     },

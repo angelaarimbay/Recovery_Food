@@ -133,7 +133,7 @@
               </v-icon>
             </v-toolbar>
             <v-divider class="my-0"></v-divider>
-            <v-card-text class="px-5 py-2" style="height: 180px">
+            <v-card-text class="px-5 py-2" style="height: auto">
               <v-row no-gutters align="center">
                 <!-- Items Per Page -->
                 <v-col cols="4"
@@ -406,7 +406,7 @@
               </v-icon>
             </v-toolbar>
 
-            <v-card-text style="height: 450px" class="px-4">
+            <v-card-text style="height: auto" class="px-4">
               <!-- Data -->
               <v-card color="#f1f3f4" flat class="px-4 mb-6">
                 <v-row class="mt-1">

@@ -49,6 +49,12 @@ class SettingsController extends Controller
         return ['path' => $logo, 'tempfile' => $filename, 'filename' => $temp];
     }
 
+    //For retrieving VAT
+    public function getVat(Request $t)
+    {
+        return tbl_vat::where("type", $t->type)->orderby("created_at", 'desc')->first();
+    }
+
     //For saving data
     public function save(Request $data)
     {

@@ -161,7 +161,7 @@
                 </v-icon>
               </v-toolbar>
               <v-divider class="my-0"></v-divider>
-              <v-card-text class="px-5 py-2" style="height: 395px">
+              <v-card-text class="px-5 py-2" style="height: auto">
                 <v-row no-gutters align="center">
                   <!-- Items Per Page -->
                   <v-col cols="4"
@@ -484,7 +484,7 @@
                 >mdi-close
               </v-icon>
             </v-toolbar>
-            <v-card-text style="height: 350px">
+            <v-card-text style="height: auto">
               <v-row class="mt-4 px-1">
                 <v-col
                   class="tfield py-0 px-1"
@@ -963,7 +963,7 @@
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-card-text style="height: 400px" class="px-4">
+          <v-card-text style="height: auto" class="px-4">
             <div class="px-0" v-if="table2.length > 0">
               <v-card color="#f1f3f4" flat class="px-4 my-6">
                 <v-row no-gutters>
@@ -1088,145 +1088,147 @@
       </v-dialog>
 
       <!-- Quantity Dialog Form -->
-      <v-dialog v-model="dialog3" max-width="450px" scrollable>
-        <v-card>
-          <v-toolbar dark dense flat class="red darken-3 px-1">
-            <span
-              class="
-                text-xl-subtitle-1
-                text-lg-subtitle-1
-                text-md-subtitle-1
-                text-sm-subtitle-1
-                text-subtitle-2
-              "
-              >Enter Quantity</span
-            >
-            <v-spacer></v-spacer>
-            <v-icon
-              :small="$vuetify.breakpoint.xsOnly"
-              text
-              @click="dialog3 = false"
-              >mdi-close
-            </v-icon>
-          </v-toolbar>
-          <v-card-text style="height: 130px">
-            <v-row class="mt-1">
-              <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
-                <span
-                  >Item Selected:
-                  <strong>{{ selectedItem.product_name }}</strong></span
-                >
-              </v-col>
-            </v-row>
-            <v-row class="mt-0">
-              <v-col
-                class="tfield py-0 px-1"
-                cols="12"
-                xl="12"
-                lg="12"
-                sm="12"
-                md="12"
+      <v-form ref="qtyForm">
+        <v-dialog v-model="dialog3" max-width="450px" scrollable>
+          <v-card>
+            <v-toolbar dark dense flat class="red darken-3 px-1">
+              <span
+                class="
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  text-subtitle-2
+                "
+                >Enter Quantity</span
               >
-                <v-card-actions class="px-0">
-                  <!-- Quantity -->
-                  <v-text-field
-                    :rules="formRulesQuantity"
-                    v-model="quantity"
-                    dense
-                    autocomplete="off"
-                    @keydown="quantityKeydown($event)"
-                    class="mr-2"
-                    clearable
-                    background-color="white"
-                    flat
-                    solo
-                    style="font-size: 12px"
+              <v-spacer></v-spacer>
+              <v-icon
+                :small="$vuetify.breakpoint.xsOnly"
+                text
+                @click="dialog3 = false"
+                >mdi-close
+              </v-icon>
+            </v-toolbar>
+            <v-card-text style="height: auto">
+              <v-row class="mt-1">
+                <v-col class="pt-3" cols="12" xl="12" lg="12" sm="12" md="12">
+                  <span
+                    >Item Selected:
+                    <strong>{{ selectedItem.product_name }}</strong></span
                   >
-                    <template slot="label">
-                      <div style="font-size: 12px">
-                        Quantity <span style="color: red">*</span>
-                      </div>
-                    </template>
-                  </v-text-field>
-                  <v-btn
-                    style="text-transform: none"
-                    outlined
-                    color="primary"
-                    class="py-4 px-2 mb-6"
-                    text
-                    @click="allQuantity(selectedItem)"
-                  >
-                    Max
-                  </v-btn>
-                </v-card-actions>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-divider class="my-0"></v-divider>
-          <!-- Dialog Form Buttons -->
-          <v-card-actions class="pa-3">
-            <template v-if="$vuetify.breakpoint.xsOnly">
-              <v-row no-gutters>
-                <v-col cols="6" class="px-1">
-                  <v-btn
-                    style="text-transform: none"
-                    color="grey"
-                    depressed
-                    :disabled="button"
-                    dark
-                    @click="dialog3 = false"
-                    :small="$vuetify.breakpoint.smAndDown"
-                    outlined
-                    block
-                  >
-                    <span style="color: #1976d2">Cancel</span>
-                  </v-btn>
-                </v-col>
-                <v-col cols="6" class="px-1">
-                  <v-btn
-                    style="text-transform: none"
-                    color="primary"
-                    depressed
-                    :disabled="button"
-                    dark
-                    :small="$vuetify.breakpoint.smAndDown"
-                    @click="updateQuantity(selectedItem)"
-                    block
-                  >
-                    Ok
-                  </v-btn>
                 </v-col>
               </v-row>
-            </template>
-            <template v-else>
-              <v-spacer></v-spacer>
-              <v-btn
-                style="text-transform: none"
-                color="grey"
-                depressed
-                :disabled="button"
-                dark
-                @click="dialog3 = false"
-                :small="$vuetify.breakpoint.smAndDown"
-                outlined
-              >
-                <span style="color: #1976d2">Cancel</span>
-              </v-btn>
-              <v-btn
-                style="text-transform: none"
-                color="primary"
-                depressed
-                :disabled="button"
-                dark
-                :small="$vuetify.breakpoint.smAndDown"
-                @click="updateQuantity(selectedItem)"
-              >
-                Ok
-              </v-btn>
-            </template>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+              <v-row class="mt-0">
+                <v-col
+                  class="tfield py-0 px-1"
+                  cols="12"
+                  xl="12"
+                  lg="12"
+                  sm="12"
+                  md="12"
+                >
+                  <v-card-actions class="px-0">
+                    <!-- Quantity -->
+                    <v-text-field
+                      :rules="formRulesQuantity"
+                      v-model="quantity"
+                      dense
+                      autocomplete="off"
+                      @keydown="quantityKeydown($event)"
+                      class="mr-2"
+                      clearable
+                      background-color="white"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 12px">
+                          Quantity <span style="color: red">*</span>
+                        </div>
+                      </template>
+                    </v-text-field>
+                    <v-btn
+                      style="text-transform: none"
+                      outlined
+                      color="primary"
+                      class="py-4 px-2 mb-6"
+                      text
+                      @click="allQuantity(selectedItem)"
+                    >
+                      Max
+                    </v-btn>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-divider class="my-0"></v-divider>
+            <!-- Dialog Form Buttons -->
+            <v-card-actions class="pa-3">
+              <template v-if="$vuetify.breakpoint.xsOnly">
+                <v-row no-gutters>
+                  <v-col cols="6" class="px-1">
+                    <v-btn
+                      style="text-transform: none"
+                      color="grey"
+                      depressed
+                      :disabled="button"
+                      dark
+                      @click="dialog3 = false"
+                      :small="$vuetify.breakpoint.smAndDown"
+                      outlined
+                      block
+                    >
+                      <span style="color: #1976d2">Cancel</span>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="6" class="px-1">
+                    <v-btn
+                      style="text-transform: none"
+                      color="primary"
+                      depressed
+                      :disabled="button"
+                      dark
+                      :small="$vuetify.breakpoint.smAndDown"
+                      @click="updateQuantity(selectedItem)"
+                      block
+                    >
+                      Ok
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </template>
+              <template v-else>
+                <v-spacer></v-spacer>
+                <v-btn
+                  style="text-transform: none"
+                  color="grey"
+                  depressed
+                  :disabled="button"
+                  dark
+                  @click="dialog3 = false"
+                  :small="$vuetify.breakpoint.smAndDown"
+                  outlined
+                >
+                  <span style="color: #1976d2">Cancel</span>
+                </v-btn>
+                <v-btn
+                  style="text-transform: none"
+                  color="primary"
+                  depressed
+                  :disabled="button"
+                  dark
+                  :small="$vuetify.breakpoint.smAndDown"
+                  @click="updateQuantity(selectedItem)"
+                >
+                  Ok
+                </v-btn>
+              </template>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-form>
     </v-card>
   </div>
 </template>
@@ -1835,20 +1837,23 @@ export default {
     },
 
     updateQuantity() {
-      if (
-        this.quantity <=
-        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
-      ) {
-        this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested =
-          this.quantity;
-        this.dialog3 = false;
-      } else {
-        this.snackbar = {
-          active: true,
-          iconText: "alert-circle",
-          iconColor: "error",
-          message: "Insufficient stocks.",
-        };
+      if (this.$refs.qtyForm.validate()) {
+        if (
+          this.quantity <=
+          this.table2[this.table2.indexOf(this.selectedItem)].quantity_requested
+        ) {
+          this.table2[
+            this.table2.indexOf(this.selectedItem)
+          ].quantity_requested = this.quantity;
+          this.dialog3 = false;
+        } else {
+          this.snackbar = {
+            active: true,
+            iconText: "alert-circle",
+            iconColor: "error",
+            message: "Insufficient stocks.",
+          };
+        }
       }
     },
 
