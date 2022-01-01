@@ -38,6 +38,58 @@ class SettingsController extends Controller
     public function getLogo()
     {
         if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
+            $logo = (tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo ? url('/storage/logo/' . tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo) : '');
+            $filename = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
+            $temp = explode('~', tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo)[0];
+        } else {
+            $logo = '';
+            $filename = '';
+            $temp = '';
+        }
+        return ['path' => $logo, 'tempfile' => $filename, 'filename' => $temp];
+    }
+
+    //For saving data
+    public function save(Request $data)
+    {
+        if ($data->prod_vat) {
+            if (tbl_vat::where(["type" => 'p'])->get()->count() > 0) {
+                tbl_vat::where(["type" => 'p'])
+                    ->update(['vat' => $data->prod_vat,
+                        'type' => 'p',
+                        'cashier' => auth()->user()->id]);
+            } else {
+                tbl_vat::create(['vat' => $data->prod_vat,
+                    'type' => 'p',
+                    'cashier' => auth()->user()->id]);
+            }
+        }
+        if ($data->supp_vat) {
+            if (tbl_vat::where(["type" => 's'])->get()->count() > 0) {
+                tbl_vat::where(["type" => 's'])
+                    ->update(['vat' => $data->supp_vat,
+                        'type' => 's',
+                        'cashier' => auth()->user()->id]);
+            } else {
+                tbl_vat::create(['vat' => $data->supp_vat,
+                    'type' => 's',
+                    'cashier' => auth()->user()->id]);
+            }
+        }
+
+        if ($data->id) {
+            return tbl_company::where('id', $data->id)->update(['logo' => $data->attachment, "mission" => $data->mission, "vision" => $data->vision]);
+        } else {
+            return tbl_company::create(['logo' => $data->attachment, "mission" => $data->mission, "vision" => $data->vision]);
+        }
+
+    }
+
+    //For retrieving data
+    public function get()
+    {
+        $return = [];
+        if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
             $logo = url('/storage/logo/' . tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo);
             $filename = tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo;
             $temp = explode('~', tbl_company::where("active", 1)->orderBy('id', 'desc')->first()->logo)[0];
@@ -46,46 +98,13 @@ class SettingsController extends Controller
             $filename = null;
             $temp = null;
         }
-        return ['path' => $logo, 'tempfile' => $filename, 'filename' => $temp];
-    }
 
-    //For storing VAT
-    public function storeVat(Request $t)
-    {
-        if (tbl_vat::where(["type" => $t->type])->get()->count() > 0) {
-            if (tbl_vat::where(["type" => $t->type, 'vat' => $t->vat])->get()->count() > 0) {
-                return 0;
-            } else {
-                tbl_vat::where(["type" => $t->type])
-                    ->update(['vat' => $t->vat,
-                        'type' => $t->type,
-                        'cashier' => auth()->user()->id]);
-                return 1;
-            }
-        } else {
-            tbl_vat::create(['vat' => $t->vat,
-                'type' => $t->type,
-                'cashier' => auth()->user()->id]);
-            return 1;
-        }
-
-    }
-
-    //For retrieving VAT
-    public function getVat(Request $t)
-    {
-        return tbl_vat::where("type", $t->type)->orderby("created_at", 'desc')->first();
-    }
-
-    //For saving Mission & Vision
-    public function save(Request $data)
-    {
-        tbl_company::create($data->all());
-    }
-
-    //For retrieving Mission & Vision
-    public function get()
-    {
-        return tbl_company::get();
+        $return['attachment'] = ['path' => $logo, 'tempfile' => $filename, 'filename' => $temp];
+        $return['prod_vat'] = tbl_vat::where("type", 'p')->orderby("created_at", 'desc')->first()->vat;
+        $return['supp_vat'] = tbl_vat::where("type", 's')->orderby("created_at", 'desc')->first()->vat;
+        $return['mission'] = tbl_company::first()->mission;
+        $return['vision'] = tbl_company::first()->vision;
+        $return['id'] = tbl_company::first()->id;
+        return $return;
     }
 }

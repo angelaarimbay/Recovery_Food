@@ -143,10 +143,7 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('settings/company/logo/store', 'Settings\SettingsController@storeLogo');
     Route::post('settings/company/logo/delete', 'Settings\SettingsController@deleteLogo');
     Route::get('settings/company/logo/get', 'Settings\SettingsController@getLogo');
-    //For VAT
-    Route::post('settings/vat/store', 'Settings\SettingsController@storeVat');
-    Route::get('settings/vat/get', 'Settings\SettingsController@getVat');
-    //For Mission & Vision
+    //For data
     Route::post('settings/company/save', 'Settings\SettingsController@save');
     Route::get('settings/company/get', 'Settings\SettingsController@get');
 

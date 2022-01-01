@@ -118,26 +118,6 @@
                   <span>Choose an image</span>
                 </v-tooltip>
               </v-col>
-
-              <v-col cols="12" v-if="form.attachment">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <!-- Save Button -->
-                    <v-btn
-                      v-on="data.on"
-                      block
-                      class="primary"
-                      style="text-transform: none"
-                      @click="savefile"
-                      :small="$vuetify.breakpoint.smAndDown"
-                      depressed
-                    >
-                      <v-icon color="white">mdi-content-save</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Save Logo/Image</span>
-                </v-tooltip>
-              </v-col>
             </v-row>
             <input
               ref="uploader"
@@ -195,178 +175,142 @@
               >
               <v-row no-gutters>
                 <v-col
-                  cols="12"
+                  cols="6"
                   xl="6"
                   lg="6"
                   md="6"
                   sm="6"
-                  class="tfield py-1 px-0"
+                  class="tfield py-1 px-0 pr-1"
                 >
-                  <v-row no-gutters>
-                    <span style="font-size: 12px">Supplies VAT</span>
-                    <v-col cols="10">
-                      <v-text-field
-                        :rules="formRulesVAT"
-                        v-model="form1.vat"
-                        dense
-                        persistent-placeholder
-                        clearable
-                        counter
-                        @keydown="VATKeydown($event)"
-                        maxlength="6"
-                        @blur="resetSV"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="2" class="text-center">
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            icon
-                            v-on="data.on"
-                            color="primary"
-                            @click="saveVat('s')"
-                            depressed
-                          >
-                            <v-icon size="38">mdi-content-save</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Save</span>
-                      </v-tooltip>
-                    </v-col>
-                  </v-row>
+                  <span style="font-size: 12px">Supplies VAT</span>
+                  <v-text-field
+                    :rules="formRulesVAT"
+                    v-model="form.supp_vat"
+                    dense
+                    persistent-placeholder
+                    clearable
+                    counter
+                    @keydown="VATKeydown($event)"
+                    maxlength="6"
+                    @blur="resetSV"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  ></v-text-field>
                 </v-col>
                 <v-col
-                  cols="12"
+                  cols="6"
                   xl="6"
                   lg="6"
                   md="6"
                   sm="6"
-                  class="tfield py-1 px-0"
+                  class="tfield py-1 px-0 pl-1"
                 >
-                  <v-row no-gutters>
-                    <span style="font-size: 12px">Products VAT</span>
-                    <v-col cols="10">
-                      <v-text-field
-                        :rules="formRulesVAT"
-                        v-model="form2.vat"
-                        dense
-                        clearable
-                        persistent-placeholder
-                        counter
-                        @keydown="VATKeydown($event)"
-                        maxlength="6"
-                        @blur="resetPV"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="2" class="text-center">
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            icon
-                            v-on="data.on"
-                            color="primary"
-                            @click="saveVat('p')"
-                            depressed
-                          >
-                            <v-icon size="38">mdi-content-save</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Save</span>
-                      </v-tooltip>
-                    </v-col>
-                  </v-row>
+                  <span
+                    style="font-size: 12px"
+                    class="pl-0 pl-xl-1 pl-lg-1 pl-md-1 pl-sm-1"
+                    >Products VAT</span
+                  >
+                  <v-text-field
+                    :rules="formRulesVAT"
+                    v-model="form.prod_vat"
+                    dense
+                    clearable
+                    persistent-placeholder
+                    counter
+                    @keydown="VATKeydown($event)"
+                    maxlength="6"
+                    @blur="resetPV"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  ></v-text-field>
                 </v-col>
               </v-row>
+              <v-divider class="my-2"></v-divider>
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                >Mission</v-card-title
+              >
+              <v-col
+                cols="12"
+                xl="12"
+                lg="12"
+                md="12"
+                sm="12"
+                class="tfield py-1 px-0"
+              >
+                <v-textarea
+                  :rules="formRulesText"
+                  v-model="form.mission"
+                  dense
+                  clearable
+                  counter
+                  @keydown="textKeydown($event)"
+                  maxlength="300"
+                  background-color="white"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">Insert text here</div>
+                  </template></v-textarea
+                >
+              </v-col>
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                >Vision</v-card-title
+              >
+              <v-col
+                cols="12"
+                xl="12"
+                lg="12"
+                md="12"
+                sm="12"
+                class="tfield py-1 px-0"
+              >
+                <v-textarea
+                  :rules="formRulesText"
+                  v-model="form.vision"
+                  dense
+                  clearable
+                  counter
+                  @keydown="textKeydown($event)"
+                  maxlength="300"
+                  background-color="white"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">Insert text here</div>
+                  </template></v-textarea
+                >
+              </v-col>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                :disabled="button"
+                dark
+                @click="save"
+                :small="$vuetify.breakpoint.xsOnly"
+                block
+              >
+                Save
+              </v-btn>
             </v-form>
-            <v-divider class="my-2"></v-divider>
-            <v-card-title
-              class="
-                text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
-                p-0
-                justify-center
-              "
-              >Mission</v-card-title
-            >
-            <v-col
-              cols="12"
-              xl="12"
-              lg="12"
-              md="12"
-              sm="12"
-              class="tfield py-1 px-0"
-            >
-              <v-textarea
-                :rules="formRulesText"
-                v-model="form3.mission"
-                dense
-                clearable
-                counter
-                @keydown="textKeydown($event)"
-                maxlength="300"
-                background-color="white"
-                flat
-                solo
-                style="font-size: 12px"
-              >
-                <template slot="label">
-                  <div style="font-size: 12px">Insert text here</div>
-                </template></v-textarea
-              >
-            </v-col>
-            <v-card-title
-              class="
-                text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
-                p-0
-                justify-center
-              "
-              >Vision</v-card-title
-            >
-            <v-col
-              cols="12"
-              xl="12"
-              lg="12"
-              md="12"
-              sm="12"
-              class="tfield py-1 px-0"
-            >
-              <v-textarea
-                :rules="formRulesText"
-                v-model="form3.vision"
-                dense
-                clearable
-                counter
-                @keydown="textKeydown($event)"
-                maxlength="300"
-                background-color="white"
-                flat
-                solo
-                style="font-size: 12px"
-              >
-                <template slot="label">
-                  <div style="font-size: 12px">Insert text here</div>
-                </template></v-textarea
-              >
-            </v-col>
-            <v-btn
-              style="text-transform: none"
-              color="primary"
-              depressed
-              :disabled="button"
-              dark
-              @click="save"
-              :small="$vuetify.breakpoint.xsOnly"
-              block
-            >
-              Save
-            </v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -420,10 +364,14 @@ export default {
       active: false,
       message: "",
     },
-    form: { attachment: "" },
-    form1: { vat: 0, type: "" },
-    form2: { vat: 0, type: "" },
-    form3: { mission: "", vision: "" },
+    form: {
+      id: "",
+      attachment: "",
+      prod_vat: 0,
+      supp_vat: 0,
+      mission: "",
+      vision: "",
+    },
 
     //Form rules
     formRulesVAT: [
@@ -431,6 +379,7 @@ export default {
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
     ],
     formRulesText: [
+      (v) => !!v || "This is required",
       (v) =>
         /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()#])(?!\3{1}))+$/i.test(
           v
@@ -440,9 +389,6 @@ export default {
 
   //Onload
   created() {
-    this.getLogo();
-    this.getVat("s");
-    this.getVat("p");
     this.get();
   },
 
@@ -461,33 +407,22 @@ export default {
     },
 
     resetSV() {
-      if (this.form1.vat == null) {
-        this.form1 = this.getVat("s");
+      if (this.form.supp_vat == null) {
+        this.form.supp_vat = 0;
       }
     },
 
     resetPV() {
-      if (this.form2.vat == null) {
-        this.form2 = this.getVat("p");
+      if (this.form.prod_vat == null) {
+        this.form.prod_vat = 0;
       }
     },
 
     //For deleting uploaded file
     async deletefile() {
-      this.progressBar = true;
-      this.$refs.uploader.value = null;
-      this.form.attachment = null;
+      this.form.attachment = "";
+      this.tempfile = "";
       this.temppath = "/img/Logo.jpg";
-      this.tempfile = null;
-      await axios.post("/api/settings/company/logo/delete").then((result) => {
-        this.progressBar = false;
-        this.snackbar = {
-          active: true,
-          iconText: "check",
-          iconColor: "success",
-          message: "Successfully removed.",
-        };
-      });
     },
 
     clickupload() {
@@ -542,82 +477,39 @@ export default {
       });
     },
 
-    //For saving VAT
-    async saveVat(type) {
-      type == "s" ? (this.form1.type = type) : (this.form2.type = type);
+    //For saving data
+    async save() {
       if (this.$refs.mainForm.validate()) {
         await axios
-          .post(
-            "/api/settings/vat/store",
-            type == "s" ? this.form1 : this.form2
-          )
+          .post("/api/settings/company/save", this.form)
           .then((result) => {
-            switch (result.data) {
-              case 1:
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully saved.",
-                };
-                break;
-              case 0:
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "No changes has been made.",
-                };
-                break;
-
-              default:
-                break;
-            }
-          })
-          .catch((result) => {
-            // If false or error when saving
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully saved.",
+            };
           });
       }
     },
 
-    //For retrieving VAT
-    async getVat(type) {
-      await axios
-        .get("/api/settings/vat/get", { params: { type: type } })
-        .then((result) => {
-          switch (result.data.type) {
-            case "s":
-              this.form1 = result.data;
-              break;
-            case "p":
-              this.form2 = result.data;
-              break;
-            default:
-              break;
-          }
-        });
-    },
-
-    //For saving Mission & Vision
-    async save() {
-      await axios
-        .post("/api/settings/company/save", this.form3)
-        .then((result) => {
-          this.snackbar = {
-            active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully saved.",
-          };
-        });
-    },
-
-    //For saving Mission & Vision
+    //For retrieving data
     async get() {
       await axios
         .get("/api/settings/company/get")
         .then((result) => {
-          this.form3 = result.data;
+          if (result.data) {
+            this.form.id = result.data.id;
+            this.form.mission = result.data.mission;
+            this.form.vision = result.data.vision;
+            this.form.prod_vat = result.data.prod_vat;
+            this.form.supp_vat = result.data.supp_vat;
+            if (result.data.attachment.tempfile) {
+              this.form.attachment = result.data.attachment.tempfile;
+              this.tempfile = result.data.attachment.filename;
+              this.temppath = result.data.attachment.path;
+            } else [(this.temppath = "/img/Logo.jpg")];
+          }
         })
         .catch((result) => {
           //If false or error when saving

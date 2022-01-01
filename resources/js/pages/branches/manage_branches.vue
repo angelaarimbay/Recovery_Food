@@ -327,7 +327,7 @@
                 >mdi-close
               </v-icon>
             </v-toolbar>
-            <v-card-text style="height: 540px">
+            <v-card-text style="max-height: 540px">
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
