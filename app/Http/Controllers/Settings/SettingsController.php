@@ -105,12 +105,18 @@ class SettingsController extends Controller
             $temp = null;
         }
 
-        $return['attachment'] = ['path' => $logo, 'tempfile' => $filename, 'filename' => $temp];
-        $return['prod_vat'] = tbl_vat::where("type", 'p')->orderby("created_at", 'desc')->first()->vat;
-        $return['supp_vat'] = tbl_vat::where("type", 's')->orderby("created_at", 'desc')->first()->vat;
-        $return['mission'] = tbl_company::first()->mission;
-        $return['vision'] = tbl_company::first()->vision;
-        $return['id'] = tbl_company::first()->id;
+        try {
+            //code...
+            $return['attachment'] = ['path' => $logo, 'tempfile' => $filename, 'filename' => $temp];
+            $return['prod_vat'] = tbl_vat::where("type", 'p')->orderby("created_at", 'desc')->first()->vat;
+            $return['supp_vat'] = tbl_vat::where("type", 's')->orderby("created_at", 'desc')->first()->vat;
+            $return['mission'] = tbl_company::first()->mission;
+            $return['vision'] = tbl_company::first()->vision;
+            $return['id'] = tbl_company::first()->id;
+        } catch (\Throwable $th) {
+            //throw $th;
+            return null;
+        }
         return $return;
     }
 }

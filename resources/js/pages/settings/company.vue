@@ -72,10 +72,10 @@
           <v-col
             cols="12"
             xl="6"
-            lg="6"
+            lg="12"
             md="12"
             sm="12"
-            style="max-width: 550px"
+            style="max-width: 525px"
           >
             <v-card-title
               class="
@@ -83,6 +83,7 @@
                 p-0
                 justify-center
               "
+              style="color: #c62828"
               >Logo/Image</v-card-title
             >
             <v-img
@@ -159,10 +160,10 @@
           <v-col
             cols="12"
             xl="6"
-            lg="6"
+            lg="12"
             md="12"
             sm="12"
-            style="max-width: 500px"
+            style="max-width: 525px"
           >
             <v-form ref="mainForm" id="mainForm">
               <v-card-title
@@ -171,6 +172,7 @@
                   p-0
                   justify-center
                 "
+                style="color: #c62828"
                 >VAT</v-card-title
               >
               <v-row no-gutters>
@@ -236,6 +238,7 @@
                   p-0
                   justify-center
                 "
+                style="color: #c62828"
                 >Mission</v-card-title
               >
               <v-col
@@ -249,7 +252,7 @@
                 <v-textarea
                   :rules="formRulesText"
                   v-model="form.mission"
-                  dense
+                  height="125px"
                   clearable
                   counter
                   @keydown="textKeydown($event)"
@@ -270,6 +273,7 @@
                   p-0
                   justify-center
                 "
+                style="color: #c62828"
                 >Vision</v-card-title
               >
               <v-col
@@ -283,7 +287,7 @@
                 <v-textarea
                   :rules="formRulesText"
                   v-model="form.vision"
-                  dense
+                  height="125px"
                   clearable
                   counter
                   @keydown="textKeydown($event)"
@@ -451,20 +455,6 @@ export default {
           this.form.attachment = result.data.tempfile;
           this.tempfile = result.data.filename;
           this.temppath = result.data.path ?? "/img/Logo.jpg";
-        });
-    },
-
-    //For saving file
-    async savefile(e) {
-      await axios
-        .post("/api/settings/company/logo/store", this.form)
-        .then((result) => {
-          this.snackbar = {
-            active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully saved.",
-          };
         });
     },
 
