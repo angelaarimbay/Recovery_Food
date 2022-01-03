@@ -15,8 +15,9 @@ class CreateTblCompaniesTable extends Migration
     {
         Schema::create('tbl_companies', function (Blueprint $table) {
             $table->id();
-            $table->string('mission');
-            $table->string('vision');
+            $table->text('history');
+            $table->text('mission');
+            $table->text('vision');
             $table->text('logo')->nullable();
             $table->integer('active')->default(1);
             $table->timestamps();

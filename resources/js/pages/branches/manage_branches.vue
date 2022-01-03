@@ -702,6 +702,7 @@
 
                   <!-- For Uploading  -->
                   <input
+                    id="upload"
                     ref="uploader"
                     clearable
                     accept="image/png, image/jpeg"
@@ -1142,20 +1143,36 @@ export default {
 
     //For attachment
     async attachment(e) {
-      if (e.target.files[0]) {
-        this.loading = true;
-        var dataform = new FormData(); //Can use typical jquery form data
-        dataform.append("file", e.target.files[0]);
-
-        await axios
-          .post("/api/branches/attachment", dataform, {
-            headers: { "Content-Type": "multipart/form-data" },
-          })
-          .then((result) => {
-            this.tempfile = result.data.fakename;
-            this.form.branch_image = result.data.filename;
-            this.loading = false;
-          });
+      if (e.target.files[0].size > 10485760) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "error",
+          message: "The image size should be less than or equal to 10 MB.",
+        };
+      } else {
+        var file = document.querySelector("#upload");
+        if (/\.(jpe?g|png)$/i.test(file.files[0].name) === false) {
+          this.snackbar = {
+            active: true,
+            iconText: "alert-box",
+            iconColor: "error",
+            message: "Please select JPEG or PNG only.",
+          };
+        } else {
+          this.loading = true;
+          var dataform = new FormData(); //Can use typical jquery form data
+          dataform.append("file", e.target.files[0]);
+          await axios
+            .post("/api/branches/attachment", dataform, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
+            .then((result) => {
+              this.tempfile = result.data.fakename;
+              this.form.branch_image = result.data.filename;
+              this.loading = false;
+            });
+        }
       }
     },
 

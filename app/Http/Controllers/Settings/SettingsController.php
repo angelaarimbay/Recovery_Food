@@ -84,9 +84,9 @@ class SettingsController extends Controller
         }
 
         if ($data->id) {
-            return tbl_company::where('id', $data->id)->update(['logo' => $data->attachment, "mission" => $data->mission, "vision" => $data->vision]);
+            return tbl_company::where('id', $data->id)->update(['logo' => $data->attachment, "history" => $data->history, "mission" => $data->mission, "vision" => $data->vision]);
         } else {
-            return tbl_company::create(['logo' => $data->attachment, "mission" => $data->mission, "vision" => $data->vision]);
+            return tbl_company::create(['logo' => $data->attachment, "history" => $data->history, "mission" => $data->mission, "vision" => $data->vision]);
         }
 
     }
@@ -110,6 +110,7 @@ class SettingsController extends Controller
             $return['attachment'] = ['path' => $logo, 'tempfile' => $filename, 'filename' => $temp];
             $return['prod_vat'] = tbl_vat::where("type", 'p')->orderby("created_at", 'desc')->first()->vat;
             $return['supp_vat'] = tbl_vat::where("type", 's')->orderby("created_at", 'desc')->first()->vat;
+            $return['history'] = tbl_company::first()->history;
             $return['mission'] = tbl_company::first()->mission;
             $return['vision'] = tbl_company::first()->vision;
             $return['id'] = tbl_company::first()->id;

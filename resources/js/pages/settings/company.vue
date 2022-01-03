@@ -66,106 +66,100 @@
 
     <!-- Main Card -->
     <v-card elevation="1" class="mt-2" style="border-radius: 10px">
-      <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
-        <v-row justify="center">
-          <!-- Image -->
-          <v-col
-            cols="12"
-            xl="6"
-            lg="12"
-            md="12"
-            sm="12"
-            style="max-width: 525px"
-          >
-            <v-card-title
-              class="
-                text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
-                p-0
-                justify-center
-              "
-              style="color: #c62828"
-              >Logo/Image</v-card-title
+      <v-form ref="mainForm" id="mainForm">
+        <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
+          <v-row justify="center">
+            <!-- Image -->
+            <v-col
+              cols="12"
+              xl="6"
+              lg="12"
+              md="12"
+              sm="12"
+              style="max-width: 525px"
             >
-            <v-img
-              style="border: 2px solid #757575; border-radius: 10px"
-              contain
-              :src="temppath"
-              height="320"
-            ></v-img>
-            <v-progress-linear
-              v-show="progressBar"
-              color="red darken-2"
-              indeterminate
-              rounded
-            ></v-progress-linear>
-            <v-row no-gutters>
-              <v-col cols="12" class="py-2">
-                <v-tooltip bottom>
-                  <template #activator="data">
-                    <!-- Upload Button -->
-                    <v-btn
-                      v-on="data.on"
-                      block
-                      outlined
-                      color="grey darken-1"
-                      class="btn-block"
-                      style="text-transform: none; font-size: 12px"
-                      @click="clickupload"
-                      :small="$vuetify.breakpoint.smAndDown"
-                    >
-                      <v-icon>mdi-upload</v-icon> Upload Image
-                    </v-btn>
-                  </template>
-                  <span>Choose an image</span>
-                </v-tooltip>
-              </v-col>
-            </v-row>
-            <input
-              ref="uploader"
-              clearable
-              accept="image/*"
-              class="d-none"
-              type="file"
-              @change="uploaddocument"
-            />
-            <div style="font-size: 12px" class="pt-2" v-if="form.attachment">
-              <span>Image Attachment:</span>
-              <v-row no-gutters justify="center" align="center">
-                <v-col cols="10">
-                  <a :href="temppath" download>
-                    {{ tempfile }}
-                  </a>
-                </v-col>
-
-                <v-col cols="2" class="text-center">
-                  <!-- Delete Button -->
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                style="color: #c62828"
+                >Logo</v-card-title
+              >
+              <v-img
+                style="border: 2px solid #757575; border-radius: 10px"
+                contain
+                :src="temppath"
+                height="320"
+              ></v-img>
+              <v-progress-linear
+                v-show="progressBar"
+                color="red darken-2"
+                indeterminate
+                rounded
+              ></v-progress-linear>
+              <v-row no-gutters>
+                <v-col cols="12" class="py-2">
                   <v-tooltip bottom>
                     <template #activator="data">
-                      <v-icon
+                      <!-- Upload Button -->
+                      <v-btn
                         v-on="data.on"
-                        color="red darken-2"
-                        class="text-center"
-                        @click="deletefile"
-                        >mdi-delete</v-icon
+                        block
+                        outlined
+                        color="grey darken-1"
+                        class="btn-block"
+                        style="text-transform: none; font-size: 12px"
+                        @click="clickupload"
+                        :small="$vuetify.breakpoint.smAndDown"
                       >
+                        <v-icon>mdi-upload</v-icon> Upload Image
+                      </v-btn>
                     </template>
-                    <span>Remove Image</span>
+                    <span>Choose an image</span>
                   </v-tooltip>
                 </v-col>
               </v-row>
-            </div>
-          </v-col>
+              <input
+                id="upload"
+                ref="uploader"
+                clearable
+                accept="image/png, image/jpeg"
+                class="d-none"
+                type="file"
+                @change="uploaddocument"
+              />
+              <div style="font-size: 12px" class="pt-2" v-if="form.attachment">
+                <span>Image Attachment:</span>
+                <v-row no-gutters justify="center" align="center">
+                  <v-col cols="10">
+                    <a :href="temppath" download>
+                      {{ tempfile }}
+                    </a>
+                  </v-col>
 
-          <!-- VAT -->
-          <v-col
-            cols="12"
-            xl="6"
-            lg="12"
-            md="12"
-            sm="12"
-            style="max-width: 525px"
-          >
-            <v-form ref="mainForm" id="mainForm">
+                  <v-col cols="2" class="text-center">
+                    <!-- Delete Button -->
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-icon
+                          v-on="data.on"
+                          color="red darken-2"
+                          class="text-center"
+                          @click="deletefile"
+                          >mdi-delete</v-icon
+                        >
+                      </template>
+                      <span>Remove Image</span>
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
+              </div>
+
+              <v-divider class="my-2"></v-divider>
+
+              <!-- VAT -->
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -231,7 +225,56 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+            </v-col>
+
+            <v-col
+              cols="12"
+              xl="6"
+              lg="12"
+              md="12"
+              sm="12"
+              style="max-width: 525px"
+            >
+              <v-divider :hidden="$vuetify.breakpoint.lgAndUp" class="my-2"></v-divider>
+              <!-- History -->
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                style="color: #c62828"
+                >History</v-card-title
+              >
+              <v-col
+                cols="12"
+                xl="12"
+                lg="12"
+                md="12"
+                sm="12"
+                class="tfield py-1 px-0"
+              >
+                <v-textarea
+                  :rules="formRulesText"
+                  v-model="form.history"
+                  height="125px"
+                  counter
+                  @keydown="textKeydown($event)"
+                  maxlength="300"
+                  background-color="white"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">Insert text here</div>
+                  </template></v-textarea
+                >
+              </v-col>
+
               <v-divider class="my-2"></v-divider>
+
+              <!-- Mission -->
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -253,7 +296,6 @@
                   :rules="formRulesText"
                   v-model="form.mission"
                   height="125px"
-                  clearable
                   counter
                   @keydown="textKeydown($event)"
                   maxlength="300"
@@ -267,6 +309,7 @@
                   </template></v-textarea
                 >
               </v-col>
+              <!-- Vision -->
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
@@ -288,7 +331,6 @@
                   :rules="formRulesText"
                   v-model="form.vision"
                   height="125px"
-                  clearable
                   counter
                   @keydown="textKeydown($event)"
                   maxlength="300"
@@ -314,16 +356,20 @@
               >
                 Save
               </v-btn>
-            </v-form>
-          </v-col>
-        </v-row>
-      </v-container>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-form>
     </v-card>
   </div>
 </template>
 
 <!-- Style -->
 <style>
+textarea {
+  text-align: justify;
+}
+
 .v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
   font-size: 16px;
 }
@@ -373,6 +419,7 @@ export default {
       attachment: "",
       prod_vat: 0,
       supp_vat: 0,
+      history: "",
       mission: "",
       vision: "",
     },
@@ -384,10 +431,6 @@ export default {
     ],
     formRulesText: [
       (v) => !!v || "This is required",
-      (v) =>
-        /^(?:([A-Za-z])(?!\1{2})|([0-9])(?!\2{7})|([\s,'-_/.()#])(?!\3{1}))+$/i.test(
-          v
-        ) || "This field must have a valid value",
     ],
   }),
 
@@ -443,19 +486,38 @@ export default {
 
     //For uploading file
     async uploaddocument(e) {
-      this.progressBar = true;
-      var dataform = new FormData();
-      dataform.append("file", e.target.files[0]);
-      await axios
-        .post("/api/settings/company/logo/upload", dataform, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((result) => {
-          this.progressBar = false;
-          this.form.attachment = result.data.tempfile;
-          this.tempfile = result.data.filename;
-          this.temppath = result.data.path ?? "/img/Logo.jpg";
-        });
+      if (e.target.files[0].size > 10485760) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "error",
+          message: "The image size should be less than or equal to 10 MB.",
+        };
+      } else {
+        var file = document.querySelector("#upload");
+        if (/\.(jpe?g|png)$/i.test(file.files[0].name) === false) {
+          this.snackbar = {
+            active: true,
+            iconText: "alert-box",
+            iconColor: "error",
+            message: "Please select JPEG or PNG only.",
+          };
+        } else {
+          this.progressBar = true;
+          var dataform = new FormData();
+          dataform.append("file", e.target.files[0]);
+          await axios
+            .post("/api/settings/company/logo/upload", dataform, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
+            .then((result) => {
+              this.progressBar = false;
+              this.form.attachment = result.data.tempfile;
+              this.tempfile = result.data.filename;
+              this.temppath = result.data.path ?? "/img/Logo.jpg";
+            });
+        }
+      }
     },
 
     //For retrieving logo
@@ -490,6 +552,7 @@ export default {
         .then((result) => {
           if (result.data) {
             this.form.id = result.data.id;
+            this.form.history = result.data.history;
             this.form.mission = result.data.mission;
             this.form.vision = result.data.vision;
             this.form.prod_vat = result.data.prod_vat;
