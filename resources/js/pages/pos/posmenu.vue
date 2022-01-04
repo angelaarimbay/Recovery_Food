@@ -888,7 +888,7 @@
 }
 
 .container {
-  max-width: 1600px !important;
+  max-width: 1500px !important;
 }
 
 .centered-input input {

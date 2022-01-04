@@ -156,7 +156,7 @@
 <!-- Style -->
 <style>
 .container {
-  max-width: 1150px !important;
+  max-width: 1500px !important;
 }
 
 .v-application #password .white {
