@@ -751,7 +751,7 @@
             >
             <v-divider class="my-0"></v-divider>
             <bar-chart
-              class="pa-2"
+              class="pa-2 pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3"
               :options="options"
               :chart-data="datacollection"
             >
@@ -791,7 +791,7 @@
             >
             <v-divider class="my-0"></v-divider>
             <bar-chart1
-              class="pa-2"
+              class="pa-2 pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3"
               :options="options1"
               :chart-data="datacollection1"
             >
