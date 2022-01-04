@@ -76,7 +76,7 @@
               lg="12"
               md="12"
               sm="12"
-              style="max-width: 525px"
+              style="max-width: 525px; min-width: 525px"
             >
               <v-card-title
                 class="
@@ -233,7 +233,7 @@
               lg="12"
               md="12"
               sm="12"
-              style="max-width: 525px"
+              style="max-width: 525px; min-width: 525px"
             >
               <v-divider :hidden="$vuetify.breakpoint.lgAndUp" class="my-2"></v-divider>
               <!-- History -->

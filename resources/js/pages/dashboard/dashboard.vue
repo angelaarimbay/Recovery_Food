@@ -4,7 +4,7 @@
     style="min-width: 310px"
     v-if="!user.permissionslist.includes('Access POS')"
   >
-    <v-container class="py-2">
+    <v-container class="pt-2">
       <v-layout row wrap>
         <span
           class="

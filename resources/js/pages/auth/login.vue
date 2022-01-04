@@ -208,6 +208,10 @@ export default {
 
   //Methods
   methods: {
+    reloadPage() {
+      window.location.reload();
+    },
+
     //For submithandler
     submitHandler() {
       (this.formRulesEmail = [
@@ -252,6 +256,7 @@ export default {
                 this.$store.dispatch("auth/fetchUserPermissions");
                 this.$store.dispatch("auth/fetchUserRoles");
                 this.$router.push({ name: "dashboard" }).catch((errr) => {});
+                this.reloadPage();
               });
           })
           .catch((result) => {
