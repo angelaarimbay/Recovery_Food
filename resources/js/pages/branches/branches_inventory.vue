@@ -119,7 +119,7 @@
             <!-- Filter Dialog -->
             <v-dialog v-model="filterDialog" max-width="400px" scrollable>
               <v-card dark tile>
-                <v-toolbar dense flat class="transparent px-1">
+                <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
                   <span
                     class="
                       text-xl-subtitle-1
@@ -356,7 +356,7 @@
             <!-- Filter Dialog -->
             <v-dialog v-model="filterDialog1" max-width="400px" scrollable>
               <v-card dark tile>
-                <v-toolbar dense flat class="transparent px-1">
+                <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
                   <span
                     class="
                       text-xl-subtitle-1

@@ -123,7 +123,7 @@
           <!-- Filter Dialog -->
           <v-dialog v-model="filterDialog" max-width="400px" scrollable>
             <v-card dark tile>
-              <v-toolbar dense flat class="transparent px-1">
+              <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
                 <span
                   class="
                     text-xl-subtitle-1
@@ -378,7 +378,7 @@
           scrollable
         >
           <v-card>
-            <v-toolbar dark dense flat class="red darken-3 px-1">
+            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
               <span
                 class="
                   text-xl-subtitle-1
@@ -793,7 +793,7 @@
           scrollable
         >
           <v-card>
-            <v-toolbar dark dense flat class="red darken-3 px-1">
+            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
               <span
                 class="
                   text-xl-subtitle-1
@@ -1571,7 +1571,9 @@ export default {
 
     //Open Dialog Form2
     openDialog2() {
-      this.dialog2 = true;
+      if (this.$refs.form.validate()) {
+        this.dialog2 = true;
+      }
     },
 
     //Reset Forms

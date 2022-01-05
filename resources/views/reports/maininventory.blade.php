@@ -206,7 +206,7 @@
                     <td style="width: auto; text-align: right"> {{ $items['onhand_q'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ number_format((float)$items['onhand_a'] ?? 0, 2) }}</td>
                     <td style="width: auto; text-align: right"> {{ number_format((float)$items['average_q'] ?? 0, 2) }}</td>
-                    <td style="width: auto; text-align: right"> {{ number_format($items['average_a'] ?? 0, 2) }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['average_a'] ?? 0, 2) }}</td>
                     <td style="width: auto"> {{ $items['lead_time'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['orderpoint'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['minimum_order_quantity'] ?? 0 }}</td>

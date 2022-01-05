@@ -142,7 +142,7 @@
           <!-- Filter Dialog -->
           <v-dialog v-model="filterDialog" max-width="400px" scrollable>
             <v-card dark tile>
-              <v-toolbar dense flat class="transparent px-1">
+              <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
                 <span
                   class="
                     text-xl-subtitle-1
@@ -445,7 +445,7 @@
           scrollable
         >
           <v-card>
-            <v-toolbar dark dense flat class="red darken-3 px-1">
+            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
               <span
                 class="
                   text-xl-subtitle-1
@@ -899,7 +899,7 @@
       <!-- View Requested Supplies List Form -->
       <v-dialog v-model="dialog2" width="900px" scrollable>
         <v-card>
-          <v-toolbar dark dense flat class="red darken-3 px-1">
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
             <span
               class="
                 text-xl-subtitle-1
@@ -1045,7 +1045,7 @@
       <v-form ref="qtyForm">
         <v-dialog v-model="dialog3" max-width="450px" scrollable>
           <v-card>
-            <v-toolbar dark dense flat class="red darken-3 px-1">
+            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
               <span
                 class="
                   text-xl-subtitle-1

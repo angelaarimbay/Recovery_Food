@@ -123,7 +123,7 @@
             <!-- Filter Dialog -->
             <v-dialog v-model="filterDialog" max-width="400px" scrollable>
               <v-card dark tile>
-                <v-toolbar dense flat class="transparent px-1">
+                <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
                   <span
                     class="
                       text-xl-subtitle-1
@@ -334,11 +334,11 @@
           <!-- Preview Receipt -->
           <v-dialog v-model="dialog1">
             <v-toolbar
-              dense
+              :dense="$vuetify.breakpoint.xsOnly"
               dark
               class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
             >
-              Preview Receipt
+              Receipt Preview
               <v-spacer></v-spacer>
               <v-icon
                 class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
@@ -353,7 +353,7 @@
           <!-- Dialog Form -->
           <v-dialog v-model="dialog2" max-width="900px" scrollable>
             <v-card>
-              <v-toolbar dark dense flat class="red darken-3 px-1">
+              <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
                 Current Month Sales History
                 <v-spacer></v-spacer>
                 <v-icon text @click="dialog2 = false">mdi-close </v-icon>
@@ -369,7 +369,7 @@
         <v-form ref="form" lazy-validation>
           <v-dialog v-model="dialog" max-width="450px" scrollable>
             <v-card>
-              <v-toolbar dark dense flat class="red darken-3 px-1">
+              <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
                 <span
                   class="
                     text-xl-subtitle-1

@@ -73,7 +73,7 @@
         scrollable
       >
         <v-card>
-          <v-toolbar dark dense flat class="red darken-3 px-1">
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
             <span
               class="
                 text-xl-subtitle-1
@@ -227,7 +227,7 @@
         scrollable
       >
         <v-card>
-          <v-toolbar dark dense flat class="red darken-3 px-1">
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
             <span
               class="
                 text-xl-subtitle-1
@@ -370,7 +370,7 @@
       <!-- Add Permission To Role Dialog -->
       <v-dialog v-model="dialogAddPermissions" max-width="900px" scrollable>
         <v-card>
-          <v-toolbar dark dense flat class="red darken-3 px-1">
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
             <span
               class="
                 text-xl-subtitle-1
@@ -447,7 +447,7 @@
       <!-- Add User Role Dialog -->
       <v-dialog v-model="dialogAddRoles" max-width="900px" scrollable>
         <v-card>
-          <v-toolbar dark dense flat class="red darken-3 px-1">
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
             <span
               class="
                 text-xl-subtitle-1
