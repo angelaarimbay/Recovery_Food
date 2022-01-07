@@ -81,7 +81,7 @@ class OutgoingSuppliesController extends Controller
 
         $return = [];
         $row = 1;
-        foreach ($table->orderBy("supply_name")->get() as $key => $value) {
+        foreach ($table->orderBy("supply_name")->orderBy("outgoing_date")->get() as $key => $value) {
 
             //Get the total qty and amount from outgoing
             $get_amount = tbl_outgoingsupp::where("supply_name", $value->supply_name)

@@ -61,7 +61,7 @@ class IncomingSuppliesController extends Controller
 
         $return = [];
         $row = 1;
-        foreach ($table->orderBy("supply_name")->get() as $key => $value) {
+        foreach ($table->orderBy("supply_name")->orderBy("incoming_date")->get() as $key => $value) {
 
             //Get the total qty and amount from incoming
             $get_amount = tbl_incomingsupp::where("supply_name", $value->supply_name)

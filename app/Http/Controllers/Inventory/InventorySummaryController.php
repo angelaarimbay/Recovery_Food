@@ -90,8 +90,14 @@ class InventorySummaryController extends Controller
             }
 
             //For computing variance original
+            $result = 0;
             try {
-                $temp['variance_orig'] = $temp['ending_orig'] - $temp['stocks_orig'];
+                $result = $temp['ending_orig'] - $temp['stocks_orig'];
+                if ($result > 0) {
+                    $temp['variance_orig'] = $result;
+                } else {
+                    $temp['variance_orig'] = 0;
+                }
             } catch (\Throwable $th) {
                 $temp['variance_orig'] = 0;
             }

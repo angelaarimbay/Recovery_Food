@@ -1571,9 +1571,7 @@ export default {
 
     //Open Dialog Form2
     openDialog2() {
-      if (this.$refs.form.validate()) {
-        this.dialog2 = true;
-      }
+      this.dialog2 = true;
     },
 
     //Reset Forms
