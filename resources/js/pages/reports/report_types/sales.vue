@@ -32,23 +32,37 @@
       </template>
     </v-snackbar>
 
-    <!-- Preview Receipt -->
-    <v-dialog v-model="dialog1">
-      <v-toolbar
-        dense
-        dark
-        class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-      >
-        Preview Receipt
-        <v-spacer></v-spacer>
-        <v-icon
-          class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-          text
-          @click="dialog1 = false"
-          >mdi-close
-        </v-icon>
-      </v-toolbar>
-      <iframe :src="pdfview" width="100%" height="500"></iframe>
+    <!-- Receipt Preview -->
+    <v-dialog v-model="dialog1" scrollable>
+      <v-card>
+        <v-toolbar
+          dark
+          :dense="$vuetify.breakpoint.xsOnly"
+          flat
+          class="red darken-3 px-1"
+        >
+          <span
+            class="
+              text-xl-subtitle-1
+              text-lg-subtitle-1
+              text-md-subtitle-1
+              text-sm-subtitle-1
+              text-subtitle-2
+            "
+            >Receipt Preview</span
+          >
+          <v-spacer></v-spacer>
+          <v-icon
+            :small="$vuetify.breakpoint.xsOnly"
+            text
+            @click="dialog1 = false"
+            >mdi-close
+          </v-icon>
+        </v-toolbar>
+        <v-card-text class="pa-0" style="height: auto">
+          <iframe :src="pdfview" width="100%" height="500"></iframe>
+        </v-card-text>
+      </v-card>
     </v-dialog>
 
     <v-card-actions
@@ -146,7 +160,11 @@
     <!-- Filter Dialog -->
     <v-dialog v-model="filterDialog" max-width="400px" scrollable>
       <v-card dark tile>
-        <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+        <v-toolbar
+          :dense="$vuetify.breakpoint.xsOnly"
+          flat
+          class="transparent px-1"
+        >
           <span
             class="
               text-xl-subtitle-1
@@ -418,7 +436,12 @@
     <!-- View Sales Report Form -->
     <v-dialog v-model="viewdialog" max-width="900px" scrollable>
       <v-card>
-        <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+        <v-toolbar
+          dark
+          :dense="$vuetify.breakpoint.xsOnly"
+          flat
+          class="red darken-3 px-1"
+        >
           <span
             class="
               text-xl-subtitle-1
@@ -476,7 +499,6 @@
             id="table1"
             dense
             class="px-4 table-striped border"
-            :items-per-page="5"
             :loading="progressbar"
             :headers="headers2"
             :items="table2"

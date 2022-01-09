@@ -937,8 +937,8 @@ class ReportsController extends Controller
 
         $data = tbl_pos::where("branch", $t->branch)
             ->whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-            ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-            ->groupby(["branch", "created_at", "reference_no"])
+            ->selectRaw("sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch, max(created_at) as created_at, reference_no")
+            ->groupby(["branch", "reference_no"])
             ->get();
 
         foreach (tbl_pos::where("branch", $t->branch)->groupBy("branch")->pluck("branch") as $key => $value) {
@@ -1021,11 +1021,8 @@ class ReportsController extends Controller
         // return tbl_pos::get();
 
         $data = tbl_pos::whereBetween("created_at", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
-            ->selectRaw(" sum(quantity) as quantity,
-        sum(sub_total_discounted) as sub_total_discounted,
-        branch
-        ,created_at,
-        reference_no")->groupby(["branch", "created_at", "reference_no"])
+            ->selectRaw("sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch, max(created_at) as created_at, reference_no")
+            ->groupby(["branch", "reference_no"])
             ->get();
 
         foreach (tbl_pos::where("branch", $t->branch)->groupBy("branch")->pluck("branch") as $key => $value) {
@@ -1203,13 +1200,13 @@ class ReportsController extends Controller
                 ->where('branch', auth()->user()->branch)
                 ->where('cashier', auth()->user()->id)
                 ->whereBetween('created_at', [date("Y-m-d", strtotime(date('Y') . '-' . date('m') . '-01')), date('Y-m-t', strtotime(date("Y") . '-' . date('m') . '-' . date('t')))])
-                ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
+                ->selectRaw("sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch, max(created_at) as created_at, reference_no")
                 ->orderBy('created_at', "desc")
-                ->groupby(["branch", "created_at", "reference_no"]);
+                ->groupby(["branch", "reference_no"]);
         } else {
             $table = tbl_pos::with(["branch"])
-                ->selectRaw(" sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch ,created_at, reference_no  ")
-                ->groupby(["branch", "created_at", "reference_no"]);
+                ->selectRaw("sum(quantity) as quantity, sum(sub_total_discounted) as sub_total_discounted, branch, max(created_at) as created_at, reference_no")
+                ->groupby(["branch", "reference_no"]);
         }
 
         if ($t->branch) {
@@ -1278,11 +1275,11 @@ class ReportsController extends Controller
                 $temp,
                 [],
                 [
-                    'format' => ['57', 95 + (10 * $data_cloned->count())],
-                    'margin_left' => 3,
-                    'margin_right' => 3,
-                    'margin_top' => 5,
-                    'margin_bottom' => 5,
+                    'format' => ['57', 95 + (9 * $data_cloned->count())],
+                    'margin_left' => 2,
+                    'margin_right' => 2,
+                    'margin_top' => 4,
+                    'margin_bottom' => 2,
                 ]
             );
             return $pdf->stream();

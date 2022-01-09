@@ -7,41 +7,41 @@
     table,
     td,
     th {
-        padding: 3px;
+        padding: 2px;
         border-collapse: collapse;
     }
 
     .header {
         text-align: center;
-        font-size: 8px;
-        font-family: 'Courier New', monospace;
+        font-size: 9px;
+        font-family: Arial, Helvetica, sans-serif;
         margin: 1px;
     }
 
     .header_location {
         text-align: center;
-        font-size: 8px;
-        font-family: 'Courier New', monospace;
+        font-size: 9px;
+        font-family: Arial, Helvetica, sans-serif;
         margin: 1px;
     }
 
     .footer {
         text-align: center;
-        font-size: 8px;
-        font-family: 'Courier New', monospace;
+        font-size: 9px;
+        font-family: Arial, Helvetica, sans-serif;
         margin: 1px;
     }
 
     .bottom_footer {
         text-align: center;
-        font-size: 8px;
-        font-family: 'Courier New', monospace;
+        font-size: 9px;
+        font-family: Arial, Helvetica, sans-serif;
         margin: 1px;
     }
 
     .body {
-        font-size: 8px;
-        font-family: 'Courier New', monospace;
+        font-size: 9px;
+        font-family: Arial, Helvetica, sans-serif;
         margin: 1px;
         page-break-inside: avoid;
         text-transform: uppercase;
@@ -59,7 +59,7 @@
     <p class="header"> {{ $branch }} </p>
     <p class="header_location"> {{ $branch_location }} </p>
 
-    <p style="font-size: 8px; font-family: 'Courier New', monospace; margin-top: 15px; margin-bottom: 0px">Cashier:
+    <p style="font-size: 9px; font-family: Arial, Helvetica, sans-serif; margin-top: 15px; margin-bottom: 0px">Cashier:
         {{ $cashier_name_details }} </p>
     <hr class="divider" />
     <p class="header"> {{ date('M-d-Y h:i A', strtotime($created_at)) }} </p>
@@ -69,10 +69,10 @@
         <table style="width: 100%">
             <!-- Rows -->
             <tr>
-                <td class="body" style="width: 40%"> {{ $items['product_name_details']['product_name'] }}
+                <td class="body" style="width: 60%"> {{ $items['product_name_details']['product_name'] }}
                     {{ $items['product_name_details']['description'] }} </td>
-                <td class="body" style="width: 30%"></td>
-                <td class="body" style="width: 30%"></td>
+                <td class="body" style="width: 20%"></td>
+                <td class="body" style="width: 20%"></td>
             </tr>
             <tr>
                 <td class="body"> {{ $items['quantity'] }} </td>

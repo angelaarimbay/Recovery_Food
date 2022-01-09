@@ -123,7 +123,11 @@
             <!-- Filter Dialog -->
             <v-dialog v-model="filterDialog" max-width="400px" scrollable>
               <v-card dark tile>
-                <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+                <v-toolbar
+                  :dense="$vuetify.breakpoint.xsOnly"
+                  flat
+                  class="transparent px-1"
+                >
                   <span
                     class="
                       text-xl-subtitle-1
@@ -268,7 +272,7 @@
             <!-- Products List Table -->
             <v-data-table
               id="table2"
-              class="prod_table table-striped border mt-4"
+              class="prod_table table-striped border mt-8"
               :headers="headers1"
               :items="table1.data"
               :loading="progressbar1"
@@ -331,35 +335,70 @@
             </div>
           </v-card>
 
-          <!-- Preview Receipt -->
-          <v-dialog v-model="dialog1">
-            <v-toolbar
-              :dense="$vuetify.breakpoint.xsOnly"
-              dark
-              class="pl-xl-6 pl-lg-6 pl-md-6 pl-sm-5 pl-3 red darken-2"
-            >
-              Receipt Preview
-              <v-spacer></v-spacer>
-              <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
-                text
-                @click="dialog1 = false"
-                >mdi-close
-              </v-icon>
-            </v-toolbar>
-            <iframe :src="pdfview" width="500" height="500"></iframe>
+          <!-- Receipt Preview -->
+          <v-dialog v-model="dialog1" scrollable>
+            <v-card>
+              <v-toolbar
+                dark
+                :dense="$vuetify.breakpoint.xsOnly"
+                flat
+                class="red darken-3 px-1"
+              >
+                <span
+                  class="
+                    text-xl-subtitle-1
+                    text-lg-subtitle-1
+                    text-md-subtitle-1
+                    text-sm-subtitle-1
+                    text-subtitle-2
+                  "
+                  >Receipt Preview</span
+                >
+                <v-spacer></v-spacer>
+                <v-icon
+                  :small="$vuetify.breakpoint.xsOnly"
+                  text
+                  @click="dialog1 = false"
+                  >mdi-close
+                </v-icon>
+              </v-toolbar>
+              <v-card-text class="pa-0" style="height: auto">
+                <iframe :src="pdfview" width="100%" height="500"></iframe>
+              </v-card-text>
+            </v-card>
           </v-dialog>
 
           <!-- Dialog Form -->
           <v-dialog v-model="dialog2" max-width="900px" scrollable>
             <v-card>
-              <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
-                Current Month Sales History
+              <v-toolbar
+                dark
+                :dense="$vuetify.breakpoint.xsOnly"
+                flat
+                class="red darken-3 px-1"
+              >
+                <span
+                  class="
+                    text-xl-subtitle-1
+                    text-lg-subtitle-1
+                    text-md-subtitle-1
+                    text-sm-subtitle-1
+                    text-subtitle-2
+                  "
+                  >Current Month Sales History</span
+                >
                 <v-spacer></v-spacer>
-                <v-icon text @click="dialog2 = false">mdi-close </v-icon>
+                <v-icon
+                  :small="$vuetify.breakpoint.xsOnly"
+                  text
+                  @click="dialog2 = false"
+                  >mdi-close
+                </v-icon>
               </v-toolbar>
 
-              <salesreport v-if="renderComponent" />
+              <v-card-text class="px-0" style="height: auto">
+                <salesreport v-if="renderComponent" />
+              </v-card-text>
             </v-card>
             <!-- <iframe :src="pdfview1" width="500" height="500"></iframe> -->
           </v-dialog>
@@ -369,7 +408,12 @@
         <v-form ref="form" lazy-validation>
           <v-dialog v-model="dialog" max-width="450px" scrollable>
             <v-card>
-              <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+              <v-toolbar
+                dark
+                :dense="$vuetify.breakpoint.xsOnly"
+                flat
+                class="red darken-3 px-1"
+              >
                 <span
                   class="
                     text-xl-subtitle-1
@@ -595,7 +639,7 @@
             <!-- Order List Table -->
             <v-data-table
               id="table2"
-              class="ord_table table-striped border mt-4"
+              class="ord_table table-striped border mt-8"
               :headers="headers2"
               :items="table2"
               height="230"
@@ -693,188 +737,194 @@
             </v-card>
           </v-col>
 
-          <v-col cols="12" xl="12" lg="12" md="12" sm="12" class="pa-0 mt-2">
-            <v-card style="border-radius: 10px" class="pa-3">
-              <v-row align="center" justify="center">
-                <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
-                  <!-- Payment -->
-                  <v-text-field
-                    class="centered-input"
-                    :rules="formRulesPrice"
-                    ref="payment"
-                    v-model="payment"
-                    @input="getChange($event)"
-                    outlined
-                    clearable
-                    dense
-                    hide-details
-                    @click:clear="change = 0"
-                    @focus="clearP"
-                    @blur="resetP"
-                    persistent-placeholder
-                    autocomplete="off"
-                    :disabled="disabled"
-                    @keydown="paymentKeydown($event)"
-                    style="font-size: 22px"
-                  >
-                    <template slot="label">
-                      <div style="font-size: 18px">Payment</div>
-                    </template>
-                  </v-text-field>
-                </v-col>
+          <v-form ref="form1" lazy-validation>
+            <v-col cols="12" xl="12" lg="12" md="12" sm="12" class="pa-0 mt-2">
+              <v-card style="border-radius: 10px" class="pa-3">
+                <v-row align="center" justify="center">
+                  <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
+                    <!-- Payment -->
+                    <v-text-field
+                      class="centered-input"
+                      :rules="formRulesPrice"
+                      ref="payment"
+                      v-model="payment"
+                      @input="getChange($event)"
+                      outlined
+                      clearable
+                      dense
+                      hide-details
+                      @click:clear="change = 0"
+                      @focus="clearP"
+                      @blur="resetP"
+                      persistent-placeholder
+                      autocomplete="off"
+                      :disabled="disabled"
+                      @keydown="paymentKeydown($event)"
+                      style="font-size: 22px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 18px">Payment</div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
-                  <!-- Discount -->
-                  <v-text-field
-                    class="centered-input"
-                    :rules="formRulesDiscount"
-                    v-model="discount"
-                    @input="getChange($event)"
-                    outlined
-                    clearable
-                    dense
-                    hide-details
-                    persistent-placeholder
-                    @focus="clearD"
-                    @blur="resetD"
-                    autocomplete="off"
-                    :disabled="!payment"
-                    @keydown="discountKeydown($event)"
-                    style="font-size: 22px"
-                  >
-                    <template slot="label">
-                      <div style="font-size: 18px">Discount(%)</div>
-                    </template>
-                  </v-text-field>
-                </v-col>
+                  <v-col cols="6" xl="4" lg="4" md="6" sm="6" class="pb-0">
+                    <!-- Discount -->
+                    <v-text-field
+                      class="centered-input"
+                      :rules="formRulesDiscount"
+                      v-model="discount"
+                      @input="getChange($event)"
+                      outlined
+                      clearable
+                      dense
+                      hide-details
+                      persistent-placeholder
+                      @focus="clearD"
+                      @blur="resetD"
+                      autocomplete="off"
+                      :disabled="!payment"
+                      @keydown="discountKeydown($event)"
+                      style="font-size: 22px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 18px">Discount(%)</div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
 
-                <v-col cols="12" xl="4" lg="4" md="12" sm="12" class="pb-0">
-                  <!-- Change -->
-                  <v-text-field
-                    class="centered-input"
-                    v-model="change"
-                    outlined
-                    dense
-                    disabled
-                    hide-details
-                    filled
-                    style="font-size: 22px"
-                  >
-                    <template slot="label">
-                      <div style="font-size: 18px">Change</div>
-                    </template>
-                  </v-text-field>
-                </v-col>
-              </v-row>
+                  <v-col cols="12" xl="4" lg="4" md="12" sm="12" class="pb-0">
+                    <!-- Change -->
+                    <v-text-field
+                      class="centered-input"
+                      v-model="change"
+                      outlined
+                      dense
+                      disabled
+                      hide-details
+                      filled
+                      style="font-size: 22px"
+                    >
+                      <template slot="label">
+                        <div style="font-size: 18px">Change</div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
 
-              <v-row class="mt-2">
-                <v-col cols="12" xl="8" lg="8" md="12" sm="12">
-                  <v-row no-gutters>
-                    <v-col cols="3">
-                      <!-- Sales History -->
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            v-on="data.on"
-                            block
-                            @click="getSalesToday"
-                            color="orange darken-3"
-                            style="text-transform: none; color: white"
-                          >
-                            <v-icon large>mdi-history</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Sales History</span>
-                      </v-tooltip>
-                    </v-col>
-                    <v-col cols="3">
-                      <!-- Print -->
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            v-on="data.on"
-                            block
-                            @click="getReceipt"
-                            color="blue-grey darken-1"
-                            style="text-transform: none; color: white"
-                            :disabled="disabled1"
-                          >
-                            <v-icon large>mdi-printer</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Print</span>
-                      </v-tooltip>
-                    </v-col>
-                    <v-col cols="3">
-                      <!-- Void Order -->
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            v-on="data.on"
-                            block
-                            color="red darken-3"
-                            style="
-                              text-transform: none;
-                              color: white;
-                              font-size: 17px;
-                            "
-                            :disabled="disabled"
-                            @click="validate('void')"
-                          >
-                            <v-icon large>mdi-do-not-disturb</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Void Order(s)</span>
-                      </v-tooltip>
-                    </v-col>
-                    <v-col cols="3">
-                      <!-- New Order -->
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-btn
-                            v-on="data.on"
-                            block
-                            color="blue darken-2"
-                            style="text-transform: none; color: white"
-                            :disabled="disabled"
-                            @click="validate('new')"
-                          >
-                            <v-icon large>mdi-new-box</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>New Order</span>
-                      </v-tooltip>
-                    </v-col>
-                  </v-row>
-                </v-col>
-                <v-col
-                  cols="12"
-                  xl="4"
-                  lg="4"
-                  md="12"
-                  sm="12"
-                  class="pt-0 pt-xl-3 pt-lg-3 pt-md-3 pt-sm-0"
-                >
-                  <!-- Checkout -->
-                  <v-tooltip bottom>
-                    <template #activator="data">
-                      <v-btn
-                        v-on="data.on"
-                        block
-                        color="green darken-3"
-                        style="text-transform: none; color: white"
-                        :disabled="disabled"
-                        @click="validate('save')"
-                      >
-                        <v-icon large>mdi-cart</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>Checkout</span>
-                  </v-tooltip>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>
+                <v-row class="mt-2">
+                  <v-col cols="12" xl="8" lg="8" md="12" sm="12">
+                    <v-row no-gutters>
+                      <v-col cols="3">
+                        <!-- Sales History -->
+                        <v-tooltip bottom>
+                          <template #activator="data">
+                            <v-btn
+                              v-on="data.on"
+                              block
+                              @click="getSalesToday"
+                              color="orange darken-3"
+                              style="text-transform: none; color: white"
+                              :small="$vuetify.breakpoint.xsOnly"
+                            >
+                              <v-icon large>mdi-history</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Sales History</span>
+                        </v-tooltip>
+                      </v-col>
+                      <v-col cols="3">
+                        <!-- Print -->
+                        <v-tooltip bottom>
+                          <template #activator="data">
+                            <v-btn
+                              v-on="data.on"
+                              block
+                              @click="getReceipt"
+                              color="blue-grey darken-1"
+                              style="text-transform: none; color: white"
+                              :disabled="disabled1"
+                              :small="$vuetify.breakpoint.xsOnly"
+                            >
+                              <v-icon large>mdi-printer</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Print</span>
+                        </v-tooltip>
+                      </v-col>
+                      <v-col cols="3">
+                        <!-- Void Order -->
+                        <v-tooltip bottom>
+                          <template #activator="data">
+                            <v-btn
+                              v-on="data.on"
+                              block
+                              color="red darken-3"
+                              style="
+                                text-transform: none;
+                                color: white;
+                                font-size: 17px;
+                              "
+                              :disabled="disabled"
+                              @click="validate('void')"
+                              :small="$vuetify.breakpoint.xsOnly"
+                            >
+                              <v-icon large>mdi-do-not-disturb</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Void Order(s)</span>
+                        </v-tooltip>
+                      </v-col>
+                      <v-col cols="3">
+                        <!-- New Order -->
+                        <v-tooltip bottom>
+                          <template #activator="data">
+                            <v-btn
+                              v-on="data.on"
+                              block
+                              color="blue darken-2"
+                              style="text-transform: none; color: white"
+                              :disabled="disabled"
+                              @click="validate('new')"
+                              :small="$vuetify.breakpoint.xsOnly"
+                            >
+                              <v-icon large>mdi-new-box</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>New Order</span>
+                        </v-tooltip>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    xl="4"
+                    lg="4"
+                    md="12"
+                    sm="12"
+                    class="pt-0 pt-xl-3 pt-lg-3 pt-md-3 pt-sm-0"
+                  >
+                    <!-- Checkout -->
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          v-on="data.on"
+                          block
+                          color="green darken-3"
+                          style="text-transform: none; color: white"
+                          :disabled="disabled"
+                          @click="validate('save')"
+                        >
+                          <v-icon large>mdi-cart</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Checkout</span>
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-col>
+          </v-form>
         </v-col>
       </v-row>
     </v-container>
@@ -969,18 +1019,6 @@ export default {
     ...mapGetters({
       user: "auth/user",
     }),
-    disabled2() {
-      for (var key in this.temp_data) {
-        for (var key1 in this.temp_data[key]) {
-          if (this.temp_data[key][key1] != this.table2[key][key1]) {
-            alert("d magkatulad");
-            return true;
-          } else {
-            alert("magkatulad");
-          }
-        }
-      }
-    },
   },
 
   //Data
@@ -1322,7 +1360,7 @@ export default {
               iconColor: "success",
               message: "Successfully checked-out.",
             };
-            this.$refs.form.resetValidation();
+            this.$refs.form1.resetValidation();
           });
       } else {
         this.snackbar = {
@@ -1511,6 +1549,7 @@ export default {
             this.disabled1 = true;
           } else {
             this.disabled = true;
+            this.$refs.form1.resetValidation();
           }
           this.snackbar = {
             active: true,
@@ -1729,6 +1768,7 @@ export default {
         iconColor: "success",
         message: "Successfully voided.",
       };
+      this.$refs.form1.resetValidation();
     },
 
     //For creating new order
@@ -1747,6 +1787,7 @@ export default {
         iconColor: "success",
         message: "Successfully created a new order.",
       };
+      this.$refs.form1.resetValidation();
     },
 
     //For refresh

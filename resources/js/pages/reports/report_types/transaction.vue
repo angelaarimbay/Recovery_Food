@@ -459,7 +459,6 @@
             id="table1"
             dense
             class="px-4 table-striped border"
-            :items-per-page="5"
             :loading="progressbar"
             :headers="headers2"
             :items="table2"
