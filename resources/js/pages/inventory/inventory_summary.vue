@@ -69,44 +69,46 @@
     <!-- Main Card -->
     <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
-        <v-row no-gutters align="center" class="mb-3">
-          <v-spacer></v-spacer>
-          <!-- Refresh -->
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-btn
-                class="ml-auto mr-2"
-                color="success"
-                style="text-transform: none"
-                depressed
-                :small="$vuetify.breakpoint.smAndDown"
-                dark
-                @click="get"
-                v-on="data.on"
-                icon
-                ><v-icon>mdi-refresh</v-icon></v-btn
-              >
-            </template>
-            <span>Refresh</span>
-          </v-tooltip>
-          <!-- Filter -->
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-btn
-                color="grey darken-4"
-                style="text-transform: none"
-                depressed
-                :small="$vuetify.breakpoint.smAndDown"
-                dark
-                @click="filterDialog = true"
-                v-on="data.on"
-                icon
-                ><v-icon>mdi-filter-variant</v-icon></v-btn
-              >
-            </template>
-            <span>Filter</span>
-          </v-tooltip>
-        </v-row>
+        <v-card-actions class="px-0">
+          <v-row align="center" no-gutters>
+            <v-spacer></v-spacer>
+            <v-card color="red darken-3" flat style="border-radius: 20px">
+              <!-- Refresh -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2"
+                    color="white"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="refresh"
+                    v-on="data.on"
+                    icon
+                    ><v-icon size="20">mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+              <!-- Filter -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="white"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="filterDialog = true"
+                    v-on="data.on"
+                    icon
+                    ><v-icon size="20">mdi-filter-variant</v-icon></v-btn
+                  >
+                </template>
+                <span>Filter</span>
+              </v-tooltip>
+            </v-card>
+          </v-row>
+        </v-card-actions>
 
         <!-- Filter Dialog -->
         <v-dialog v-model="filterDialog" max-width="400px">
@@ -229,10 +231,8 @@
 
 <!-- Style -->
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
 }
 
 #table1 .v-data-table-header th {
@@ -400,6 +400,11 @@ export default {
           this.table = result.data;
           this.progressbar = false;
         });
+    },
+
+    //For refresh
+    refresh() {
+      this.get();
     },
   },
 };

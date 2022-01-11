@@ -1,5 +1,5 @@
 <template>
-  <v-app style="background-color: #f0f2f5">
+  <v-app style="background-color: #f1f3f4">
     <loading ref="loading" />
     <div v-if="!user">
       <!-- If no user, apply this header. Else, apply nav -->

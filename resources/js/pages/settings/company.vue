@@ -124,6 +124,7 @@
                         style="text-transform: none"
                         @click="savefile"
                         :small="$vuetify.breakpoint.smAndDown"
+                        depressed
                       >
                         <v-icon color="white">mdi-content-save</v-icon>
                       </v-btn>
@@ -215,6 +216,7 @@
                             color="primary"
                             @click="saveVat('s')"
                             :large="$vuetify.breakpoint.smAndDown"
+                            depressed
                             >mdi-content-save</v-icon
                           >
                         </template>
@@ -259,6 +261,7 @@
                             color="primary"
                             @click="saveVat('p')"
                             :large="$vuetify.breakpoint.smAndDown"
+                            depressed
                             >mdi-content-save</v-icon
                           >
                         </template>
@@ -278,10 +281,8 @@
 
 <!-- Style -->
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
 }
 
 .v-application .tfield .white {

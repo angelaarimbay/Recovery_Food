@@ -68,30 +68,36 @@
     <!-- Table -->
     <table style="width: 100%">
         <!-- Header -->
-        <tr>
-            <th>
-                <h6>SUPPLIER NAME</h6>
-            </th>
-            <th>
-                <h6>INVOICE NUMBER</h6>
-            </th>
-            <th>
-                <h6>AMT</h6>
-            </th>
-            <th>
-                <h6>DATE</h6>
-            </th>
-        </tr>
-        <!-- Rows -->
-        @foreach ($data as $items)
-            <tr>
-                <td style="width: auto; text-align: left"> {{ $items['supplier_name_details']['supplier_name'] }}
-                    {{ $items['supplier_name_details']['description'] }}</td>
-                <td style="width: auto"> {{ $items['invoice_number'] }} </td>
-                <td style="width: auto; text-align: right"> {{ $items['format_amount'] }} </td>
-                <td style="width: auto"> {{ date('Y-m-d', strtotime($items['incoming_date'])) }} </td>
 
+        @foreach ($data as $array)
+
+            <tr>
+                <td colspan="3" style="text-align: center; font-size: 16px; background-color: red; color: white">
+                    {{ $array[0]['supplier_name'] }} ({{$array[0]['description']}})
+                </td>
             </tr>
+            <tr>
+                <th>
+                    <h6>INVOICE NUMBER</h6>
+                </th>
+                <th>
+                    <h6>AMT</h6>
+                </th>
+                <th>
+                    <h6>DATE</h6>
+                </th>
+            </tr>
+            <!-- Rows -->
+            @foreach ($array as $items)
+                <tr>
+                    <td style="width: auto"> {!! $items['invoice_number'] !!} </td>
+                    <td style="width: auto; text-align: right">
+                        {{ $items['amount'] ? number_format($items['amount'], 2) : '' }} </td>
+                    <td style="width: auto">
+                        {{ $items['incoming_date'] ? date('Y-m-d', strtotime($items['incoming_date'])) : null }}
+                    </td>
+                </tr>
+            @endforeach
         @endforeach
     </table>
 

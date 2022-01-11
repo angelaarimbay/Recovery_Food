@@ -144,10 +144,8 @@
 
 <!-- Style -->
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1150px !important;
-  }
+.container {
+  max-width: 1150px !important;
 }
 
 .v-application #email .white,

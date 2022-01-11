@@ -79,9 +79,10 @@
         <span>Print</span>
       </v-tooltip></v-card-actions
     >
-    <!-- Category Field -->
+
     <v-row no-gutters justify="center">
       <v-col cols="4" class="px-1" style="max-width: 150px">
+        <!-- Category Field -->
         <v-card-actions class="pb-1 pt-4 px-0">
           <v-select
             hide-details
@@ -185,10 +186,8 @@
 
 <!-- Style -->
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
 }
 
 .v-list-item__content {
@@ -366,6 +365,8 @@ export default {
                 to: this.incoming_to,
               },
             }).then((response) => {
+              // console.log(response.data);
+              // return;
               if (response.data.size > 0) {
                 let blob = new Blob([response.data], {
                   type: "application/pdf",

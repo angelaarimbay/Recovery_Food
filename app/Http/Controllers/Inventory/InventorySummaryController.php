@@ -69,7 +69,7 @@ class InventorySummaryController extends Controller
             //For computing variance
             try {
                 $temp['variance'] = number_format($temp['ending'] - (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity") - tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("quantity")) *
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity"))
+                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity")) -
                     (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("amount")
                          - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount")), 2);
             } catch (\Throwable $th) {
@@ -79,8 +79,8 @@ class InventorySummaryController extends Controller
             //For computing variance original
             try {
                 $temp['variance_orig'] = $temp['ending'] - (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity") - tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("quantity")) *
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity"))
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("amount")
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity")) //dito sa part na to.
+                (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("amount")
                      - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"));
             } catch (\Throwable $th) {
                 $temp['variance_orig'] = 0;
@@ -88,8 +88,9 @@ class InventorySummaryController extends Controller
 
             //For computing fluctuation
             try {
-                $temp['fluctuation'] = number_format($temp['ending'] - (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity") - tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("quantity")) *
-                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity"))
+                $temp['fluctuation'] = number_format($temp['ending'] -
+                    (tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("quantity") - tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("quantity")) *
+                    (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount") / tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("quantity")) -
                     (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date22])->get()->sum("amount")
                          - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount")), 2);
             } catch (\Throwable $th) {

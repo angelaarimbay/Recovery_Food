@@ -178,7 +178,7 @@
                 class="mx-auto caption"
                 style="text-transform: none; text-decoration: none"
                 :to="{ name: 'masterlist-supplies' }"
-                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+                >View Info<v-icon small>mdi-information-outline</v-icon></v-btn
               ></v-card-actions
             >
           </v-card>
@@ -225,7 +225,7 @@
                 class="mx-auto caption"
                 style="text-transform: none; text-decoration: none"
                 :to="{ name: 'masterlist-products' }"
-                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+                >View Info<v-icon small>mdi-information-outline</v-icon></v-btn
               ></v-card-actions
             >
           </v-card>
@@ -272,7 +272,7 @@
                 class="mx-auto caption"
                 style="text-transform: none; text-decoration: none"
                 :to="{ name: 'purchase-orders' }"
-                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+                >View Info<v-icon small>mdi-information-outline</v-icon></v-btn
               ></v-card-actions
             >
           </v-card>
@@ -319,7 +319,7 @@
                 class="mx-auto caption"
                 style="text-transform: none; text-decoration: none"
                 :to="{ name: 'user-accounts' }"
-                >View Info<v-icon small>mdi-arrow-right</v-icon></v-btn
+                >View Info<v-icon small>mdi-information-outline</v-icon></v-btn
               ></v-card-actions
             >
           </v-card>
@@ -771,10 +771,8 @@
 
 <!-- Style -->
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
 }
 
 .v-list-item__content {

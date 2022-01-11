@@ -63,7 +63,7 @@
 
         @foreach ($data as $array)
             <tr>
-                <td colspan="29" style="text-align: center; font-size: 17px; background-color: red; color: white">
+                <td colspan="29" style="text-align: center; font-size: 16px; background-color: red; color: white">
                     <h5>{{ $array[0]['category'] }}</h5>
                 </td>
             </tr>
@@ -194,33 +194,33 @@
                 <tr>
                     <td style="width: 15%; text-align: left"> {!! $items['supply_name'] !!}</td>
                     <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
-                    <td style="width: auto; text-align: right"> {{ $items['net_price'] ?? 0 }} </td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['net_price'], 2) }} </td>
                     <td style="width: auto; text-align: right"> {{ $items['beginning_q'] ?? 0 }} </td>
-                    <td style="width: auto; text-align: right"> {{ $items['beginning_a'] ?? 0 }} </td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['beginning_a'] ?? 0, 2) }} </td>
                     <td style="width: auto; text-align: right"> {{ $items['incoming_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['incoming_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['incoming_a'] ?? 0, 2) }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['total_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['total_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['total_a'] ?? 0, 2) }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['outgoing_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['outgoing_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['outgoing_a'] ?? 0, 2) }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['onhand_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['onhand_a'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['average_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['average_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['onhand_a'] ?? 0, 2) }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['average_q'] ?? 0, 2) }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format($items['average_a'] ?? 0, 2) }}</td>
                     <td style="width: auto"> {{ $items['lead_time'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['orderpoint'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['minimum_order_quantity'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['ordr'] ?? 0 }}</td>
                     <td style="width: auto"> {{ $items['order_frequency'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: left"> {{ $items['triggerpoint'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: left"> {!! $items['triggerpoint'] ?? 0 !!}</td>
                     <td style="width: auto; text-align: right"> {{ $items['ending_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['ending_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['ending_a'] ?? 0, 2) }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['consumption_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['consumption_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['consumption_a'] ?? 0, 2) }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['ideal_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['ideal_a'] ?? 0 }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['ideal_a'] ?? 0, 2) }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['variance_q'] ?? 0 }}</td>
-                    <td style="width: auto; text-align: right"> {{ $items['variance_a'] ?? 0 }} </td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['variance_a'] ?? 0, 2) }} </td>
                 </tr>
             @endforeach
         @endforeach

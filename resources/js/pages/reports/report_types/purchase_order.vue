@@ -80,7 +80,29 @@
       </v-tooltip></v-card-actions
     >
 
-    <v-row no-gutters justify="center">
+    <v-row no-gutters justify="center" align="center">
+      <v-col cols="6" class="px-1" style="max-width: 150px">
+        <!-- Supplier -->
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-select
+            hide-details
+            v-model="supplier"
+            :items="suppnamelist"
+            item-text="supplier_name"
+            item-value="id"
+            dense
+            placeholder="Supplier"
+            @change="get"
+            background-color="grey darken-3"
+            flat
+            solo
+            style="font-size: 12px"
+            dark
+          >
+          </v-select>
+        </v-card-actions>
+      </v-col>
+
       <!-- Date Picker -->
       <v-col cols="6" class="px-1" style="max-width: 150px">
         <v-menu
@@ -183,6 +205,7 @@ export default {
     dateFromPO: null,
     dateUntilPO: null,
     print: "",
+    supplier: "",
     date1: false,
     date2: false,
     snackbar: {
@@ -190,6 +213,7 @@ export default {
       message: "",
     },
     overlay: false,
+    suppnamelist: [],
   }),
 
   //Onload
@@ -202,6 +226,7 @@ export default {
       new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
       "YYYY-MM-DD"
     );
+    this.suppName();
   },
 
   //Methods
@@ -209,6 +234,19 @@ export default {
     getFormatDate(e, format) {
       const date = moment(e);
       return date.format(format);
+    },
+
+    //For retrieving supplier names
+    async suppName() {
+      await axios.get("/api/porder/suppName").then((supp_name) => {
+        this.suppnamelist.push({ supplier_name: "All", id: "All" });
+        for (var key in supp_name.data) {
+          this.suppnamelist.push({
+            supplier_name: supp_name.data[key]["supplier_name"],
+            id: supp_name.data[key]["id"],
+          });
+        }
+      });
     },
 
     //For exporting/printing
@@ -232,6 +270,7 @@ export default {
                 type: type,
                 from: this.dateFromPO,
                 to: this.dateUntilPO,
+                supplier: this.supplier,
               },
             }).then((response) => {
               if (response.data.size > 0) {
@@ -269,6 +308,7 @@ export default {
                 type: "pdf",
                 from: this.dateFromPO,
                 to: this.dateUntilPO,
+                supplier: this.supplier,
               },
             }).then((response) => {
               if (response.data.size > 0) {
@@ -280,6 +320,7 @@ export default {
                       type: type,
                       from: this.dateFromPO,
                       to: this.dateUntilPO,
+                      supplier: this.supplier,
                     },
                   })
                   .then((res) => {
@@ -316,6 +357,7 @@ export default {
                 type: "pdf",
                 from: this.dateFromPO,
                 to: this.dateUntilPO,
+                supplier: this.supplier,
               },
             }).then((response) => {
               if (response.data.size > 0) {
@@ -341,7 +383,6 @@ export default {
                 };
               }
             });
-
             break;
           default:
             break;
@@ -354,9 +395,17 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
+}
+
+.v-list-item__content {
+  color: white !important;
+}
+.v-menu__content.theme--light .v-list {
+  background: #212121 !important;
+}
+.theme--light.v-list-item:hover:before {
+  opacity: 0.2 !important;
 }
 </style>

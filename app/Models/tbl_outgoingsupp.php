@@ -60,13 +60,13 @@ class tbl_outgoingsupp extends Model
     //For with VAT
     public function getWithVatPriceAttribute()
     {
-        $date1 = date("Y-m-d 00:00:00", strtotime(date("m") . "-01-" . date("Y")));
-        $date2 = date("Y-m-t 23:59:59", strtotime(date("m") . '/' . date('t') . '/' . date("Y")));
+        $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
 
         //Get the amount from incoming
         $get_amount = tbl_incomingsupp::where("supply_name", $this->supply_name)
             ->whereBetween('incoming_date', [$date1, $date2]);
-        $get_quantity = $get_amount = tbl_incomingsupp::where("supply_name", $this->supply_name)
+        $get_quantity = tbl_incomingsupp::where("supply_name", $this->supply_name)
             ->whereBetween('incoming_date', [$date1, $date2]);
 
         //Get average amount
@@ -75,7 +75,7 @@ class tbl_outgoingsupp extends Model
         } else {
             $get_wov = tbl_masterlistsupp::where('id', $this->supply_name)->first()->net_price;
         }
-        return $get_wov;
+        return round($get_wov, 2);
     }
 
     //For net price
@@ -103,6 +103,6 @@ class tbl_outgoingsupp extends Model
         } else {
             $get_wov = $get_quantity->sum('quantity') * (($get_amount->sum('amount') / $get_quantity->sum('quantity')) - tbl_masterlistsupp::where("id", $this->supply_name)->first()->net_price);
         }
-        return $get_wov;
+        return round($get_wov, 2);
     }
 }

@@ -43,44 +43,46 @@
     <!-- Main Card -->
     <v-card elevation="1" class="mt-2" style="border-radius: 10px">
       <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-4 py-4">
-        <v-row no-gutters>
-          <v-spacer></v-spacer>
-          <!-- Refresh -->
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-btn
-                class="mr-2 mb-3"
-                color="success"
-                style="text-transform: none"
-                depressed
-                :small="$vuetify.breakpoint.smAndDown"
-                dark
-                @click="get"
-                v-on="data.on"
-                icon
-                ><v-icon>mdi-refresh</v-icon></v-btn
-              >
-            </template>
-            <span>Refresh</span>
-          </v-tooltip>
-          <!-- Filter -->
-          <v-tooltip bottom>
-            <template #activator="data">
-              <v-btn
-                color="grey darken-4"
-                style="text-transform: none"
-                depressed
-                :small="$vuetify.breakpoint.smAndDown"
-                dark
-                @click="filterDialog = true"
-                v-on="data.on"
-                icon
-                ><v-icon>mdi-filter-variant</v-icon></v-btn
-              >
-            </template>
-            <span>Filter</span>
-          </v-tooltip>
-        </v-row>
+        <v-card-actions class="px-0">
+          <v-row align="center" no-gutters>
+            <v-spacer></v-spacer>
+            <v-card color="red darken-3" flat style="border-radius: 20px">
+              <!-- Refresh -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2"
+                    color="white"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="refresh"
+                    v-on="data.on"
+                    icon
+                    ><v-icon size="20">mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+              <!-- Filter -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="white"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="filterDialog = true"
+                    v-on="data.on"
+                    icon
+                    ><v-icon size="20">mdi-filter-variant</v-icon></v-btn
+                  >
+                </template>
+                <span>Filter</span>
+              </v-tooltip>
+            </v-card>
+          </v-row>
+        </v-card-actions>
 
         <!-- Filter Dialog -->
         <v-dialog v-model="filterDialog" max-width="400px">
@@ -285,7 +287,7 @@
           :items-per-page="itemsPerPage"
           hide-default-footer
           @page-count="pageCount = $event"
-          class="table-striped border"
+          class="table-striped border mt-2"
         >
           <!-- Progress Bar -->
           <v-progress-linear
@@ -315,7 +317,9 @@
         </v-data-table>
 
         <!-- Paginate -->
-        <div class="pbutton text-center pt-7">
+        <div
+          class="pbutton text-center pt-7 pb-xl-4 pb-lg-4 pb-md-4 pb-sm-3 pb-3"
+        >
           <v-pagination
             v-model="page"
             :total-visible="7"
@@ -330,10 +334,8 @@
 
 <!-- Style -->
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
 }
 
 #table1 .v-data-table-header th {
@@ -541,6 +543,20 @@ export default {
       await axios.get("/api/osupp/suppCat").then((supp_cat) => {
         this.suppcatlist = supp_cat.data;
       });
+    },
+
+    //For refresh
+    refresh() {
+      this.dateFrom = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        "YYYY-MM-DD"
+      );
+      this.dateUntil = this.getFormatDate(
+        new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+        "YYYY-MM-DD"
+      );
+      this.get();
+      this.suppCat();
     },
   },
 

@@ -82,41 +82,41 @@
 
           <v-row no-gutters class="mt-2" style="height: 60px" align="center">
             <v-spacer></v-spacer>
-            <!-- Refresh -->
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  class="mr-2"
-                  color="success"
-                  style="text-transform: none"
-                  depressed
-                  :small="$vuetify.breakpoint.smAndDown"
-                  dark
-                  @click="get"
-                  v-on="data.on"
-                  icon
-                  ><v-icon>mdi-refresh</v-icon></v-btn
-                >
-              </template>
-              <span>Refresh</span>
-            </v-tooltip>
-            <!-- Filter -->
-            <v-tooltip bottom>
-              <template #activator="data">
-                <v-btn
-                  color="grey darken-4"
-                  style="text-transform: none"
-                  depressed
-                  :small="$vuetify.breakpoint.smAndDown"
-                  dark
-                  @click="filterDialog = true"
-                  v-on="data.on"
-                  icon
-                  ><v-icon>mdi-filter-variant</v-icon></v-btn
-                >
-              </template>
-              <span>Filter</span>
-            </v-tooltip>
+            <v-card color="red darken-3" flat style="border-radius: 20px">
+              <!-- Refresh -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    class="mr-2"
+                    color="white"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="refresh"
+                    v-on="data.on"
+                    icon
+                    ><v-icon size="20">mdi-refresh</v-icon></v-btn
+                  >
+                </template>
+                <span>Refresh</span>
+              </v-tooltip>
+              <!-- Filter -->
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    color="white"
+                    depressed
+                    :small="$vuetify.breakpoint.smAndDown"
+                    dark
+                    @click="filterDialog = true"
+                    v-on="data.on"
+                    icon
+                    ><v-icon size="20">mdi-filter-variant</v-icon></v-btn
+                  >
+                </template>
+                <span>Filter</span>
+              </v-tooltip>
+            </v-card>
           </v-row>
 
           <!-- Filter Dialog -->
@@ -408,18 +408,18 @@
             </v-card-text>
             <v-divider class="my-0"></v-divider>
             <!-- Dialog Form Buttons -->
-            <v-card-actions class="px-0 pb-0">
+            <v-card-actions class="px-0 pb-0 pt-3">
               <v-spacer></v-spacer>
               <v-btn
-                color="black"
+                color="grey"
                 depressed
                 :disabled="button"
                 dark
                 @click="cancel"
                 :small="$vuetify.breakpoint.smAndDown"
-                text
+                outlined
               >
-                Cancel
+                <span style="color: #1976d2">Cancel</span>
               </v-btn>
               <v-btn
                 color="primary"
@@ -576,7 +576,7 @@
           </v-data-table>
 
           <!-- Paginate -->
-          <!-- <div class="text-center pt-7">
+          <!-- <div class="text-center pt-7 pb-xl-4 pb-lg-4 pb-md-4 pb-sm-3 pb-3">
             <v-pagination
               v-model="page"
               :total-visible="7"
@@ -820,10 +820,8 @@
 
 <!-- Style -->
 <style>
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
 }
 
 .centered-input input {
@@ -906,9 +904,6 @@ export default {
     }),
     disabled2() {
       for (var key in this.temp_data) {
-        console.log(this.temp_data.data);
-        console.log(this.table2);
-
         for (var key1 in this.temp_data[key]) {
           if (this.temp_data[key][key1] != this.table2[key][key1]) {
             alert("d magkatulad");
@@ -1674,6 +1669,14 @@ export default {
         iconColor: "success",
         message: "Successfully created a new order.",
       };
+    },
+
+    //For refresh
+    refresh() {
+      this.get();
+      this.prodCat();
+      this.prodSubCat();
+      this.getSalesCount();
     },
   },
 
