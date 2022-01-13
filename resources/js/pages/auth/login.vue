@@ -12,7 +12,7 @@
       </v-overlay>
       <v-row v-if="user" align="center">
         <v-col cols="12">
-          <v-card outlined class="mt-2" style="border-radius: 10px">
+          <v-card outlined style="border-radius: 10px">
             <v-tabs
               v-model="tab"
               grow
@@ -53,13 +53,12 @@
           <v-tabs-items v-model="tab" id="custom-tab-items">
             <!-- Log In -->
             <v-tab-item>
-              <v-row no-gutters>
+              <v-row>
                 <!-- Logo -->
-                <v-col cols="12" xl="6" lg="6" md="6">
+                <v-col cols="12" xl="6" lg="6" md="6" class="hidden-xs-only">
                   <v-img
                     contain
                     :src="logo_path"
-                    class="hidden-xs-only"
                   ></v-img>
                 </v-col>
                 <!-- Login Form -->
@@ -68,13 +67,13 @@
                   xl="6"
                   lg="6"
                   md="6"
-                  class="pa-0 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
+                  class="pa-4 pa-xl-15 pa-lg-15 pa-md-10 pa-sm-5"
                 >
                   <v-card
                     elevation="3"
                     style="border-radius: 10px"
-                    class="d-flex align-center justify-center"
-                    max-width="500px"
+                    max-width="420px"
+                    class="mx-auto"
                   >
                     <v-form ref="form" @submit.prevent="submitHandler">
                       <v-card-text class="pa-4 pa-xl-7 pa-lg-7 pa-md-5 pa-sm-5">
@@ -170,7 +169,7 @@
 
             <!-- About Us -->
             <v-tab-item>
-              <v-card outlined class="mt-2 pa-4" style="border-radius: 10px">
+              <v-card outlined class="mt-1 pa-4" style="border-radius: 10px">
                 <v-row no-gutters>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="12">
                     <v-card-title
