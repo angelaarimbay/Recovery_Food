@@ -85,7 +85,7 @@
                     <h6>INCOMING SUPPLIES</h6>
                 </th>
                 <th colspan="2">
-                    <h6>TOTAL STOCKS</h6>
+                    <h6>TOTAL INVENTORY</h6>
                 </th>
                 <th colspan="2">
                     <h6>OUTGOING SUPPLIES</h6>
@@ -194,7 +194,7 @@
                 <tr>
                     <td style="width: 15%; text-align: left"> {!! $items['supply_name'] !!}</td>
                     <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
-                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['net_price'], 2) }} </td>
+                    <td style="width: auto; text-align: right"> {{ $items['net_price'] }} </td>
                     <td style="width: auto; text-align: right"> {{ $items['beginning_q'] ?? 0 }} </td>
                     <td style="width: auto; text-align: right"> {{ number_format((float)$items['beginning_a'] ?? 0, 2) }} </td>
                     <td style="width: auto; text-align: right"> {{ $items['incoming_q'] ?? 0 }}</td>
@@ -206,7 +206,7 @@
                     <td style="width: auto; text-align: right"> {{ $items['onhand_q'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ number_format((float)$items['onhand_a'] ?? 0, 2) }}</td>
                     <td style="width: auto; text-align: right"> {{ number_format((float)$items['average_q'] ?? 0, 2) }}</td>
-                    <td style="width: auto; text-align: right"> {{ number_format($items['average_a'] ?? 0, 2) }}</td>
+                    <td style="width: auto; text-align: right"> {{ number_format((float)$items['average_a'] ?? 0, 2) }}</td>
                     <td style="width: auto"> {{ $items['lead_time'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['orderpoint'] ?? 0 }}</td>
                     <td style="width: auto; text-align: right"> {{ $items['minimum_order_quantity'] ?? 0 }}</td>

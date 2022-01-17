@@ -60,54 +60,56 @@
     <table style="border:none; width: 100%">
         <tr>
             <td style="border:none;text-align: left; width: auto"> </td>
-            <td style="border:none; text-align: right; width: auto"> Month Of: {{ date('F') }} </td>
+            <td style="border:none; text-align: right; width: auto">
+                Month Of: {{ date('F', mktime(0, 0, 0, $param['month'], 10)) }}
+            </td>
         </tr>
     </table>
 
     <!-- Table -->
     <table style="width: 100%">
         <!-- Header -->
-        <tr>
-            <th>
+        <tr style="font-size: 16px; background-color: red">
+            <th style="color: white">
                 <h6>SUPPLIES CATEGORY</h6>
             </th>
-            <th>
+            <th style="color: white">
                 <h6>BEGINNING INVENTORY</h6>
             </th>
-            <th>
+            <th style="color: white">
                 <h6>PURCHASES</h6>
             </th>
-            <th>
-                <h6>TOTAL STOCKS</h6>
+            <th style="color: white">
+                <h6>TOTAL INVENTORY</h6>
             </th>
-            <th>
-                <h6>OUTGOING</h6>
+            <th style="color: white">
+                <h6>OUTGOING SUPPLIES</h6>
             </th>
-            <th>
+            <th style="color: white">
                 <h6>STOCKS ON HAND</h6>
             </th>
-            <th>
+            <th style="color: white">
                 <h6>ENDING INVENTORY</h6>
             </th>
-            <th>
+            <th style="color: white">
                 <h6>VARIANCE</h6>
             </th>
-            <th>
+            <th style="color: white">
                 <h6>FLUCTUATION</h6>
             </th>
         </tr>
         <!-- Rows -->
         @foreach ($data as $key => $items)
             <tr>
-                <td style="width: auto"> {!! $items['category'] !!} </td>
-                <td style="width: auto"> {{ number_format($items['beginning'], 2) }} </td>
-                <td style="width: auto"> {{ number_format($items['incoming'], 2) }} </td>
-                <td style="width: auto"> {{ number_format($items['total'], 2) }} </td>
-                <td style="width: auto"> {{ number_format($items['outgoing'], 2) }} </td>
-                <td style="width: auto"> {{ number_format($items['ending'], 2) }} </td>
-                <td style="width: auto"> {{ number_format($items['stocks'], 2) }} </td>
-                <td style="width: auto"> {{ number_format($items['variance'], 2) }} </td>
-                <td style="width: auto"> {{ number_format($items['fluctuation'], 2) }} </td>
+                <td style="width: auto; text-align: left"> {!! $items['category'] !!} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['beginning'], 2) }} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['incoming'], 2) }} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['total'], 2) }} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['outgoing'], 2) }} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['stocks'], 2) }} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['ending'], 2) }} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['variance'], 2) }} </td>
+                <td style="width: auto; text-align: right"> {{ number_format($items['fluctuation'], 2) }} </td>
             </tr>
         @endforeach
     </table>

@@ -80,9 +80,17 @@ class OutgoingSuppliesController extends Controller
         }
 
         $return = [];
-        foreach ($table->get() as $key => $value) {
+        $row = 1;
+        foreach ($table->orderBy("supply_name")->orderBy("outgoing_date")->get() as $key => $value) {
+
+            //Get the total qty and amount from outgoing
+            $get_amount = tbl_outgoingsupp::where("supply_name", $value->supply_name)
+                ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
+            $get_quantity = tbl_outgoingsupp::where("supply_name", $value->supply_name)
+                ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->dateFrom)), date("Y-m-d 23:59:59", strtotime($t->dateUntil))]);
+
             $temp = [];
-            $temp['row'] = $key + 1;
+            $temp['row'] = $row++;
             $temp['id'] = $value->id;
             $temp['status'] = $value->status;
             $temp['category'] = $value->category_details;
@@ -94,9 +102,12 @@ class OutgoingSuppliesController extends Controller
                 ->selectRaw(' CONCAT(supply_name , " ", COALESCE(description,"")) as supply_name, category, net_price, unit, description, id')
                 ->where("id", $value->supply_name)->first();
             $temp['outgoing_amount'] = number_format($value->with_vat_price * $value->quantity, 2);
-            $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
-            $temp['without_vat_price'] = number_format($value->without_vat_price, 2);
-            $temp['fluctuation'] = number_format($value->fluctuation, 2);
+            //Get with vat
+            if ($get_quantity->sum('quantity') > 0) {
+                $temp['with_vat_price'] = number_format($get_amount->sum('amount') / $get_quantity->sum('quantity'), 2);
+            } else {
+                $temp['with_vat_price'] = number_format($value->net_price, 2);
+            }
             array_push($return, $temp);
         }
         $items = Collection::make($return);

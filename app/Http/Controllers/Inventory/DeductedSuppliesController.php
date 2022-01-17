@@ -24,9 +24,10 @@ class DeductedSuppliesController extends Controller
         }
 
         $return = [];
+        $row = 1;
         foreach ($table->get() as $key => $value) {
             $temp = [];
-            $temp['row'] = $key + 1;
+            $temp['row'] = $row++;
             $temp['id'] = $value->id;
             $temp['category'] = $value->category_details;
             $temp['supply_name'] = $value->supply_name_details;

@@ -130,9 +130,9 @@
 
 <!-- Style -->
 <style>
-  .container {
-    max-width: 1500px !important;
-  }
+.container {
+  max-width: 1500px !important;
+}
 
 .v-list-item__content {
   color: white !important;
@@ -198,135 +198,148 @@ export default {
           message: "Error! Please select a year and/or month first.",
         };
       } else {
-        this.overlay = true;
-        switch (type) {
-          case "pdf":
-            await axios({
-              url: "/api/reports/inventorysummary/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                type: type,
-                year: this.year,
-                month:
-                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Inventory Summary Report.pdf";
-                link.click();
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully exported.",
-                };
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "excel":
-            await axios({
-              url: "/api/reports/inventorysummary/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                type: "pdf",
-                year: this.year,
-                month:
-                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                axios
-                  .get("/api/reports/inventorysummary/get", {
-                    method: "GET",
-                    responseType: "arraybuffer",
-                    params: {
-                      type: type,
-                      year: this.year,
-                      month:
-                        new Date(
-                          Date.parse(this.month + " 1, 2020")
-                        ).getMonth() + 1,
-                    },
-                  })
-                  .then((res) => {
-                    let blob = new Blob([res.data], {
-                      type: "application/excel",
-                    });
-                    let link = document.createElement("a");
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Inventory Summary Report.xlsx";
-                    link.click();
-                    this.snackbar = {
-                      active: true,
-                      iconText: "check",
-                      iconColor: "success",
-                      message: "Successfully exported.",
-                    };
+        try {
+          this.overlay = true;
+          switch (type) {
+            case "pdf":
+              await axios({
+                url: "/api/reports/inventorysummary/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  type: type,
+                  year: this.year,
+                  month:
+                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
+                    1,
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
                   });
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/inventorysummary/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                type: "pdf",
-                year: this.year,
-                month:
-                  new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                this.print = window.URL.createObjectURL(blob);
-                this.snackbar = {
-                  active: true,
-                  iconText: "information",
-                  iconColor: "primary",
-                  message: "Printing... Please wait.",
-                };
-                setTimeout(function () {
-                  document.getElementById("print4").contentWindow.print();
-                }, 3000);
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to print.",
-                };
-              }
-            });
-            break;
-          default:
-            break;
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Inventory Summary Report.pdf";
+                  link.click();
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully exported.",
+                  };
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+              break;
+            case "excel":
+              await axios({
+                url: "/api/reports/inventorysummary/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  type: "pdf",
+                  year: this.year,
+                  month:
+                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
+                    1,
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  axios
+                    .get("/api/reports/inventorysummary/get", {
+                      method: "GET",
+                      responseType: "arraybuffer",
+                      params: {
+                        type: type,
+                        year: this.year,
+                        month:
+                          new Date(
+                            Date.parse(this.month + " 1, 2020")
+                          ).getMonth() + 1,
+                      },
+                    })
+                    .then((res) => {
+                      let blob = new Blob([res.data], {
+                        type: "application/excel",
+                      });
+                      let link = document.createElement("a");
+                      link.href = window.URL.createObjectURL(blob);
+                      link.download = "Inventory Summary Report.xlsx";
+                      link.click();
+                      this.snackbar = {
+                        active: true,
+                        iconText: "check",
+                        iconColor: "success",
+                        message: "Successfully exported.",
+                      };
+                    });
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+              break;
+            case "print":
+              await axios({
+                url: "/api/reports/inventorysummary/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  type: "pdf",
+                  year: this.year,
+                  month:
+                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
+                    1,
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
+                  });
+                  this.print = window.URL.createObjectURL(blob);
+                  this.snackbar = {
+                    active: true,
+                    iconText: "information",
+                    iconColor: "primary",
+                    message: "Printing... Please wait.",
+                  };
+                  setTimeout(function () {
+                    document.getElementById("print4").contentWindow.print();
+                  }, 3000);
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to print.",
+                  };
+                }
+              });
+              break;
+            default:
+              break;
+          }
+          this.overlay = false;
+        } catch (error) {
+          this.overlay = false;
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Something went wrong! Please try again.",
+          };
         }
-        this.overlay = false;
       }
     },
   },

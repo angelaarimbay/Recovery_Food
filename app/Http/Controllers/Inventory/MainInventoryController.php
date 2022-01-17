@@ -31,7 +31,7 @@ class MainInventoryController extends Controller
 
         //Previous month
         $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
-        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-" . date("t"))));
+        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
 
         //Current month
         $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
@@ -39,7 +39,7 @@ class MainInventoryController extends Controller
 
         $return = [];
         $row = 1;
-        foreach ($table->get() as $key => $value) {
+        foreach ($table->orderBy("category")->get() as $key => $value) {
             $temp = [];
             $temp['row'] = $row++;
             $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
@@ -63,7 +63,7 @@ class MainInventoryController extends Controller
             $a = clone $incoming_past;
             $temp['begining_q'] = $a->sum('quantity');
             $a = clone $incoming_past;
-            $temp['begining_a'] = number_format($a->sum('amount'), 2);
+            $temp['begining_a'] = number_format($temp['begining_q'] * $value->net_price, 2);
 
             //Incoming (Total of previous month)
             $a = clone $incoming;
@@ -97,7 +97,7 @@ class MainInventoryController extends Controller
 
             //Average ((Total of previous month + current month) / (quantity of previous month + current month) / (current month quantity / current date today))
             $a = clone $outgoing;
-            $temp['average_q'] = number_format($a->sum('quantity') / date('d'), 2);
+            $temp['average_q'] = $a->sum('quantity') / date('d');
             $c_a = clone $incoming_and_past;
             $cc_a = clone $incoming_and_past;
             if ($c_a->sum('quantity') > 0) {
@@ -122,10 +122,10 @@ class MainInventoryController extends Controller
             //Trigger Point  ((lead time of item * total quantity / current day today) + (outgoing quantity / current day today))
             $a = clone $incoming_and_past;
             $b = clone $outgoing;
-            if (($a->sum('quantity') - $b->sum('quantity')) < $value->lead_time * ($b->sum('quantity') / date('d'))) {
-                $temp['triggerpoint'] = 0; // order
+            if ($temp['onhand_q'] < $temp['orderpoint']) {
+                $temp['triggerpoint'] = 0; //Order
             } else {
-                $temp['triggerpoint'] = 1; // manage
+                $temp['triggerpoint'] = 1; //Manage
             }
 
             //For Ending
@@ -133,11 +133,10 @@ class MainInventoryController extends Controller
             $b = clone $outgoing;
             $aa = clone $incoming;
             $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
-
-            if ($aa->sum('amount') > 0) {
+            if ($temp['ending_q'] > 0 && $aa->sum('quantity') > 0) {
                 $temp['ending_a'] = number_format($temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
-                $temp['ending_a'] = 0;
+                $temp['ending_a'] = number_format($temp['ending_q'] * $value->with_vat_price, 2);
             }
 
             //For consumption
@@ -155,10 +154,10 @@ class MainInventoryController extends Controller
             $b = clone $outgoing;
             $temp['ideal_q'] = $a->sum('quantity') - $b->sum('quantity');
             $aa = clone $incoming;
-            if ($aa->sum('amount') > 0) {
+            if ($temp['ideal_q'] > 0 && $aa->sum('quantity') > 0) {
                 $temp['ideal_a'] = number_format($temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
-                $temp['ideal_a'] = 0;
+                $temp['ideal_a'] = number_format($temp['ending_q'] * $value->with_vat_price, 2);
             }
 
             //For variance
@@ -173,7 +172,7 @@ class MainInventoryController extends Controller
         }
 
         $items = Collection::make($return);
-        return new LengthAwarePaginator(collect($items)->sortBy('triggerpoint')->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
+        return new LengthAwarePaginator(collect($items)->forPage($t->page, $t->itemsPerPage)->values(), $items->count(), $t->itemsPerPage, $t->page, []);
     }
 
     //For retrieving supply categories

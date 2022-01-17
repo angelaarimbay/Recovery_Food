@@ -61,11 +61,14 @@
 
         @foreach ($data as $array)
             <tr>
-                <td colspan="7" style="text-align: center; font-size: 16px; background-color: red; color: white">
+                <td colspan="8" style="text-align: center; font-size: 16px; background-color: red; color: white">
                     {{ $array[0]['category_details'] }}
                 </td>
             </tr>
             <tr>
+                <th>
+                    <h6>SUPPLIER NAME</h6>
+                </th>
                 <th>
                     <h6>SUPPLY NAME</h6>
                 </th>
@@ -91,17 +94,35 @@
 
             <!-- Rows -->
             @foreach ($array as $items)
-                <tr>
-                    <td style="width: auto; text-align: left"> {!! $items['supply_name'] !!} {{ $items['description'] }}
-                    </td>
-                    <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
-                    <td style="width: auto; text-align: right"> {!! $items['net_price'] ? number_format($items['net_price'], 2) : '' !!} </td>
-                    <td style="width: auto; text-align: right"> {!! $items['with_vat'] ? number_format($items['with_vat'], 2) : '' !!} </td>
-                    <td style="width: auto"> {{ $items['vat'] }} </td>
-                    <td style="width: auto; text-align: right"> {!! $items['without_vat'] ? number_format($items['without_vat'], 2) : '' !!} </td>
-                    <td style="width: auto">
-                        {{ $items['exp_date'] ? date('Y-m-d', strtotime($items['exp_date'])) : null }} </td>
-                </tr>
+                {{-- @if ($items['supplier_name'] == '<b>TOTAL</b>')
+                    <tr style="background-color: #BEBEBE">
+                        <td style="width: auto; text-align: left"><b>TOTAL</b></td>
+                        <td style="width: auto; text-align: left"> </td>
+                        <td style="width: auto; text-align: left"> </td>
+                        <td style="width: auto; text-align: right"><b>{{ number_format($total_n, 2) }}</b></td>
+                        <td style="width: auto; text-align: right"><b>{{ number_format($total_wv, 2) }}</b></td>
+                        <td style="width: auto; text-align: left"> </td>
+                        <td style="width: auto; text-align: right"><b>{{ number_format($total_wov, 2) }}</b></td>
+                        <td style="width: auto; text-align: left"> </td>
+                    </tr>
+                @else --}}
+                    <tr>
+                        <td style="width: auto; text-align: left"> {!! $items['supplier_name'] !!} </td>
+                        <td style="width: auto; text-align: left"> {{ $items['supply_name'] }}
+                            {{ $items['description'] }}
+                        </td>
+                        <td style="width: auto; text-align: left"> {{ $items['unit'] }} </td>
+                        <td style="width: auto; text-align: right">
+                            {{ $items['net_price'] ? number_format($items['net_price'], 2) : '' }} </td>
+                        <td style="width: auto; text-align: right">
+                            {{ $items['with_vat'] ? number_format($items['with_vat'], 2) : '' }} </td>
+                        <td style="width: auto"> {{ $items['vat'] }} </td>
+                        <td style="width: auto; text-align: right">
+                            {{ $items['without_vat'] ? number_format($items['without_vat'], 2) : '' }} </td>
+                        <td style="width: 10%">
+                            {{ $items['exp_date'] ? date('Y-m-d', strtotime($items['exp_date'])) : null }} </td>
+                    </tr>
+                {{-- @endif --}}
             @endforeach
         @endforeach
         {{-- <tr>

@@ -141,37 +141,20 @@
                 @endforeach
             @endforeach
         @endforeach
-        {{-- <tr>
-            <td style=" border: none;width: auto"></td>
-            <td style=" border: none;width: auto"></td>
-            <td style=" border: none;width: auto"></td>
-            <td style=" border: none;width: auto"></td>
-            <td style=" border: none;width: auto"></td>
-            <td style=" border: none;width: auto"></td>
-            <td style=" border: none;width: auto"></td>
-        </tr>
-        <tr>
-            <td style=" border: none;width: auto"> Grand Total </td>
-            <td style=" border: none;width: auto"></td>
-            <td style=" border-top: none; border-left: none; border-right: none; width: auto">
-                {{ number_format($net_price, 2) }} </td>
-            <td style=" border-top: none; border-left: none; border-right: none; width: auto">
-                {{ number_format($with_vat, 2) }} </td>
-            <td style=" border-top: none; border-left: none; border-right: none; width: auto"> {{ $quantity }}
+        <tr style="background-color: #8db4e2">
+            <td style="width: auto"> <b>GRAND TOTAL</b> </td>
+            @if ($param['branch'] == 'All')
+                <td style="width: auto"></td>
+            @endif
+            <td style="width: auto"></td>
+            <td style="width: auto; text-align: right"></td>
+            <td style="width: auto; text-align: right"></td>
+            <td style="width: auto; text-align: right">
             </td>
-            <td style=" border-top: none; border-left: none; border-right: none; width: auto">
-                {{ number_format($quantity_amount, 2) }} </td>
-            <td style=" border: none;width: auto"></td>
+            <td style="width: auto; text-align: right">
+                <b>{{ number_format($quantity_amount, 2) }}</b> </td>
+            <td style="width: auto"></td>
         </tr>
-        <tr>
-            <td style=" border: none;width: auto"> </td>
-            <td style=" border: none;width: auto"> </td>
-            <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
-            <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
-            <td style=" border: none;width: auto"> </td>
-            <td style=" border-bottom: none;  border-left: none; border-right: none; width: auto"> </td>
-            <td style=" border: none;width: auto"> </td>
-        </tr> --}}
     </table>
 
     <div class="row" style="margin-top: 15px">

@@ -111,104 +111,120 @@
         </v-card-actions>
 
         <!-- Filter Dialog -->
-        <v-dialog v-model="filterDialog" max-width="400px">
-          <v-card dark tile class="pa-2">
-            <v-toolbar dense flat class="transparent">
-              Search Filter
+        <v-dialog v-model="filterDialog" max-width="400px" scrollable>
+          <v-card dark tile>
+            <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+              <span
+                class="
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  text-subtitle-2
+                "
+                >Search Filter</span
+              >
               <v-spacer></v-spacer>
-              <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              <v-icon
+                :small="$vuetify.breakpoint.xsOnly"
+                text
+                @click="filterDialog = false"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-divider class="my-0"></v-divider>
-            <v-row no-gutters align="center" class="pa-2">
-              <!-- Items Per Page -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Items / Page</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-card-actions class="px-0">
-                  <v-select
-                    dense
-                    v-model="itemsPerPage"
-                    @change="itemperpage"
-                    :items="[5, 10, 15, 20]"
-                    hide-details
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  >
-                  </v-select>
-                </v-card-actions>
-              </v-col>
+            <v-card-text class="px-5 py-2" style="height: auto">
+              <v-row no-gutters align="center">
+                <!-- Items Per Page -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Items / Page</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      dense
+                      v-model="itemsPerPage"
+                      @change="itemperpage"
+                      :items="[5, 10, 15, 20]"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
 
-              <!-- Search Field -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Search</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-card-actions class="px-0">
-                  <v-text-field
-                    v-model="search"
-                    placeholder="Supply Name"
-                    single-line
-                    dense
-                    clearable
-                    hide-details
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  ></v-text-field>
-                  <v-tooltip bottom>
-                    <template #activator="data">
-                      <v-btn
-                        small
-                        :x-small="$vuetify.breakpoint.smAndDown"
-                        color="red darken-2"
-                        icon
-                        v-on="data.on"
-                        @click="get"
-                        class="ml-1"
-                      >
-                        <v-icon>mdi-magnify</v-icon></v-btn
-                      >
-                    </template>
-                    <span>Search</span>
-                  </v-tooltip>
-                </v-card-actions>
-              </v-col>
+                <!-- Search Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Search</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      v-model="search"
+                      placeholder="Supply Name"
+                      single-line
+                      dense
+                      clearable
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                    <v-tooltip bottom>
+                      <template #activator="data">
+                        <v-btn
+                          small
+                          :x-small="$vuetify.breakpoint.smAndDown"
+                          color="red darken-2"
+                          icon
+                          v-on="data.on"
+                          @click="get"
+                          class="ml-1"
+                        >
+                          <v-icon>mdi-magnify</v-icon></v-btn
+                        >
+                      </template>
+                      <span>Search</span>
+                    </v-tooltip>
+                  </v-card-actions>
+                </v-col>
 
-              <!-- Category Field -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Category</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-card-actions class="px-0">
-                  <v-select
-                    hide-details
-                    v-model="category"
-                    :items="suppcatlist"
-                    item-text="supply_cat_name"
-                    item-value="id"
-                    clearable
-                    dense
-                    placeholder="Category"
-                    @change="get"
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  >
-                  </v-select>
-                </v-card-actions>
-              </v-col>
-            </v-row>
+                <!-- Category Field -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Category</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      hide-details
+                      v-model="category"
+                      :items="suppcatlist"
+                      item-text="supply_cat_name"
+                      item-value="id"
+                      clearable
+                      dense
+                      placeholder="Category"
+                      @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card-text>
           </v-card>
         </v-dialog>
 
@@ -367,45 +383,57 @@
           ></v-pagination>
         </div>
 
-        <v-dialog v-model="viewdialog" max-width="900px">
-          <v-card tile id="dialog" class="pa-3">
-            <v-toolbar dark dense flat rounded class="red darken-3">
-              Main Inventory
+        <!-- View Dialog -->
+        <v-dialog v-model="viewdialog" max-width="900px" scrollable>
+          <v-card tile id="dialog">
+            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+              <span
+                class="
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  text-subtitle-2
+                "
+                >Main Inventory</span
+              >
               <v-spacer></v-spacer>
               <v-icon
-                class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+                :small="$vuetify.breakpoint.xsOnly"
                 text
                 @click="closeViewDialog"
                 >mdi-close
               </v-icon>
             </v-toolbar>
 
-            <v-card-text class="py-2">
+            <v-card-text style="height: auto" class="px-4">
               <!-- Data -->
-              <v-row>
-                <v-col class="px-0">
-                  Category: <strong>{{ currentdata.category }}</strong>
-                  <br />
-                  Supply Name:
-                  <strong
-                    >{{ currentdata.supply_name }}
-                    {{ currentdata.description }}</strong
-                  >
-                  <br />
-                  Unit: <strong>{{ currentdata.unit }}</strong> <br />
-                  Net Price:
-                  <strong>{{
-                    getFormatCurrency(currentdata.net_price, "0,0.00")
-                  }}</strong>
-                  <br />
-                </v-col>
-              </v-row>
+              <v-card color="#f1f3f4" flat class="px-4 mb-6">
+                <v-row class="mt-1">
+                  <v-col>
+                    Category: <strong>{{ currentdata.category }}</strong>
+                    <br />
+                    Supply Name:
+                    <strong
+                      >{{ currentdata.supply_name }}
+                      {{ currentdata.description }}</strong
+                    >
+                    <br />
+                    Unit: <strong>{{ currentdata.unit }}</strong> <br />
+                    Net Price:
+                    <strong>{{
+                      getFormatCurrency(currentdata.net_price, "0,0.00")
+                    }}</strong>
+                    <br />
+                  </v-col>
+                </v-row>
+              </v-card>
 
               <v-row
                 :class="{
                   'text-caption': $vuetify.breakpoint.smAndDown,
                 }"
-                class="border rounded"
+                class="border rounded mx-0"
               >
                 <v-col cols="12" xl="6" lg="6" md="6" sm="6">
                   <v-row>
@@ -617,7 +645,11 @@
                       lg="3"
                       md="3"
                       sm="3"
-                      >{{ currentdata.average_q }}</v-col
+                      >{{
+                        !isNaN(currentdata.average_q)
+                          ? currentdata.average_q.toFixed(2)
+                          : 0
+                      }}</v-col
                     >
                     <v-col
                       class="py-1 px-2 text-right"
@@ -977,18 +1009,33 @@
             </v-card-text>
             <v-divider class="mt-4 mb-0"></v-divider>
             <!-- Dialog Form Buttons -->
-            <v-card-actions class="px-0 pb-0 pt-3">
-              <v-spacer></v-spacer>
-              <v-btn
-                color="grey"
-                depressed
-                :small="$vuetify.breakpoint.smAndDown"
-                dark
-                @click="closeViewDialog"
-                outlined
-              >
-                <span style="color: #1976d2">Close</span>
-              </v-btn>
+            <v-card-actions class="pa-3">
+              <template v-if="$vuetify.breakpoint.xsOnly">
+                <v-btn
+                  color="grey"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="closeViewDialog"
+                  outlined
+                  block
+                >
+                  <span style="color: #1976d2">Close</span>
+                </v-btn>
+              </template>
+              <template v-else>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="grey"
+                  depressed
+                  :small="$vuetify.breakpoint.smAndDown"
+                  dark
+                  @click="closeViewDialog"
+                  outlined
+                >
+                  <span style="color: #1976d2">Close</span>
+                </v-btn>
+              </template>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -999,6 +1046,10 @@
 
 <!-- Style -->
 <style>
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 .container {
   max-width: 1500px !important;
 }
@@ -1099,27 +1150,31 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "right",
+        align: "center",
         filterable: false,
         class: "black--text",
         sortable: false,
+        width: "10%",
       },
       {
         text: "CATEGORY",
         value: "category",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "SUPPLY NAME",
         value: "supply_name",
         class: "black--text",
+        width: "20%",
       },
       {
         text: "UNIT",
         value: "unit",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "NET PRICE",
@@ -1127,6 +1182,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "15%",
       },
       {
         text: "STOCKS ON HAND",
@@ -1134,12 +1190,14 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "15%",
       },
       {
         text: "TRIGGER POINT",
         value: "triggerpoint",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "ACTION",
@@ -1148,6 +1206,7 @@ export default {
         sortable: false,
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
     ],
     page: 1,

@@ -29,58 +29,66 @@
       </template>
     </v-snackbar>
 
-    <v-form ref="mainForm" id="mainForm">
-      <v-container>
-        <v-layout row wrap>
-          <h4
-            class="font-weight-bold heading my-auto"
-            :class="{ h5: $vuetify.breakpoint.smAndDown }"
+    <v-container>
+      <v-layout row wrap>
+        <h4
+          class="font-weight-bold heading my-auto"
+          :class="{ h5: $vuetify.breakpoint.smAndDown }"
+        >
+          Company
+        </h4>
+        <v-spacer></v-spacer>
+
+        <!-- Breadcrumbs -->
+        <v-card-actions class="px-0 py-0">
+          <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
+            plain
+            color="primary"
+            v-ripple="false"
+            to="/dashboard"
+            class="px-0"
+            style="text-decoration: none; text-transform: none"
+            >Home</v-btn
           >
-            Company
-          </h4>
-          <v-spacer></v-spacer>
+          /
+          <v-btn
+            :small="$vuetify.breakpoint.smAndDown"
+            text
+            disabled
+            class="px-0"
+            style="text-transform: none"
+            >Company</v-btn
+          >
+        </v-card-actions>
+      </v-layout>
+    </v-container>
 
-          <!-- Breadcrumbs -->
-          <v-card-actions class="px-0 py-0">
-            <v-btn
-              :small="$vuetify.breakpoint.smAndDown"
-              plain
-              color="primary"
-              v-ripple="false"
-              to="/dashboard"
-              class="px-0"
-              style="text-decoration: none; text-transform: none"
-              >Home</v-btn
-            >
-            /
-            <v-btn
-              :small="$vuetify.breakpoint.smAndDown"
-              text
-              disabled
-              class="px-0"
-              style="text-transform: none"
-              >Company</v-btn
-            >
-          </v-card-actions>
-        </v-layout>
-      </v-container>
-
-      <!-- Main Card -->
-      <v-card elevation="1" class="mt-2" style="border-radius: 10px">
+    <!-- Main Card -->
+    <v-card elevation="1" class="mt-2" style="border-radius: 10px">
+      <v-form ref="mainForm" id="mainForm">
         <v-container class="py-xl-3 py-lg-3 py-md-3 py-sm-2 py-1">
-          <v-row>
+          <v-row justify="center">
             <!-- Image -->
-            <v-col cols="12" xl="6" lg="6" md="12" sm="12">
+            <v-col
+              cols="12"
+              xl="6"
+              lg="12"
+              md="12"
+              sm="12"
+              style="max-width: 525px"
+            >
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
                   p-0
                   justify-center
                 "
-                >Logo/Image</v-card-title
+                style="color: #c62828"
+                >Logo</v-card-title
               >
               <v-img
-                class="border"
+                style="border: 2px solid #757575; border-radius: 10px"
                 contain
                 :src="temppath"
                 height="320"
@@ -112,31 +120,12 @@
                     <span>Choose an image</span>
                   </v-tooltip>
                 </v-col>
-
-                <v-col cols="12" v-if="form.attachment">
-                  <v-tooltip bottom>
-                    <template #activator="data">
-                      <!-- Save Button -->
-                      <v-btn
-                        v-on="data.on"
-                        block
-                        class="primary"
-                        style="text-transform: none"
-                        @click="savefile"
-                        :small="$vuetify.breakpoint.smAndDown"
-                        depressed
-                      >
-                        <v-icon color="white">mdi-content-save</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>Save Logo/Image</span>
-                  </v-tooltip>
-                </v-col>
               </v-row>
               <input
+                id="upload"
                 ref="uploader"
                 clearable
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 class="d-none"
                 type="file"
                 @change="uploaddocument"
@@ -167,120 +156,224 @@
                   </v-col>
                 </v-row>
               </div>
-            </v-col>
 
-            <!-- VAT -->
-            <v-col cols="12" xl="6" lg="6" md="12" sm="12">
+              <v-divider class="my-2"></v-divider>
+
+              <!-- VAT -->
               <v-card-title
                 class="
                   text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
                   p-0
                   justify-center
                 "
+                style="color: #c62828"
                 >VAT</v-card-title
               >
               <v-row no-gutters>
                 <v-col
-                  cols="12"
+                  cols="6"
                   xl="6"
                   lg="6"
                   md="6"
                   sm="6"
-                  class="tfield py-1"
+                  class="tfield py-1 px-0 pr-1"
                 >
-                  <v-row no-gutters>
-                    <span style="font-size: 12px">Supplies VAT</span>
-                    <v-col cols="10">
-                      <v-text-field
-                        :rules="formRulesVAT"
-                        v-model="form1.vat"
-                        dense
-                        persistent-placeholder
-                        clearable
-                        counter
-                        @keydown="VATKeydown($event)"
-                        maxlength="6"
-                        @blur="resetSV"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="2" class="text-center">
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-icon
-                            v-on="data.on"
-                            x-large
-                            color="primary"
-                            @click="saveVat('s')"
-                            :large="$vuetify.breakpoint.smAndDown"
-                            depressed
-                            >mdi-content-save</v-icon
-                          >
-                        </template>
-                        <span>Save</span>
-                      </v-tooltip>
-                    </v-col>
-                  </v-row>
+                  <span style="font-size: 12px">Supplies VAT</span>
+                  <v-text-field
+                    :rules="formRulesVAT"
+                    v-model="form.supp_vat"
+                    dense
+                    persistent-placeholder
+                    clearable
+                    counter
+                    @keydown="VATKeydown($event)"
+                    maxlength="6"
+                    @blur="resetSV"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  ></v-text-field>
                 </v-col>
                 <v-col
-                  cols="12"
+                  cols="6"
                   xl="6"
                   lg="6"
                   md="6"
                   sm="6"
-                  class="tfield py-1"
+                  class="tfield py-1 px-0 pl-1"
                 >
-                  <v-row no-gutters>
-                    <span style="font-size: 12px">Products VAT</span>
-                    <v-col cols="10">
-                      <v-text-field
-                        :rules="formRulesVAT"
-                        v-model="form2.vat"
-                        dense
-                        clearable
-                        persistent-placeholder
-                        counter
-                        @keydown="VATKeydown($event)"
-                        maxlength="6"
-                        @blur="resetPV"
-                        background-color="white"
-                        flat
-                        solo
-                        style="font-size: 12px"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="2" class="text-center">
-                      <v-tooltip bottom>
-                        <template #activator="data">
-                          <v-icon
-                            v-on="data.on"
-                            x-large
-                            color="primary"
-                            @click="saveVat('p')"
-                            :large="$vuetify.breakpoint.smAndDown"
-                            depressed
-                            >mdi-content-save</v-icon
-                          >
-                        </template>
-                        <span>Save</span>
-                      </v-tooltip>
-                    </v-col>
-                  </v-row>
+                  <span
+                    style="font-size: 12px"
+                    class="pl-0 pl-xl-1 pl-lg-1 pl-md-1 pl-sm-1"
+                    >Products VAT</span
+                  >
+                  <v-text-field
+                    :rules="formRulesVAT"
+                    v-model="form.prod_vat"
+                    dense
+                    clearable
+                    persistent-placeholder
+                    counter
+                    @keydown="VATKeydown($event)"
+                    maxlength="6"
+                    @blur="resetPV"
+                    background-color="white"
+                    flat
+                    solo
+                    style="font-size: 12px"
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-col>
+
+            <v-col
+              cols="12"
+              xl="6"
+              lg="12"
+              md="12"
+              sm="12"
+              style="max-width: 525px"
+            >
+              <v-divider :hidden="$vuetify.breakpoint.lgAndUp" class="my-2"></v-divider>
+              <!-- History -->
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                style="color: #c62828"
+                >History</v-card-title
+              >
+              <v-col
+                cols="12"
+                xl="12"
+                lg="12"
+                md="12"
+                sm="12"
+                class="tfield py-1 px-0"
+              >
+                <v-textarea
+                  :rules="formRulesText"
+                  v-model="form.history"
+                  height="125px"
+                  counter
+                  @keydown="textKeydown($event)"
+                  maxlength="300"
+                  background-color="white"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">Insert text here</div>
+                  </template></v-textarea
+                >
+              </v-col>
+
+              <v-divider class="my-2"></v-divider>
+
+              <!-- Mission -->
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                style="color: #c62828"
+                >Mission</v-card-title
+              >
+              <v-col
+                cols="12"
+                xl="12"
+                lg="12"
+                md="12"
+                sm="12"
+                class="tfield py-1 px-0"
+              >
+                <v-textarea
+                  :rules="formRulesText"
+                  v-model="form.mission"
+                  height="125px"
+                  counter
+                  @keydown="textKeydown($event)"
+                  maxlength="300"
+                  background-color="white"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">Insert text here</div>
+                  </template></v-textarea
+                >
+              </v-col>
+              <!-- Vision -->
+              <v-card-title
+                class="
+                  text-subtitle-1 text-xl-h5 text-lg-h5 text-md-h6 text-sm-h6
+                  p-0
+                  justify-center
+                "
+                style="color: #c62828"
+                >Vision</v-card-title
+              >
+              <v-col
+                cols="12"
+                xl="12"
+                lg="12"
+                md="12"
+                sm="12"
+                class="tfield py-1 px-0"
+              >
+                <v-textarea
+                  :rules="formRulesText"
+                  v-model="form.vision"
+                  height="125px"
+                  counter
+                  @keydown="textKeydown($event)"
+                  maxlength="300"
+                  background-color="white"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                  <template slot="label">
+                    <div style="font-size: 12px">Insert text here</div>
+                  </template></v-textarea
+                >
+              </v-col>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                :disabled="button"
+                dark
+                @click="save"
+                :small="$vuetify.breakpoint.xsOnly"
+                block
+              >
+                Save
+              </v-btn>
+            </v-col>
           </v-row>
         </v-container>
-      </v-card>
-    </v-form>
+      </v-form>
+    </v-card>
   </div>
 </template>
 
 <!-- Style -->
 <style>
+textarea {
+  text-align: justify;
+}
+
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 .container {
   max-width: 1500px !important;
 }
@@ -316,26 +409,34 @@ export default {
     temppath: "/img/Logo.jpg",
     isSelecting: false,
     progressBar: false,
+    button: false,
     snackbar: {
       active: false,
       message: "",
     },
-    form: { attachment: "" },
-    form1: { vat: 0, type: "" },
-    form2: { vat: 0, type: "" },
+    form: {
+      id: "",
+      attachment: "",
+      prod_vat: 0,
+      supp_vat: 0,
+      history: "",
+      mission: "",
+      vision: "",
+    },
 
     //Form rules
     formRulesVAT: [
       (v) => !!v || "This is required",
       (v) => /^[0-9]\d{0,7}(?:\.\d{1,4})?$/.test(v) || "VAT must be valid",
     ],
+    formRulesText: [
+      (v) => !!v || "This is required",
+    ],
   }),
 
   //Onload
   created() {
-    this.getLogo();
-    this.getVat("s");
-    this.getVat("p");
+    this.get();
   },
 
   //Methods
@@ -346,35 +447,29 @@ export default {
         e.preventDefault();
       }
     },
+    textKeydown(e) {
+      if (/[~`!@$%^&={}[\]\\*|:;<>+\?]/.test(e.key)) {
+        e.preventDefault();
+      }
+    },
 
     resetSV() {
-      if (this.form1.vat == null) {
-        this.form1 = this.getVat("s");
+      if (this.form.supp_vat == null) {
+        this.form.supp_vat = 0;
       }
     },
 
     resetPV() {
-      if (this.form2.vat == null) {
-        this.form2 = this.getVat("p");
+      if (this.form.prod_vat == null) {
+        this.form.prod_vat = 0;
       }
     },
 
     //For deleting uploaded file
     async deletefile() {
-      this.progressBar = true;
-      this.$refs.uploader.value = null;
-      this.form.attachment = null;
+      this.form.attachment = "";
+      this.tempfile = "";
       this.temppath = "/img/Logo.jpg";
-      this.tempfile = null;
-      await axios.post("/api/settings/company/logo/delete").then((result) => {
-        this.progressBar = false;
-        this.snackbar = {
-          active: true,
-          iconText: "check",
-          iconColor: "success",
-          message: "Successfully removed.",
-        };
-      });
     },
 
     clickupload() {
@@ -391,33 +486,38 @@ export default {
 
     //For uploading file
     async uploaddocument(e) {
-      this.progressBar = true;
-      var dataform = new FormData();
-      dataform.append("file", e.target.files[0]);
-      await axios
-        .post("/api/settings/company/logo/upload", dataform, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((result) => {
-          this.progressBar = false;
-          this.form.attachment = result.data.tempfile;
-          this.tempfile = result.data.filename;
-          this.temppath = result.data.path ?? "/img/Logo.jpg";
-        });
-    },
-
-    //For saving file
-    async savefile(e) {
-      await axios
-        .post("/api/settings/company/logo/store", this.form)
-        .then((result) => {
+      if (e.target.files[0].size > 10485760) {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "error",
+          message: "The image size should be less than or equal to 10 MB.",
+        };
+      } else {
+        var file = document.querySelector("#upload");
+        if (/\.(jpe?g|png)$/i.test(file.files[0].name) === false) {
           this.snackbar = {
             active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully saved.",
+            iconText: "alert-box",
+            iconColor: "error",
+            message: "Please select JPEG or PNG only.",
           };
-        });
+        } else {
+          this.progressBar = true;
+          var dataform = new FormData();
+          dataform.append("file", e.target.files[0]);
+          await axios
+            .post("/api/settings/company/logo/upload", dataform, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
+            .then((result) => {
+              this.progressBar = false;
+              this.form.attachment = result.data.tempfile;
+              this.tempfile = result.data.filename;
+              this.temppath = result.data.path ?? "/img/Logo.jpg";
+            });
+        }
+      }
     },
 
     //For retrieving logo
@@ -429,59 +529,43 @@ export default {
       });
     },
 
-    //For saving VAT
-    async saveVat(type) {
-      type == "s" ? (this.form1.type = type) : (this.form2.type = type);
+    //For saving data
+    async save() {
       if (this.$refs.mainForm.validate()) {
         await axios
-          .post(
-            "/api/settings/vat/store",
-            type == "s" ? this.form1 : this.form2
-          )
+          .post("/api/settings/company/save", this.form)
           .then((result) => {
-            switch (result.data) {
-              case 1:
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully saved.",
-                };
-                break;
-              case 0:
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "No changes has been made.",
-                };
-                break;
-
-              default:
-                break;
-            }
-          })
-          .catch((result) => {
-            // If false or error when saving
+            this.snackbar = {
+              active: true,
+              iconText: "check",
+              iconColor: "success",
+              message: "Successfully saved.",
+            };
           });
       }
     },
 
-    //For retrieving VAT
-    async getVat(type) {
+    //For retrieving data
+    async get() {
       await axios
-        .get("/api/settings/vat/get", { params: { type: type } })
+        .get("/api/settings/company/get")
         .then((result) => {
-          switch (result.data.type) {
-            case "s":
-              this.form1 = result.data;
-              break;
-            case "p":
-              this.form2 = result.data;
-              break;
-            default:
-              break;
+          if (result.data) {
+            this.form.id = result.data.id;
+            this.form.history = result.data.history;
+            this.form.mission = result.data.mission;
+            this.form.vision = result.data.vision;
+            this.form.prod_vat = result.data.prod_vat;
+            this.form.supp_vat = result.data.supp_vat;
+            if (result.data.attachment.tempfile) {
+              this.form.attachment = result.data.attachment.tempfile;
+              this.tempfile = result.data.attachment.filename;
+              this.temppath = result.data.attachment.path;
+            } else [(this.temppath = "/img/Logo.jpg")];
           }
+        })
+        .catch((result) => {
+          //If false or error when saving
         });
     },
   },

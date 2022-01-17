@@ -70,17 +70,32 @@
         max-width="450px"
         persistent
         no-click-animation
+        scrollable
       >
-        <v-card tile class="pa-3">
-          <v-toolbar dark dense flat rounded class="red darken-3">
-            Role
+        <v-card>
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <span
+              class="
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-1
+                text-sm-subtitle-1
+                text-subtitle-2
+              "
+              >Role</span
+            >
             <v-spacer></v-spacer>
-            <v-icon text @click="cancelRoles">mdi-close </v-icon>
+            <v-icon
+              :small="$vuetify.breakpoint.xsOnly"
+              text
+              @click="cancelRoles"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-          <v-container class="px-1">
-            <v-row class="py-4">
+          <v-card-text style="height: auto">
+            <v-row class="mt-4 px-1">
               <v-col
-                class="tfield py-0"
+                class="tfield py-0 px-1"
                 cols="12"
                 xl="12"
                 lg="12"
@@ -111,7 +126,7 @@
                 </v-text-field>
               </v-col>
               <v-col
-                class="tfield py-0"
+                class="tfield py-0 px-1"
                 cols="12"
                 xl="12"
                 lg="12"
@@ -138,46 +153,103 @@
                 </v-text-field>
               </v-col>
             </v-row>
-          </v-container>
+          </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-0 pb-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="grey"
-              depressed
-              dark
-              @click="cancelRoles"
-              :small="$vuetify.breakpoint.smAndDown"
-              outlined
-            >
-              <span style="color: #1976d2">Cancel</span>
-            </v-btn>
-            <v-btn
-              color="primary"
-              depressed
-              dark
-              @click="storeRoles"
-              :small="$vuetify.breakpoint.smAndDown"
-            >
-              Save
-            </v-btn>
+          <v-card-actions class="pa-3">
+            <template v-if="$vuetify.breakpoint.xsOnly">
+              <v-row no-gutters>
+                <v-col cols="6" class="px-1">
+                  <v-btn
+                    style="text-transform: none"
+                    color="grey"
+                    depressed
+                    dark
+                    @click="cancelRoles"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    outlined
+                    block
+                  >
+                    <span style="color: #1976d2">Cancel</span>
+                  </v-btn>
+                </v-col>
+                <v-col cols="6" class="px-1">
+                  <v-btn
+                    style="text-transform: none"
+                    color="primary"
+                    depressed
+                    dark
+                    @click="storeRoles"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    block
+                  >
+                    Save
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </template>
+            <template v-else>
+              <v-spacer></v-spacer>
+              <v-btn
+                style="text-transform: none"
+                color="grey"
+                depressed
+                dark
+                @click="cancelRoles"
+                :small="$vuetify.breakpoint.smAndDown"
+                outlined
+              >
+                <span style="color: #1976d2">Cancel</span>
+              </v-btn>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="storeRoles"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </template>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-form>
 
+    <v-form ref="mainForm1" id="mainForm1">
       <!-- Permission Dialog Form -->
-      <v-dialog v-model="dialogPermissions" max-width="450px">
-        <v-card tile class="pa-3">
-          <v-toolbar dark dense flat rounded class="red darken-3">
-            Add New Permission
+      <v-dialog
+        v-model="dialogPermissions"
+        max-width="450px"
+        persistent
+        no-click-animation
+        scrollable
+      >
+        <v-card>
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <span
+              class="
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-1
+                text-sm-subtitle-1
+                text-subtitle-2
+              "
+              >Permission</span
+            >
             <v-spacer></v-spacer>
-            <v-icon text @click="dialogPermissions = false">mdi-close </v-icon>
+            <v-icon
+              :small="$vuetify.breakpoint.xsOnly"
+              text
+              @click="cancelPermissions"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-          <v-container class="px-1">
-            <v-row class="py-4">
+          <v-card-text style="height: auto">
+            <v-row class="mt-4 px-1">
               <v-col
-                class="tfield py-0"
+                class="tfield py-0 px-1"
                 cols="12"
                 xl="12"
                 lg="12"
@@ -206,7 +278,7 @@
                 </v-text-field>
               </v-col>
               <v-col
-                class="tfield py-0"
+                class="tfield py-0 px-1"
                 cols="12"
                 xl="12"
                 lg="12"
@@ -217,9 +289,12 @@
                 <v-text-field
                   :rules="formRules"
                   v-model="permission.description"
-                  outlined
                   clearable
+                  background-color="white"
+                  flat
+                  solo
                   dense
+                  style="font-size: 12px"
                 >
                   <template slot="label">
                     <div style="font-size: 12px">Permission Description</div>
@@ -227,47 +302,103 @@
                 </v-text-field>
               </v-col>
             </v-row>
-          </v-container>
+          </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-0 pb-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              depressed
-              dark
-              @click="validate('permission')"
-              :small="$vuetify.breakpoint.smAndDown"
-            >
-              Save
-            </v-btn>
+          <v-card-actions class="pa-3">
+            <template v-if="$vuetify.breakpoint.xsOnly">
+              <v-row no-gutters>
+                <v-col cols="6" class="px-1">
+                  <v-btn
+                    style="text-transform: none"
+                    color="grey"
+                    depressed
+                    dark
+                    @click="cancelPermissions"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    outlined
+                    block
+                  >
+                    <span style="color: #1976d2">Cancel</span>
+                  </v-btn>
+                </v-col>
+                <v-col cols="6" class="px-1">
+                  <v-btn
+                    style="text-transform: none"
+                    color="primary"
+                    depressed
+                    dark
+                    @click="storePermissions"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    block
+                  >
+                    Save
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </template>
+            <template v-else>
+              <v-spacer></v-spacer>
+              <v-btn
+                style="text-transform: none"
+                color="grey"
+                depressed
+                dark
+                @click="cancelPermissions"
+                :small="$vuetify.breakpoint.smAndDown"
+                outlined
+              >
+                <span style="color: #1976d2">Cancel</span>
+              </v-btn>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="storePermissions"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </template>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-form>
 
+    <v-form ref="mainForm2" id="mainForm2">
       <!-- Add Permission To Role Dialog -->
-      <v-dialog v-model="dialogAddPermissions" max-width="700px">
-        <v-card tile class="pa-3">
-          <v-toolbar dark dense flat rounded class="red darken-3">
-            Add Role Permission(s)
+      <v-dialog v-model="dialogAddPermissions" max-width="900px" scrollable>
+        <v-card>
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <span
+              class="
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-1
+                text-sm-subtitle-1
+                text-subtitle-2
+              "
+              >Add Role Permission(s)</span
+            >
             <v-spacer></v-spacer>
             <v-icon
-              class="mr-xl-4 mr-lg-4 mr-md-4 mr-sm-3 mr-1"
+              :small="$vuetify.breakpoint.xsOnly"
               text
               @click="dialogAddPermissions = false"
               >mdi-close
             </v-icon>
           </v-toolbar>
-          <v-container class="px-0">
+          <v-card-text style="height: auto" class="px-4">
             <v-data-table
               id="table1"
-              class="tbl px-4 table-striped border"
+              class="tbl px-4 mt-6 table-striped border"
               v-model="selectedAddPermission"
-              :items-per-page="5"
+              :items-per-page="10"
               dense
               :loading="progressBar"
               :headers="headersAddPermissions"
-              :items="tablePermissions"
+              :items="tablePermission"
               show-select
             >
               <v-progress-linear
@@ -277,33 +408,65 @@
                 indeterminate
               ></v-progress-linear>
             </v-data-table>
-          </v-container>
+          </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-0 pb-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              depressed
-              dark
-              @click="validate('permission')"
-              :small="$vuetify.breakpoint.smAndDown"
-            >
-              Save
-            </v-btn>
+          <v-card-actions class="pa-3">
+            <template v-if="$vuetify.breakpoint.xsOnly">
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="validate('permission')"
+                :small="$vuetify.breakpoint.smAndDown"
+                block
+              >
+                Save
+              </v-btn>
+            </template>
+            <template v-else>
+              <v-spacer></v-spacer>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="validate('permission')"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </template>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-form>
 
+    <v-form ref="mainForm3" id="mainForm3">
       <!-- Add User Role Dialog -->
-      <v-dialog v-model="dialogAddRoles" max-width="700px">
-        <v-card tile class="pa-3">
-          <v-toolbar dark dense flat rounded class="red darken-3">
-            Add User Role(s)
+      <v-dialog v-model="dialogAddRoles" max-width="900px" scrollable>
+        <v-card>
+          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <span
+              class="
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-1
+                text-sm-subtitle-1
+                text-subtitle-2
+              "
+              >Add User Role(s)</span
+            >
             <v-spacer></v-spacer>
-            <v-icon text @click="cancelUserRoles">mdi-close </v-icon>
+            <v-icon
+              :small="$vuetify.breakpoint.xsOnly"
+              text
+              @click="cancelUserRoles"
+              >mdi-close
+            </v-icon>
           </v-toolbar>
-          <v-card-text class="px-0">
+          <v-card-text style="height: auto" class="px-4">
             <v-card-text>
               Selected User: <strong>{{ username }}</strong>
             </v-card-text>
@@ -311,7 +474,7 @@
               id="table1"
               class="tbl px-4 table-striped border"
               v-model="selectedAddRoles"
-              :items-per-page="5"
+              :items-per-page="10"
               dense
               :loading="progressBar"
               :headers="headersAddRoles"
@@ -325,42 +488,40 @@
                 indeterminate
               ></v-progress-linear>
             </v-data-table>
-
-            <!-- Paginate -->
-            <div
-              class="
-                pbutton
-                tbl
-                text-center
-                pt-7
-                pb-xl-3 pb-lg-3 pb-md-3 pb-sm-2 pb-2
-                d-none
-              "
-            >
-              <v-pagination
-                v-model="page3"
-                :total-visible="7"
-                :length="tableAddRoles.last_page"
-                color="red darken-2"
-              ></v-pagination>
-            </div>
           </v-card-text>
           <v-divider class="my-0"></v-divider>
           <!-- Dialog Form Buttons -->
-          <v-card-actions class="px-0 pb-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              depressed
-              dark
-              @click="validate('userrole')"
-              :small="$vuetify.breakpoint.smAndDown"
-            >
-              Save
-            </v-btn>
+          <v-card-actions class="pa-3">
+            <template v-if="$vuetify.breakpoint.xsOnly">
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="validate('userrole')"
+                :small="$vuetify.breakpoint.smAndDown"
+                block
+              >
+                Save
+              </v-btn>
+            </template>
+            <template v-else>
+              <v-spacer></v-spacer>
+              <v-btn
+                style="text-transform: none"
+                color="primary"
+                depressed
+                dark
+                @click="validate('userrole')"
+                :small="$vuetify.breakpoint.smAndDown"
+              >
+                Save
+              </v-btn>
+            </template>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-form>
 
       <v-container>
         <v-layout row wrap>
@@ -455,7 +616,8 @@
               text-xl-subtitle-1
               text-lg-subtitle-1
               text-md-subtitle-2
-              text-sm-body-1 
+              text-sm-body-1
+              d-none
             "
             :class="{ 'text-caption': $vuetify.breakpoint.xsOnly }"
             style="text-transform: none"
@@ -476,7 +638,6 @@
                   dark
                   :small="$vuetify.breakpoint.smAndDown"
                   @click="openDialogRoles"
-                  class="mb-xl-2 mb-lg-2 mb-md-1 mb-sm-1 mb-1 d-none"
                 >
                   Add New Role
                 </v-btn>
@@ -505,7 +666,7 @@
               <v-data-table
                 hide-default-footer
                 id="table"
-                :items-per-page="5"
+                :items-per-page="10"
                 :loading="progressBar"
                 :headers="headersRoles"
                 :items="tableRoles.data"
@@ -544,7 +705,6 @@
                         @click="addPermission(item)"
                         v-on="data.on"
                         :x-small="$vuetify.breakpoint.smAndDown"
-                        class="d-none"
                       >
                         <v-icon> mdi-plus </v-icon>
                       </v-btn>
@@ -574,18 +734,19 @@
             </v-container>
           </v-tab-item>
 
+          <!-- Permissions List -->
           <v-tab-item class="d-none">
             <v-divider class="my-0"></v-divider>
-            <!-- Permissions List -->
             <v-container class="py-2 px-3">
               <v-card-actions class="px-0">
+                <!-- Buttons -->
                 <v-btn
                   color="primary"
                   style="text-transform: none"
                   depressed
-                  :small="$vuetify.breakpoint.smAndDown"
                   dark
-                  @click="dialogPermissions = true"
+                  :small="$vuetify.breakpoint.smAndDown"
+                  @click="openDialogPermissions"
                 >
                   Add New Permission
                 </v-btn>
@@ -612,10 +773,10 @@
 
               <!-- Permissions List Table -->
               <v-data-table
-                id="table"
-                :items-per-page="5"
-                :loading="progressBar"
                 hide-default-footer
+                id="table"
+                :items-per-page="10"
+                :loading="progressBar"
                 :headers="headersPermissions"
                 :items="tablePermissions.data"
                 class="table-striped border mt-2"
@@ -630,14 +791,20 @@
                 ></v-progress-linear>
 
                 <template v-slot:[`item.id`]="{ item }">
-                  <v-btn
-                    icon
-                    color="red darken-2"
-                    @click="editItemPermissions(item)"
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                  >
-                    <v-icon> mdi-pencil </v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template #activator="data">
+                      <v-btn
+                        icon
+                        color="red darken-2"
+                        @click="editItemPermissions(item)"
+                        v-on="data.on"
+                        :x-small="$vuetify.breakpoint.smAndDown"
+                      >
+                        <v-icon> mdi-pencil </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Edit Permission</span>
+                  </v-tooltip>
                 </template>
               </v-data-table>
 
@@ -652,7 +819,7 @@
                 "
               >
                 <v-pagination
-                  v-model="page4"
+                  v-model="page2"
                   :total-visible="7"
                   :length="tablePermissions.last_page"
                   color="red darken-2"
@@ -661,9 +828,9 @@
             </v-container>
           </v-tab-item>
 
+          <!-- User Roles List -->
           <v-tab-item>
             <v-divider class="my-0"></v-divider>
-            <!-- User Roles -->
             <v-container class="py-2 px-3">
               <v-card-actions class="px-0">
                 <v-spacer></v-spacer>
@@ -690,7 +857,7 @@
               <!-- User Roles Table -->
               <v-data-table
                 id="table"
-                :items-per-page="5"
+                :items-per-page="10"
                 hide-default-footer
                 :loading="progressBar"
                 :headers="headersUserrole"
@@ -746,7 +913,7 @@
                 "
               >
                 <v-pagination
-                  v-model="page2"
+                  v-model="page3"
                   :total-visible="7"
                   :length="tableUserrole.last_page"
                   color="red darken-2"
@@ -779,12 +946,15 @@
           </v-tab-item>
         </v-tabs>
       </v-card>
-    </v-form>
   </div>
 </template>
 
 <!-- Style -->
 <style>
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 @media (min-width: 1200px) {
   .container {
     max-width: 1500px !important;
@@ -865,6 +1035,7 @@ export default {
     seederColumns: "",
     seederTablename: "",
     currentdataRoles: {},
+    currentdataPerms: {},
 
     //Form rules
     formRules: [
@@ -894,14 +1065,21 @@ export default {
         align: "start",
         value: "name",
         class: "black--text",
+        width: "40%",
       },
-      { text: "ROLE DESCRIPTION", value: "description", class: "black--text" },
+      {
+        text: "ROLE DESCRIPTION",
+        value: "description",
+        class: "black--text",
+        width: "40%",
+      },
       {
         text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
         class: "black--text",
+        width: "20%",
       },
     ],
     role: { name: "", id: "" },
@@ -910,37 +1088,50 @@ export default {
     dialogPermissions: false,
     searchPermissions: "",
     tablePermissions: [],
-    page4: 1,
+    page2: 1,
     headersPermissions: [
       {
         text: "PERMISSION NAME",
         align: "start",
         value: "name",
         class: "black--text",
+        width: "40%",
       },
-      { text: "DESCRIPTION", value: "description", class: "black--text" },
-      { text: "ACTION", value: "id", class: "black--text" },
+      {
+        text: "DESCRIPTION",
+        value: "description",
+        class: "black--text",
+        width: "40%",
+      },
+      { text: "ACTION", value: "id", class: "black--text", width: "20%" },
     ],
     permission: { name: "", description: "", id: "" },
 
     //For user roles
     searchUserrole: "",
     tableUserrole: [],
-    page2: 1,
+    page3: 1,
     headersUserrole: [
       {
         text: "USER",
         align: "start",
         value: "name",
         class: "black--text",
+        width: "40%",
       },
-      { text: "CURRENT ROLE(S)", value: "roles.name", class: "black--text" },
+      {
+        text: "CURRENT ROLE(S)",
+        value: "roles.name",
+        class: "black--text",
+        width: "40%",
+      },
       {
         text: "ACTION",
         value: "id",
         align: "center",
         sortable: false,
         class: "black--text",
+        width: "20%",
       },
     ],
 
@@ -954,22 +1145,38 @@ export default {
         align: "start",
         value: "name",
         class: "black--text",
+        width: "50%",
       },
-      { text: "DESCRIPTION", value: "description", class: "black--text" },
+      {
+        text: "DESCRIPTION",
+        value: "description",
+        class: "black--text",
+        width: "50%",
+      },
     ],
     rolename: "",
 
     //For setting user roles
     dialogAddRoles: false,
     tableAddRoles: [],
-    page3: 1,
     selectedAddRoles: [],
     selectedAddRoles_cloned: [],
     username: "",
     userid: "",
     headersAddRoles: [
-      { text: "ROLE", align: "start", value: "name", class: "black--text" },
-      { text: "DESCRIPTION", value: "description", class: "black--text" },
+      {
+        text: "ROLE",
+        align: "start",
+        value: "name",
+        class: "black--text",
+        width: "50%",
+      },
+      {
+        text: "DESCRIPTION",
+        value: "description",
+        class: "black--text",
+        width: "50%",
+      },
     ],
   }),
 
@@ -1001,6 +1208,32 @@ export default {
       var found = 0;
       for (var key in this.role) {
         if (this.currentdataRoles[key] != this.role[key]) {
+          found += 1;
+        }
+      }
+
+      if (found > 0) {
+        return true;
+      } else {
+        this.snackbar = {
+          active: true,
+          iconText: "alert-box",
+          iconColor: "warning",
+          message: "No changes has been made.",
+        };
+        this.close();
+      }
+    },
+
+    //Compare Permissions
+    comparePerms() {
+      if (!this.currentdataPerms) {
+        return true;
+      }
+
+      var found = 0;
+      for (var key in this.permission) {
+        if (this.currentdataPerms[key] != this.permission[key]) {
           found += 1;
         }
       }
@@ -1079,22 +1312,20 @@ export default {
       this.snackbar2.active = false;
     },
 
-    //Get Roles
+    //Get Roles List
     async getRoles() {
-      let self = this;
-      self.progressBar = true;
-      self.tableRoles = [];
+      this.progressBar = true;
       await axios
         .get("/api/useracc/getRoles", { params: { page: this.page1 } })
         .then((result) => {
-          self.tableRoles = result.data.data;
-          self.tableUserrole = result.data.data;
-          self.progressBar = false;
+          this.tableRoles = result.data.data;
+          this.tableUserrole = result.data.data;
+          this.progressBar = false;
         })
         .catch((result) => {});
     },
 
-    //Save Roles
+    //Save Roles In List
     async storeRoles() {
       if (this.$refs.mainForm.validate()) {
         if (this.compareRoles()) {
@@ -1117,6 +1348,7 @@ export default {
                     iconColor: "success",
                     message: "Successfully saved.",
                   };
+                  this.getRoles();
                   this.close();
                   break;
                 case 1:
@@ -1157,53 +1389,64 @@ export default {
       this.dialogRoles = false;
     },
 
-    //Permission
+    //Get Permissions List
     async getPermissions() {
-      let self = this;
-      self.progressBar = true;
-      self.tablePermissions = [];
+      this.progressBar = true;
       await axios
-        .get("/api/useracc/getPermission")
+        .get("/api/useracc/getPermission", { params: { page: this.page2 } })
         .then((result) => {
-          self.tablePermissions = result.data.data;
-          self.progressBar = false;
-        })
-        .catch((result) => {
-          this.snackbar = {
-            active: true,
-            iconText: "alert",
-            iconColor: "warning",
-            message: "Error!",
-          };
-        });
-    },
-
-    //Save Roles
-    async storePermissions() {
-      await axios
-        .post("/api/useracc/storePermission", this.permission)
-        .then((result) => {
-          if (this.editedIndex > -1) {
-            Object.assign(
-              this.tablePermissions.data[this.editedIndex],
-              result.data
-            );
-          } else {
-            this.tablePermissions.data.push(result.data);
-          }
-          this.snackbar = {
-            active: true,
-            iconText: "check",
-            iconColor: "success",
-            message: "Successfully saved.",
-          };
+          this.tablePermissions = result.data.data;
+          this.progressBar = false;
         })
         .catch((result) => {});
-      this.close();
     },
 
-    //Edit
+    //Save Permissions In List
+    async storePermissions() {
+      if (this.$refs.mainForm1.validate()) {
+        if (this.comparePerms()) {
+          await axios
+            .post("/api/useracc/storePermission", this.permission)
+            .then((result) => {
+              switch (result.data.type) {
+                case 0:
+                  if (this.editedIndex > -1) {
+                    Object.assign(
+                      this.tablePermissions.data[this.editedIndex],
+                      result.data.data
+                    );
+                  } else {
+                    this.tablePermissions.data.push(result.data.data);
+                  }
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully saved.",
+                  };
+                  this.getPermissions();
+                  this.close();
+                  break;
+                case 1:
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert",
+                    iconColor: "error",
+                    message: "The permission name already exists.",
+                  };
+                  break;
+                default:
+                  break;
+              }
+            })
+            .catch((result) => {});
+        }
+      }
+    },
+
+    //Edit Permissions
     editItemPermissions(item) {
+      this.currentdataPerms = JSON.parse(JSON.stringify(item));
       this.editedIndex = this.tablePermissions.data.indexOf(item);
       this.permission.name = item.name;
       this.permission.description = item.description;
@@ -1211,16 +1454,26 @@ export default {
       this.dialogPermissions = true;
     },
 
+    //Open Dialog Form Permissions
+    openDialogPermissions() {
+      this.$refs.mainForm1.resetValidation();
+      this.dialogPermissions = true;
+    },
+
+    //Reset Form Permissions
+    cancelPermissions() {
+      this.$refs.mainForm1.resetValidation();
+      this.dialogPermissions = false;
+    },
+
     //User Role
     async getUserRoles() {
-      let self = this;
-      self.progressBar = true;
-      self.tableUserrole = [];
+      this.progressBar = true;
       await axios
-        .get("/api/useracc/getUserRole", { params: { page: this.page2 } })
+        .get("/api/useracc/getUserRole", { params: { page: this.page3 } })
         .then((result) => {
-          self.tableUserrole = result.data;
-          self.progressBar = false;
+          this.tableUserrole = result.data;
+          this.progressBar = false;
         })
         .catch((result) => {});
     },
@@ -1228,18 +1481,15 @@ export default {
     //Add Role Permission
     async getRolePermissions(item) {
       let self = this;
-      self.progressBar = true;
-      self.tablePermissions = [];
+      self.tablePermission = [];
       await axios
         .get("/api/useracc/getPermission", {
-          params: { role: item, page: this.page4 },
+          params: { role: item },
         })
         .then((result) => {
-          self.tablePermissions = result.data.all;
+          self.tablePermission = result.data.all;
           self.selectedAddPermission = result.data.selected;
           self.selectedAddPermission_cloned = result.data.selected;
-
-          self.progressBar = false;
         })
         .catch((result) => {});
     },
@@ -1328,9 +1578,9 @@ export default {
               message: "Successfully saved.",
             };
             this.getUserRoles();
+            this.close();
           })
           .catch((result) => {});
-        this.close();
       }
     },
 
@@ -1377,7 +1627,6 @@ export default {
     //Get Roles
     async getAddUserRoles(item) {
       let self = this;
-      self.progressBar = true;
       self.tableAddRoles = [];
       await axios
         .get("/api/useracc/getRoles", { params: { user: item } })
@@ -1385,7 +1634,6 @@ export default {
           self.tableAddRoles = result.data.data;
           self.selectedAddRoles = result.data.selected;
           self.selectedAddRoles_cloned = result.data.selected;
-          self.progressBar = false;
         })
         .catch((result) => {});
     },
@@ -1436,7 +1684,7 @@ export default {
       (this.editedIndex = -1),
         this.$nextTick(() => {
           this.role = { name: "", id: "" };
-          this.permission = { name: "", id: "" };
+          this.permission = { name: "", description: "", id: "" };
         });
     },
 
@@ -1461,7 +1709,6 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "ADD NEW " : "UPDATE ";
     },
-
     height() {
       if (this.$vuetify.breakpoint.smAndDown) {
         return 35;
@@ -1474,27 +1721,23 @@ export default {
     dialogRoles(val) {
       val || this.close();
     },
-    page1(val) {
-      this.page1 = val;
-      this.getRoles();
-    },
-    page4(val) {
-      this.page4 = val;
-      this.getRolePermissions();
-    },
-    page3(val) {
-      this.page3 = val;
-      this.getRoles();
-    },
-    page2(val) {
-      this.page2 = val;
-      this.getUserRoles();
-    },
     dialogPermissions(val) {
       val || this.close();
     },
     dialogAddRoles(val) {
       val || this.close();
+    },
+    page1(val) {
+      this.page1 = val;
+      this.getRoles();
+    },
+    page2(val) {
+      this.page2 = val;
+      this.getPermissions();
+    },
+    page3(val) {
+      this.page2 = val;
+      this.getUserRoles();
     },
   },
 };

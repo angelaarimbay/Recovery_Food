@@ -4,7 +4,7 @@
     style="min-width: 310px"
     v-if="!user.permissionslist.includes('Access POS')"
   >
-    <v-container class="py-2">
+    <v-container class="pt-2">
       <v-layout row wrap>
         <span
           class="
@@ -148,20 +148,20 @@
         >
           <!-- Total Supplies -->
           <v-card
-            elevation="1"
-            style="border-radius: 10px; border-left: 10px solid #827717"
+            elevation="2"
+            style="border-radius: 10px; border-left: 10px solid #d32f2f"
             class="pa-0"
             height="100"
           >
             <v-card-title
-              style="color: #827717"
+              style="color: #d32f2f"
               class="pt-2 caption"
               :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
               >Total Supplies</v-card-title
             >
             <v-card-subtitle
               class="h3 pb-0 mb-0"
-              style="color: #000000; font-weight: bold"
+              style="color: #000000"
               :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
               >{{ supp }}
               <v-progress-circular
@@ -195,20 +195,20 @@
         >
           <!-- Total Products -->
           <v-card
-            elevation="1"
-            style="border-radius: 10px; border-left: 10px solid #827717"
+            elevation="2"
+            style="border-radius: 10px; border-left: 10px solid #0288d1"
             class="pa-0"
             height="100"
           >
             <v-card-title
-              style="color: #827717"
+              style="color: #0288d1"
               class="pt-2 caption"
               :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
               >Total Products</v-card-title
             >
             <v-card-subtitle
               class="h3 pb-0 mb-0"
-              style="color: #000000; font-weight: bold"
+              style="color: #000000"
               :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
               >{{ prod }}
               <v-progress-circular
@@ -242,20 +242,20 @@
         >
           <!-- Total Purchase Orders -->
           <v-card
-            elevation="1"
-            style="border-radius: 10px; border-left: 10px solid #827717"
+            elevation="2"
+            style="border-radius: 10px; border-left: 10px solid #00796b"
             class="pa-0"
             height="100"
           >
             <v-card-title
-              style="color: #827717"
+              style="color: #00796b"
               class="pt-2 caption"
               :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
               >Total PO</v-card-title
             >
             <v-card-subtitle
               class="h3 pb-0 mb-0"
-              style="color: #000000; font-weight: bold"
+              style="color: #000000"
               :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
               >{{ po }}
               <v-progress-circular
@@ -289,20 +289,20 @@
         >
           <!-- Total Users -->
           <v-card
-            elevation="1"
-            style="border-radius: 10px; border-left: 10px solid #827717"
+            elevation="2"
+            style="border-radius: 10px; border-left: 10px solid #f57c00"
             class="pa-0"
             height="100"
           >
             <v-card-title
-              style="color: #827717"
+              style="color: #f57c00"
               class="pt-2 caption"
               :class="{ 'justify-center': $vuetify.breakpoint.xsOnly }"
               >Total Users</v-card-title
             >
             <v-card-subtitle
               class="h3 pb-0 mb-0"
-              style="color: #000000; font-weight: bold"
+              style="color: #000000"
               :class="{ 'text-center': $vuetify.breakpoint.xsOnly }"
               >{{ useracc }}
               <v-progress-circular
@@ -334,7 +334,7 @@
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
             class="d-flex align-center justify-center"
-            elevation="1"
+            elevation="2"
             style="border-radius: 10px"
             min-height="80px"
           >
@@ -358,7 +358,7 @@
                         pb-0
                         pr-2
                       "
-                      style="color: #827717"
+                      style="color: #d32f2f"
                     >
                       Nearly Expired
                     </v-card-title>
@@ -448,7 +448,7 @@
                         pb-0
                         pr-2
                       "
-                      style="color: #827717"
+                      style="color: #d32f2f"
                     >
                       Expired
                     </v-card-title>
@@ -522,7 +522,7 @@
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
             class="d-flex align-center justify-center"
-            elevation="1"
+            elevation="2"
             style="border-radius: 10px"
             min-height="80px"
           >
@@ -547,7 +547,7 @@
                         pr-2
                       "
                       style="
-                        color: #827717;
+                        color: #d32f2f;
                         word-break: keep-all;
                         text-align: center;
                       "
@@ -612,7 +612,7 @@
                         pr-2
                       "
                       style="
-                        color: #827717;
+                        color: #d32f2f;
                         word-break: keep-all;
                         text-align: center;
                       "
@@ -727,13 +727,34 @@
         <!-- Sales Graph -->
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
-            elevation="1"
+            elevation="2"
             style="border-radius: 10px"
-            class="pa-2"
             :loading="progressbar1"
             ref="progress"
           >
-            <bar-chart :options="options" :chart-data="datacollection">
+            <v-card-title
+              dark
+              class="
+                py-2
+                text-body-2
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-2
+                text-sm-body-2
+              "
+              style="
+                color: #d32f2f;
+                font-weight: bold;
+                background-color: #e0e0e0;
+              "
+              >Sales Graph</v-card-title
+            >
+            <v-divider class="my-0"></v-divider>
+            <bar-chart
+              class="pa-2 pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3"
+              :options="options"
+              :chart-data="datacollection"
+            >
             </bar-chart>
             <v-progress-linear
               color="red darken-2"
@@ -747,13 +768,33 @@
         <!-- Products Graph -->
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
-            elevation="1"
+            elevation="2"
             style="border-radius: 10px"
-            class="pa-3"
             :loading="progressbar2"
             ref="progress"
           >
-            <bar-chart1 :options="options1" :chart-data="datacollection1">
+            <v-card-title
+              class="
+                py-2
+                text-body-2
+                text-xl-subtitle-1
+                text-lg-subtitle-1
+                text-md-subtitle-2
+                text-sm-body-2
+              "
+              style="
+                color: #d32f2f;
+                font-weight: bold;
+                background-color: #e0e0e0;
+              "
+              >Purchase Graph</v-card-title
+            >
+            <v-divider class="my-0"></v-divider>
+            <bar-chart1
+              class="pa-2 pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3"
+              :options="options1"
+              :chart-data="datacollection1"
+            >
             </bar-chart1>
             <v-progress-linear
               color="red darken-2"
@@ -868,6 +909,9 @@ export default {
     branchlist: [],
     datacollection: {},
     options: {
+      legend: {
+        display: false,
+      },
       plugins: {
         zoom: {
           zoom: {
@@ -920,6 +964,9 @@ export default {
 
     datacollection1: {},
     options1: {
+      legend: {
+        display: false,
+      },
       plugins: {
         zoom: {
           zoom: {
@@ -1110,7 +1157,20 @@ export default {
             datasets: [
               {
                 label: "Sale",
-                backgroundColor: "#D32F2F",
+                backgroundColor: [
+                  "#D32F2F",
+                  "#FF8A80",
+                  "#D32F2F",
+                  "#FF8A80",
+                  "#D32F2F",
+                  "#D32F2F",
+                  "#FF8A80",
+                  "#D32F2F",
+                  "#FF8A80",
+                  "#D32F2F",
+                  "#FF8A80",
+                  "#D32F2F",
+                ],
                 data: result.data.data,
               },
             ],
@@ -1138,7 +1198,13 @@ export default {
             datasets: [
               {
                 label: "Purchase",
-                backgroundColor: "#D32F2F",
+                backgroundColor: [
+                  "#D32F2F",
+                  "#FF8A80",
+                  "#D32F2F",
+                  "#FF8A80",
+                  "#D32F2F",
+                ],
                 data: result.data.sold,
               },
             ],

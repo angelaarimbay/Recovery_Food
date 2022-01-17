@@ -102,32 +102,6 @@
         </v-card-actions>
       </v-col>
     </v-row>
-
-     <!-- Supplier Field -->
-    <v-row no-gutters justify="center">
-      <v-col cols="4" class="px-1" style="max-width: 150px; min-width: 150px">
-        <v-card-actions class="pb-1 pt-4 px-0">
-          <v-select
-            hide-details
-            :items="supplier_name"
-            item-text="supplier_name"
-            item-value="id"
-            v-model="category"
-            dense
-            placeholder="Supplier"
-            background-color="grey darken-3"
-            dark
-            flat
-            solo
-            style="font-size: 12px"
-          >
-          </v-select>
-        </v-card-actions>
-      </v-col>
-    </v-row>
-
-
-      
     <iframe id="print0" class="d-none" :src="print" frameborder="0"></iframe>
   </v-container>
 </template>
@@ -159,7 +133,6 @@ export default {
   data: () => ({
     category: "",
     suppcatlist: [],
-    supplier_name: [],
     print: "",
     snackbar: {
       active: false,
@@ -184,133 +157,131 @@ export default {
           message: "Error! Please select a category first.",
         };
       } else {
-        this.overlay = true;
-        switch (type) {
-          case "pdf":
-            await axios({
-              url: "/api/reports/masterlistsupplies/get",
-              method: "GET",
-              responseType: "blob",
-              params: { category: this.category, type: type },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Masterlist Supplies Report.pdf";
-                link.click();
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully exported.",
-                };
-              } 
-              else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",  
-                }
-                ;
-              }
-            }
-            )
-            ;
-
-            break;
-          case "excel":
-            await axios({
-              url: "/api/reports/masterlistsupplies/get",
-              method: "GET",
-              responseType: "blob",
-              params: { category: this.category, type: "pdf" },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                axios
-                  .get("/api/reports/masterlistsupplies/get", {
-                    method: "GET",
-                    responseType: "arraybuffer",
-                    params: {
-                      category: this.category,
-                      type: type,
-                    },
-                  })
-                  .then((res) => {
-                    let blob = new Blob([res.data], {
-                      type: "application/excel",
-                    });
-                    let link = document.createElement("a");
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Masterlist Supplies Report.xlsx";
-                    link.click();
-                    this.snackbar = {
-                      active: true,
-                      iconText: "check",
-                      iconColor: "success",
-                      message: "Successfully exported.",
-                    };
+        try {
+          this.overlay = true;
+          switch (type) {
+            case "pdf":
+              await axios({
+                url: "/api/reports/masterlistsupplies/get",
+                method: "GET",
+                responseType: "blob",
+                params: { category: this.category, type: type },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
                   });
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Masterlist Supplies Report.pdf";
+                  link.click();
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully exported.",
+                  };
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
                 }
-                ;
-                
-              }
-              
-            }
-            
-            );
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/masterlistsupplies/get",
-              method: "GET",
-              responseType: "blob",
-              params: { category: this.category, type: "pdf" },
-            }).then((response) => {
-              // console.log(response.data);
-              // return;
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                this.print = window.URL.createObjectURL(blob);
-                this.snackbar = {
-                  active: true,
-                  iconText: "information",
-                  iconColor: "primary",
-                  message: "Printing... Please wait.",
-                };
-                setTimeout(function () {
-                  document.getElementById("print0").contentWindow.print();
-                }, 3000);
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to print.",
-                  
+              });
+              break;
+            case "excel":
+              await axios({
+                url: "/api/reports/masterlistsupplies/get",
+                method: "GET",
+                responseType: "blob",
+                params: { category: this.category, type: "pdf" },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  axios
+                    .get("/api/reports/masterlistsupplies/get", {
+                      method: "GET",
+                      responseType: "arraybuffer",
+                      params: {
+                        category: this.category,
+                        type: type,
+                      },
+                    })
+                    .then((res) => {
+                      let blob = new Blob([res.data], {
+                        type: "application/excel",
+                      });
+                      let link = document.createElement("a");
+                      link.href = window.URL.createObjectURL(blob);
+                      link.download = "Masterlist Supplies Report.xlsx";
+                      link.click();
+                      this.snackbar = {
+                        active: true,
+                        iconText: "check",
+                        iconColor: "success",
+                        message: "Successfully exported.",
+                      };
+                    });
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
                 }
-                ;
-              }
-            });
-            break;
-          default:
-            break;
+              });
+              break;
+            case "print":
+              await axios({
+                url: "/api/reports/masterlistsupplies/get",
+                method: "GET",
+                responseType: "blob",
+                params: { category: this.category, type: "pdf" },
+              }).then((response) => {
+                // console.log(response.data);
+                // return;
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
+                  });
+                  this.print = window.URL.createObjectURL(blob);
+                  this.snackbar = {
+                    active: true,
+                    iconText: "information",
+                    iconColor: "primary",
+                    message: "Printing... Please wait.",
+                  };
+                  setTimeout(function () {
+                    document.getElementById("print0").contentWindow.print();
+                  }, 3000);
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to print.",
+                  };
+                }
+              });
+              break;
+            default:
+              break;
+          }
+          this.overlay = false;
+        } catch (error) {
+          this.overlay = false;
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Something went wrong! Please try again.",
+          };
         }
-        this.overlay = false;
       }
-    }
-    ,
+    },
+
     //For retrieving supply categories
     async suppCat() {
       await axios.get("/api/msupp/suppCat").then((supp_cat) => {
@@ -322,15 +293,7 @@ export default {
           });
         }
       });
-    }
-    ,
+    },
   },
 };
 </script>
-
-
-
-
-
-
-

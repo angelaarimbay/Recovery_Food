@@ -474,7 +474,7 @@
           <v-list-item
             v-if="
               (user.permissionslist.includes('Access Reports') &&
-                !user.permissionslist.includes('Access POS')) ||
+                !user.permissionslist.includes('Access POS')) &&
               !user.permissionslist.includes('Access Branch Inventory')
             "
             style="text-decoration: none"
@@ -652,6 +652,7 @@ export default {
     async getLogo() {
       await axios.get("/api/settings/company/logo/get").then((result) => {
         if (result.data.path) {
+          console.log(result.data)
           this.logo_path = result.data.path;
         }
       });

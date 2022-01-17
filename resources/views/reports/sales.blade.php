@@ -69,24 +69,28 @@
     <!-- Table -->
     <table style="width: 100%">
         <!-- Header -->
-        <tr>
-            <th>
-                <h6>DATE</h6>
-            </th>
-            <th>
-                <h6>REFERENCE NO</h6>
-            </th>
-            <th>
-                <h6>SALES AMOUNT</h6>
-            </th>
-        </tr>
-        <!-- Rows -->
-        @foreach ($data as $items)
+
+        @foreach ($data as $array)
             <tr>
-                <td style="width: auto"> {{ date('Y-m-d', strtotime($items['created_at'])) }} </td>
-                <td style="width: auto"> {{ $items['reference_no'] }} </td>
-                <td style="width: auto; text-align: right"> {{ $items['total_amount'] }} </td>
+                <th>
+                    <h6>DATE</h6>
+                </th>
+                <th>
+                    <h6>REFERENCE NO</h6>
+                </th>
+                <th>
+                    <h6>SALES AMOUNT</h6>
+                </th>
             </tr>
+            <!-- Rows -->
+            @foreach ($array as $items)
+                <tr>
+                    <td style="width: 10%">
+                        {{ $items['created_at'] ? date('Y-m-d', strtotime($items['created_at'])) : null }} </td>
+                    <td style="width: auto"> {!! $items['reference_no'] !!} </td>
+                    <td style="width: auto; text-align: right"> {!! $items['sales_amount'] !!} </td>
+                </tr>
+            @endforeach
         @endforeach
     </table>
 

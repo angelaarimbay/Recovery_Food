@@ -63,8 +63,8 @@
     </v-snackbar>
 
     <v-container v-if="token == ''" class="pa-2">
-      <v-row no-gutters>
-        <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2">
+      <v-row no-gutters justify="center">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2" style="max-width: 525px">
           <v-card elevation="1" class="pa-2" style="border-radius: 10px">
             <v-card-text>
               <v-card flat>
@@ -87,7 +87,7 @@
                 <v-form ref="form" id="password">
                   <!-- Password -->
                   <v-text-field
-                    :dense="$vuetify.breakpoint.smAndDown"
+                    dense
                     :rules="rules.passwordRules"
                     :append-icon="!value1 ? 'mdi-eye' : 'mdi-eye-off'"
                     @click:append="() => (value1 = !value1)"
@@ -97,10 +97,11 @@
                     background-color="white"
                     flat
                     solo
+                    style="font-size: 12px"
                   ></v-text-field>
                   <!-- Confirm Password -->
                   <v-text-field
-                    :dense="$vuetify.breakpoint.smAndDown"
+                    dense
                     :rules="[
                       form.password === form.confirmation ||
                         'Password must match',
@@ -113,17 +114,11 @@
                     background-color="white"
                     flat
                     solo
+                    style="font-size: 12px"
                   ></v-text-field>
                   <!-- Save Button -->
                   <v-btn
-                    :large="$vuetify.breakpoint.mdAndUp"
-                    class="
-                      text-subtitle-1
-                      text-xl-h5
-                      text-lg-h5
-                      text-md-h6
-                      text-sm-h6
-                    "
+                    :small="$vuetify.breakpoint.xsOnly"
                     color="primary"
                     style="text-transform: none"
                     block
@@ -136,7 +131,7 @@
           </v-card>
         </v-col>
 
-        <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-2" style="max-width: 525px">
           <v-card elevation="1" class="pa-2" style="border-radius: 10px">
             <v-card-text>
               <b> Tips for setting up a strong password:</b> <br />
@@ -161,7 +156,7 @@
 <!-- Style -->
 <style>
 .container {
-  max-width: 1150px !important;
+  max-width: 1500px !important;
 }
 
 .v-application #password .white {

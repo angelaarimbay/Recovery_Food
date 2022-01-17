@@ -151,12 +151,12 @@ class UserController extends Controller
         }
 
         $items = Collection::make(Permission::get());
-        $paginates = new LengthAwarePaginator(collect($items)->forPage($request->page, 5)->values(), $items->count(), 5, $request->page, []);
+        $paginates = new LengthAwarePaginator(collect($items)->forPage($request->page, 10)->values(), $items->count(), 10, $request->page, []);
 
         return ['data' => $paginates, 'all' => Permission::get(), 'selected' => $permissions];
     }
 
-    //For retrieving roles
+    //For retrieving roles list
     public function getRoles(Request $request)
     {
         $roles = [];
@@ -173,7 +173,7 @@ class UserController extends Controller
             }
         }
         $items = Collection::make(Role::get());
-        $paginates = new LengthAwarePaginator(collect($items)->forPage($request->page, 5)->values(), $items->count(), 5, $request->page, []);
+        $paginates = new LengthAwarePaginator(collect($items)->forPage($request->page, 10)->values(), $items->count(), 10, $request->page, []);
 
         return ['data' => $paginates, 'selected' => $roles];
     }
@@ -183,7 +183,6 @@ class UserController extends Controller
     {
         $items = Collection::make(User::with(["roles"])->get());
         return new LengthAwarePaginator(collect($items)->forPage($request->page, 5)->values(), $items->count(), 5, $request->page, []);
-
     }
 
     //For saving roles
@@ -213,19 +212,23 @@ class UserController extends Controller
     public function storePermission(Request $request)
     {
         $data = Permission::query();
+
         if ($data->where("id", $request->id)->count() > 0) {
-            $temp = $data->where("id", $request->id)
+            $data = Permission::where("id", $request->id)
                 ->update([
                     'name' => $request->name,
                     'description' => $request->description,
                 ]);
         } else {
-            $temp = $data->create([
+            if (Permission::where('name', $request->name)->count() > 0) {
+                return ['type' => 1];
+            }
+            $data = Permission::create([
                 'name' => $request->name,
                 'description' => $request->description,
             ]);
         }
-        return $request->all();
+        return ['data' => $request->all(), 'type' => 0];
     }
 
     //For saving role permissions

@@ -111,67 +111,83 @@
         </v-card-actions>
 
         <!-- Filter Dialog -->
-        <v-dialog v-model="filterDialog" max-width="400px">
-          <v-card dark tile class="pa-2">
-            <v-toolbar dense flat class="transparent">
-              Search Filter
+        <v-dialog v-model="filterDialog" max-width="400px" scrollable>
+          <v-card dark tile>
+            <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+              <span
+                class="
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-1
+                  text-sm-subtitle-1
+                  text-subtitle-2
+                "
+                >Search Filter</span
+              >
               <v-spacer></v-spacer>
-              <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+              <v-icon
+                :small="$vuetify.breakpoint.xsOnly"
+                text
+                @click="filterDialog = false"
+                >mdi-close
+              </v-icon>
             </v-toolbar>
             <v-divider class="my-0"></v-divider>
-            <v-row no-gutters align="center" justify="center" class="pa-2">
-              <!-- Date Picker -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Year</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-card-actions class="px-0">
-                  <v-select
-                    v-model="year"
-                    item-text=""
-                    item-value="id"
-                    :items="ylist"
-                    dense
-                    placeholder="Year"
-                    @change="get"
-                    hide-details
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  >
-                  </v-select>
-                </v-card-actions>
-              </v-col>
+            <v-card-text class="px-5 py-2" style="height: auto">
+              <v-row no-gutters align="center" justify="center">
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Year</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      v-model="year"
+                      item-text=""
+                      item-value="id"
+                      :items="ylist"
+                      dense
+                      placeholder="Year"
+                      @change="get"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
 
-              <!-- Date Picker -->
-              <v-col cols="4"
-                ><span class="text-caption text-xl-subtitle-2"
-                  >Month</span
-                ></v-col
-              >
-              <v-col cols="8">
-                <v-card-actions class="px-0">
-                  <v-select
-                    v-model="month"
-                    item-text=""
-                    item-value="id"
-                    :items="mlist"
-                    dense
-                    placeholder="Month"
-                    @change="get"
-                    hide-details
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  >
-                  </v-select>
-                </v-card-actions>
-              </v-col>
-            </v-row>
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Month</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      v-model="month"
+                      item-text=""
+                      item-value="id"
+                      :items="mlist"
+                      dense
+                      placeholder="Month"
+                      @change="get"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+              </v-row>
+            </v-card-text>
           </v-card>
         </v-dialog>
 
@@ -196,7 +212,7 @@
 
           <template slot="body.append">
             <tr class="hidden-xs-only">
-              <th class="text-uppercase">Grand Totals</th>
+              <th class="text-uppercase">GRAND TOTALS</th>
               <td style="text-align: right; font-size: 15px">
                 {{ sumField("begining_orig") }}
               </td>
@@ -231,6 +247,10 @@
 
 <!-- Style -->
 <style>
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 .container {
   max-width: 1500px !important;
 }
@@ -293,7 +313,7 @@ export default {
         align: "start",
         filterable: false,
         class: "black--text",
-        width: "15%",
+        width: "20%",
       },
       {
         text: "BEGINING INVENTORY",
@@ -301,6 +321,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "PURCHASES",
@@ -308,13 +329,15 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
-        text: "TOTAL STOCKS",
+        text: "TOTAL INVENTORY",
         value: "total",
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
 
       {
@@ -323,6 +346,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "STOCKS ON HAND",
@@ -330,6 +354,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "ENDING INVENTORY",
@@ -337,6 +362,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "VARIANCE",
@@ -344,6 +370,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "FLUCTUATION",
@@ -351,11 +378,12 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
     ],
   }),
 
-  //OlLoad
+  //On Load
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
       this.list();
@@ -397,6 +425,7 @@ export default {
           },
         })
         .then((result) => {
+          // console.log(result.data);
           this.table = result.data;
           this.progressbar = false;
         });

@@ -122,190 +122,210 @@
     </v-card-actions>
 
     <!-- Filter Dialog -->
-    <v-dialog v-model="filterDialog" max-width="400px">
-      <v-card dark tile class="pa-2">
-        <v-toolbar dense flat class="transparent">
-          Search Filter
+    <v-dialog v-model="filterDialog" max-width="400px" scrollable>
+      <v-card dark tile>
+        <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+          <span
+            class="
+              text-xl-subtitle-1
+              text-lg-subtitle-1
+              text-md-subtitle-1
+              text-sm-subtitle-1
+              text-subtitle-2
+            "
+            >Search Filter</span
+          >
           <v-spacer></v-spacer>
-          <v-icon text @click="filterDialog = false">mdi-close </v-icon>
+          <v-icon
+            :small="$vuetify.breakpoint.xsOnly"
+            text
+            @click="filterDialog = false"
+            >mdi-close
+          </v-icon>
         </v-toolbar>
         <v-divider class="my-0"></v-divider>
-        <v-row no-gutters align="center" class="pa-2">
-          <!-- Items Per Page -->
-          <v-col cols="4"
-            ><span class="text-caption text-xl-subtitle-2"
-              >Items / Page</span
-            ></v-col
-          >
-          <v-col cols="8">
-            <v-card-actions class="px-0">
-              <v-select
-                dense
-                v-model="itemsPerPage"
-                @change="itemperpage"
-                :items="[5, 10, 15, 20]"
-                hide-details
-                background-color="grey darken-3"
-                flat
-                solo
-                style="font-size: 12px"
-              >
-              </v-select>
-            </v-card-actions>
-          </v-col>
+        <v-card-text class="px-5 py-2" style="height: auto">
+          <v-row no-gutters align="center">
+            <!-- Items Per Page -->
+            <v-col cols="4"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Items / Page</span
+              ></v-col
+            >
+            <v-col cols="8">
+              <v-card-actions class="px-0">
+                <v-select
+                  dense
+                  v-model="itemsPerPage"
+                  @change="itemperpage"
+                  :items="[5, 10, 15, 20]"
+                  hide-details
+                  background-color="grey darken-3"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                </v-select>
+              </v-card-actions>
+            </v-col>
 
-          <!-- Search Field -->
-          <v-col cols="4"
-            ><span class="text-caption text-xl-subtitle-2">Search</span></v-col
-          >
-          <v-col cols="8">
-            <v-card-actions class="px-0">
-              <v-text-field
-                v-model="search"
-                placeholder="Reference No."
-                single-line
-                dense
-                clearable
-                hide-details
-                background-color="grey darken-3"
-                flat
-                solo
-                style="font-size: 12px"
-              ></v-text-field>
-              <v-tooltip bottom>
-                <template #activator="data">
-                  <v-btn
-                    small
-                    :x-small="$vuetify.breakpoint.smAndDown"
-                    color="red darken-2"
-                    icon
-                    v-on="data.on"
-                    @click="getTransactionReport"
-                    class="ml-1"
-                  >
-                    <v-icon>mdi-magnify</v-icon></v-btn
-                  >
+            <!-- Search Field -->
+            <v-col cols="4"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Search</span
+              ></v-col
+            >
+            <v-col cols="8">
+              <v-card-actions class="px-0">
+                <v-text-field
+                  v-model="search"
+                  placeholder="Reference No."
+                  single-line
+                  dense
+                  clearable
+                  hide-details
+                  background-color="grey darken-3"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                ></v-text-field>
+                <v-tooltip bottom>
+                  <template #activator="data">
+                    <v-btn
+                      small
+                      :x-small="$vuetify.breakpoint.smAndDown"
+                      color="red darken-2"
+                      icon
+                      v-on="data.on"
+                      @click="getTransactionReport"
+                      class="ml-1"
+                    >
+                      <v-icon>mdi-magnify</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Search</span>
+                </v-tooltip>
+              </v-card-actions>
+            </v-col>
+
+            <!-- Branch Field -->
+            <v-col cols="4"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Branch</span
+              ></v-col
+            >
+            <v-col cols="8">
+              <v-card-actions class="px-0">
+                <v-select
+                  hide-details
+                  :items="branchlist"
+                  item-text="branch_name"
+                  item-value="id"
+                  clearable
+                  v-model="branch"
+                  dense
+                  @change="getTransactionReport"
+                  placeholder="Branch"
+                  background-color="grey darken-3"
+                  flat
+                  solo
+                  style="font-size: 12px"
+                >
+                </v-select>
+              </v-card-actions>
+            </v-col>
+
+            <!-- Date Picker -->
+            <v-col cols="4"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Date From</span
+              ></v-col
+            >
+            <v-col cols="8">
+              <v-menu
+                v-model="date1"
+                :close-on-content-click="false"
+                :nudge-right="35"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      hide-details
+                      v-model="dateFromTP"
+                      placeholder="Date From"
+                      prepend-inner-icon="mdi-calendar-range"
+                      readonly
+                      v-on="on"
+                      dense
+                      clearable
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                  </v-card-actions>
                 </template>
-                <span>Search</span>
-              </v-tooltip>
-            </v-card-actions>
-          </v-col>
+                <v-date-picker
+                  v-model="dateFromTP"
+                  @input="date1 = false"
+                  scrollable
+                  no-title
+                  color="red darken-2"
+                  dark
+                  @change="getTransactionReport"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
 
-          <!-- Branch Field -->
-          <v-col cols="4"
-            ><span class="text-caption text-xl-subtitle-2">Branch</span></v-col
-          >
-          <v-col cols="8">
-            <v-card-actions class="px-0">
-              <v-select
-                hide-details
-                :items="branchlist"
-                item-text="branch_name"
-                item-value="id"
-                clearable
-                v-model="branch"
-                dense
-                @change="getTransactionReport"
-                placeholder="Branch"
-                background-color="grey darken-3"
-                flat
-                solo
-                style="font-size: 12px"
+            <!-- Date Picker -->
+            <v-col cols="4"
+              ><span class="text-caption text-xl-subtitle-2"
+                >Date Until</span
+              ></v-col
+            >
+            <v-col cols="8">
+              <v-menu
+                v-model="date2"
+                :close-on-content-click="false"
+                :nudge-right="35"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
               >
-              </v-select>
-            </v-card-actions>
-          </v-col>
-
-          <!-- Date Picker -->
-          <v-col cols="4"
-            ><span class="text-caption text-xl-subtitle-2"
-              >Date From</span
-            ></v-col
-          >
-          <v-col cols="8">
-            <v-menu
-              v-model="date1"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-card-actions class="px-0">
-                  <v-text-field
-                    hide-details
-                    v-model="dateFromTP"
-                    placeholder="Date From"
-                    prepend-inner-icon="mdi-calendar-range"
-                    readonly
-                    v-on="on"
-                    dense
-                    clearable
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  ></v-text-field>
-                </v-card-actions>
-              </template>
-              <v-date-picker
-                v-model="dateFromTP"
-                @input="date1 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-                @change="getTransactionReport"
-              ></v-date-picker>
-            </v-menu>
-          </v-col>
-
-          <!-- Date Picker -->
-          <v-col cols="4"
-            ><span class="text-caption text-xl-subtitle-2"
-              >Date Until</span
-            ></v-col
-          >
-          <v-col cols="8">
-            <v-menu
-              v-model="date2"
-              :close-on-content-click="false"
-              :nudge-right="35"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-card-actions class="px-0">
-                  <v-text-field
-                    hide-details
-                    v-model="dateUntilTP"
-                    placeholder="Date Until"
-                    prepend-inner-icon="mdi-calendar-range"
-                    readonly
-                    v-on="on"
-                    dense
-                    clearable
-                    background-color="grey darken-3"
-                    flat
-                    solo
-                    style="font-size: 12px"
-                  ></v-text-field>
-                </v-card-actions>
-              </template>
-              <v-date-picker
-                v-model="dateUntilTP"
-                @input="date2 = false"
-                scrollable
-                no-title
-                color="red darken-2"
-                dark
-                @change="getTransactionReport"
-              ></v-date-picker>
-            </v-menu>
-          </v-col>
-        </v-row>
+                <template v-slot:activator="{ on }">
+                  <v-card-actions class="px-0">
+                    <v-text-field
+                      hide-details
+                      v-model="dateUntilTP"
+                      placeholder="Date Until"
+                      prepend-inner-icon="mdi-calendar-range"
+                      readonly
+                      v-on="on"
+                      dense
+                      clearable
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    ></v-text-field>
+                  </v-card-actions>
+                </template>
+                <v-date-picker
+                  v-model="dateUntilTP"
+                  @input="date2 = false"
+                  scrollable
+                  no-title
+                  color="red darken-2"
+                  dark
+                  @change="getTransactionReport"
+                ></v-date-picker>
+              </v-menu>
+            </v-col>
+          </v-row>
+        </v-card-text>
       </v-card>
     </v-dialog>
 
@@ -358,16 +378,30 @@
     </div>
 
     <!-- View Transaction Report Info Form -->
-    <v-dialog v-model="viewdialog" max-width="900px">
-      <v-card tile class="pa-3">
-        <v-toolbar dark dense flat rounded class="red darken-3">
-          Transaction Report Info
+    <v-dialog v-model="viewdialog" max-width="900px" scrollable>
+      <v-card>
+        <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+          <span
+            class="
+              text-xl-subtitle-1
+              text-lg-subtitle-1
+              text-md-subtitle-1
+              text-sm-subtitle-1
+              text-subtitle-2
+            "
+            >Transaction Report Info</span
+          >
           <v-spacer></v-spacer>
-          <v-icon text @click="closeViewDialog">mdi-close </v-icon>
+          <v-icon
+            :small="$vuetify.breakpoint.xsOnly"
+            text
+            @click="closeViewDialog"
+            >mdi-close
+          </v-icon>
         </v-toolbar>
-        <v-card-text class="px-0">
-          <v-card-text>
-            <div v-if="table2.length > 0">
+        <v-card-text style="height: auto" class="px-4">
+          <div v-if="table2.length > 0">
+            <v-card color="#f1f3f4" flat class="px-4 my-6">
               <v-row no-gutters>
                 <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pb-2">
                   Reference No: <strong>{{ table2[0]["reference_no"] }}</strong>
@@ -417,15 +451,14 @@
                   Cashier: <strong>{{ table2[0]["cashier"]["name"] }}</strong>
                 </v-col>
               </v-row>
-            </div>
-          </v-card-text>
+            </v-card>
+          </div>
 
           <!-- Table -->
           <v-data-table
             id="table1"
             dense
             class="px-4 table-striped border"
-            :items-per-page="5"
             :loading="progressbar"
             :headers="headers2"
             :items="table2"
@@ -456,18 +489,35 @@
         </v-card-text>
         <v-divider class="my-0"></v-divider>
         <!-- Dialog Form Buttons -->
-        <v-card-actions class="px-0 pb-0 pt-3">
-          <v-spacer></v-spacer>
-          <v-btn
-            color="black"
-            :small="$vuetify.breakpoint.smAndDown"
-            depressed
-            dark
-            @click="closeViewDialog"
-            text
-          >
-            Close
-          </v-btn>
+        <v-card-actions class="pa-3">
+          <template v-if="$vuetify.breakpoint.xsOnly">
+            <v-btn
+              style="text-transform: none"
+              color="grey"
+              :small="$vuetify.breakpoint.smAndDown"
+              depressed
+              dark
+              @click="closeViewDialog"
+              outlined
+              block
+            >
+              <span style="color: #00794b">Close</span>
+            </v-btn>
+          </template>
+          <template v-else>
+            <v-spacer></v-spacer>
+            <v-btn
+              style="text-transform: none"
+              color="grey"
+              :small="$vuetify.breakpoint.smAndDown"
+              depressed
+              dark
+              @click="closeViewDialog"
+              outlined
+            >
+              <span style="color: #00794b">Close</span>
+            </v-btn>
+          </template>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -477,6 +527,10 @@
 
 <!-- Style -->
 <style>
+.v-input__control .v-icon.notranslate.v-icon--link.mdi.mdi-close {
+  font-size: 16px;
+}
+
 .container {
   max-width: 1500px !important;
 }
@@ -550,29 +604,34 @@ export default {
       {
         text: "#",
         value: "count",
-        align: "right",
+        align: "center",
         filterable: false,
         class: "black--text",
         sortable: false,
+        width: "10%",
       },
       {
         text: "BRANCH",
         value: "branch_name",
         filterable: false,
         class: "black--text",
+        width: "20%",
       },
       {
         text: "DATE",
         value: "created_at",
+        align: "center",
         filterable: false,
         class: "black--text",
+        width: "15%",
       },
       {
         text: "REFERENCE NO.",
         value: "reference_no",
-        align: "right",
+        align: "center",
         filterable: false,
         class: "black--text",
+        width: "15%",
       },
       {
         text: "TOTAL PRODUCT(S)",
@@ -580,6 +639,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
       {
         text: "TOTAL AMT",
@@ -587,6 +647,7 @@ export default {
         align: "right",
         filterable: false,
         class: "black--text",
+        width: "20%",
       },
       {
         text: "ACTION",
@@ -595,6 +656,7 @@ export default {
         sortable: false,
         filterable: false,
         class: "black--text",
+        width: "10%",
       },
     ],
 
@@ -713,133 +775,145 @@ export default {
           message: "Error! Please complete the fields first.",
         };
       } else {
-        this.overlay = true;
-        switch (type) {
-          case "pdf":
-            await axios({
-              url: "/api/reports/transaction/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                branch: this.branch,
-                from: this.dateFromTP,
-                to: this.dateUntilTP,
-                type: type,
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                let link = document.createElement("a");
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "Transaction Report.pdf";
-                link.click();
-                this.snackbar = {
-                  active: true,
-                  iconText: "check",
-                  iconColor: "success",
-                  message: "Successfully exported.",
-                };
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "excel":
-            await axios({
-              url: "/api/reports/transaction/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                branch: this.branch,
-                from: this.dateFromTP,
-                to: this.dateUntilTP,
-                type: "pdf",
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                axios
-                  .get("/api/reports/transaction/get", {
-                    method: "GET",
-                    responseType: "arraybuffer",
-                    params: {
-                      branch: this.branch,
-                      from: this.dateFromTP,
-                      to: this.dateUntilTP,
-                      type: type,
-                    },
-                  })
-                  .then((res) => {
-                    let blob = new Blob([res.data], {
-                      type: "application/excel",
-                    });
-                    let link = document.createElement("a");
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "Transaction Report.xlsx";
-                    link.click();
-                    this.snackbar = {
-                      active: true,
-                      iconText: "check",
-                      iconColor: "success",
-                      message: "Successfully exported.",
-                    };
+        try {
+          this.overlay = true;
+          switch (type) {
+            case "pdf":
+              await axios({
+                url: "/api/reports/transaction/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  branch: this.branch,
+                  from: this.dateFromTP,
+                  to: this.dateUntilTP,
+                  type: type,
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
                   });
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to export.",
-                };
-              }
-            });
-            break;
-          case "print":
-            await axios({
-              url: "/api/reports/transaction/get",
-              method: "GET",
-              responseType: "blob",
-              params: {
-                branch: this.branch,
-                from: this.dateFromTP,
-                to: this.dateUntilTP,
-                type: "pdf",
-              },
-            }).then((response) => {
-              if (response.data.size > 0) {
-                let blob = new Blob([response.data], {
-                  type: "application/pdf",
-                });
-                this.print = window.URL.createObjectURL(blob);
-                this.snackbar = {
-                  active: true,
-                  iconText: "information",
-                  iconColor: "primary",
-                  message: "Printing... Please wait.",
-                };
-                setTimeout(function () {
-                  document.getElementById("print7").contentWindow.print();
-                }, 3000);
-              } else {
-                this.snackbar = {
-                  active: true,
-                  iconText: "alert-box",
-                  iconColor: "warning",
-                  message: "Nothing to print.",
-                };
-              }
-            });
-            break;
-          default:
-            break;
+                  let link = document.createElement("a");
+                  link.href = window.URL.createObjectURL(blob);
+                  link.download = "Transaction Report.pdf";
+                  link.click();
+                  this.snackbar = {
+                    active: true,
+                    iconText: "check",
+                    iconColor: "success",
+                    message: "Successfully exported.",
+                  };
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+              break;
+            case "excel":
+              await axios({
+                url: "/api/reports/transaction/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  branch: this.branch,
+                  from: this.dateFromTP,
+                  to: this.dateUntilTP,
+                  type: "pdf",
+                },
+              }).then((response) => {
+                if (response.data.size > 0) {
+                  axios
+                    .get("/api/reports/transaction/get", {
+                      method: "GET",
+                      responseType: "arraybuffer",
+                      params: {
+                        branch: this.branch,
+                        from: this.dateFromTP,
+                        to: this.dateUntilTP,
+                        type: type,
+                      },
+                    })
+                    .then((res) => {
+                      let blob = new Blob([res.data], {
+                        type: "application/excel",
+                      });
+                      let link = document.createElement("a");
+                      link.href = window.URL.createObjectURL(blob);
+                      link.download = "Transaction Report.xlsx";
+                      link.click();
+                      this.snackbar = {
+                        active: true,
+                        iconText: "check",
+                        iconColor: "success",
+                        message: "Successfully exported.",
+                      };
+                    });
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to export.",
+                  };
+                }
+              });
+              break;
+            case "print":
+              await axios({
+                url: "/api/reports/transaction/get",
+                method: "GET",
+                responseType: "blob",
+                params: {
+                  branch: this.branch,
+                  from: this.dateFromTP,
+                  to: this.dateUntilTP,
+                  type: "pdf",
+                },
+              }).then((response) => {
+                // console.log(response.data);
+                // return;
+                if (response.data.size > 0) {
+                  let blob = new Blob([response.data], {
+                    type: "application/pdf",
+                  });
+                  this.print = window.URL.createObjectURL(blob);
+                  this.snackbar = {
+                    active: true,
+                    iconText: "information",
+                    iconColor: "primary",
+                    message: "Printing... Please wait.",
+                  };
+                  setTimeout(function () {
+                    document.getElementById("print7").contentWindow.print();
+                  }, 3000);
+                } else {
+                  this.snackbar = {
+                    active: true,
+                    iconText: "alert-box",
+                    iconColor: "warning",
+                    message: "Nothing to print.",
+                  };
+                }
+              });
+              break;
+            default:
+              break;
+          }
+          this.overlay = false;
+        } catch (error) {
+          this.overlay = false;
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Something went wrong! Please try again.",
+          };
         }
-        this.overlay = false;
       }
     },
 

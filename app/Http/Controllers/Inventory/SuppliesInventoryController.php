@@ -53,9 +53,10 @@ class SuppliesInventoryController extends Controller
         }
 
         $return = [];
+        $row = 1;
         foreach ($table->get() as $key => $value) {
             $temp = [];
-            $temp['row'] = $key + 1;
+            $temp['row'] = $row++;
             $temp['id'] = $value->id;
             $temp['category'] = $value->category_details;
             $temp['quantity'] = $value->quantity - tbl_suppliesinventory::where(['branch' => auth()->user()->branch, 'ref' => $value->id])->sum('quantity');
@@ -63,7 +64,6 @@ class SuppliesInventoryController extends Controller
             $temp['supply_name'] = $value->supply_name_details;
             $temp['outgoing_amount'] = number_format($value->with_vat_price * ($value->quantity - tbl_suppliesinventory::where(['branch' => auth()->user()->branch, 'ref' => $value->id])->sum('quantity')), 2);
             $temp['with_vat_price'] = number_format($value->with_vat_price, 2);
-            $temp['without_vat_price'] = number_format($value->without_vat_price, 2);
             $temp['fluctuation'] = number_format($value->fluctuation, 2);
             array_push($return, $temp);
         }

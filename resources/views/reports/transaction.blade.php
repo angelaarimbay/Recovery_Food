@@ -69,28 +69,32 @@
     <!-- Table -->
     <table style="width: 100%">
         <!-- Header -->
-        <tr>
-            <th>
-                <h6>DATE</h6>
-            </th>
-            <th>
-                <h6>REFERENCE NO</h6>
-            </th>
-            <th>
-                <h6>TOTAL PRODUCT(S)</h6>
-            </th>
-            <th>
-                <h6>TOTAL AMT</h6>
-            </th>
-        </tr>
-        <!-- Rows -->
-        @foreach ($data as $items)
+
+        @foreach ($data as $array)
             <tr>
-                <td style="width: auto"> {{ date('Y-m-d', strtotime($items['created_at'])) }} </td>
-                <td style="width: auto"> {{ $items['reference_no'] }} </td>
-                <td style="width: auto; text-align: right"> {{ $items['quantity'] }} </td>
-                <td style="width: auto; text-align: right"> {{ number_format($items['total_amount'], 2) }} </td>
+                <th>
+                    <h6>DATE</h6>
+                </th>
+                <th>
+                    <h6>REFERENCE NO</h6>
+                </th>
+                <th>
+                    <h6>TOTAL PRODUCT(S)</h6>
+                </th>
+                <th>
+                    <h6>TOTAL AMT</h6>
+                </th>
             </tr>
+            <!-- Rows -->
+            @foreach ($array as $items)
+                <tr>
+                    <td style="width: 10%">
+                        {{ $items['created_at'] ? date('Y-m-d', strtotime($items['created_at'])) : null }} </td>
+                    <td style="width: auto"> {!! $items['reference_no'] !!} </td>
+                    <td style="width: auto; text-align: right"> {!! $items['total_prod'] !!} </td>
+                    <td style="width: auto; text-align: right"> {!! $items['total_amount'] !!} </td>
+                </tr>
+            @endforeach
         @endforeach
     </table>
 
