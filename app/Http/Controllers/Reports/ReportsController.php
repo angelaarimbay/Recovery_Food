@@ -227,8 +227,8 @@ class ReportsController extends Controller
                     ->whereBetween("incoming_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                     ->count() > 0) {
                     $ar2 = [
-                        'category_details' => '',
-                        'supply_name' => ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : '<b>Fluctuation Impact: </b> ' . $s_flc),
+                        'category_details' => ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : ''),
+                        'supply_name' => ($t->type == 'excel' ? '' : '<b>Fluctuation Impact: </b> ' . $s_flc),
                         'description' => '',
                         'unit' => '',
                         'net_price' => '',
@@ -245,8 +245,8 @@ class ReportsController extends Controller
 
             // Add inner array to main array (Nested array)
             $ar = [
-                'category_details' => '',
-                'supply_name' => ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>'),
+                'category_details' => ($t->type == 'excel' ? 'SUB-TOTAL' : ''),
+                'supply_name' => ($t->type == 'excel' ? '' : '<b>SUB-TOTAL</b>'),
                 'description' => '',
                 'unit' => '',
                 'net_price' => '',
@@ -289,6 +289,7 @@ class ReportsController extends Controller
                 $columns = ['CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'QTY', 'TOTAL AMT', 'INCOMING DATE'];
                 //Data
                 $dataitems = [];
+                $grandTotal = 0;
 
                 foreach ($data as $key => $value) {
                     foreach ($value as $key2 => $value2) {
@@ -305,7 +306,18 @@ class ReportsController extends Controller
                             array_push($dataitems, $temp);
                         }
                     }
+                    $grandTotal += $value1['quantity_amount'];
                 }
+                
+                $temp_gt['category'] = 'GRAND-TOTAL';
+                $temp_gt['supply_name'] = '';
+                $temp_gt['unit'] = '';
+                $temp_gt['net_price'] = '';
+                $temp_gt['with_vat'] = '';
+                $temp_gt['quantity'] = '';
+                $temp_gt['amount'] = $grandTotal;
+                $temp_gt['incoming_date'] = '';
+                array_push($dataitems, $temp_gt);
                 return Excel::download(new InventoryExport($dataitems, $columns), "Incoming Supplies Report.xlsx");
                 break;
             default:
@@ -410,7 +422,7 @@ class ReportsController extends Controller
                         'net_price' => $value1->supply_name_details['net_price'],
                         'with_vat' => $get_wov,
                         'quantity' => $value1->quantity,
-                        'quantity_amount' => $value1->with_vat_price * $value1->quantity,
+                        'quantity_amount' => number_format($value1->with_vat_price * $value1->quantity, 2),
                         'outgoing_date' => $value1->outgoing_date,
                     ];
                     array_push($group2, $ar);
@@ -421,9 +433,9 @@ class ReportsController extends Controller
                     ->whereBetween("outgoing_date", [date("Y-m-d 00:00:00", strtotime($t->from)), date("Y-m-d 23:59:59", strtotime($t->to))])
                     ->count() > 0) {
                     $ar2 = [
-                        'branch' => ($t->branch == 'All' ? ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : '<b>Fluctuation Impact: </b> ' . $s_flc) : ''),
+                        'branch' => ($t->branch == 'All' ? ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : '<b>Fluctuation Impact: </b> ' . $s_flc) : ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : '<b>Fluctuation Impact: </b> ' . $s_flc)),
                         'category_details' => '',
-                        'supply_name' => ($t->branch == 'All' ? '' : ($t->type == 'excel' ? 'Fluctuation Impact: ' . $s_flc : '<b>Fluctuation Impact: </b> ' . $s_flc)),
+                        'supply_name' => ($t->branch == 'All' ? '' : ($t->type == 'excel' ? '' : '<b>Fluctuation Impact: </b> ' . $s_flc)),
                         'description' => '',
                         'unit' => '',
                         'net_price' => '',
@@ -440,9 +452,9 @@ class ReportsController extends Controller
 
             // Add inner array to main array (Nested array)
             $ar = [
-                'branch' => ($t->branch == 'All' ? ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>') : ''),
+                'branch' => ($t->branch == 'All' ? ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>') : ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>')),
                 'category_details' => '',
-                'supply_name' => ($t->branch == 'All' ? '' : ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>')),
+                'supply_name' => ($t->branch == 'All' ? '' : ($t->type == 'excel' ? '' : '<b>SUB-TOTAL</b>')),
                 'description' => '',
                 'unit' => '',
                 'net_price' => '',
@@ -486,6 +498,7 @@ class ReportsController extends Controller
                 $columns = ['BRANCH', 'CATEGORY', 'SUPPLY NAME', 'UNIT', 'NET PRICE', 'WITH VAT', 'QTY', 'TOTAL AMT', 'OUTGOING DATE'];
                 //Data
                 $dataitems = [];
+                $grandTotal = 0;
 
                 foreach ($data as $key => $value) {
                     foreach ($value as $key2 => $value2) {
@@ -503,7 +516,19 @@ class ReportsController extends Controller
                             array_push($dataitems, $temp);
                         }
                     }
+                    $grandTotal += $value1['quantity_amount'];
                 }
+
+                $temp_gt['branch'] = 'GRAND-TOTAL';
+                $temp_gt['category'] = '';
+                $temp_gt['supply_name'] = '';
+                $temp_gt['unit'] = '';
+                $temp_gt['net_price'] = '';
+                $temp_gt['with_vat'] = '';
+                $temp_gt['quantity'] = '';
+                $temp_gt['amount'] = $grandTotal;
+                $temp_gt['outgoing_date'] = '';
+                array_push($dataitems, $temp_gt);
                 return Excel::download(new InventoryExport($dataitems, $columns), "Outgoing Supplies Report.xlsx");
                 break;
             default:
@@ -545,7 +570,7 @@ class ReportsController extends Controller
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
                 $temp['supply_name'] = $value->supply_name . ' ' . $value->description;
                 $temp['unit'] = $value->unit;
-                $temp['net_price'] = number_format($value->net_price, 2);
+                $temp['net_price'] = $value->net_price;
                 $temp['lead_time'] = $value->lead_time;
                 $temp['minimum_order_quantity'] = $value->minimum_order_quantity;
                 $temp['order_frequency'] = $value->order_frequency;
@@ -683,8 +708,8 @@ class ReportsController extends Controller
 
             $ar = [
                 'row' => '',
-                'category' => '',
-                'supply_name' => ($t->type == 'excel' ? 'SUB-TOTAL' : '<b>SUB-TOTAL</b>'),
+                'category' => ($t->type == 'excel' ? 'SUB-TOTAL' : ''),
+                'supply_name' => ($t->type == 'excel' ? '' : '<b>SUB-TOTAL</b>'),
                 'unit' => '',
                 'net_price' => '',
                 'lead_time' => '',
@@ -1138,9 +1163,9 @@ class ReportsController extends Controller
 
             //Add inner to main array (Nested array)
             $ar = [
-                'supplier_name' => '',
+                'supplier_name' => ($t->type == 'excel' ? 'TOTAL' : ''),
                 'description' => '',
-                'invoice_number' => ($t->type == 'excel' ? 'TOTAL' : '<b>TOTAL</b>'),
+                'invoice_number' => ($t->type == 'excel' ? '' : '<b>TOTAL</b>'),
                 'amount' => $total_a,
                 'incoming_date' => '',
             ];
@@ -1174,6 +1199,7 @@ class ReportsController extends Controller
                 $columns = ['SUPPLIER NAME', 'INVOICE NUMBER', 'AMT', 'DATE'];
                 //Data
                 $dataitems = [];
+                $grandTotal = 0;
 
                 foreach ($data as $key => $value) {
                     foreach ($value as $key1 => $value1) {
@@ -1184,7 +1210,15 @@ class ReportsController extends Controller
                         $temp['incoming_date'] = ($value1['incoming_date'] ? date("Y-m-d", strtotime($value1['incoming_date'])) : null);
                         array_push($dataitems, $temp);
                     }
+                    $grandTotal += $value1['amount'];
                 }
+
+                $temp_gt['supplier_name'] = 'GRAND TOTAL';
+                $temp_gt['invoice_number'] = '';
+                $temp_gt['amount'] = '';
+                $temp_gt['incoming_date'] = '';
+                $temp_gt['amount'] = $grandTotal;
+                array_push($dataitems, $temp_gt);
                 return Excel::download(new InventoryExport($dataitems, $columns), "Purchase Order Report.xlsx");
                 break;
             default:
