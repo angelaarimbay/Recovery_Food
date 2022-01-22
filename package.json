@@ -32,6 +32,7 @@
         "@googlemaps/js-api-loader": "^1.12.1",
         "chart.js": "^2.9.4",
         "js-cookie": "^3.0.1",
+        "jspdf": "^2.5.0",
         "laravel-mix": "^5.0.9",
         "laravel-mix-versionhash": "^1.1.7",
         "resolve-url-loader": "^3.1.3",
