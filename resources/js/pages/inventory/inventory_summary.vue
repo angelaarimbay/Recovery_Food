@@ -400,6 +400,7 @@ export default {
       num = this.table.reduce((a, b) => a + (b[key] || 0), 0);
       return numeral(num).format("0,0.00");
     },
+    
     list() {
       for (var key in moment.months()) {
         this.mlist.push(moment.months()[key]);

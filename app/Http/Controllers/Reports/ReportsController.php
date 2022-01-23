@@ -540,12 +540,11 @@ class ReportsController extends Controller
     public function MainInventoryReport(Request $t)
     {
         //Previous month
-        $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
-        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
-
+        $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-01")));
+        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-01")));
         //Current month
-        $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
-        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
+        $date1 = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month . "-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime($t->year . '-' . $t->month . '-' . date("t")));
 
         $where = ($t->category == 'All' ? "   category != -1 " : ' category =' . $t->category);
         $return = [];
@@ -570,7 +569,7 @@ class ReportsController extends Controller
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
                 $temp['supply_name'] = $value->supply_name . ' ' . $value->description;
                 $temp['unit'] = $value->unit;
-                $temp['net_price'] = $value->net_price;
+                $temp['net_price'] = number_format((float)$value->net_price, 2);
                 $temp['lead_time'] = $value->lead_time;
                 $temp['minimum_order_quantity'] = $value->minimum_order_quantity;
                 $temp['order_frequency'] = $value->order_frequency;
@@ -587,14 +586,12 @@ class ReportsController extends Controller
                 //Beginning (total of previous month)
                 $a = clone $incoming_past;
                 $temp['beginning_q'] = $a->sum('quantity');
-                $a = clone $incoming_past;
                 $temp['beginning_a'] = $temp['beginning_q'] * $value->net_price;
                 $st_beginning_a += $temp['beginning_a']; //Sub-Total
 
                 //Incoming (total of current month)
                 $a = clone $incoming;
                 $temp['incoming_q'] = $a->sum('quantity');
-                $a = clone $incoming;
                 $temp['incoming_a'] = $a->sum('amount');
                 $st_incoming_a += $a->sum('amount'); //Sub-Total
 
@@ -607,7 +604,6 @@ class ReportsController extends Controller
                 //Outgoing (total of current month)
                 $b = clone $outgoing;
                 $temp['outgoing_q'] = $b->sum('quantity');
-                $b = clone $outgoing;
                 $temp['outgoing_a'] = $b->sum('amount');
                 $st_outgoing_a += $b->sum('amount'); //Sub-Total
 

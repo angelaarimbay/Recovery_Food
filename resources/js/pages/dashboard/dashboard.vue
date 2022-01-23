@@ -760,7 +760,7 @@
                     ><v-icon>mdi-printer</v-icon></v-btn
                   >
                 </template>
-                <span>Print</span>
+                <span>Print Graph</span>
               </v-tooltip>
             </v-row>
             <v-divider class="my-0"></v-divider>
@@ -815,7 +815,7 @@
                     ><v-icon>mdi-printer</v-icon></v-btn
                   >
                 </template>
-                <span>Print</span>
+                <span>Print Graph</span>
               </v-tooltip>
             </v-row>
             <v-divider class="my-0"></v-divider>

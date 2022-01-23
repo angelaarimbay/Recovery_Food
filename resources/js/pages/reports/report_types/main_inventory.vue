@@ -79,9 +79,10 @@
         <span>Print</span>
       </v-tooltip></v-card-actions
     >
-    <!-- Category Field -->
+
     <v-row no-gutters justify="center">
-      <v-col cols="4" class="px-1" style="max-width: 150px; min-width: 150px">
+      <!-- Category -->
+      <v-col cols="4" class="px-1" style="max-width: 150px">
         <v-card-actions class="pb-1 pt-4 px-0">
           <v-select
             hide-details
@@ -91,6 +92,50 @@
             item-value="id"
             dense
             placeholder="Category"
+            background-color="grey darken-3"
+            dark
+            flat
+            solo
+            style="font-size: 12px"
+          >
+          </v-select>
+        </v-card-actions>
+      </v-col>
+
+      <!-- Year -->
+      <v-col cols="4" class="px-1" style="max-width: 150px">
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-select
+            v-model="year"
+            item-text=""
+            item-value="id"
+            :items="ylist"
+            dense
+            placeholder="Year"
+            @change="get"
+            hide-details
+            background-color="grey darken-3"
+            dark
+            flat
+            solo
+            style="font-size: 12px"
+          >
+          </v-select>
+        </v-card-actions>
+      </v-col>
+
+      <!-- Month -->
+      <v-col cols="4" class="px-1" style="max-width: 150px">
+        <v-card-actions class="pb-1 pt-4 px-0">
+          <v-select
+            v-model="month"
+            item-text=""
+            item-value="id"
+            :items="mlist"
+            dense
+            placeholder="Month"
+            @change="get"
+            hide-details
             background-color="grey darken-3"
             dark
             flat
@@ -131,6 +176,10 @@ export default {
     category: "",
     suppcatlist: [],
     print: "",
+    year: new Date().getFullYear(),
+    month: new Date().toLocaleString("default", { month: "long" }),
+    mlist: [],
+    ylist: [],
     snackbar: {
       active: false,
       message: "",
@@ -141,10 +190,25 @@ export default {
   //Onload
   created() {
     this.suppCat();
+    this.list();
   },
 
   //Methods
   methods: {
+    list() {
+      for (var key in moment.months()) {
+        this.mlist.push(moment.months()[key]);
+      }
+
+      var currentYear = new Date().getFullYear(),
+        years = [];
+      var startYear = new Date().getFullYear() - 3;
+      while (startYear <= currentYear) {
+        years.push(startYear++);
+      }
+      this.ylist = years;
+    },
+
     //For exporting/printing
     async get(type) {
       if (this.category == "") {
@@ -163,7 +227,14 @@ export default {
                 url: "/api/reports/maininventory/get",
                 method: "GET",
                 responseType: "blob",
-                params: { category: this.category, type: type },
+                params: {
+                  type: type,
+                  category: this.category,
+                  year: this.year,
+                  month:
+                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
+                    1,
+                },
               }).then((response) => {
                 if (response.data.size > 0) {
                   let blob = new Blob([response.data], {
@@ -194,14 +265,29 @@ export default {
                 url: "/api/reports/maininventory/get",
                 method: "GET",
                 responseType: "blob",
-                params: { category: this.category, type: "pdf" },
+                params: {
+                  category: this.category,
+                  type: "pdf",
+                  year: this.year,
+                  month:
+                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
+                    1,
+                },
               }).then((response) => {
                 if (response.data.size > 0) {
                   axios
                     .get("/api/reports/maininventory/get", {
                       method: "GET",
                       responseType: "arraybuffer",
-                      params: { category: this.category, type: type },
+                      params: {
+                        category: this.category,
+                        type: type,
+                        year: this.year,
+                        month:
+                          new Date(
+                            Date.parse(this.month + " 1, 2020")
+                          ).getMonth() + 1,
+                      },
                     })
                     .then((res) => {
                       let blob = new Blob([res.data], {
@@ -233,7 +319,14 @@ export default {
                 url: "/api/reports/maininventory/get",
                 method: "GET",
                 responseType: "blob",
-                params: { category: this.category, type: "pdf" },
+                params: {
+                  category: this.category,
+                  type: "pdf",
+                  year: this.year,
+                  month:
+                    new Date(Date.parse(this.month + " 1, 2020")).getMonth() +
+                    1,
+                },
               }).then((response) => {
                 if (response.data.size > 0) {
                   let blob = new Blob([response.data], {

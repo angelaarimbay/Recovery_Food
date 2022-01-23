@@ -30,12 +30,11 @@ class MainInventoryController extends Controller
         }
 
         //Previous month
-        $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
-        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime(date("Y") . "-" . date("m") . "-01")));
-
+        $date11 = date("Y-m-d 00:00:00", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-01")));
+        $date22 = date("Y-m-t 23:59:59", strtotime("-1 month", strtotime($t->year . "-" . $t->month . "-01")));
         //Current month
-        $date1 = date("Y-m-d 00:00:00", strtotime(date("Y") . "-" . date("m") . "-01"));
-        $date2 = date("Y-m-t 23:59:59", strtotime(date("Y") . '-' . date("m") . '-' . date("t")));
+        $date1 = date("Y-m-d 00:00:00", strtotime($t->year . "-" . $t->month . "-01"));
+        $date2 = date("Y-m-t 23:59:59", strtotime($t->year . '-' . $t->month . '-' . date("t")));
 
         $return = [];
         $row = 1;
@@ -62,13 +61,11 @@ class MainInventoryController extends Controller
             //Begining (Total of previous month)
             $a = clone $incoming_past;
             $temp['begining_q'] = $a->sum('quantity');
-            $a = clone $incoming_past;
             $temp['begining_a'] = number_format($temp['begining_q'] * $value->net_price, 2);
 
             //Incoming (Total of previous month)
             $a = clone $incoming;
             $temp['incoming_q'] = $a->sum('quantity');
-            $a = clone $incoming;
             $temp['incoming_a'] = number_format($a->sum('amount'), 2);
 
             //Total (Total of previous month + current month)
@@ -79,7 +76,6 @@ class MainInventoryController extends Controller
             //Outgoing (Total of current month)
             $b = clone $outgoing;
             $temp['outgoing_q'] = $b->sum('quantity');
-            $b = clone $outgoing;
             $temp['outgoing_a'] = number_format($b->sum('amount'), 2);
 
             //Stocks On Hand (Total of last month + current month) - Outgoing

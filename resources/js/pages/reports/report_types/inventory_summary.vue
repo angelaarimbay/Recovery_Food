@@ -154,8 +154,6 @@ export default {
     dateFrom: null,
     print: "",
     dateUntil: null,
-    date1: false,
-    date2: false,
     snackbar: {
       active: false,
       message: "",

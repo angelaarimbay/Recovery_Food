@@ -113,7 +113,11 @@
         <!-- Filter Dialog -->
         <v-dialog v-model="filterDialog" max-width="400px" scrollable>
           <v-card dark tile>
-            <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+            <v-toolbar
+              :dense="$vuetify.breakpoint.xsOnly"
+              flat
+              class="transparent px-1"
+            >
               <span
                 class="
                   text-xl-subtitle-1
@@ -215,6 +219,58 @@
                       dense
                       placeholder="Category"
                       @change="get"
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Year</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      v-model="year"
+                      item-text=""
+                      item-value="id"
+                      :items="ylist"
+                      dense
+                      placeholder="Year"
+                      @change="get"
+                      hide-details
+                      background-color="grey darken-3"
+                      flat
+                      solo
+                      style="font-size: 12px"
+                    >
+                    </v-select>
+                  </v-card-actions>
+                </v-col>
+
+                <!-- Date Picker -->
+                <v-col cols="4"
+                  ><span class="text-caption text-xl-subtitle-2"
+                    >Month</span
+                  ></v-col
+                >
+                <v-col cols="8">
+                  <v-card-actions class="px-0">
+                    <v-select
+                      v-model="month"
+                      item-text=""
+                      item-value="id"
+                      :items="mlist"
+                      dense
+                      placeholder="Month"
+                      @change="get"
+                      hide-details
                       background-color="grey darken-3"
                       flat
                       solo
@@ -386,7 +442,12 @@
         <!-- View Dialog -->
         <v-dialog v-model="viewdialog" max-width="900px" scrollable>
           <v-card tile id="dialog">
-            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <v-toolbar
+              dark
+              :dense="$vuetify.breakpoint.xsOnly"
+              flat
+              class="red darken-3 px-1"
+            >
               <span
                 class="
                   text-xl-subtitle-1
@@ -1122,6 +1183,10 @@ export default {
       active: false,
       message: "",
     },
+    year: new Date().getFullYear(),
+    month: new Date().toLocaleString("default", { month: "long" }),
+    mlist: [],
+    ylist: [],
     search: "",
     category: "",
     button: false,
@@ -1217,6 +1282,7 @@ export default {
   //Onload
   created() {
     if (this.user.permissionslist.includes("Access Inventory")) {
+      this.list();
       this.get();
       this.suppCat();
     } else {
@@ -1226,6 +1292,20 @@ export default {
 
   //Methods
   methods: {
+    list() {
+      for (var key in moment.months()) {
+        this.mlist.push(moment.months()[key]);
+      }
+
+      var currentYear = new Date().getFullYear(),
+        years = [];
+      var startYear = new Date().getFullYear() - 3;
+      while (startYear <= currentYear) {
+        years.push(startYear++);
+      }
+      this.ylist = years;
+    },
+
     itemperpage() {
       this.page = 1;
       this.get();
@@ -1260,6 +1340,8 @@ export default {
             itemsPerPage: this.itemsPerPage,
             search: this.search,
             category: this.category,
+            year: this.year,
+            month: new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
           },
         })
         .then((result) => {
@@ -1305,6 +1387,7 @@ export default {
 
     //For refresh
     refresh() {
+      this.list();
       this.get();
       this.suppCat();
     },
