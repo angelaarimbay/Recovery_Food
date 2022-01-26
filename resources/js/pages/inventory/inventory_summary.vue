@@ -316,7 +316,7 @@ export default {
         width: "20%",
       },
       {
-        text: "BEGINING INVENTORY",
+        text: "BEGINNING INVENTORY",
         value: "begining",
         align: "right",
         filterable: false,

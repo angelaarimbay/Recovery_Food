@@ -33,43 +33,50 @@ class InventorySummaryController extends Controller
         $return = [];
 
         foreach ($data as $key => $value) {
-
             $temp = [];
             $temp['category'] = $value->supply_cat_name;
 
+            //From this month last day
+            $incoming_all = tbl_incomingsupp::where('category', $value->id)->whereDate('incoming_date', '<=', $date2);
+            $outgoing_all = tbl_outgoingsupp::where('category', $value->id)->whereDate('outgoing_date', '<=', $date2);
+
+            //From last month last day
+            $incoming_all_past = tbl_incomingsupp::where('category', $value->id)->whereDate('incoming_date', '<=', $date22);
+            $outgoing_all_past = tbl_outgoingsupp::where('category', $value->id)->whereDate('outgoing_date', '<=', $date22);
+
+            //Current month only
+            $incoming = tbl_incomingsupp::where('category', $value->id)->whereBetween('incoming_date', [$date1, $date2]);
+            $outgoing = tbl_outgoingsupp::where('category', $value->id)->whereBetween('outgoing_date', [$date1, $date2]);
+
             //Begining based on from, to, and category, then sum amount of last month
-            $temp['begining_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount");
-            $temp['begining'] = number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount"), 2);
+            $temp['begining_orig'] = $incoming_all_past->get()->sum("amount") - $outgoing_all_past->get()->sum("amount");
+            $temp['begining'] = number_format($incoming_all_past->get()->sum("amount") - $outgoing_all_past->get()->sum("amount"), 2);
             //Get incoming based on from, to, per category, then sum amount
             $temp['incoming_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount");
             $temp['incoming'] = number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount"), 2);
             //Beginning + Incoming
-            $temp['total_orig'] = tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount");
-            $temp['total'] = number_format(tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount"), 2);
+            $temp['total_orig'] = $temp['begining_orig'] + $temp['incoming_orig'];
+            $temp['total'] = number_format($temp['begining_orig'] + $temp['incoming_orig'], 2);
             //Get outgoing based on from, to, and category, then sum amount based on masterlist supplies net price
             $temp['outgoing_orig'] = tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount");
             $temp['outgoing'] = number_format(tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"), 2);
             //Stocks = Total - Outgoing
-            $temp['stocks_orig'] = (tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount")) - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount");
-            $temp['stocks'] = number_format((tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date11, $date22])->get()->sum("amount") + tbl_incomingsupp::where("category", $value->id)->whereBetween("incoming_date", [$date1, $date2])->get()->sum("amount")) - tbl_outgoingsupp::where("category", $value->id)->whereBetween("outgoing_date", [$date1, $date2])->get()->sum("amount"), 2);
+            $temp['stocks_orig'] = $temp['total_orig'] - $temp['outgoing_orig'];
+            $temp['stocks'] = number_format($temp['total_orig'] - $temp['outgoing_orig'], 2);
 
             //For computing ending
             $temp['ending'] = 0;
             $ending_q = 0;
             $get_total_ending = 0;
             foreach (tbl_masterlistsupp::where("category", $value->id)->get() as $key1 => $value1) {
-                $incoming_and_past = tbl_incomingsupp::where('supply_name', $value1->id)->whereBetween('incoming_date', [$date11, $date2]);
-                $outgoing = tbl_outgoingsupp::where('supply_name', $value1->id)->whereBetween('outgoing_date', [$date1, $date2]);
-                $incoming = tbl_incomingsupp::where('supply_name', $value1->id)->whereBetween('incoming_date', [$date1, $date2]);
-
-                $a = clone $incoming_and_past;
-                $b = clone $outgoing;
+                $a = clone $incoming_all;
+                $b = clone $outgoing_all;
                 $aa = clone $incoming;
                 $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
-                if ($ending_q > 0 && $aa->sum('quantity') > 0) {
-                    $temp['ending'] += $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
+                if ($temp['ending_q'] > 0 && $aa->sum('quantity') > 0) {
+                    $temp['ending'] = $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
-                    $temp['ending'] += $temp['ending_q'] * $value1->with_vat_price;
+                    $temp['ending'] = $temp['ending_q'] * $value1->with_vat_price;
                 }
                 $get_total_ending = $temp['ending'];
             }

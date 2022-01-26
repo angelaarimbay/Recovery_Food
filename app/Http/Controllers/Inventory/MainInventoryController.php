@@ -61,7 +61,7 @@ class MainInventoryController extends Controller
             $incoming = tbl_incomingsupp::where('supply_name', $value->id)->whereBetween('incoming_date', [$date1, $date2]);
             $outgoing = tbl_outgoingsupp::where('supply_name', $value->id)->whereBetween('outgoing_date', [$date1, $date2]);
 
-            //Begining (Total of previous month)
+            //Beginning (total of previous month)
             $a = clone $incoming_all_past;
             $b = clone $outgoing_all_past;
             $temp['begining_q'] = $a->sum('quantity') - $b->sum("quantity");
@@ -72,15 +72,15 @@ class MainInventoryController extends Controller
             $temp['incoming_q'] = $a->sum('quantity');
             $temp['incoming_a'] = number_format($a->sum('amount'), 2);
 
-            //Outgoing (Total of current month)
-            $b = clone $outgoing;
-            $temp['outgoing_q'] = $b->sum('quantity');
-            $temp['outgoing_a'] = number_format($b->sum('amount'), 2);
-
             //Total (Total of previous month + current month)
             $a = clone $incoming;
             $temp['total_q'] = $temp['begining_q'] + $temp['incoming_q'];
             $temp['total_a'] = number_format($temp['begining_q'] * $value->net_price + $a->sum('amount'), 2);
+
+            //Outgoing (Total of current month)
+            $b = clone $outgoing;
+            $temp['outgoing_q'] = $b->sum('quantity');
+            $temp['outgoing_a'] = number_format($b->sum('amount'), 2);
 
             //Stocks On Hand (Total of last month + current month) - Outgoing
             $c = clone $incoming_all;
@@ -129,7 +129,7 @@ class MainInventoryController extends Controller
                 $temp['triggerpoint'] = 1; //Manage
             }
 
-            //For Ending
+            //For ending
             $a = clone $incoming_all;
             $b = clone $outgoing_all;
             $aa = clone $incoming;
@@ -141,8 +141,7 @@ class MainInventoryController extends Controller
             }
 
             //For consumption
-            $a = clone $incoming_all;
-            $temp['consumption_q'] = $a->sum('quantity') - $temp['ending_q'];
+            $temp['consumption_q'] = $temp['total_q'] - $temp['ending_q'];
             if ($aa->sum('amount') > 0) {
                 $temp['consumption_a'] = number_format($temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);
             } else {
@@ -150,9 +149,7 @@ class MainInventoryController extends Controller
             }
 
             //For ideal
-            $a = clone $incoming_all;
-            $b = clone $outgoing;
-            $temp['ideal_q'] = $a->sum('quantity') - $b->sum('quantity');
+            $temp['ideal_q'] = $temp['total_q'] - $temp['outgoing_q'];
             $aa = clone $incoming;
             if ($temp['ideal_q'] > 0 && $aa->sum('quantity') > 0) {
                 $temp['ideal_a'] = number_format($temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity')), 2);

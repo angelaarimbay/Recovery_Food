@@ -198,15 +198,15 @@ class ReportsController extends Controller
 
                     $net_p += $value1->supply_name_details['net_price'];
                     $wvat_p += $get_wov;
-                    $total_p += $value1->quantity_amount;
+                    $total_p += $value1->amount;
 
-                    $s_total_a += $value1->quantity_amount;
+                    $s_total_a += $value1->amount;
                     $s_qty += $value1->quantity;
                     $s_flc = number_format($get_fl, 2);
 
                     $g_net_p += $value1->supply_name_details['net_price'];
                     $g_wvat_p += $get_wov;
-                    $g_total_p += $value1->quantity_amount;
+                    $g_total_p += $value1->amount;
 
                     $ar = [
                         'category_details' => $value1->category_details['supply_cat_name'],
@@ -216,7 +216,7 @@ class ReportsController extends Controller
                         'net_price' => $value1->supply_name_details['net_price'],
                         'with_vat' => $get_wov,
                         'quantity' => $value1->quantity,
-                        'quantity_amount' => $value1->quantity_amount,
+                        'amount' => $value1->amount,
                         'incoming_date' => $value1->incoming_date,
                     ];
                     array_push($group2, $ar);
@@ -234,7 +234,7 @@ class ReportsController extends Controller
                         'net_price' => '',
                         'with_vat' => '',
                         'quantity' => $s_qty,
-                        'quantity_amount' => $s_total_a,
+                        'amount' => $s_total_a,
                         'incoming_date' => '',
                     ];
                     array_push($group2, $ar2); //Add inner array to main array (Nested array)
@@ -252,7 +252,7 @@ class ReportsController extends Controller
                 'net_price' => '',
                 'with_vat' => '',
                 'quantity' => '',
-                'quantity_amount' => $total_p,
+                'amount' => $total_p,
                 'incoming_date' => '',
             ];
             array_push($group2, $ar);
@@ -268,7 +268,7 @@ class ReportsController extends Controller
                     $content['data'] = $data;
                     $content['net_price'] = $g_net_p;
                     $content['with_vat'] = $g_wvat_p;
-                    $content['quantity_amount'] = $g_total_p;
+                    $content['amount'] = $g_total_p;
                     $content['process_by'] = auth()->user()->name;
                     $content['param'] = ['from' => $t->from, 'to' => $t->to];
                     if (tbl_company::where("active", 1)->orderBy('id', 'desc')->get()->count() > 0) {
@@ -301,14 +301,14 @@ class ReportsController extends Controller
                             $temp['net_price'] = $value1['net_price'];
                             $temp['with_vat'] = $value1['with_vat'];
                             $temp['quantity'] = $value1['quantity'];
-                            $temp['total_amount'] = $value1['quantity_amount'];
+                            $temp['total_amount'] = $value1['amount'];
                             $temp['incoming_date'] = ($value1['incoming_date'] ? date("Y-m-d", strtotime($value1['incoming_date'])) : null);
                             array_push($dataitems, $temp);
                         }
                     }
-                    $grandTotal += $value1['quantity_amount'];
+                    $grandTotal += $value1['amount'];
                 }
-                
+
                 $temp_gt['category'] = 'GRAND-TOTAL';
                 $temp_gt['supply_name'] = '';
                 $temp_gt['unit'] = '';
@@ -569,23 +569,27 @@ class ReportsController extends Controller
                 $temp['category'] = tbl_suppcat::where("id", $value->category)->first()->supply_cat_name;
                 $temp['supply_name'] = $value->supply_name . ' ' . $value->description;
                 $temp['unit'] = $value->unit;
-                $temp['net_price'] = number_format((float)$value->net_price, 2);
+                $temp['net_price'] = number_format((float) $value->net_price, 2);
                 $temp['lead_time'] = $value->lead_time;
                 $temp['minimum_order_quantity'] = $value->minimum_order_quantity;
                 $temp['order_frequency'] = $value->order_frequency;
 
+                //From this month last day
+                $incoming_all = tbl_incomingsupp::where('supply_name', $value->id)->whereDate('incoming_date', '<=', $date2);
+                $outgoing_all = tbl_outgoingsupp::where('supply_name', $value->id)->whereDate('outgoing_date', '<=', $date2);
+
+                //From last month last day
+                $incoming_all_past = tbl_incomingsupp::where('supply_name', $value->id)->whereDate('incoming_date', '<=', $date22);
+                $outgoing_all_past = tbl_outgoingsupp::where('supply_name', $value->id)->whereDate('outgoing_date', '<=', $date22);
+
+                //Current month only
                 $incoming = tbl_incomingsupp::where('supply_name', $value->id)->whereBetween('incoming_date', [$date1, $date2]);
                 $outgoing = tbl_outgoingsupp::where('supply_name', $value->id)->whereBetween('outgoing_date', [$date1, $date2]);
 
-                $incoming_past = tbl_incomingsupp::where('supply_name', $value->id)->whereBetween('incoming_date', [$date11, $date22]);
-                $outgoing_past = tbl_outgoingsupp::where('supply_name', $value->id)->whereBetween('outgoing_date', [$date11, $date22]);
-
-                $incoming_and_past = tbl_incomingsupp::where('supply_name', $value->id)->whereBetween('incoming_date', [$date11, $date2]);
-                $outgoing_and_past = tbl_outgoingsupp::where('supply_name', $value->id)->whereBetween('outgoing_date', [$date11, $date2]);
-
                 //Beginning (total of previous month)
-                $a = clone $incoming_past;
-                $temp['beginning_q'] = $a->sum('quantity');
+                $a = clone $incoming_all_past;
+                $b = clone $outgoing_all_past;
+                $temp['beginning_q'] = $a->sum('quantity') - $b->sum("quantity");
                 $temp['beginning_a'] = $temp['beginning_q'] * $value->net_price;
                 $st_beginning_a += $temp['beginning_a']; //Sub-Total
 
@@ -596,7 +600,7 @@ class ReportsController extends Controller
                 $st_incoming_a += $a->sum('amount'); //Sub-Total
 
                 //Total (total of previous month + current month)
-                $a = clone $incoming_and_past;
+                $a = clone $incoming;
                 $temp['total_q'] = $temp['beginning_q'] + $temp['incoming_q'];
                 $temp['total_a'] = $a->sum('amount');
                 $st_total_a += $a->sum('amount'); //Sub-Total
@@ -608,12 +612,13 @@ class ReportsController extends Controller
                 $st_outgoing_a += $b->sum('amount'); //Sub-Total
 
                 //Stocks On Hand (total of previous month + current month) - outgoing
-                $c = clone $incoming_and_past;
-                $d = clone $outgoing;
+                $c = clone $incoming_all;
+                $d = clone $outgoing_all;
                 $temp['onhand_q'] = $c->sum('quantity') - $d->sum('quantity');
-                $c_a = clone $incoming_and_past;
-                $cc_a = clone $incoming_and_past;
-                if ($c_a->sum('quantity') > 0) {
+
+                $c_a = clone $incoming_all;
+                $cc_a = clone $incoming_all;
+                if ($temp['onhand_q'] > 0) {
                     $temp['onhand_a'] = ($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q']);
                     $st_onhand_a += $c_a->sum('amount') / $cc_a->sum('quantity') * $temp['onhand_q'];
                 } else {
@@ -623,8 +628,9 @@ class ReportsController extends Controller
                 //Average ((total of last month + current month) / (quantity of last month + current month) / (current month quantity / date today))
                 $a = clone $outgoing;
                 $temp['average_q'] = $a->sum('quantity') / date('d');
-                $c_a = clone $incoming_and_past;
-                $cc_a = clone $incoming_and_past;
+
+                $c_a = clone $incoming_all;
+                $cc_a = clone $incoming_all;
                 if ($c_a->sum('quantity') > 0) {
                     $temp['average_a'] = number_format(($c_a->sum('amount') / $cc_a->sum('quantity') * $temp['average_q']), 2);
                     $st_average_a += $c_a->sum('amount') / $cc_a->sum('quantity') * $temp['average_q'];
@@ -640,13 +646,13 @@ class ReportsController extends Controller
                 $a = clone $outgoing;
                 $orderqty = $value->order_frequency * ($a->sum('quantity') / date('d'));
                 if ($orderqty < $value->minimum_order_quantity) {
-                    $temp['ordr'] = round($value->minimum_order_quantity, 2);
+                    $temp['ordr'] = number_format(round($value->minimum_order_quantity, 2), 2);
                 } else {
-                    $temp['ordr'] = round($orderqty, 2);
+                    $temp['ordr'] = number_format(round($orderqty, 2), 2);
                 }
 
                 //Trigger Point  (lead time of item * total quantity / day today) + outgoing quantity / day today
-                $a = clone $incoming_and_past;
+                $a = clone $incoming_all;
                 $b = clone $outgoing;
                 if ($temp['onhand_q'] < $temp['orderpoint']) {
                     $temp['triggerpoint'] = 'Order';
@@ -655,8 +661,8 @@ class ReportsController extends Controller
                 }
 
                 //Ending
-                $a = clone $incoming_and_past;
-                $b = clone $outgoing;
+                $a = clone $incoming_all;
+                $b = clone $outgoing_all;
                 $aa = clone $incoming;
                 $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
                 if ($temp['ending_q'] > 0 && $aa->sum('quantity') > 0) {
@@ -668,8 +674,7 @@ class ReportsController extends Controller
                 }
 
                 //Consumption
-                $a = clone $incoming_and_past;
-                $temp['consumption_q'] = $a->sum('quantity') - $temp['ending_q'];
+                $temp['consumption_q'] = $temp['total_q'] - $temp['ending_q'];
                 if ($aa->sum('amount') > 0) {
                     $temp['consumption_a'] = $temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                     $st_consumption_a += $temp['consumption_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
@@ -678,9 +683,7 @@ class ReportsController extends Controller
                 }
 
                 //Ideal
-                $a = clone $incoming_and_past;
-                $b = clone $outgoing;
-                $temp['ideal_q'] = $a->sum('quantity') - $b->sum('quantity'); //total from last month and this month - outgoing this month
+                $temp['ideal_q'] = $temp['total_q'] - $temp['outgoing_q'];
                 $aa = clone $incoming;
                 if ($temp['ideal_q'] > 0 && $aa->sum('quantity') > 0) {
                     $temp['ideal_a'] = $temp['ideal_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
@@ -711,7 +714,6 @@ class ReportsController extends Controller
                 'lead_time' => '',
                 'minimum_order_quantity' => '',
                 'order_frequency' => '',
-
                 'beginning_q' => '',
                 'beginning_a' => $st_beginning_a,
                 'incoming_q' => '',
