@@ -1081,7 +1081,7 @@
                   outlined
                   block
                 >
-                  <span style="color: #1976d2">Close</span>
+                  <span style="color: #1976d2; text-transform: none">Close</span>
                 </v-btn>
               </template>
               <template v-else>
@@ -1094,7 +1094,7 @@
                   @click="closeViewDialog"
                   outlined
                 >
-                  <span style="color: #1976d2">Close</span>
+                  <span style="color: #1976d2; text-transform: none">Close</span>
                 </v-btn>
               </template>
             </v-card-actions>
