@@ -69,14 +69,18 @@ class InventorySummaryController extends Controller
             $ending_q = 0;
             $get_total_ending = 0;
             foreach (tbl_masterlistsupp::where("category", $value->id)->get() as $key1 => $value1) {
-                $a = clone $incoming_all;
-                $b = clone $outgoing_all;
+                $incoming_and_past = tbl_incomingsupp::where('supply_name', $value1->id)->whereDate('incoming_date', '<=', $date2);
+                $outgoing_and_past = tbl_outgoingsupp::where('supply_name', $value1->id)->whereDate('outgoing_date', '<=', $date2);
+                $incoming = tbl_incomingsupp::where('supply_name', $value1->id)->whereBetween('incoming_date', [$date1, $date2]);
+
+                $a = clone $incoming_and_past;
+                $b = clone $outgoing_and_past;
                 $aa = clone $incoming;
                 $temp['ending_q'] = ($a->sum('quantity') - $b->sum('quantity'));
                 if ($temp['ending_q'] > 0 && $aa->sum('quantity') > 0) {
-                    $temp['ending'] = $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
+                    $temp['ending'] += $temp['ending_q'] * ($aa->sum('amount') / $aa->sum('quantity'));
                 } else {
-                    $temp['ending'] = $temp['ending_q'] * $value1->with_vat_price;
+                    $temp['ending'] += $temp['ending_q'] * $value1->with_vat_price;
                 }
                 $get_total_ending = $temp['ending'];
             }
