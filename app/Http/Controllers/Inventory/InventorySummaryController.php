@@ -36,10 +36,6 @@ class InventorySummaryController extends Controller
             $temp = [];
             $temp['category'] = $value->supply_cat_name;
 
-            //From this month last day
-            $incoming_all = tbl_incomingsupp::where('category', $value->id)->whereDate('incoming_date', '<=', $date2);
-            $outgoing_all = tbl_outgoingsupp::where('category', $value->id)->whereDate('outgoing_date', '<=', $date2);
-
             //From last month last day
             $incoming_all_past = tbl_incomingsupp::where('category', $value->id)->whereDate('incoming_date', '<=', $date22);
             $outgoing_all_past = tbl_outgoingsupp::where('category', $value->id)->whereDate('outgoing_date', '<=', $date22);
