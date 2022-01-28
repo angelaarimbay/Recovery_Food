@@ -513,42 +513,44 @@
                     </v-col>
                   </v-row>
                 </template>
-                <v-spacer></v-spacer>
-                <v-btn
-                  style="text-transform: none"
-                  color="grey"
-                  depressed
-                  :disabled="button"
-                  dark
-                  @click="cancel"
-                  :small="$vuetify.breakpoint.smAndDown"
-                  outlined
-                >
-                  <span style="color: #1976d2">Cancel</span>
-                </v-btn>
-                <v-btn
-                  style="text-transform: none"
-                  color="primary"
-                  depressed
-                  :disabled="button"
-                  dark
-                  v-if="dialog_add"
-                  :small="$vuetify.breakpoint.smAndDown"
-                  @click="validateQty('add')"
-                >
-                  Save
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  depressed
-                  v-else
-                  :disabled="button"
-                  dark
-                  :small="$vuetify.breakpoint.smAndDown"
-                  @click="validateQty('delete')"
-                >
-                  Remove
-                </v-btn>
+                <template v-else>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    style="text-transform: none"
+                    color="grey"
+                    depressed
+                    :disabled="button"
+                    dark
+                    @click="cancel"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    outlined
+                  >
+                    <span style="color: #1976d2">Cancel</span>
+                  </v-btn>
+                  <v-btn
+                    style="text-transform: none"
+                    color="primary"
+                    depressed
+                    :disabled="button"
+                    dark
+                    v-if="dialog_add"
+                    :small="$vuetify.breakpoint.smAndDown"
+                    @click="validateQty('add')"
+                  >
+                    Save
+                  </v-btn>
+                  <v-btn
+                    color="primary"
+                    depressed
+                    v-else
+                    :disabled="button"
+                    dark
+                    :small="$vuetify.breakpoint.smAndDown"
+                    @click="validateQty('delete')"
+                  >
+                    Remove
+                  </v-btn>
+                </template>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -642,7 +644,7 @@
               class="ord_table table-striped border mt-8"
               :headers="headers2"
               :items="table2"
-              height="230"
+              height="295"
               :loading="progressbar2"
               ref="progress"
               :items-per-page="table2.length"
@@ -1062,6 +1064,7 @@ export default {
     prodsubcatlist: [],
     dialog1: false,
     dialog2: false,
+    vat: null,
     type: "",
 
     //Form Rules
@@ -1340,35 +1343,44 @@ export default {
     //For saving transaction info
     async save() {
       this.snackbar2.active = false;
-      if (parseInt(this.payment) >= parseInt(this.totalamount)) {
-        await axios
-          .post("/api/pos/prodlist/save", this.table2)
-          .then((result) => {
-            this.reference_no = result.data.reference_no;
-            this.get();
-            this.getSalesCount();
-            this.disabled1 = false; //For printer
-            this.disabled = true;
-            (this.table2 = []), (this.payment = 0);
-            this.discount = 0;
-            this.change = 0;
-            this.totalamount = numeral(0).format("0,0.00");
-            this.discountedamount = numeral(0).format("0,0.00");
-            this.snackbar = {
-              active: true,
-              iconText: "check",
-              iconColor: "success",
-              message: "Successfully checked-out.",
-            };
-            this.$refs.form1.resetValidation();
-          });
-      } else {
+      if (this.vat == null) {
         this.snackbar = {
           active: true,
           iconText: "alert",
           iconColor: "error",
-          message: "Error! Please input correct payment first.",
+          message: "Set the VAT first.",
         };
+      } else {
+        if (parseInt(this.payment) >= parseInt(this.totalamount)) {
+          await axios
+            .post("/api/pos/prodlist/save", this.table2)
+            .then((result) => {
+              this.reference_no = result.data.reference_no;
+              this.get();
+              this.getSalesCount();
+              this.disabled1 = false; //For printer
+              this.disabled = true;
+              (this.table2 = []), (this.payment = 0);
+              this.discount = 0;
+              this.change = 0;
+              this.totalamount = numeral(0).format("0,0.00");
+              this.discountedamount = numeral(0).format("0,0.00");
+              this.snackbar = {
+                active: true,
+                iconText: "check",
+                iconColor: "success",
+                message: "Successfully checked-out.",
+              };
+              this.$refs.form1.resetValidation();
+            });
+        } else {
+          this.snackbar = {
+            active: true,
+            iconText: "alert",
+            iconColor: "error",
+            message: "Error! Please input correct payment first.",
+          };
+        }
       }
     },
 
@@ -1474,6 +1486,7 @@ export default {
                     parseFloat(this.quantity) *
                     parseFloat(this.selectedrow.product_name.price),
                   mode: this.mode,
+                  vat: this.vat,
                 });
 
                 this.snackbar = {
@@ -1506,6 +1519,7 @@ export default {
                   parseFloat(this.quantity) *
                   parseFloat(this.selectedrow.product_name.price),
                 mode: this.mode,
+                vat: this.vat,
               });
 
               this.snackbar = {
@@ -1609,6 +1623,7 @@ export default {
         ).format("0,0.00"),
         temp_sub_total: this.quantity * this.selectedrow.product_name.price,
         mode: this.mode,
+        vat: this.vat,
       });
     },
 
@@ -1675,16 +1690,26 @@ export default {
         if (this.discount > 0) {
           this.change = numeral(
             this.payment -
-              (this.totalamount - (this.discount / 100) * this.totalamount)
+              (this.totalamount.replace(",", "") -
+                (this.discount / 100) * this.totalamount.replace(",", ""))
           ).format("0,0.00");
           this.getTotal();
         } else if (this.discount == null || this.discount == 0) {
-          this.change = numeral(this.payment - this.totalamount).format(
-            "0,0.00"
-          );
+          this.change = numeral(
+            this.payment - this.totalamount.replace(",", "")
+          ).format("0,0.00");
           this.getTotal();
         }
       }
+    },
+
+    //For retrieving VAT
+    async getVat() {
+      await axios
+        .get("/api/settings/vat/get", { params: { type: "p" } })
+        .then((result) => {
+          this.vat = result.data.vat;
+        });
     },
 
     //Reset Form
@@ -1804,6 +1829,7 @@ export default {
     if (this.user.permissionslist.includes("Access POS")) {
       this.$store.commit("check_layout/container", "");
       this.get();
+      this.getVat();
       this.prodCat();
       this.prodSubCat();
       this.getSalesCount();

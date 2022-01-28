@@ -123,7 +123,11 @@
           <!-- Filter Dialog -->
           <v-dialog v-model="filterDialog" max-width="400px" scrollable>
             <v-card dark tile>
-              <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+              <v-toolbar
+                :dense="$vuetify.breakpoint.xsOnly"
+                flat
+                class="transparent px-1"
+              >
                 <span
                   class="
                     text-xl-subtitle-1
@@ -378,7 +382,12 @@
           scrollable
         >
           <v-card>
-            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <v-toolbar
+              dark
+              :dense="$vuetify.breakpoint.xsOnly"
+              flat
+              class="red darken-3 px-1"
+            >
               <span
                 class="
                   text-xl-subtitle-1
@@ -620,7 +629,6 @@
                       :rules="formRulesVAT"
                       v-model="temp_vat"
                       disabled
-                      clearable
                       dense
                       @keydown="numberKeydown($event)"
                       background-color="white"
@@ -793,7 +801,12 @@
           scrollable
         >
           <v-card>
-            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <v-toolbar
+              dark
+              :dense="$vuetify.breakpoint.xsOnly"
+              flat
+              class="red darken-3 px-1"
+            >
               <span
                 class="
                   text-xl-subtitle-1
@@ -1549,7 +1562,6 @@ export default {
       this.form.exp_date = row.exp_date
         ? this.getFormatDate(row.exp_date, "YYYY-MM-DD")
         : "";
-
       this.dialog = true;
       this.compute();
     },

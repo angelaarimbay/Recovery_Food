@@ -41,7 +41,7 @@ class MasterlistProductsController extends Controller
             $table_clone->where("id", $data->id)->update(
                 ["status" => $data->status,
                     "category" => $data->category,
-                    "vat" => tbl_vat::where("type", "p")->first()->vat,
+                    "vat" => $data->vat,
                     "vatable" => 1,
                     "sub_category" => $data->sub_category,
                     "product_name" => $data->product_name,
@@ -72,9 +72,10 @@ class MasterlistProductsController extends Controller
         }
 
         $return = [];
+        $row = 1;
         foreach ($table->orderByRaw("  days desc ")->get() as $key => $value) {
             $temp = [];
-            $temp['row'] = $key + 1;
+            $temp['row'] = $row++;
             $temp['id'] = $value->id;
             $temp['status'] = $value->status;
             $temp['category'] = $value->category_details;

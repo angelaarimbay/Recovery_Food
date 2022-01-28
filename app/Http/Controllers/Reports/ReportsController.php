@@ -13,7 +13,6 @@ use App\Models\tbl_outgoingsupp;
 use App\Models\tbl_pos;
 use App\Models\tbl_purchaseord;
 use App\Models\tbl_suppcat;
-use App\Models\tbl_vat;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -1306,8 +1305,8 @@ class ReportsController extends Controller
             $data_cloned = clone $data;
             $temp['sub_total_discounted'] = $data_cloned->sum('sub_total_discounted');
             $temp['cashier_name_details'] = User::where("id", $data[0]->cashier)->first()->name;
-            $temp['vatable_sales'] = $data_cloned->sum('sub_total') / tbl_vat::where("type", "p")->first()->vat;
-            $temp['vat_amount'] = $data_cloned->sum('sub_total') - ($data_cloned->sum('sub_total') / tbl_vat::where("type", "p")->first()->vat);
+            $temp['vatable_sales'] = $data_cloned->sum('sub_total') / tbl_pos::first()->vat;
+            $temp['vat_amount'] = $data_cloned->sum('sub_total') - ($data_cloned->sum('sub_total') / tbl_pos::first()->vat);
 
             $data_cloned = clone $data;
             $pdf = PDF::loadView(
