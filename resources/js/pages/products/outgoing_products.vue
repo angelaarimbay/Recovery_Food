@@ -87,18 +87,25 @@
               <!-- Requests -->
               <v-tooltip bottom>
                 <template #activator="data">
-                  <v-btn
-                    class="mr-2"
-                    color="white"
-                    depressed
-                    :small="$vuetify.breakpoint.smAndDown"
-                    dark
-                    @click="openRequestDialog"
-                    v-on="data.on"
-                    icon
+                  <v-badge
+                    :content="prodrequest"
+                    :value="prodrequest"
+                    color="green"
+                    overlap
                   >
-                    <v-icon size="20">mdi-clipboard-text</v-icon>
-                  </v-btn>
+                    <v-btn
+                      class="mr-2"
+                      color="white"
+                      depressed
+                      :small="$vuetify.breakpoint.smAndDown"
+                      dark
+                      @click="openRequestDialog"
+                      v-on="data.on"
+                      icon
+                    >
+                      <v-icon size="20">mdi-clipboard-text</v-icon>
+                    </v-btn>
+                  </v-badge>
                 </template>
                 <span>Request(s)</span>
               </v-tooltip>
@@ -141,7 +148,11 @@
           <!-- Filter Dialog -->
           <v-dialog v-model="filterDialog" max-width="400px" scrollable>
             <v-card dark tile>
-              <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+              <v-toolbar
+                :dense="$vuetify.breakpoint.xsOnly"
+                flat
+                class="transparent px-1"
+              >
                 <span
                   class="
                     text-xl-subtitle-1
@@ -468,7 +479,12 @@
           scrollable
         >
           <v-card>
-            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <v-toolbar
+              dark
+              :dense="$vuetify.breakpoint.xsOnly"
+              flat
+              class="red darken-3 px-1"
+            >
               <span
                 class="
                   text-xl-subtitle-1
@@ -944,7 +960,12 @@
       <!-- View Requested Products List Form -->
       <v-dialog v-model="dialog2" width="900px" scrollable>
         <v-card>
-          <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+          <v-toolbar
+            dark
+            :dense="$vuetify.breakpoint.xsOnly"
+            flat
+            class="red darken-3 px-1"
+          >
             <span
               class="
                 text-xl-subtitle-1
@@ -1091,7 +1112,12 @@
       <v-form ref="qtyForm">
         <v-dialog v-model="dialog3" max-width="450px" scrollable>
           <v-card>
-            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <v-toolbar
+              dark
+              :dense="$vuetify.breakpoint.xsOnly"
+              flat
+              class="red darken-3 px-1"
+            >
               <span
                 class="
                   text-xl-subtitle-1
@@ -1326,6 +1352,7 @@ export default {
   //Data
   data: () => ({
     progressbar: false,
+    prodrequest: 0,
     snackbar: {
       active: false,
       message: "",
@@ -1554,6 +1581,7 @@ export default {
         "YYYY-MM-DD"
       );
       this.get();
+      this.getProdRequests();
       this.prodCat();
       this.prodSubCat();
       this.branchName();
@@ -1828,6 +1856,18 @@ export default {
         });
       this.selected = [];
       this.dialog2 = true;
+    },
+
+    //For retrieving product request count
+    async getProdRequests() {
+      await axios
+        .get("/api/dashboard/getProdRequests")
+        .then((result) => {
+          this.prodrequest = result.data;
+        })
+        .catch((result) => {
+          // If false or error when saving
+        });
     },
 
     editRequest(row) {

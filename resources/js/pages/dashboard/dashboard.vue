@@ -663,9 +663,26 @@
 
       <!-- Graphs -->
       <v-row no-gutters>
-        <v-spacer></v-spacer>
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12" class="my-auto"
+          ><v-card-title
+            class="
+              py-0
+              px-2
+              text-body-2
+              text-xl-subtitle-1
+              text-lg-subtitle-1
+              text-md-subtitle-2
+              text-sm-body-2
+            "
+            :class="{
+              'justify-center': $vuetify.breakpoint.smAndDown,
+              'float-right': $vuetify.breakpoint.mdAndUp,
+            }"
+            >Graphs Filter</v-card-title
+          ></v-col
+        >
         <v-col cols="12" xl="6" lg="6" md="12" sm="12">
-          <v-row no-gutters class="mb-3">
+          <v-row no-gutters>
             <!-- Branch Selection -->
             <v-col cols="12" xl="6" lg="6" md="6" sm="12">
               <v-select
@@ -723,7 +740,7 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
+      <v-row no-gutters class="mt-3">
         <!-- Sales Graph -->
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card

@@ -522,7 +522,7 @@
                         >
                           <div>
                             <span style="color: #616161"
-                              >No. of Items:
+                              >No. of Item(s):
                               <strong>{{ table2.length }}</strong></span
                             >
                           </div>
