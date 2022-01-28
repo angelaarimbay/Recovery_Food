@@ -86,6 +86,7 @@ class ProductsListController extends Controller
                 'quantity' => $value['quantity'],
                 'sub_total' => $value['sub_total'],
                 'sub_total_discounted' => $value['sub_total_discounted'],
+                'vat' => $value['vat'],
                 'payment' => $value['payment'],
                 'discount' => ($value['discount'] ?? 0),
                 'change' => $value['change'],

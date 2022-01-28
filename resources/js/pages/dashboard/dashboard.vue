@@ -663,16 +663,33 @@
 
       <!-- Graphs -->
       <v-row no-gutters>
-        <v-spacer></v-spacer>
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12" class="my-auto"
+          ><v-card-title
+            class="
+              py-0
+              px-2
+              text-body-2
+              text-xl-subtitle-1
+              text-lg-subtitle-1
+              text-md-subtitle-2
+              text-sm-body-2
+            "
+            :class="{
+              'justify-center': $vuetify.breakpoint.smAndDown,
+              'float-right': $vuetify.breakpoint.mdAndUp,
+            }"
+            >Graphs Filter</v-card-title
+          ></v-col
+        >
         <v-col cols="12" xl="6" lg="6" md="12" sm="12">
-          <v-row no-gutters class="mb-3">
+          <v-row no-gutters>
             <!-- Branch Selection -->
             <v-col cols="12" xl="6" lg="6" md="6" sm="12">
               <v-select
                 :items="branchlist"
                 v-model="branch"
                 item-text="branch_name"
-                item-value="id"
+                return-object
                 label="Branch"
                 @change="getProductsGraph"
                 hide-details
@@ -723,7 +740,7 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
+      <v-row no-gutters class="mt-3">
         <!-- Sales Graph -->
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
@@ -732,28 +749,43 @@
             :loading="progressbar1"
             ref="progress"
           >
-            <v-card-title
-              dark
-              class="
-                py-2
-                text-body-2
-                text-xl-subtitle-1
-                text-lg-subtitle-1
-                text-md-subtitle-2
-                text-sm-body-2
-              "
-              style="
-                color: #d32f2f;
-                font-weight: bold;
-                background-color: #e0e0e0;
-              "
-              >Sales Graph</v-card-title
-            >
+            <v-row no-gutters align="center" style="background-color: #e0e0e0">
+              <v-card-title
+                dark
+                class="
+                  py-2
+                  text-body-2
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-2
+                  text-sm-body-2
+                "
+                style="color: #d32f2f; font-weight: bold"
+                >Sales Graph</v-card-title
+              >
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    depressed
+                    :hidden="hidePrint1"
+                    class="mx-3"
+                    large
+                    icon
+                    @click="printSalesGraph"
+                    v-on="data.on"
+                    ><v-icon>mdi-printer</v-icon></v-btn
+                  >
+                </template>
+                <span>Print Graph</span>
+              </v-tooltip>
+            </v-row>
             <v-divider class="my-0"></v-divider>
             <bar-chart
               class="pa-2 pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3"
               :options="options"
               :chart-data="datacollection"
+              :chart-id="'sales_graph'"
             >
             </bar-chart>
             <v-progress-linear
@@ -765,7 +797,7 @@
             ></v-progress-linear>
           </v-card>
         </v-col>
-        <!-- Products Graph -->
+        <!-- Purchase Graph -->
         <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="pa-1">
           <v-card
             elevation="2"
@@ -773,27 +805,42 @@
             :loading="progressbar2"
             ref="progress"
           >
-            <v-card-title
-              class="
-                py-2
-                text-body-2
-                text-xl-subtitle-1
-                text-lg-subtitle-1
-                text-md-subtitle-2
-                text-sm-body-2
-              "
-              style="
-                color: #d32f2f;
-                font-weight: bold;
-                background-color: #e0e0e0;
-              "
-              >Purchase Graph</v-card-title
-            >
+            <v-row no-gutters align="center" style="background-color: #e0e0e0">
+              <v-card-title
+                class="
+                  py-2
+                  text-body-2
+                  text-xl-subtitle-1
+                  text-lg-subtitle-1
+                  text-md-subtitle-2
+                  text-sm-body-2
+                "
+                style="color: #d32f2f; font-weight: bold"
+                >Purchase Graph</v-card-title
+              >
+              <v-spacer></v-spacer>
+              <v-tooltip bottom>
+                <template #activator="data">
+                  <v-btn
+                    depressed
+                    :hidden="hidePrint2"
+                    class="mx-3"
+                    large
+                    icon
+                    @click="printPurchaseGraph"
+                    v-on="data.on"
+                    ><v-icon>mdi-printer</v-icon></v-btn
+                  >
+                </template>
+                <span>Print Graph</span>
+              </v-tooltip>
+            </v-row>
             <v-divider class="my-0"></v-divider>
             <bar-chart1
               class="pa-2 pa-xl-6 pa-lg-5 pa-md-4 pa-sm-3"
               :options="options1"
               :chart-data="datacollection1"
+              :chart-id="'purchase_graph'"
             >
             </bar-chart1>
             <v-progress-linear
@@ -833,6 +880,7 @@ import BarChart from "../charts/BarChart";
 import BarChart1 from "../charts/BarChart";
 import { mapGetters } from "vuex";
 import axios from "axios"; // Library for sending api request
+import jsPDF from "jspdf";
 export default {
   middleware: "auth",
   metaInfo() {
@@ -883,7 +931,7 @@ export default {
     checkbox2: true,
     checkbox3: true,
     checkbox4: true,
-    branch: 1,
+    branch: [],
     year: new Date().getFullYear(),
     month: "All",
     supp: null,
@@ -906,6 +954,8 @@ export default {
     hidden8: true,
     progressbar1: false,
     progressbar2: false,
+    hidePrint1: true,
+    hidePrint2: true,
     branchlist: [],
     datacollection: {},
     options: {
@@ -1013,6 +1063,98 @@ export default {
 
   //Methods
   methods: {
+    printSalesGraph: function () {
+      //A4 Size Default
+      let pdfName = "Sales Graph";
+      var doc = new jsPDF();
+      var width = doc.internal.pageSize.getWidth();
+      var date = new Date();
+      var formatDate = moment(date).format("MMMM DD, YYYY");
+
+      //Title
+      doc.setFontSize(18).setFont(undefined, "bold");
+      doc.text("Recovery Food", width / 2, 20, { align: "center" });
+
+      //Sub-title
+      doc.setFontSize(16);
+      doc.setFont(undefined, "normal");
+      doc.text("Sales Graph", width / 2, 26, { align: "center" });
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text(this.branch.branch_name, width / 2, 32, {
+        align: "center",
+      });
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text("Month: " + this.month, 20, 44, { align: "left" });
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text("Year: " + this.year, 20, 48, { align: "left" });
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text("Date: " + formatDate, 190, 44, { align: "right" });
+
+      //Chart element
+      let canvasEle = document.getElementById("sales_graph");
+      let chartURL = canvasEle.toDataURL();
+      doc.addImage(chartURL, "PNG", 20, 70, 170, 160);
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text("Prepared By: " + this.user.name, 190, 280, { align: "right" });
+
+      doc.autoPrint({ variant: "non-conform" });
+      doc.save(pdfName + ".pdf");
+    },
+
+    printPurchaseGraph: function () {
+      //A4 Size Default
+      let pdfName = "Purchase Graph";
+      var doc = new jsPDF();
+      var width = doc.internal.pageSize.getWidth();
+      var date = new Date();
+      var formatDate = moment(date).format("MMMM DD, YYYY");
+
+      //Title
+      doc.setFontSize(18).setFont(undefined, "bold");
+      doc.text("Recovery Food", width / 2, 20, { align: "center" });
+
+      //Sub-title
+      doc.setFontSize(16);
+      doc.setFont(undefined, "normal");
+      doc.text("Purchase Graph", width / 2, 26, { align: "center" });
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text(this.branch.branch_name, width / 2, 32, {
+        align: "center",
+      });
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text("Month: " + this.month, 20, 44, { align: "left" });
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text("Year: " + this.year, 20, 48, { align: "left" });
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text("Date: " + formatDate, 190, 44, { align: "right" });
+
+      //Chart element
+      let canvasEle = document.getElementById("purchase_graph");
+      let chartURL = canvasEle.toDataURL();
+      doc.addImage(chartURL, "PNG", 20, 70, 170, 160);
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, "normal");
+      doc.text("Prepared By: " + this.user.name, 190, 280, { align: "right" });
+
+      doc.autoPrint({ variant: "non-conform" });
+      doc.save(pdfName + ".pdf");
+    },
+
     list() {
       this.mlist = ["All"];
       for (var key in moment.months()) {
@@ -1146,7 +1288,7 @@ export default {
       await axios
         .get("/api/dashboard/getSalesGraph", {
           params: {
-            branch: this.branch,
+            branch: this.branch.id,
             year: this.year,
             month: new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
           },
@@ -1176,6 +1318,7 @@ export default {
             ],
           };
           this.progressbar1 = false;
+          this.hidePrint1 = false;
         })
         .catch((result) => {});
     },
@@ -1187,7 +1330,7 @@ export default {
       await axios
         .get("/api/dashboard/getProductsGraph", {
           params: {
-            branch: this.branch,
+            branch: this.branch.id,
             year: this.year,
             month: new Date(Date.parse(this.month + " 1, 2020")).getMonth() + 1,
           },
@@ -1210,6 +1353,7 @@ export default {
             ],
           };
           this.progressbar2 = false;
+          this.hidePrint2 = false;
         })
         .catch((result) => {});
     },
@@ -1220,6 +1364,14 @@ export default {
         .get("/api/branches/inventory/branchName")
         .then((bran_name) => {
           this.branchlist = bran_name.data;
+
+          if (this.branch.length == 0) {
+            this.branch = {
+              branch_name: this.branchlist[0].branch_name,
+              id: this.branchlist[0].id,
+            };
+          }
+          this.getProductsGraph();
         });
     },
   },
@@ -1236,7 +1388,6 @@ export default {
       this.getProdExpDate();
       this.getSuppRequests();
       this.getProdRequests();
-      this.getSalesGraph();
       this.getProductsGraph();
       this.branchName();
     } else {

@@ -81,8 +81,8 @@
     >
 
     <v-row no-gutters justify="center" align="center">
-      <v-col cols="6" class="px-1" style="max-width: 150px">
-        <!-- Supplier -->
+      <!-- Supplier -->
+      <v-col cols="4" class="px-1" style="max-width: 150px">
         <v-card-actions class="pb-1 pt-4 px-0">
           <v-select
             hide-details
@@ -104,7 +104,7 @@
       </v-col>
 
       <!-- Date Picker -->
-      <v-col cols="6" class="px-1" style="max-width: 150px">
+      <v-col cols="4" class="px-1" style="max-width: 150px">
         <v-menu
           v-model="date1"
           :close-on-content-click="false"
@@ -143,7 +143,7 @@
       </v-col>
 
       <!-- Date Picker -->
-      <v-col cols="6" class="px-1" style="max-width: 150px">
+      <v-col cols="4" class="px-1" style="max-width: 150px">
         <v-menu
           v-model="date2"
           :close-on-content-click="false"

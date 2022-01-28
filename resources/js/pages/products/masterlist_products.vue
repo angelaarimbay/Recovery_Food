@@ -123,7 +123,11 @@
           <!-- Filter Dialog -->
           <v-dialog v-model="filterDialog" max-width="400px" scrollable>
             <v-card dark tile>
-              <v-toolbar :dense="$vuetify.breakpoint.xsOnly" flat class="transparent px-1">
+              <v-toolbar
+                :dense="$vuetify.breakpoint.xsOnly"
+                flat
+                class="transparent px-1"
+              >
                 <span
                   class="
                     text-xl-subtitle-1
@@ -391,7 +395,12 @@
           scrollable
         >
           <v-card>
-            <v-toolbar dark :dense="$vuetify.breakpoint.xsOnly" flat class="red darken-3 px-1">
+            <v-toolbar
+              dark
+              :dense="$vuetify.breakpoint.xsOnly"
+              flat
+              class="red darken-3 px-1"
+            >
               <span
                 class="
                   text-xl-subtitle-1
@@ -574,7 +583,6 @@
                     <v-text-field
                       v-model="temp_vat"
                       disabled
-                      clearable
                       dense
                       @keydown="numberKeydown($event)"
                       background-color="white"
@@ -588,10 +596,18 @@
                     </v-text-field>
 
                     <v-checkbox
+                      :dense="$vuetify.breakpoint.xsOnly"
                       :disabled="!disabled"
                       v-model="vat"
                       hide-details
-                      class="shrink pt-0 mt-0 mb-7 ml-3 d-none"
+                      class="
+                        shrink
+                        pt-0
+                        mt-0
+                        mb-7
+                        ml-0 ml-xl-3 ml-lg-3 ml-md-3 ml-sm-3
+                        d-none
+                      "
                       color="red darken-3"
                       @change="compute"
                     ></v-checkbox>
@@ -981,7 +997,12 @@ export default {
         class: "black--text",
         width: "15%",
       },
-      { text: "PRODUCT-NAME", value: "product_name", class: "black--text", width: "15%", },
+      {
+        text: "PRODUCT-NAME",
+        value: "product_name",
+        class: "black--text",
+        width: "15%",
+      },
       {
         text: "PRICE",
         value: "format_price",
@@ -1258,7 +1279,6 @@ export default {
       this.form.exp_date = row.exp_date
         ? this.getFormatDate(row.exp_date, "YYYY-MM-DD")
         : "";
-
       this.dialog = true;
       this.compute();
     },
